@@ -1,0 +1,411 @@
+import React, { useState, useEffect, useCallback } from 'react';
+import {
+  Box,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormHelperText,
+  Typography,
+  Divider,
+  Card,
+  CardContent,
+  InputAdornment,
+  Button,
+  Alert,
+  CircularProgress,
+} from '@mui/material';
+import { Save } from '@mui/icons-material';
+import axiosInstance from '../../../utils/axios';
+import { enqueueSnackbar } from 'notistack';
+
+const epcRatings = [
+  'A',
+  'B',
+  'C',
+  'D',
+  'E',
+  'F',
+  'G',
+  'Exempt',
+  'Not Required',
+];
+
+const councilTaxBands = [
+  'A',
+  'B',
+  'C',
+  'D',
+  'E',
+  'F',
+  'G',
+  'H',
+  'Exempt',
+  'Not Applicable',
+];
+
+const planningStatuses = [
+  'Full Planning',
+  'Outline Planning',
+  'No Planning Required',
+  'Unknown',
+];
+
+interface UpdatePropertyDetailsFormData {
+  epc: {
+    rating?: string;
+    score?: number;
+    certificate_number?: string;
+    expiry_date?: string;
+  };
+  council_tax: {
+    band?: string;
+    authority?: string;
+  };
+  rateable_value?: number;
+  planning: {
+    status?: string;
+    application_number?: string;
+    decision_date?: string;
+  };
+}
+
+interface UpdatePropertyDetailsFormProps {
+  onStepSubmitted?: (step: number) => void;
+  initialData?: UpdatePropertyDetailsFormData;
+  onDataChange?: (data: UpdatePropertyDetailsFormData) => void;
+  propertyId?: string;
+}
+
+const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({ 
+  onStepSubmitted, 
+  initialData, 
+  onDataChange,
+  propertyId 
+}) => {
+  const [formData, setFormData] = useState<UpdatePropertyDetailsFormData>(initialData || {
+    epc: {
+      rating: '',
+      score: 0,
+      certificate_number: '',
+      expiry_date: '',
+    },
+    council_tax: {
+      band: '',
+      authority: '',
+    },
+    rateable_value: 0,
+    planning: {
+      status: '',
+      application_number: '',
+      decision_date: '',
+    },
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  // Update form data when initialData changes
+  React.useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+      setIsSubmitted(true); // Mark as submitted since we're editing existing data
+    }
+  }, [initialData]);
+
+  // Notify parent component of data changes
+  React.useEffect(() => {
+    if (onDataChange) {
+      onDataChange(formData);
+    }
+  }, [formData, onDataChange]);
+
+  const validateForm = (): boolean => {
+    const errors: Record<string, string> = {};
+
+    // Validate EPC score
+    if (formData.epc.score && (formData.epc.score < 0 || formData.epc.score > 100)) {
+      errors.epc_score = 'EPC score must be between 0 and 100';
+    }
+
+    // Validate rateable value
+    if (formData.rateable_value && formData.rateable_value < 0) {
+      errors.rateable_value = 'Rateable value must be 0 or greater';
+    }
+
+    // Validate expiry date
+    if (formData.epc.expiry_date) {
+      const expiryDate = new Date(formData.epc.expiry_date);
+      const today = new Date();
+      if (expiryDate < today) {
+        errors.epc_expiry = 'EPC expiry date should be in the future';
+      }
+    }
+
+    // Validate decision date
+    if (formData.planning.decision_date) {
+      const decisionDate = new Date(formData.planning.decision_date);
+      const today = new Date();
+      if (decisionDate > today) {
+        errors.planning_decision = 'Decision date should be in the past';
+      }
+    }
+
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleEPCChange = (field: string, value: any) => {
+    setFormData(prev => ({
+      ...prev,
+      epc: {
+        ...prev.epc,
+        [field]: value
+      }
+    }));
+  };
+
+  const handleCouncilTaxChange = (field: string, value: any) => {
+    setFormData(prev => ({
+      ...prev,
+      council_tax: {
+        ...prev.council_tax,
+        [field]: value
+      }
+    }));
+  };
+
+  const handlePlanningChange = (field: string, value: any) => {
+    setFormData(prev => ({
+      ...prev,
+      planning: {
+        ...prev.planning,
+        [field]: value
+      }
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+
+    if (!propertyId) {
+      setSubmitError('Property ID is required for updating');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const response = await axiosInstance.patch(`/agent/properties/${propertyId}/property-details`, formData);
+      
+      if (response.data.success) {
+        setIsSubmitted(true);
+        enqueueSnackbar('Property details updated successfully!', { variant: 'success' });
+        
+        if (onStepSubmitted) {
+          onStepSubmitted(2);
+        }
+      } else {
+        throw new Error(response.data.message || 'Failed to update property details');
+      }
+    } catch (error: any) {
+      console.error('Error updating property details:', error);
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to update property details';
+      setSubmitError(errorMessage);
+      enqueueSnackbar(errorMessage, { variant: 'error' });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <Box>
+      <form onSubmit={handleSubmit}>
+        {submitError && (
+          <Alert severity="error" sx={{ mb: 3 }} onClose={() => setSubmitError(null)}>
+            {submitError}
+          </Alert>
+        )}
+
+        {/* EPC Section */}
+        <Card sx={{ mb: 3 }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              Energy Performance Certificate (EPC)
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+              <FormControl sx={{ minWidth: 120 }}>
+                <InputLabel>EPC Rating</InputLabel>
+                <Select
+                  value={formData.epc.rating || ''}
+                  onChange={(e) => handleEPCChange('rating', e.target.value)}
+                  label="EPC Rating"
+                >
+                  {epcRatings.map((rating) => (
+                    <MenuItem key={rating} value={rating}>
+                      {rating}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <TextField
+                label="EPC Score"
+                type="number"
+                value={formData.epc.score || ''}
+                onChange={(e) => handleEPCChange('score', parseInt(e.target.value) || 0)}
+                error={!!fieldErrors.epc_score}
+                helperText={fieldErrors.epc_score}
+                inputProps={{ min: 0, max: 100 }}
+                sx={{ minWidth: 120 }}
+              />
+
+              <TextField
+                label="Certificate Number"
+                value={formData.epc.certificate_number || ''}
+                onChange={(e) => handleEPCChange('certificate_number', e.target.value)}
+                sx={{ minWidth: 200 }}
+              />
+
+              <TextField
+                label="Expiry Date"
+                type="date"
+                value={formData.epc.expiry_date || ''}
+                onChange={(e) => handleEPCChange('expiry_date', e.target.value)}
+                error={!!fieldErrors.epc_expiry}
+                helperText={fieldErrors.epc_expiry}
+                InputLabelProps={{ shrink: true }}
+                sx={{ minWidth: 150 }}
+              />
+            </Box>
+          </CardContent>
+        </Card>
+
+        {/* Council Tax Section */}
+        <Card sx={{ mb: 3 }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              Council Tax
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+              <FormControl sx={{ minWidth: 120 }}>
+                <InputLabel>Council Tax Band</InputLabel>
+                <Select
+                  value={formData.council_tax.band || ''}
+                  onChange={(e) => handleCouncilTaxChange('band', e.target.value)}
+                  label="Council Tax Band"
+                >
+                  {councilTaxBands.map((band) => (
+                    <MenuItem key={band} value={band}>
+                      {band}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <TextField
+                label="Council Authority"
+                value={formData.council_tax.authority || ''}
+                onChange={(e) => handleCouncilTaxChange('authority', e.target.value)}
+                sx={{ minWidth: 200 }}
+              />
+            </Box>
+          </CardContent>
+        </Card>
+
+        {/* Rateable Value Section */}
+        <Card sx={{ mb: 3 }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              Rateable Value
+            </Typography>
+            <TextField
+              label="Rateable Value (GBP)"
+              type="number"
+              value={formData.rateable_value || ''}
+              onChange={(e) => setFormData(prev => ({ ...prev, rateable_value: parseFloat(e.target.value) || 0 }))}
+              error={!!fieldErrors.rateable_value}
+              helperText={fieldErrors.rateable_value}
+              InputProps={{
+                startAdornment: <InputAdornment position="start">£</InputAdornment>,
+              }}
+              inputProps={{ min: 0 }}
+              sx={{ minWidth: 200 }}
+            />
+          </CardContent>
+        </Card>
+
+        {/* Planning Section */}
+        <Card sx={{ mb: 3 }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              Planning Information
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+              <FormControl sx={{ minWidth: 150 }}>
+                <InputLabel>Planning Status</InputLabel>
+                <Select
+                  value={formData.planning.status || ''}
+                  onChange={(e) => handlePlanningChange('status', e.target.value)}
+                  label="Planning Status"
+                >
+                  {planningStatuses.map((status) => (
+                    <MenuItem key={status} value={status}>
+                      {status}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <TextField
+                label="Application Number"
+                value={formData.planning.application_number || ''}
+                onChange={(e) => handlePlanningChange('application_number', e.target.value)}
+                sx={{ minWidth: 200 }}
+              />
+
+              <TextField
+                label="Decision Date"
+                type="date"
+                value={formData.planning.decision_date || ''}
+                onChange={(e) => handlePlanningChange('decision_date', e.target.value)}
+                error={!!fieldErrors.planning_decision}
+                helperText={fieldErrors.planning_decision}
+                InputLabelProps={{ shrink: true }}
+                sx={{ minWidth: 150 }}
+              />
+            </Box>
+          </CardContent>
+        </Card>
+
+        <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end' }}>
+          <Button
+            type="submit"
+            variant="contained"
+            startIcon={isSubmitting ? <CircularProgress size={20} /> : <Save />}
+            disabled={isSubmitting || isSubmitted}
+            sx={{
+              minWidth: 200,
+              backgroundColor: '#2563eb',
+              '&:hover': {
+                backgroundColor: '#1d4ed8',
+              },
+            }}
+          >
+            {isSubmitting ? 'Updating...' : isSubmitted ? 'Property Details Updated' : 'Update Property Details'}
+          </Button>
+        </Box>
+      </form>
+    </Box>
+  );
+};
+
+export default UpdatePropertyDetailsForm;

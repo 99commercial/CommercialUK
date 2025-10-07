@@ -1,0 +1,574 @@
+import React, { useState } from 'react';
+import {
+  Box,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormHelperText,
+  Typography,
+  Divider,
+  Card,
+  CardContent,
+  Button,
+  Switch,
+  FormControlLabel,
+  Alert,
+  InputAdornment,
+  CircularProgress,
+} from '@mui/material';
+import { LocationOn, MyLocation, Map, Save } from '@mui/icons-material';
+import axiosInstance from '../../../../utils/axios';
+import { enqueueSnackbar } from 'notistack';
+
+const mapTypes = [
+  'roadmap',
+  'satellite',
+  'hybrid',
+  'terrain',
+];
+
+const geocodingServices = [
+  'Google',
+  'OpenStreetMap',
+  'Bing',
+  'Manual',
+];
+
+const geocodingAccuracies = [
+  'ROOFTOP',
+  'RANGE_INTERPOLATED',
+  'GEOMETRIC_CENTER',
+  'APPROXIMATE',
+];
+
+interface UpdateLocationDetailsFormData {
+  _id?: string;
+  coordinates: {
+    latitude?: number;
+    longitude?: number;
+  };
+  address_details: {
+    street_number?: string;
+    route?: string;
+    locality?: string;
+    administrative_area_level_1?: string;
+    administrative_area_level_2?: string;
+    postal_code?: string;
+    country?: string;
+    formatted_address?: string;
+  };
+  geocoding_info: {
+    place_id?: string;
+    geocoding_service?: string;
+    geocoding_accuracy?: string;
+  };
+  location_verified?: boolean;
+  map_settings: {
+    disable_map_display?: boolean;
+    map_zoom_level?: number;
+    map_type?: string;
+  };
+  verification_notes?: string;
+}
+
+interface UpdateLocationDetailsFormProps {
+  onStepSubmitted?: (step: number) => void;
+  initialData?: UpdateLocationDetailsFormData;
+  onDataChange?: (data: UpdateLocationDetailsFormData) => void;
+  propertyId?: string;
+  fetchProperty?: () => void;
+}
+
+const UpdateLocationDetailsForm: React.FC<UpdateLocationDetailsFormProps> = ({ 
+  onStepSubmitted, 
+  initialData, 
+  onDataChange,
+  propertyId,
+  fetchProperty
+}) => {
+  const [formData, setFormData] = useState<UpdateLocationDetailsFormData>({
+    coordinates: {
+      latitude: initialData?.coordinates?.latitude || 0,
+      longitude: initialData?.coordinates?.longitude || 0,
+    },
+    address_details: {
+      street_number: initialData?.address_details?.street_number || '',
+      route: initialData?.address_details?.route || '',
+      locality: initialData?.address_details?.locality || '',
+      administrative_area_level_1: initialData?.address_details?.administrative_area_level_1 || '',
+      administrative_area_level_2: initialData?.address_details?.administrative_area_level_2 || '',
+      postal_code: initialData?.address_details?.postal_code || '',
+      country: initialData?.address_details?.country || 'India',
+      formatted_address: initialData?.address_details?.formatted_address || '',
+    },
+    geocoding_info: {
+      place_id: initialData?.geocoding_info?.place_id || '',
+      geocoding_service: initialData?.geocoding_info?.geocoding_service || 'Google',
+      geocoding_accuracy: initialData?.geocoding_info?.geocoding_accuracy || 'ROOFTOP',
+    },
+    location_verified: initialData?.location_verified || true,
+    map_settings: {
+      disable_map_display: initialData?.map_settings?.disable_map_display || false,
+      map_zoom_level: initialData?.map_settings?.map_zoom_level || 1,
+      map_type: initialData?.map_settings?.map_type || 'roadmap',
+    },
+    verification_notes: initialData?.verification_notes || '',
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [hasChanges, setHasChanges] = useState(false);
+
+  // Update form data when initialData changes
+  React.useEffect(() => {
+    if (initialData) {
+      setFormData({
+        coordinates: {
+          latitude: initialData?.coordinates?.latitude || 0,
+          longitude: initialData?.coordinates?.longitude || 0,
+        },
+        address_details: {
+          street_number: initialData?.address_details?.street_number || '',
+          route: initialData?.address_details?.route || '',
+          locality: initialData?.address_details?.locality || '',
+          administrative_area_level_1: initialData?.address_details?.administrative_area_level_1 || '',
+          administrative_area_level_2: initialData?.address_details?.administrative_area_level_2 || '',
+          postal_code: initialData?.address_details?.postal_code || '',
+          country: initialData?.address_details?.country || 'India',
+          formatted_address: initialData?.address_details?.formatted_address || '',
+        },
+        geocoding_info: {
+          place_id: initialData?.geocoding_info?.place_id || '',
+          geocoding_service: initialData?.geocoding_info?.geocoding_service || 'Google',
+          geocoding_accuracy: initialData?.geocoding_info?.geocoding_accuracy || 'ROOFTOP',
+        },
+        location_verified: initialData?.location_verified || true,
+        map_settings: {
+          disable_map_display: initialData?.map_settings?.disable_map_display || false,
+          map_zoom_level: initialData?.map_settings?.map_zoom_level || 1,
+          map_type: initialData?.map_settings?.map_type || 'roadmap',
+        },
+        verification_notes: initialData?.verification_notes || '',
+      });
+      setIsSubmitted(true); // Mark as submitted since we're editing existing data
+    }
+  }, [initialData]);
+
+  // Notify parent component of data changes
+  React.useEffect(() => {
+    if (onDataChange) {
+      onDataChange(formData);
+    }
+  }, [formData, onDataChange]);
+
+  // Check for changes compared to initial data
+  React.useEffect(() => {
+    if (initialData) {
+      const initialFormData = {
+        coordinates: {
+          latitude: initialData?.coordinates?.latitude || 0,
+          longitude: initialData?.coordinates?.longitude || 0,
+        },
+        address_details: {
+          street_number: initialData?.address_details?.street_number || '',
+          route: initialData?.address_details?.route || '',
+          locality: initialData?.address_details?.locality || '',
+          administrative_area_level_1: initialData?.address_details?.administrative_area_level_1 || '',
+          administrative_area_level_2: initialData?.address_details?.administrative_area_level_2 || '',
+          postal_code: initialData?.address_details?.postal_code || '',
+          country: initialData?.address_details?.country || 'India',
+          formatted_address: initialData?.address_details?.formatted_address || '',
+        },
+        geocoding_info: {
+          place_id: initialData?.geocoding_info?.place_id || '',
+          geocoding_service: initialData?.geocoding_info?.geocoding_service || 'Google',
+          geocoding_accuracy: initialData?.geocoding_info?.geocoding_accuracy || 'ROOFTOP',
+        },
+        location_verified: initialData?.location_verified || true,
+        map_settings: {
+          disable_map_display: initialData?.map_settings?.disable_map_display || false,
+          map_zoom_level: initialData?.map_settings?.map_zoom_level || 1,
+          map_type: initialData?.map_settings?.map_type || 'roadmap',
+        },
+        verification_notes: initialData?.verification_notes || '',
+      };
+
+      const hasDataChanged = JSON.stringify(formData) !== JSON.stringify(initialFormData);
+      setHasChanges(hasDataChanged);
+    }
+  }, [formData, initialData]);
+
+  const validateForm = (): boolean => {
+    const errors: Record<string, string> = {};
+
+    // Validate coordinates
+    if (formData.coordinates.latitude && 
+        (formData.coordinates.latitude < -90 || formData.coordinates.latitude > 90)) {
+      errors.latitude = 'Latitude must be between -90 and 90';
+    }
+
+    if (formData.coordinates.longitude && 
+        (formData.coordinates.longitude < -180 || formData.coordinates.longitude > 180)) {
+      errors.longitude = 'Longitude must be between -180 and 180';
+    }
+
+    // Validate zoom level
+    if (formData.map_settings.map_zoom_level !== null && formData.map_settings.map_zoom_level !== undefined && 
+        (formData.map_settings.map_zoom_level < 0 || formData.map_settings.map_zoom_level > 20)) {
+      errors.zoom_level = 'Zoom level must be between 0 and 20';
+    }
+
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleCoordinatesChange = (field: string, value: any) => {
+    setFormData(prev => ({
+      ...prev,
+      coordinates: {
+        ...prev.coordinates,
+        [field]: value
+      }
+    }));
+  };
+
+  const handleAddressChange = (field: string, value: any) => {
+    setFormData(prev => ({
+      ...prev,
+      address_details: {
+        ...prev.address_details,
+        [field]: value
+      }
+    }));
+  };
+
+  const handleGeocodingInfoChange = (field: string, value: any) => {
+    setFormData(prev => ({
+      ...prev,
+      geocoding_info: {
+        ...prev.geocoding_info,
+        [field]: value
+      }
+    }));
+  };
+
+  const handleMapSettingsChange = (field: string, value: any) => {
+    setFormData(prev => ({
+      ...prev,
+      map_settings: {
+        ...prev.map_settings,
+        [field]: value
+      }
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+
+    if (!propertyId) {
+      setSubmitError('Property ID is required for updating');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const response = await axiosInstance.patch(`/api/user/property-location/${initialData?._id}`, formData);
+      
+      if (response.data.success) {
+        setIsSubmitted(true);
+        setHasChanges(false); // Reset changes flag after successful update
+        enqueueSnackbar('Location details updated successfully!', { variant: 'success' });
+        
+        if (onStepSubmitted) {
+          onStepSubmitted(3);
+        }
+      } else {
+        throw new Error(response.data.message || 'Failed to update location details');
+      }
+    } catch (error: any) {
+      console.error('Error updating location details:', error);
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to update location details';
+      setSubmitError(errorMessage);
+      enqueueSnackbar(errorMessage, { variant: 'error' });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <Box>
+      <form onSubmit={handleSubmit}>
+        {submitError && (
+          <Alert severity="error" sx={{ mb: 3 }} onClose={() => setSubmitError(null)}>
+            {submitError}
+          </Alert>
+        )}
+
+        {/* Coordinates Section */}
+        <Card sx={{ mb: 3 }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+              <MyLocation color="primary" />
+              Coordinates
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
+              <TextField
+                label="Latitude"
+                type="number"
+                value={formData.coordinates.latitude || ''}
+                onChange={(e) => handleCoordinatesChange('latitude', parseFloat(e.target.value) || 0)}
+                error={!!fieldErrors.latitude}
+                helperText={fieldErrors.latitude}
+                inputProps={{ min: -90, max: 90, step: 'any' }}
+                sx={{ flex: 1, minWidth: 150 }}
+              />
+
+              <TextField
+                label="Longitude"
+                type="number"
+                value={formData.coordinates.longitude || ''}
+                onChange={(e) => handleCoordinatesChange('longitude', parseFloat(e.target.value) || 0)}
+                error={!!fieldErrors.longitude}
+                helperText={fieldErrors.longitude}
+                inputProps={{ min: -180, max: 180, step: 'any' }}
+                sx={{ flex: 1, minWidth: 150 }}
+              />
+
+              <FormControl sx={{ flex: 1, minWidth: 150 }}>
+                <InputLabel>Geocoding Service</InputLabel>
+                <Select
+                  value={formData.geocoding_info.geocoding_service || 'Google'}
+                  onChange={(e) => handleGeocodingInfoChange('geocoding_service', e.target.value)}
+                  label="Geocoding Service"
+                >
+                  {geocodingServices.map((service) => (
+                    <MenuItem key={service} value={service}>
+                      {service}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <FormControl sx={{ flex: 1, minWidth: 180 }}>
+                <InputLabel>Geocoding Accuracy</InputLabel>
+                <Select
+                  value={formData.geocoding_info.geocoding_accuracy || 'ROOFTOP'}
+                  onChange={(e) => handleGeocodingInfoChange('geocoding_accuracy', e.target.value)}
+                  label="Geocoding Accuracy"
+                >
+                  {geocodingAccuracies.map((accuracy) => (
+                    <MenuItem key={accuracy} value={accuracy}>
+                      {accuracy}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
+          </CardContent>
+        </Card>
+
+        {/* Address Details Section */}
+        <Card sx={{ mb: 3 }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+              <LocationOn color="primary" />
+              Address Details
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
+                <TextField
+                  label="Street Number"
+                  value={formData.address_details.street_number || ''}
+                  onChange={(e) => handleAddressChange('street_number', e.target.value)}
+                  sx={{ flex: 0.5, minWidth: 150 }}
+                />
+
+                <TextField
+                  label="Route"
+                  value={formData.address_details.route || ''}
+                  onChange={(e) => handleAddressChange('route', e.target.value)}
+                  sx={{ flex: 1.5, minWidth: 200 }}
+                />
+
+                <TextField
+                  label="Locality"
+                  value={formData.address_details.locality || ''}
+                  onChange={(e) => handleAddressChange('locality', e.target.value)}
+                  sx={{ flex: 1, minWidth: 200 }}
+                />
+              </Box>
+
+              <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
+                <TextField
+                  label="Administrative Area Level 1"
+                  value={formData.address_details.administrative_area_level_1 || ''}
+                  onChange={(e) => handleAddressChange('administrative_area_level_1', e.target.value)}
+                  sx={{ flex: 1, minWidth: 200 }}
+                />
+
+                <TextField
+                  label="Administrative Area Level 2"
+                  value={formData.address_details.administrative_area_level_2 || ''}
+                  onChange={(e) => handleAddressChange('administrative_area_level_2', e.target.value)}
+                  sx={{ flex: 1, minWidth: 200 }}
+                />
+              </Box>
+
+              <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
+                <TextField
+                  label="Postal Code"
+                  value={formData.address_details.postal_code || ''}
+                  onChange={(e) => handleAddressChange('postal_code', e.target.value)}
+                  sx={{ flex: 0.5, minWidth: 150 }}
+                />
+
+                <TextField
+                  label="Country"
+                  value={formData.address_details.country || ''}
+                  onChange={(e) => handleAddressChange('country', e.target.value)}
+                  sx={{ flex: 1, minWidth: 200 }}
+                />
+              </Box>
+
+              <TextField
+                label="Formatted Address"
+                value={formData.address_details.formatted_address || ''}
+                onChange={(e) => handleAddressChange('formatted_address', e.target.value)}
+                fullWidth
+                multiline
+                rows={2}
+                placeholder="Complete formatted address as returned by geocoding service"
+              />
+
+              <TextField
+                label="Place ID"
+                value={formData.geocoding_info.place_id || ''}
+                onChange={(e) => handleGeocodingInfoChange('place_id', e.target.value)}
+                fullWidth
+                placeholder="Unique identifier from geocoding service"
+              />
+            </Box>
+          </CardContent>
+        </Card>
+
+        {/* Map Settings Section */}
+        <Card sx={{ mb: 3 }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+              <Map color="primary" />
+              Map Settings
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 2, width: '100%', alignItems: 'center' }}>
+              <FormControl sx={{ flex: 1, minWidth: 150 }}>
+                <InputLabel>Map Type</InputLabel>
+                <Select
+                  value={formData.map_settings.map_type || 'roadmap'}
+                  onChange={(e) => handleMapSettingsChange('map_type', e.target.value)}
+                  label="Map Type"
+                >
+                  {mapTypes.map((type) => (
+                    <MenuItem key={type} value={type}>
+                      {type}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <TextField
+                label="Zoom Level"
+                type="number"
+                value={formData.map_settings.map_zoom_level || ''}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value === '') {
+                    handleMapSettingsChange('map_zoom_level', '');
+                  } else {
+                    const numValue = parseInt(value);
+                    if (!isNaN(numValue) && numValue >= 0 && numValue <= 20) {
+                      handleMapSettingsChange('map_zoom_level', numValue);
+                    }
+                  }
+                }}
+                error={!!fieldErrors.zoom_level}
+                helperText={fieldErrors.zoom_level}
+                inputProps={{ min: 0, max: 20 }}
+                sx={{ flex: 0.5, minWidth: 120 }}
+              />
+
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={formData.map_settings.disable_map_display || false}
+                    onChange={(e) => handleMapSettingsChange('disable_map_display', e.target.checked)}
+                  />
+                }
+                label="Disable Map Display"
+                sx={{ flex: 1 }}
+              />
+            </Box>
+          </CardContent>
+        </Card>
+
+        {/* Verification Section */}
+        <Card sx={{ mb: 3 }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom sx={{ mb: 2 }}>
+              Verification
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={formData.location_verified || false}
+                    onChange={(e) => setFormData(prev => ({ ...prev, location_verified: e.target.checked }))}
+                  />
+                }
+                label="Location Verified"
+              />
+              
+              <TextField
+                label="Verification Notes"
+                value={formData.verification_notes || ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, verification_notes: e.target.value }))}
+                fullWidth
+                multiline
+                rows={3}
+                placeholder="Additional notes about location verification"
+              />
+            </Box>
+          </CardContent>
+        </Card>
+
+        <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end' }}>
+          <Button
+            type="submit"
+            variant="contained"
+            startIcon={isSubmitting ? <CircularProgress size={20} /> : <Save />}
+            disabled={isSubmitting || !hasChanges}
+            sx={{
+              minWidth: 200,
+              backgroundColor: hasChanges ? '#7c3aed' : '#9ca3af',
+              '&:hover': {
+                backgroundColor: hasChanges ? '#6d28d9' : '#9ca3af',
+              },
+            }}
+          >
+            {isSubmitting ? 'Updating...' : hasChanges ? 'Update Location Details' : 'No Changes to Save'}
+          </Button>
+        </Box>
+      </form>
+    </Box>
+  );
+};
+
+export default UpdateLocationDetailsForm;
