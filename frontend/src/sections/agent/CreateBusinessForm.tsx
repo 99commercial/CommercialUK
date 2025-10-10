@@ -114,9 +114,17 @@ export default function CreateBusinessForm() {
 
   const isValidEmail = (email: string) => /[^\s@]+@[^\s@]+\.[^\s@]+/.test(email);
   const isValidUrl = (url: string) => /^https?:\/\//i.test(url);
-  const isValidPhone = (phone: string) => /^\+?[0-9]{7,15}$/.test(phone.replace(/\s|-/g, ''));
-  const isValidUkPostcode = (pc: string) =>
-    /^(GIR 0AA|(?:(?:[A-Z]{1,2}[0-9][A-Z0-9]?) ?[0-9][A-Z]{2}))$/i.test(pc.trim());
+  const isValidPhone = (phone: string) => {
+    // Allow empty phone numbers or valid phone format
+    if (!phone.trim()) return true;
+    return /^\+?[0-9]{7,15}$/.test(phone.replace(/\s|-/g, ''));
+  };
+  const isValidUkPostcode = (pc: string) => {
+    // Allow empty postcodes or valid UK postcode format (more flexible)
+    if (!pc.trim()) return true;
+    return /^(GIR 0AA|(?:(?:[A-Z]{1,2}[0-9][A-Z0-9]?) ?[0-9][A-Z]{2}))$/i.test(pc.trim()) ||
+           /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i.test(pc.trim());
+  };
 
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -124,7 +132,9 @@ export default function CreateBusinessForm() {
     if (!form.business_email.trim()) newErrors.business_email = 'Email is required';
     else if (!isValidEmail(form.business_email)) newErrors.business_email = 'Enter a valid email';
     if (form.website && !isValidUrl(form.website)) newErrors.website = 'Enter a valid URL (https://...)';
-    if (form.business_phone && !isValidPhone(form.business_phone)) newErrors.business_phone = 'Enter a valid phone (international format)';
+    if (form.business_phone && !isValidPhone(form.business_phone) && !isValidEmail(form.business_phone)) {
+      newErrors.business_phone = 'Enter a valid phone number or email address';
+    }
     if (form.business_address.postcode && !isValidUkPostcode(form.business_address.postcode)) newErrors.postcode = 'Enter a valid UK postcode (e.g., NW1 6XE)';
     if (!form.services || form.services.length === 0) newErrors.services = 'Select at least one service';
     setErrors(newErrors);
@@ -171,7 +181,7 @@ export default function CreateBusinessForm() {
 
     const optionalFormatsOk =
       (!form.website || isValidUrl(form.website)) &&
-      (!form.business_phone || isValidPhone(form.business_phone));
+      (!form.business_phone || isValidPhone(form.business_phone) || isValidEmail(form.business_phone));
 
     return filledBasics && optionalFormatsOk;
   }, [form]);
