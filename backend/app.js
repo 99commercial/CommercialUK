@@ -26,7 +26,11 @@ connectDB(); // Connect to MongoDB
 ========================== */
 
 // Enable CORS for all routes
-app.use(cors());
+const corsOptions = {
+  origin: 'https://commercial-uk.vercel.app/',
+  optionsSuccessStatus: 200 // For legacy browser support
+};
+app.use(cors(corsOptions));
 
 // Set security-related HTTP headers
 app.use(helmet());
