@@ -9,7 +9,7 @@ import axios, {
   // ----------------------------------------------------------------------
   
 const axiosInstance: AxiosInstance = axios.create({
-  baseURL: BACKEND_URL || '',
+  baseURL: BACKEND_URL,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
