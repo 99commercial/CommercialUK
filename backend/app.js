@@ -26,11 +26,20 @@ connectDB(); // Connect to MongoDB
 ========================== */
 
 // Enable CORS for all routes
-const corsOptions = {
-  origin: 'https://commercial-uk.vercel.app/',
-  optionsSuccessStatus: 200 // For legacy browser support
-};
-app.use(cors(corsOptions));
+app.use(cors({
+  origin: [
+    process.env.FRONTEND_URL || 'http://localhost:3000',
+    'http://localhost:3001', // Alternative port
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:3001',
+    'https://commercial-uk.vercel.app/',
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+  exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar'],
+  optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
+}));
 
 // Set security-related HTTP headers
 app.use(helmet());
