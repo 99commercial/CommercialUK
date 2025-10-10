@@ -1,1 +1,1 @@
-export const BACKEND_URL = "https://commercialuk.onrender.com"
+export const BACKEND_URL = process.env.BACKEND_URL
