@@ -92,23 +92,38 @@ const GeneralDetailsForm: React.FC<GeneralDetailsFormProps> = ({ onStepSubmitted
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
+  // Use ref to prevent infinite loops when updating from parent
+  const isUpdatingFromParent = React.useRef(false);
+
   // Update form data when initialData changes
   React.useEffect(() => {
-    if (initialData) {
+    if (initialData && !isUpdatingFromParent.current) {
+      isUpdatingFromParent.current = true;
       setFormData(initialData);
+      setTimeout(() => {
+        isUpdatingFromParent.current = false;
+      }, 0);
     }
   }, [initialData]);
 
-  // Notify parent of data changes
-  React.useEffect(() => {
-    if (onDataChange) {
-      onDataChange(formData);
+  // Notify parent of data changes - use useCallback to prevent infinite loops
+  const stableOnDataChange = React.useCallback((data: GeneralDetailsFormData) => {
+    if (onDataChange && !isUpdatingFromParent.current) {
+      onDataChange(data);
     }
-  }, [formData, onDataChange]);
+  }, [onDataChange]);
 
-  // Debug: Log field errors when they change
   React.useEffect(() => {
-    console.log('Field errors state updated:', fieldErrors);
+    if (!isUpdatingFromParent.current) {
+      stableOnDataChange(formData);
+    }
+  }, [formData, stableOnDataChange]);
+
+  // Debug: Log field errors when they change (only in development)
+  React.useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Field errors state updated:', fieldErrors);
+    }
   }, [fieldErrors]);
 
 

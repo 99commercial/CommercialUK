@@ -164,7 +164,7 @@ const CreatePropertyPage: React.FC = () => {
   React.useEffect(() => {
     // Clear all errors when step changes
     methods.clearErrors();
-  }, [activeStep, methods]);
+  }, [activeStep]); // Remove methods from dependency array to prevent infinite loop
 
   const { handleSubmit, trigger, formState: { errors, isValid }, watch, setValue } = methods;
 
@@ -215,19 +215,19 @@ const CreatePropertyPage: React.FC = () => {
     }
   };
 
-  // Handle step submission (called by child components)
-  const handleStepSubmission = (step: number) => {
+  // Handle step submission (called by child components) - use useCallback to prevent infinite loops
+  const handleStepSubmission = React.useCallback((step: number) => {
     setSubmittedSteps(prev => new Set(Array.from(prev).concat(step)));
     setCompletedSteps(prev => new Set(Array.from(prev).concat(step)));
-  };
+  }, []);
 
-  // Handle data changes from child components
-  const handleStepDataChange = (step: number, data: any) => {
+  // Handle data changes from child components - use useCallback to prevent infinite loops
+  const handleStepDataChange = React.useCallback((step: number, data: any) => {
     setStepData(prev => ({
       ...prev,
       [step]: data
     }));
-  };
+  }, []);
 
   // Save step data to backend - DISABLED FOR UI PREVIEW
   const saveStepData = async (step: number) => {

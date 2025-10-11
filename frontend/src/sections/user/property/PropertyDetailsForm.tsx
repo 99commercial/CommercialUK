@@ -69,33 +69,42 @@ const PropertyDetailsForm: React.FC<PropertyDetailsFormProps> = ({ onStepSubmitt
 
   const watchedValues = watch();
 
+  // Use ref to prevent infinite loops when updating from parent
+  const isUpdatingFromParent = React.useRef(false);
+
   // Handle initial data
   useEffect(() => {
-    if (initialData) {
+    if (initialData && !isUpdatingFromParent.current) {
+      isUpdatingFromParent.current = true;
       // Set form values using setValue from react-hook-form
       Object.keys(initialData).forEach(key => {
         if (initialData[key] !== undefined) {
           setValue(key, initialData[key]);
         }
       });
+      setTimeout(() => {
+        isUpdatingFromParent.current = false;
+      }, 0);
     }
   }, [initialData, setValue]);
 
   // Stable callback for data changes
   const handleDataChange = useCallback((data: any) => {
-    if (onDataChange) {
+    if (onDataChange && !isUpdatingFromParent.current) {
       onDataChange(data);
     }
   }, [onDataChange]);
 
   // Handle data changes with debouncing to prevent infinite loops
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      handleDataChange(watchedValues);
-    }, 100); // Small delay to debounce
+    if (!isUpdatingFromParent.current) {
+      const timeoutId = setTimeout(() => {
+        handleDataChange(watchedValues);
+      }, 100); // Small delay to debounce
 
-    return () => clearTimeout(timeoutId);
-  }, [watchedValues, handleDataChange]);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [watchedValues]); // Remove handleDataChange from dependencies to prevent infinite loop
   
   // Type-safe error access - checks both react-hook-form errors and backend field errors
   const getFieldError = (fieldPath: string) => {

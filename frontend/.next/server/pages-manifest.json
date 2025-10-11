@@ -4,6 +4,5 @@
   "/_document": "pages/_document.js",
   "/user": "pages/user.js",
   "/user/property/my-properties": "pages/user/property/my-properties.js",
-  "/user/property/edit/[id]": "pages/user/property/edit/[id].js",
-  "/general/all-properties": "pages/general/all-properties.js"
+  "/user/property/edit/[id]": "pages/user/property/edit/[id].js"
 }

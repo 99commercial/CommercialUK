@@ -89,28 +89,37 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
+  // Use ref to prevent infinite loops when updating from parent
+  const isUpdatingFromParent = React.useRef(false);
+
   // Handle initial data
   useEffect(() => {
-    if (initialData) {
+    if (initialData && !isUpdatingFromParent.current) {
+      isUpdatingFromParent.current = true;
       setFormData(initialData);
+      setTimeout(() => {
+        isUpdatingFromParent.current = false;
+      }, 0);
     }
   }, [initialData]);
 
   // Stable callback for data changes
   const handleDataChange = useCallback((data: any) => {
-    if (onDataChange) {
+    if (onDataChange && !isUpdatingFromParent.current) {
       onDataChange(data);
     }
   }, [onDataChange]);
 
   // Handle data changes with debouncing to prevent infinite loops
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      handleDataChange(formData);
-    }, 100); // Small delay to debounce
+    if (!isUpdatingFromParent.current) {
+      const timeoutId = setTimeout(() => {
+        handleDataChange(formData);
+      }, 100); // Small delay to debounce
 
-    return () => clearTimeout(timeoutId);
-  }, [formData, handleDataChange]);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [formData]); // Remove handleDataChange from dependencies to prevent infinite loop
 
   const handleInputChange = (field: string, value: string | number) => {
     setFormData(prev => {
