@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer';
 import hbs from "nodemailer-express-handlebars";
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { FRONTEND_URL, EMAIL_USER, EMAIL_PASS } from '../config/env.config.js';
+import { FRONTEND_URL, EMAIL_PASS } from '../config/env.config.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,7 +15,7 @@ export class emailService {
       port: 465,                     // <-- Use the correct port for this server
       secure: true,                  // 'true' is required for port 465
       auth: {
-        user: EMAIL_USER,
+        user: 'apikey',
         pass: EMAIL_PASS,
       },
     });

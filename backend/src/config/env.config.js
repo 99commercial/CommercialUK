@@ -13,11 +13,10 @@ export const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '1h';
 export const JWT_REFRESH_EXPIRES_IN = process.env.JWT_REFRESH_EXPIRES_IN || '7d';
 
 // FRONTEND URL
-export const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
+export const FRONTEND_URL = process.env.FRONTEND_URL;
 
 // EMAIL CONFIGURATION
-export const EMAIL_USER = process.env.EMAIL || 'your-email@gmail.com';
-export const EMAIL_PASS = process.env.EMAIL_PASS || 'your-password';
+export const EMAIL_PASS = process.env.EMAIL_PASS;
 
 // CLOUDINARY CONFIGURATION
 export const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
