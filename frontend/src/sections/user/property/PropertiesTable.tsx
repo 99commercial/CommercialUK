@@ -203,7 +203,11 @@ const PropertiesTable: React.FC = () => {
   };
 
   const handleEditOrComplete = (property: Property) => {
-    router.push(`/user/property/edit/${property._id}`);
+    if (property.property_status === 'Active') {
+      router.push(`/user/property/edit/${property._id}`);
+    } else {
+      router.push(`/user/property/complete/${property._id}`);
+    }
   };
 
   return (

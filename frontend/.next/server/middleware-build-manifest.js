@@ -25,10 +25,15 @@ globalThis.__BUILD_MANIFEST = {
       "static/chunks/main.js",
       "static/chunks/pages/user.js"
     ],
-    "/user/property/create-property": [
+    "/user/property/edit/[id]": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/user/property/create-property.js"
+      "static/chunks/pages/user/property/edit/[id].js"
+    ],
+    "/user/property/my-properties": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/user/property/my-properties.js"
     ]
   },
   "ampFirstPages": []

@@ -207,6 +207,12 @@ type PagesPageConfig = {
   handler satisfies PagesPageConfig
 }
 
+// Validate ../../src/pages/user/property/complete/[id].tsx
+{
+  const handler = {} as typeof import("../../src/pages/user/property/complete/[id].js")
+  handler satisfies PagesPageConfig
+}
+
 // Validate ../../src/pages/user/property/create-property.tsx
 {
   const handler = {} as typeof import("../../src/pages/user/property/create-property.js")
