@@ -17,6 +17,7 @@ export const FRONTEND_URL = process.env.FRONTEND_URL;
 
 // EMAIL CONFIGURATION
 export const EMAIL_PASS = process.env.EMAIL_PASS;
+export const EMAIL_USER = process.env.EMAIL_USER;
 
 // CLOUDINARY CONFIGURATION
 export const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
