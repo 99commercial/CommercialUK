@@ -11,9 +11,9 @@ export class emailService {
   constructor() {
     // Create reusable transporter object
     this.transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com', // Explicitly define the host
-      port: 587,              // Use port 587 for TLS
-      secure: false,          // 'false' because port 587 uses STARTTLS
+      host: 'smtp.virginmedia.com',    // <-- Use the correct server for your email
+      port: 465,                     // <-- Use the correct port for this server
+      secure: true,                  // 'true' is required for port 465
       auth: {
         user: EMAIL_USER,
         pass: EMAIL_PASS,
