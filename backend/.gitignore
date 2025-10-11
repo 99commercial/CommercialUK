@@ -3,4 +3,4 @@
 
 # Environment variables
 # This will ignore any .env files in the root directory and its subdirectories.
-.env
+/.env
