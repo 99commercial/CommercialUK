@@ -11,13 +11,12 @@ export class emailService {
   constructor() {
     // Create reusable transporter object
     this.transporter = nodemailer.createTransport({
-      host: 'smtp.virginmedia.com',    // <-- Use the correct server for your email
-      port: 465,                     // <-- Use the correct port for this server
-      secure: true,                  // 'true' is required for port 465
-      auth: {
-        user: 'apikey',
-        pass: EMAIL_PASS,
-      },
+        host: 'smtp.sendgrid.net',
+        port: 587,
+        auth: {
+          user: 'apikey',
+          pass: EMAIL_PASS,
+        },
     });
 
     // Configure handlebars

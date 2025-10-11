@@ -1,4 +1,6 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
+# Dependencies
 /node_modules
+
+# Environment variables
+# This will ignore any .env files in the root directory and its subdirectories.
+.env
