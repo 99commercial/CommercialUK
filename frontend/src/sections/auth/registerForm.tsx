@@ -77,15 +77,22 @@ const RegisterForm = () => {
     setFieldErrors({});
 
     try {
-      let res = await axiosInstance.post('/api/auth/register', formData);
+      let res = await axiosInstance.post('/api/auth/register', formData, {
+        timeout: 120000 // 2 minutes timeout specifically for registration requests
+      });
       // Handle successful registration
       enqueueSnackbar(res.data.message, { variant: 'success' });
 
       router.push('/auth/login')
       
     } catch (err: any) {
-      // Handle validation errors from express-validator
-      if (err.errors && Array.isArray(err.errors)) {
+      // Handle timeout errors specifically
+      if (err.code === 'ECONNABORTED' || err.message?.includes('timeout')) {
+        setError('Request timed out. The server is taking longer than expected. Please try again.');
+      } else if (err.response?.status === 408) {
+        setError('Request timeout. Please check your connection and try again.');
+      } else if (err.errors && Array.isArray(err.errors)) {
+        // Handle validation errors from express-validator
         const newFieldErrors: Record<string, string> = {};
         err.errors.forEach((error: any) => {
           if (error.path) {

@@ -51,7 +51,9 @@ export default function ForgetPasswordForm({ onSendResetEmail }: ForgetPasswordF
 
     try {
 
-      let res = await axiosInstance.post("/api/auth/forgot-password",formData)
+      let res = await axiosInstance.post("/api/auth/forgot-password", formData, {
+        timeout: 120000 // 2 minutes timeout specifically for password reset requests
+      })
 
       if(res.data.status){
         enqueueSnackbar(res.data.message || "Password reset email sent successfully !" , {variant :'success'})
@@ -63,8 +65,19 @@ export default function ForgetPasswordForm({ onSendResetEmail }: ForgetPasswordF
       }
 
     } catch (err: any) {
-      enqueueSnackbar(err.message || "Failed to send reset email. Please try again." , {variant :'error'})
-      setError(err instanceof Error ? err.message : 'Failed to send reset email. Please try again.');
+      let errorMessage = "Failed to send reset email. Please try again.";
+      
+      // Handle timeout errors specifically
+      if (err.code === 'ECONNABORTED' || err.message?.includes('timeout')) {
+        errorMessage = "Request timed out. The server is taking longer than expected. Please try again.";
+      } else if (err.response?.status === 408) {
+        errorMessage = "Request timeout. Please check your connection and try again.";
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      enqueueSnackbar(errorMessage, {variant :'error'})
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

@@ -20,10 +20,10 @@ globalThis.__BUILD_MANIFEST = {
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/user/property/edit/[id]": [
+    "/user/property/create-property": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/user/property/edit/[id].js"
+      "static/chunks/pages/user/property/create-property.js"
     ],
     "/user/property/my-properties": [
       "static/chunks/webpack.js",
