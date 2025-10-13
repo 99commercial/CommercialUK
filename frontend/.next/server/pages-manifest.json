@@ -1,9 +1,1 @@
-{
-  "/_app": "pages/_app.js",
-  "/_error": "pages/_error.js",
-  "/_document": "pages/_document.js",
-  "/user/property/my-properties": "pages/user/property/my-properties.js",
-  "/auth/login": "pages/auth/login.js",
-  "/user/property/create-property": "pages/user/property/create-property.js",
-  "/user/property/edit/[id]": "pages/user/property/edit/[id].js"
-}
+{}

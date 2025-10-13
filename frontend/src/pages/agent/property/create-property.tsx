@@ -221,13 +221,13 @@ const CreatePropertyPage: React.FC = () => {
     setCompletedSteps(prev => new Set(Array.from(prev).concat(step)));
   };
 
-  // Handle data changes from child components
-  const handleStepDataChange = (step: number, data: any) => {
+  // Handle data changes from child components with useCallback to prevent infinite loops
+  const handleStepDataChange = React.useCallback((step: number, data: any) => {
     setStepData(prev => ({
       ...prev,
       [step]: data
     }));
-  };
+  }, []);
 
   // Save step data to backend - DISABLED FOR UI PREVIEW
   const saveStepData = async (step: number) => {

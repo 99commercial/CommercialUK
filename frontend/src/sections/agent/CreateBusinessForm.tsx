@@ -150,7 +150,7 @@ export default function CreateBusinessForm() {
     if (!validate()) return;
     setIsSubmitting(true);
     try {
-      const res = await axiosInstance.post('/api/user/users/business-details', form);
+      const res = await axiosInstance.post('/api/agent/users/business-details', form);
       enqueueSnackbar(res?.data?.message || 'Business created successfully!', { variant: 'success' });
     } catch (err: any) {
       // Handle backend validation errors

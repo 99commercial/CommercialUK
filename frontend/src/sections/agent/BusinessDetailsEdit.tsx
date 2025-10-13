@@ -257,7 +257,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await axiosInstance.put(`/api/user/business-details/${businessData._id}`, formData);
+      const res = await axiosInstance.put(`/api/agent/business-details/${businessData._id}`, formData);
       enqueueSnackbar(res.data.message || 'Business details updated successfully', {
         variant: 'success',
       });

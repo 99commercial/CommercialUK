@@ -99,10 +99,14 @@ const GeneralDetailsForm: React.FC<GeneralDetailsFormProps> = ({ onStepSubmitted
     }
   }, [initialData]);
 
-  // Notify parent of data changes
+  // Notify parent of data changes with debouncing to prevent infinite loops
   React.useEffect(() => {
     if (onDataChange) {
-      onDataChange(formData);
+      const timeoutId = setTimeout(() => {
+        onDataChange(formData);
+      }, 100); // Small delay to debounce
+      
+      return () => clearTimeout(timeoutId);
     }
   }, [formData, onDataChange]);
 
