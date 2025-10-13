@@ -52,7 +52,7 @@ const MyQueriesRaised: React.FC<MyQueriesRaisedProps> = ({
       const response = await axiosInstance.get('/api/agent/queries/my-queries');
       
       if (response.data.success) {
-        setQueries(response.data.data || []);
+        setQueries(response?.data?.data?.queries || []);
       } else {
         setError(response.data.message || 'Failed to fetch queries');
       }

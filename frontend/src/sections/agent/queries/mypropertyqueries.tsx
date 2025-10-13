@@ -193,7 +193,7 @@ const MyPropertyQueries: React.FC<MyPropertyQueriesProps> = ({
                 <TableCell sx={{ fontWeight: 600 }}>Phone</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Company</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Property ID</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Agent ID</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>User</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -309,7 +309,7 @@ const MyPropertyQueries: React.FC<MyPropertyQueriesProps> = ({
               <TableCell sx={{ fontWeight: 600 }}>Phone</TableCell>
               <TableCell sx={{ fontWeight: 600 }}>Company</TableCell>
               <TableCell sx={{ fontWeight: 600 }}>Property ID</TableCell>
-              <TableCell sx={{ fontWeight: 600 }}>Agent ID</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>User</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -330,10 +330,14 @@ const MyPropertyQueries: React.FC<MyPropertyQueriesProps> = ({
                   {query.company}
                 </TableCell>
                 <TableCell>
-                  {query.property_id?._id || 'N/A'}
+                  {query.property_id && typeof query.property_id === 'object' && query.property_id !== null 
+                    ? query.property_id._id || 'N/A'
+                    : 'N/A'}
                 </TableCell>
                 <TableCell>
-                  {query.agent_id}
+                  {query.user_id && typeof query.user_id === 'object' && query.user_id !== null 
+                    ? `${query.user_id.first_name || ''} ${query.user_id.last_name || ''}`.trim() || query.user_id.email || 'N/A'
+                    : 'N/A'}
                 </TableCell>
               </TableRow>
             ))}

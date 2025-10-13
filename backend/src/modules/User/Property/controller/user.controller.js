@@ -861,7 +861,7 @@ class UserController {
       const { agentId } = req.params;
       const queryParams = req.query;
 
-      const result = await this.userService.getQueriesByUserId(agentId, queryParams);
+      const result = await this.userService.getQueriesByAgentId(agentId, queryParams);
 
       res.status(200).json({
         success: true,

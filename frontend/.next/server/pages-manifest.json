@@ -1,1 +1,9 @@
-{}
+{
+  "/_app": "pages/_app.js",
+  "/_error": "pages/_error.js",
+  "/_document": "pages/_document.js",
+  "/agent/property/create-property": "pages/agent/property/create-property.js",
+  "/agent/property/my-properties": "pages/agent/property/my-properties.js",
+  "/auth/login": "pages/auth/login.js",
+  "/agent/account/my-account": "pages/agent/account/my-account.js"
+}

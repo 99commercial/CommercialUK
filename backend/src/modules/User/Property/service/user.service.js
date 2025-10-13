@@ -1416,12 +1416,12 @@ class UserService {
   }
 
   /**
-   * Get queries by user ID
-    * @param {string} userId - User ID
+   * Get queries by agent ID
+    * @param {string} agentId - Agent ID
    * @param {Object} queryParams - Query parameters for pagination
-   * @returns {Promise<Object>} User's queries list
+   * @returns {Promise<Object>} Agent's queries list
    */
-  async getQueriesByUserId(userId, queryParams = {}) {
+  async getQueriesByAgentId(agentId, queryParams = {}) {
     try {
       const {
         page = 1,
@@ -1433,7 +1433,7 @@ class UserService {
 
       // Build filter object
       const filter = { 
-        user_id: userId,
+        agent_id: agentId,
         deleted_at: null
       };
 
@@ -1448,7 +1448,7 @@ class UserService {
         sort,
         populate: [
           { path: 'property_id', select: 'general_details.building_name general_details.address general_details.town_city general_details.property_type' },
-          { path: 'user_id', select: 'first_name last_name email phone' } // TODO: Change to user_id if needed
+          { path: 'user_id', select: 'first_name last_name email phone' }
         ]
       };
 
@@ -1564,7 +1564,7 @@ class UserService {
         sort,
         populate: [
           { path: 'property_id', select: 'general_details.building_name general_details.address general_details.town_city general_details.property_type' },
-          { path: 'agent_id', select: 'first_name last_name email phone company_name' } // TODO: Change to user_id if needed
+          { path: 'agent_id', select: 'first_name last_name email phone company_name' }
         ]
       };
 

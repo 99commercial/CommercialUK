@@ -14,6 +14,25 @@ import {
 import axiosInstance from '../../../utils/axios';
 
 // Interface for the query data structure
+export interface PropertyDetails {
+  _id: string;
+  general_details: {
+    building_name: string;
+    address: string;
+    town_city: string;
+    property_type: string;
+  };
+}
+
+export interface AgentDetails {
+  _id: string;
+  first_name?: string;
+  last_name?: string;
+  email: string;
+  phone: string;
+  company_name?: string;
+}
+
 export interface MyQueryData {
   _id: string;
   title: string;
@@ -22,13 +41,17 @@ export interface MyQueryData {
   company: string;
   email: string;
   phone: string;
-  property_id: string;
-  agent_id: string;
+  property_id: PropertyDetails;
+  agent_id: AgentDetails;
   user_id: string;
   no_of_people: number;
   start_date: string;
   length_of_term: string;
   message: string;
+  deleted_at: string | null;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
 }
 
 // Props interface for the component
@@ -39,9 +62,11 @@ interface MyQueriesRaisedProps {
 const MyQueriesRaised: React.FC<MyQueriesRaisedProps> = ({ 
   onQueryClick 
 }) => {
+  
   const [queries, setQueries] = useState<MyQueryData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
 
   // Fetch queries from API
   const fetchMyQueries = async () => {
@@ -52,7 +77,8 @@ const MyQueriesRaised: React.FC<MyQueriesRaisedProps> = ({
       const response = await axiosInstance.get('/api/user/queries/my-queries');
       
       if (response.data.success) {
-        setQueries(response.data.data || []);
+        const queriesData = response.data.data.queries || [];
+        setQueries(queriesData);
       } else {
         setError(response.data.message || 'Failed to fetch queries');
       }
@@ -144,17 +170,19 @@ const MyQueriesRaised: React.FC<MyQueriesRaisedProps> = ({
           <Table>
             <TableHead>
               <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-                <TableCell sx={{ fontWeight: 600 }}>Title</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>First Name</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Last Name</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Company</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Email</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Name</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Phone</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Company</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Property</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Agent</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>People</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Start Date</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Message</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               <TableRow>
-                <TableCell colSpan={6}>
+                <TableCell colSpan={8}>
                   <Box 
                     sx={{ 
                       display: 'flex',
@@ -185,8 +213,9 @@ const MyQueriesRaised: React.FC<MyQueriesRaisedProps> = ({
     );
   }
 
+
   // If no queries, show empty state centered
-  if (!queries || queries.length === 0) {
+  if (!isLoading && !error && (!queries || queries.length === 0)) {
     return (
       <Box 
         sx={{ 
@@ -244,9 +273,11 @@ const MyQueriesRaised: React.FC<MyQueriesRaisedProps> = ({
               <TableCell sx={{ fontWeight: 600 }}>Name</TableCell>
               <TableCell sx={{ fontWeight: 600 }}>Phone</TableCell>
               <TableCell sx={{ fontWeight: 600 }}>Company</TableCell>
-              <TableCell sx={{ fontWeight: 600 }}>Property ID</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>Property</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>Agent</TableCell>
               <TableCell sx={{ fontWeight: 600 }}>People</TableCell>
-              <TableCell sx={{ fontWeight: 600 }}>Email</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>Start Date</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>Message</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -258,7 +289,7 @@ const MyQueriesRaised: React.FC<MyQueriesRaisedProps> = ({
                 sx={{ cursor: 'pointer' }}
               >
                 <TableCell>
-                  {query.first_name} {query.last_name}
+                  {query.title} {query.first_name} {query.last_name}
                 </TableCell>
                 <TableCell>
                   {query.phone}
@@ -267,19 +298,58 @@ const MyQueriesRaised: React.FC<MyQueriesRaisedProps> = ({
                   {query.company}
                 </TableCell>
                 <TableCell>
-                  {query.property_id || 'N/A'}
+                  <Box>
+                    <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                      {query.property_id && typeof query.property_id === 'object' && query.property_id !== null 
+                        ? query.property_id.general_details?.building_name || 'N/A'
+                        : 'N/A'}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {query.property_id && typeof query.property_id === 'object' && query.property_id !== null 
+                        ? `${query.property_id.general_details?.property_type || ''} - ${query.property_id.general_details?.town_city || ''}`.replace(/^ - | - $|^$/, '')
+                        : ''}
+                    </Typography>
+                  </Box>
+                </TableCell>
+                <TableCell>
+                  <Box>
+                    <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                      {query.agent_id && typeof query.agent_id === 'object' && query.agent_id !== null 
+                        ? `${query.agent_id.first_name || ''} ${query.agent_id.last_name || ''}`.trim() || query.agent_id.email || 'N/A'
+                        : 'N/A'}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {query.agent_id && typeof query.agent_id === 'object' && query.agent_id !== null 
+                        ? query.agent_id.phone || ''
+                        : ''}
+                    </Typography>
+                  </Box>
                 </TableCell>
                 <TableCell>
                   {query.no_of_people}
                 </TableCell>
                 <TableCell>
-                  {query.email}
+                  {new Date(query.start_date).toLocaleDateString()}
+                </TableCell>
+                <TableCell>
+                  <Typography 
+                    variant="body2" 
+                    sx={{ 
+                      maxWidth: '200px', 
+                      overflow: 'hidden', 
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap'
+                    }}
+                    title={query.message}
+                  >
+                    {query.message || 'No message'}
+                  </Typography>
                 </TableCell>
               </TableRow>
             )) : (
               <>
                 <TableRow>
-                  <TableCell colSpan={6}>
+                  <TableCell colSpan={8}>
                     <Box sx={{ textAlign: 'center', padding: '20px' }}>
                       <Typography variant="body1" color="text.secondary">
                         No queries found
