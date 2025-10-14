@@ -155,7 +155,7 @@ const PhotoUpdate: React.FC<PhotoUpdateProps> = ({
       const data = new FormData();
       data.append('profile_photo', selectedFile);
 
-      const response = await axiosInstance.put('/api/agent/users/profile/photo', data, {
+      const response = await axiosInstance.put('/api/user/users/profile/photo', data, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

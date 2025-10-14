@@ -23,20 +23,15 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/agent/property/create-property": [
+    "/agent/account/my-account": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/agent/property/create-property.js"
+      "static/chunks/pages/agent/account/my-account.js"
     ],
-    "/agent/property/my-properties": [
+    "/agent/account/my-profile": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/agent/property/my-properties.js"
-    ],
-    "/auth/login": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/auth/login.js"
+      "static/chunks/pages/agent/account/my-profile.js"
     ]
   },
   "ampFirstPages": []

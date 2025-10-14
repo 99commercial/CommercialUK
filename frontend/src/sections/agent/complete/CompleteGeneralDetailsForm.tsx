@@ -195,7 +195,7 @@ const CompleteGeneralDetailsForm: React.FC<CompleteGeneralDetailsFormProps> = ({
     setSubmitError(null);
 
     try {
-      const response = await axiosInstance.patch(`/properties/${propertyId}/general-details`, formData);
+      const response = await axiosInstance.patch(`/api/agent/properties/${propertyId}/general-details`, formData);
       
       if (response.data.success) {
         setIsSubmitted(true);

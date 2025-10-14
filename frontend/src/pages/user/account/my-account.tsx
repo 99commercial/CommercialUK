@@ -19,9 +19,9 @@ import {
 import { styled } from '@mui/material/styles';
 import { Page } from '../../../components';
 import HeaderCard from '../../../components/HeaderCard';
-import PersonalDetailsEdit from '../../../sections/agent/PersonalDetailsEdit';
-import PhotoUpdate from '../../../sections/agent/PhotoUpdate';
-import PasswordUpdate from '../../../sections/agent/PasswordUpdate';
+import PersonalDetailsEdit from '../../../sections/user/PersonalDetailsEdit';
+import PhotoUpdate from '../../../sections/user/PhotoUpdate';
+import PasswordUpdate from '../../../sections/user/PasswordUpdate';
 import axiosInstance from '@/utils/axios';
 
 const StyledTabs = styled(Tabs)(({ theme }) => ({
