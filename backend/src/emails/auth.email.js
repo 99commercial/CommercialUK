@@ -9,13 +9,17 @@ const __dirname = path.dirname(__filename);
 
 export class emailService {
   constructor() {
-    // Create reusable transporter object
+    // Create reusable transporter object with timeout settings
     this.transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
         user: EMAIL_USER,
         pass: EMAIL_PASS,
       },
+      // Add timeout configurations for production
+      connectionTimeout: 60000, // 60 seconds
+      greetingTimeout: 30000,   // 30 seconds
+      socketTimeout: 60000,     // 60 seconds
     });
 
     // Configure handlebars
@@ -41,7 +45,7 @@ export class emailService {
   async sendWelcomeEmail(email, firstName, lastName) {
     try {
       const mailOptions = {
-        from: `"99Commercial" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+        from: `"99Commercial" <${EMAIL_USER}>`,
         to: email,
         subject: 'Welcome to 99Commercial - Your Commercial Real Estate Platform',
         template: 'welcome',
@@ -53,7 +57,13 @@ export class emailService {
         },
       };
 
-      const result = await this.transporter.sendMail(mailOptions);
+      // Add timeout wrapper
+      const sendPromise = this.transporter.sendMail(mailOptions);
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Email send timeout')), 30000);
+      });
+      
+      const result = await Promise.race([sendPromise, timeoutPromise]);
       console.log('Welcome email sent successfully:', result.messageId);
       return result;
     } catch (error) {
@@ -72,7 +82,7 @@ export class emailService {
   async sendVerificationEmail(email, verificationToken, firstName, lastName) {
     try {
       const mailOptions = {
-        from: `"99Commercial" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+        from: `"99Commercial" <${EMAIL_USER}>`,
         to: email,
         subject: 'Verify Your Email - 99Commercial',
         template: 'verification',
@@ -85,7 +95,13 @@ export class emailService {
         },
       };
 
-      const result = await this.transporter.sendMail(mailOptions);
+      // Add timeout wrapper
+      const sendPromise = this.transporter.sendMail(mailOptions);
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Email send timeout')), 30000);
+      });
+      
+      const result = await Promise.race([sendPromise, timeoutPromise]);
       console.log('Verification email sent successfully:', result.messageId);
       return result;
     } catch (error) {
@@ -104,7 +120,7 @@ export class emailService {
   async sendPasswordResetEmail(email, resetToken, firstName, lastName) {
     try {
       const mailOptions = {
-        from: `"99Commercial" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+        from: `"99Commercial" <${EMAIL_USER}>`,
         to: email,
         subject: 'Reset Your Password - 99Commercial',
         template: 'password-reset',
@@ -117,7 +133,13 @@ export class emailService {
         },
       };
 
-      const result = await this.transporter.sendMail(mailOptions);
+      // Add timeout wrapper
+      const sendPromise = this.transporter.sendMail(mailOptions);
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Email send timeout')), 30000);
+      });
+      
+      const result = await Promise.race([sendPromise, timeoutPromise]);
       console.log('Password reset email sent successfully:', result.messageId);
       return result;
     } catch (error) {
