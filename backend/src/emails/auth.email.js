@@ -23,7 +23,7 @@ export class emailService {
       greetingTimeout: 30000,   // 30 seconds
       socketTimeout: 60000,     // 60 seconds
       tls: {
-        rejectUnauthorized: false, // ✅ should be true in production
+        rejectUnauthorized: true, // ✅ should be true in production
       },
     });
     

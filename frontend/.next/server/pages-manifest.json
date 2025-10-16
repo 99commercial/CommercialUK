@@ -3,6 +3,7 @@
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
   "/": "pages/index.js",
+  "/auth/forget-password": "pages/auth/forget-password.js",
   "/auth/login": "pages/auth/login.js",
-  "/auth/forget-password": "pages/auth/forget-password.js"
+  "/general/all-properties": "pages/general/all-properties.js"
 }
