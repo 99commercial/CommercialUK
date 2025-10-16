@@ -13,8 +13,8 @@ export class emailService {
     // Create reusable transporter object with Brevo SMTP configuration
     this.transporter = nodemailer.createTransport({
       host: 'smtp-relay.brevo.com', // Always this for Brevo
-      port: 587, // Use 587 for TLS
-      secure: false, // Must be false for port 587
+      port: 465, // Use 587 for TLS
+      secure: true, // Must be false for port 587
       auth: {
         user: EMAIL_USER, // Brevo SMTP login (your email or username)
         pass: EMAIL_PASS, // Brevo SMTP password (API key)
