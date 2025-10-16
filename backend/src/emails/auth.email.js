@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer';
 import hbs from "nodemailer-express-handlebars";
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { FRONTEND_URL, EMAIL_USER, EMAIL_PASS } from '../config/env.config.js';
+import { FRONTEND_URL, EMAIL_USER, EMAIL_PASS, EMAIL_HOST, EMAIL_PORT, EMAIL_SECURE } from '../config/env.config.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -10,7 +10,20 @@ const __dirname = path.dirname(__filename);
 export class emailService {
   constructor() {
     // Create reusable transporter object with timeout settings
-    this.transporter = nodemailer.createTransport({
+    // Use SMTP configuration for production, fallback to Gmail service for development
+    const transporterConfig = EMAIL_HOST && EMAIL_PORT ? {
+      host: EMAIL_HOST,
+      port: EMAIL_PORT,
+      secure: EMAIL_SECURE, // true for 465, false for other ports
+      auth: {
+        user: EMAIL_USER,
+        pass: EMAIL_PASS,
+      },
+      // Add timeout configurations for production
+      connectionTimeout: 60000, // 60 seconds
+      greetingTimeout: 30000,   // 30 seconds
+      socketTimeout: 60000,     // 60 seconds
+    } : {
       service: 'gmail',
       auth: {
         user: EMAIL_USER,
@@ -20,7 +33,9 @@ export class emailService {
       connectionTimeout: 60000, // 60 seconds
       greetingTimeout: 30000,   // 30 seconds
       socketTimeout: 60000,     // 60 seconds
-    });
+    };
+
+    this.transporter = nodemailer.createTransport(transporterConfig);
 
     // Configure handlebars
     this.transporter.use('compile', hbs({
@@ -118,33 +133,40 @@ export class emailService {
    * @param {string} lastName - User's last name
    */
   async sendPasswordResetEmail(email, resetToken, firstName, lastName) {
-    try {
-      const mailOptions = {
-        from: `"99Commercial" <${EMAIL_USER}>`,
-        to: email,
-        subject: 'Reset Your Password - 99Commercial',
-        template: 'password-reset',
-        context: {
-          email,
-          resetToken,
-          firstName,
-          lastName,
-          frontendUrl: FRONTEND_URL,
-        },
-      };
+    const mailOptions = {
+      from: `"99Commercial" <${EMAIL_USER}>`,
+      to: email,
+      subject: 'Reset Your Password - 99Commercial',
+      template: 'password-reset',
+      context: {
+        email,
+        resetToken,
+        firstName,
+        lastName,
+        frontendUrl: FRONTEND_URL,
+      },
+    };
 
-      // Add timeout wrapper
-      const sendPromise = this.transporter.sendMail(mailOptions);
-      const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Email send timeout')), 30000);
-      });
-      
-      const result = await Promise.race([sendPromise, timeoutPromise]);
-      console.log('Password reset email sent successfully:', result.messageId);
-      return result;
-    } catch (error) {
-      console.error('Error sending password reset email:', error);
-      throw error;
+    // Retry mechanism with shorter timeout
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        const sendPromise = this.transporter.sendMail(mailOptions);
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('Email send timeout')), 15000); // Reduced to 15s
+        });
+        
+        const result = await Promise.race([sendPromise, timeoutPromise]);
+        console.log(`Password reset email sent successfully on attempt ${attempt}:`, result.messageId);
+        return result;
+      } catch (error) {
+        console.error(`Password reset email attempt ${attempt} failed:`, error.message);
+        if (attempt === 3) {
+          console.error('All password reset email attempts failed');
+          throw error;
+        }
+        // Wait 2 seconds before retry
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      }
     }
   }
 }

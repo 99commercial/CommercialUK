@@ -2,7 +2,5 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/agent/account/my-profile": "pages/agent/account/my-profile.js",
-  "/agent/account/my-account": "pages/agent/account/my-account.js",
-  "/agent": "pages/agent.js"
+  "/": "pages/index.js"
 }
