@@ -2,8 +2,10 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
+  "/agent/property/my-favourite-list": "pages/agent/property/my-favourite-list.js",
   "/": "pages/index.js",
-  "/auth/forget-password": "pages/auth/forget-password.js",
+  "/general/all-properties": "pages/general/all-properties.js",
   "/auth/login": "pages/auth/login.js",
-  "/general/all-properties": "pages/general/all-properties.js"
+  "/agent": "pages/agent.js",
+  "/property/[id]": "pages/property/[id].js"
 }

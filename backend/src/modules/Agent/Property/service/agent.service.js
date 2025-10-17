@@ -745,15 +745,13 @@ class AgentService {
         postcode,
         min_size,
         max_size,
-        is_active = true,
-        is_featured,
         sort_by = 'created_at',
         sort_order = 'desc'
       } = queryParams;
 
       // Build filter object
       const filter = { 
-        is_active,
+        property_status: 'Active',
         deleted_at: null  // Exclude soft-deleted properties
       };
       
@@ -781,9 +779,7 @@ class AgentService {
         filter['general_details.size_maximum'] = { $lte: parseInt(max_size) };
       }
       
-      if (is_featured !== undefined) {
-        filter.is_featured = is_featured === 'true';
-      }
+
 
       // Build sort object
       const sort = {};

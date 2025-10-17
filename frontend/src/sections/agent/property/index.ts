@@ -7,3 +7,4 @@ export { default as PropertyDocumentsForm } from './PropertyDocumentsForm';
 export { default as PropertyFeaturesForm } from './PropertyFeaturesForm';
 export { default as PropertyImagesForm } from './PropertyImagesForm';
 export { default as VirtualToursForm } from './VirtualToursForm';
+export { default as MyFavoriteProperties } from './MyFavoriteProperties';

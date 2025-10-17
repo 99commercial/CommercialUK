@@ -214,6 +214,33 @@ class UserController {
       });
     }
   }
+
+
+      /**
+   * Get agent's favorite properties details
+   * @param {Object} req - Express request object
+   * @param {Object} res - Express response object
+   */
+  async getMyFavoritesDetails(req, res) {
+        try {
+          const userId = req.user._id; // Get user ID from authentication middleware
+          const queryParams = req.query;
+    
+          const result = await this.agentService.getMyFavoritesDetails(userId, queryParams);
+    
+          res.status(200).json({
+            success: true,
+            message: result.message,
+            data: result.data
+          });
+        } catch (error) {
+          res.status(400).json({
+            success: false,
+            message: error.message
+          });
+        }
+  }
+  
 }
 
 export default UserController;

@@ -61,12 +61,19 @@ router.get('/users/profile',
     authorize(['user']),
     agentController.removeFromFavorites.bind(agentController)
   );
+
+    // Get user's favorite properties
+  router.get('/favorites', 
+      authenticate,
+      authorize(['user']),
+      agentController.getMyFavorites.bind(agentController)
+  );
   
   // Get user's favorite properties
-  router.get('/favorites', 
+  router.get('/favorites/details', 
     authenticate,
     authorize(['user']),
-    agentController.getMyFavorites.bind(agentController)
+    agentController.getMyFavoritesDetails.bind(agentController)
   );
 
   export default router;

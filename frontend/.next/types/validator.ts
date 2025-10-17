@@ -93,6 +93,12 @@ type PagesPageConfig = {
   handler satisfies PagesPageConfig
 }
 
+// Validate ../../src/pages/agent/property/my-favourite-list.tsx
+{
+  const handler = {} as typeof import("../../src/pages/agent/property/my-favourite-list.js")
+  handler satisfies PagesPageConfig
+}
+
 // Validate ../../src/pages/agent/property/my-properties.tsx
 {
   const handler = {} as typeof import("../../src/pages/agent/property/my-properties.js")
@@ -222,6 +228,12 @@ type PagesPageConfig = {
 // Validate ../../src/pages/user/property/edit/[id].tsx
 {
   const handler = {} as typeof import("../../src/pages/user/property/edit/[id].js")
+  handler satisfies PagesPageConfig
+}
+
+// Validate ../../src/pages/user/property/my-favourite-list.tsx
+{
+  const handler = {} as typeof import("../../src/pages/user/property/my-favourite-list.js")
   handler satisfies PagesPageConfig
 }
 

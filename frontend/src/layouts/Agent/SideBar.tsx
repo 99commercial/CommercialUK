@@ -35,6 +35,7 @@ import {
   QuestionAnswer as QuestionAnswerIcon,
   Close as CloseIcon,
   Menu as MenuIcon,
+  Favorite as StarIcon,
 } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import { useRouter } from 'next/router';
@@ -104,13 +105,60 @@ const LogoContainer = styled(Box)(({ theme }) => ({
   justifyContent: 'space-between',
   padding: theme.spacing(2),
   minHeight: 64,
+  cursor: 'pointer',
+  borderRadius: theme.spacing(1),
+  transition: 'all 0.2s ease',
+  '&:hover': {
+    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+    transform: 'scale(1.02)',
+  },
+}));
+
+const LogoIcon = styled(Box)(({ theme }) => ({
+  width: 32,
+  height: 32,
+  backgroundColor: '#d32f2f',
+  borderRadius: '50%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  position: 'relative',
+  boxShadow: '0 2px 8px rgba(211, 47, 47, 0.3)',
+  transition: 'all 0.2s ease',
+  '&:hover': {
+    transform: 'scale(1.1)',
+    boxShadow: '0 4px 12px rgba(211, 47, 47, 0.4)',
+  },
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    background: 'linear-gradient(45deg, #d32f2f 0%, #ff5722 100%)',
+    borderRadius: '50%',
+    transform: 'rotate(45deg)',
+  },
+  '&::after': {
+    content: '""',
+    position: 'absolute',
+    width: '60%',
+    height: '60%',
+    backgroundColor: '#fff',
+    borderRadius: '50%',
+    zIndex: 1,
+  },
 }));
 
 const LogoText = styled(Typography)(({ theme }) => ({
-  fontWeight: 700,
-  fontSize: '1.5rem',
-  color: '#d97706', // Golden color
-  fontFamily: 'sans-serif',
+  color: '#000000', 
+  fontWeight: 800,
+  fontSize: '1.2rem',
+  letterSpacing: '0.5px',
+  textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
+  transition: 'all 0.2s ease',
+  '&:hover': {
+    color: '#d32f2f',
+  },
 }));
 
 const UserProfileCard = styled(Box)(({ theme }) => ({
@@ -294,6 +342,7 @@ const SideBar: React.FC<SideBarProps> = ({ open, onToggle, onClose }) => {
       items: [
         { id: 'Create New', path: '/agent/property/create-property', label: 'Create New', icon: AddIcon },
         { id: 'My Properties' , path: '/agent/property/my-properties', label: 'My Properties', icon: HomeIcon },
+        { id: 'My Favourite Properties' , path: '/agent/property/my-favourite-list', label: 'My Favourite Properties', icon: StarIcon },
       ],
     },
     {
@@ -455,9 +504,12 @@ const SideBar: React.FC<SideBarProps> = ({ open, onToggle, onClose }) => {
       >
         {/* Header with Logo and Toggle */}
         <LogoContainer>
-          <LogoText>
-          99Commercial
-          </LogoText>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            <LogoIcon />
+            <LogoText>
+              CommercialUK™
+            </LogoText>
+          </Box>
           <IconButton
             onClick={onClose}
             sx={{
@@ -532,10 +584,15 @@ const SideBar: React.FC<SideBarProps> = ({ open, onToggle, onClose }) => {
         }}
       >
       {/* Header with Logo and Toggle */}
-      <LogoContainer>
-        <LogoText>
-        99Commercial
-        </LogoText>
+      <LogoContainer onClick={() => router.push('/')}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+          <LogoIcon />
+          {open && (
+            <LogoText>
+              CommercialUK™
+            </LogoText>
+          )}
+        </Box>
         {isMobile && (
           <IconButton
             onClick={onClose}

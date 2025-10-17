@@ -25,10 +25,15 @@ globalThis.__BUILD_MANIFEST = {
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/auth/forget-password": [
+    "/agent": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/auth/forget-password.js"
+      "static/chunks/pages/agent.js"
+    ],
+    "/agent/property/my-favourite-list": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/agent/property/my-favourite-list.js"
     ],
     "/auth/login": [
       "static/chunks/webpack.js",
@@ -39,6 +44,11 @@ globalThis.__BUILD_MANIFEST = {
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/general/all-properties.js"
+    ],
+    "/property/[id]": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/property/[id].js"
     ]
   },
   "ampFirstPages": []

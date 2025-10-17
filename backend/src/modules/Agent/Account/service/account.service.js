@@ -328,6 +328,52 @@ class AccountService {
       throw new Error(`Failed to get favorites: ${error.message}`);
     }
   }
+
+      /**
+  * Get agent's favorite properties details
+   * @param {string} userId - agent ID
+   * @param {Object} queryParams - Query parameters for pagination
+   * @returns {Promise<Object>} User's favorite properties
+   */
+  async getMyFavoritesDetails(userId, queryParams = {}) {
+        try {
+          // Check if user exists
+          const user = await this.User.findById(userId);
+          if (!user) {
+            throw new Error('User not found');
+          }
+  
+          // Extract pagination parameters
+          const page = parseInt(queryParams.page) || 1;
+          const limit = parseInt(queryParams.limit) || 10;
+          const options = {
+            page: page,
+            limit: limit,
+            populate: [
+              { path: 'images_id' },
+              { path: 'descriptions_id' },
+              { path: 'property_status' }
+            ],
+            select: 'general_details.building_name general_details.address images_id descriptions_id business_rates_id sale_types_id documents_id planning property_status property_type property_sub_type',
+            sort: { createdAt: -1 }
+          };
+    
+          // Use paginate method properly
+          const favoriteProperties = await this.Property.paginate(
+            { _id: { $in: user.my_favourites } },
+            options
+          );
+  
+          return {
+            success: true,
+            data: favoriteProperties,
+            message: 'Favorite properties details retrieved successfully'
+          };
+        } catch (error) {
+          throw new Error(`Failed to get favorites: ${error.message}`);
+        }
+  }
+
 }
 
 export default AccountService;
