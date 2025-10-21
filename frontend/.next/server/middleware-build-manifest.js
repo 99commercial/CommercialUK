@@ -25,30 +25,10 @@ globalThis.__BUILD_MANIFEST = {
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/agent": [
+    "/advertise": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/agent.js"
-    ],
-    "/agent/property/my-favourite-list": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/agent/property/my-favourite-list.js"
-    ],
-    "/auth/login": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/auth/login.js"
-    ],
-    "/general/all-properties": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/general/all-properties.js"
-    ],
-    "/property/[id]": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/property/[id].js"
+      "static/chunks/pages/advertise.js"
     ]
   },
   "ampFirstPages": []

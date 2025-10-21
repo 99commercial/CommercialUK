@@ -256,6 +256,11 @@ export default function Navbar({ onAdvertise, onLanguageChange }: NavbarProps) {
     setMobileOpen(false);
   };
 
+  const handleAbout = () => {
+    router.push('/about-us');
+    setMobileOpen(false);
+  };
+
   const handleAdvertise = () => {
     if (onAdvertise) {
       onAdvertise();
@@ -418,6 +423,9 @@ export default function Navbar({ onAdvertise, onLanguageChange }: NavbarProps) {
             </IconButton>
             <AllPropertiesLink onClick={handleAllProperties}>
               All Properties
+            </AllPropertiesLink>
+            <AllPropertiesLink onClick={handleAbout}>
+              About Us
             </AllPropertiesLink>
             <LoginButton onClick={handleLogin}>
               Login

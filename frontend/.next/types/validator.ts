@@ -51,6 +51,12 @@ type PagesPageConfig = {
   handler satisfies PagesPageConfig
 }
 
+// Validate ../../src/pages/advertise.tsx
+{
+  const handler = {} as typeof import("../../src/pages/advertise.js")
+  handler satisfies PagesPageConfig
+}
+
 // Validate ../../src/pages/agent/account/my-account.tsx
 {
   const handler = {} as typeof import("../../src/pages/agent/account/my-account.js")
