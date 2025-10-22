@@ -77,10 +77,6 @@ const TrendingSection = styled(Box)(({ theme }) => ({
 
 const ListPropertySection = styled(Box)(({ theme }) => ({
   padding: theme.spacing(6, 0),
-  backgroundImage: 'url("https://img.freepik.com/free-vector/real-estate-sale-rent-background_107791-10997.jpg?semt=ais_hybrid&w=740&q=80")',
-  backgroundSize: 'cover',
-  backgroundPosition: 'center',
-  backgroundRepeat: 'no-repeat',
   position: 'relative',
   overflow: 'hidden',
   minHeight: '70vh',
@@ -93,9 +89,22 @@ const ListPropertySection = styled(Box)(({ theme }) => ({
     left: 0,
     right: 0,
     bottom: 0,
-    background: 'rgba(248, 248, 248, 0.85)',
-    backdropFilter: 'blur(2px)',
+    backgroundImage: 'url("https://img.freepik.com/free-vector/real-estate-sale-rent-background_107791-10997.jpg?semt=ais_hybrid&w=740&q=80")',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    filter: 'blur(3px)',
     zIndex: 0,
+  },
+  '&::after': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: 'rgba(248, 248, 248, 0.85)',
+    zIndex: 1,
   },
 }));
 
@@ -203,7 +212,7 @@ export default function HomeTrustedBusinesses() {
       {/* List Your Property Section */}
       <ListPropertySection>
         <Container maxWidth="lg">
-          <Box sx={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
+          <Box sx={{ textAlign: 'center', position: 'relative', zIndex: 2 }}>
             {/* Distinctive Title */}
             <Typography
               variant="h2"
@@ -266,7 +275,7 @@ export default function HomeTrustedBusinesses() {
             mb: 5,
             justifyContent: 'center',
             position: 'relative',
-            zIndex: 1,
+            zIndex: 2,
             maxWidth: '1000px',
             mx: 'auto',
             mt: 10,
@@ -323,7 +332,7 @@ export default function HomeTrustedBusinesses() {
             ))}
           </Box>
 
-          <Box sx={{ textAlign: 'center', mb: 4, position: 'relative', zIndex: 1 }}>
+          <Box sx={{ textAlign: 'center', mb: 4, position: 'relative', zIndex: 2 }}>
             <Typography
               variant="body1"
               sx={{

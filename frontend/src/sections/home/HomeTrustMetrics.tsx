@@ -157,12 +157,14 @@ export default function HomeTrustMetrics() {
             <Typography
               variant={isMobile ? "h6" : "h4"}
               sx={{
-                fontWeight: 600,
-                color: '#333',
-                lineHeight: 1.3,
+                fontWeight: 700,
+                color: '#1a1a1a',
+                lineHeight: 1.2,
                 mb: { xs: 3, md: 0 },
-                fontSize: { xs: '1.1rem', sm: '1.3rem', md: '1.5rem', lg: '1.7rem' },
+                fontSize: { xs: '1.25rem', sm: '1.5rem', md: '1.75rem', lg: '2rem' },
                 maxWidth: { xs: '100%', md: '400px' },
+                letterSpacing: '-0.02em',
+                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
               }}
             >
               The Smarter Way to Sell or Let{' '}
@@ -192,12 +194,14 @@ export default function HomeTrustMetrics() {
                 <Typography
                   variant={isMobile ? "h4" : "h3"}
                   sx={{
-                    fontWeight: 700,
-                    color: '#000',
-                    mb: 0.5,
-                    fontSize: { xs: '0.8rem', sm: '1.2rem', md: '1.5rem' },
-                    lineHeight: 1.1,
+                    fontWeight: 600,
+                    color: '#2c2c2c',
+                    mb: 1,
+                    fontSize: { xs: '1rem', sm: '1.25rem', md: '1.4rem' },
+                    lineHeight: 1.3,
                     textAlign: 'start',
+                    letterSpacing: '-0.01em',
+                    fontFamily: 'CostarBrown, Arial, sans-serif',
                   }}
                 >
                   Reach the Right People
@@ -205,10 +209,13 @@ export default function HomeTrustMetrics() {
                 <Typography 
                   variant="body2"
                   sx={{ 
-                    color: '#666',
-                    fontSize: { xs: '0.8rem', sm: '0.9rem', md: '1rem' },
+                    color: '#555',
+                    fontSize: { xs: '0.875rem', sm: '0.95rem', md: '1rem' },
                     fontWeight: 400,
                     textAlign: 'start',
+                    lineHeight: 1.5,
+                    letterSpacing: '0.01em',
+                    fontFamily: 'CostarBrown, Arial, sans-serif',
                   }}
                 >
                   Connect with your ideal audience and grow your impact effortlessly.
@@ -219,12 +226,14 @@ export default function HomeTrustMetrics() {
                 <Typography
                   variant={isMobile ? "h4" : "h3"}
                   sx={{
-                    fontWeight: 700,
-                    color: '#000',
-                    mb: 0.5,
-                    fontSize: { xs: '0.8rem', sm: '1.2rem', md: '1.5rem' },
-                    lineHeight: 1.1,
+                    fontWeight: 600,
+                    color: '#2c2c2c',
+                    mb: 1,
+                    fontSize: { xs: '1rem', sm: '1.25rem', md: '1.4rem' },
+                    lineHeight: 1.3,
                     textAlign: 'start',
+                    letterSpacing: '-0.01em',
+                    fontFamily: 'CostarBrown, Arial, sans-serif',
                   }}
                 >
                   Easy-to-Use Platform
@@ -232,10 +241,13 @@ export default function HomeTrustMetrics() {
                 <Typography 
                   variant="body2"
                   sx={{ 
-                    color: '#666',
-                    fontSize: { xs: '0.8rem', sm: '0.9rem', md: '1rem' },
+                    color: '#555',
+                    fontSize: { xs: '0.875rem', sm: '0.95rem', md: '1rem' },
                     fontWeight: 400,
                     textAlign: 'start',
+                    lineHeight: 1.5,
+                    letterSpacing: '0.01em',
+                    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
                   }}
                 >
                  Manage everything smoothly with our simple, intuitive interface.
@@ -246,12 +258,14 @@ export default function HomeTrustMetrics() {
                 <Typography
                   variant={isMobile ? "h4" : "h3"}
                   sx={{
-                    fontWeight: 700,
-                    color: '#000',
-                    mb: 0.5,
-                    fontSize: { xs: '0.8rem', sm: '1.2rem', md: '1.5rem' },
-                    lineHeight: 1.1,
+                    fontWeight: 600,
+                    color: '#2c2c2c',
+                    mb: 1,
+                    fontSize: { xs: '1rem', sm: '1.25rem', md: '1.4rem' },
+                    lineHeight: 1.3,
                     textAlign: 'start',
+                    letterSpacing: '-0.01em',
+                    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
                   }}
                 >
                   Property Solutions for Every Business
@@ -259,10 +273,13 @@ export default function HomeTrustMetrics() {
                 <Typography 
                   variant="body2"
                   sx={{ 
-                    color: '#666',
-                    fontSize: { xs: '0.8rem', sm: '0.9rem', md: '1rem' },
+                    color: '#555',
+                    fontSize: { xs: '0.875rem', sm: '0.95rem', md: '1rem' },
                     fontWeight: 400,
                     textAlign: 'start',
+                    lineHeight: 1.5,
+                    letterSpacing: '0.01em',
+                    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
                   }}
                 >
                   Find the perfect property tailored to your business needs.
