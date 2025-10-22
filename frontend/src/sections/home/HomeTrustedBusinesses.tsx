@@ -29,14 +29,14 @@ const LogoContainer = styled(Box)(({ theme }) => ({
 }));
 
 const LogoIcon = styled(Box)(({ theme }) => ({
-  width: 120,
-  height: 120,
+  width: 80,
+  height: 80,
   borderRadius: '50%',
   background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  boxShadow: '0 20px 60px rgba(0, 0, 0, 0.2), 0 0 0 4px rgba(255, 255, 255, 0.3)',
+  boxShadow: '0 15px 40px rgba(0, 0, 0, 0.2), 0 0 0 3px rgba(255, 255, 255, 0.3)',
 }));
 
 const TrustedSection = styled(Box)(({ theme }) => ({
@@ -76,11 +76,14 @@ const TrendingSection = styled(Box)(({ theme }) => ({
 }));
 
 const ListPropertySection = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(8, 0),
-  background: 'linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ff4500 100%)',
+  padding: theme.spacing(6, 0),
+  backgroundImage: 'url("https://img.freepik.com/free-vector/real-estate-sale-rent-background_107791-10997.jpg?semt=ais_hybrid&w=740&q=80")',
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  backgroundRepeat: 'no-repeat',
   position: 'relative',
   overflow: 'hidden',
-  minHeight: '100vh',
+  minHeight: '70vh',
   display: 'flex',
   alignItems: 'center',
   '&::before': {
@@ -90,12 +93,9 @@ const ListPropertySection = styled(Box)(({ theme }) => ({
     left: 0,
     right: 0,
     bottom: 0,
-    background: 'url("data:image/svg+xml,%3Csvg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.08"%3E%3Ccircle cx="40" cy="40" r="3"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
-    animation: 'float 25s ease-in-out infinite',
-  },
-  '@keyframes float': {
-    '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
-    '50%': { transform: 'translateY(-30px) rotate(180deg)' },
+    background: 'rgba(248, 248, 248, 0.85)',
+    backdropFilter: 'blur(2px)',
+    zIndex: 0,
   },
 }));
 
@@ -140,12 +140,12 @@ const PropertyCard = styled(Box)(({ theme }) => ({
 
 const BenefitCard = styled(Box)(({ theme }) => ({
   textAlign: 'center',
-  padding: theme.spacing(4, 3),
+  padding: theme.spacing(3, 2.5),
   borderRadius: theme.spacing(3),
-  background: 'rgba(255, 255, 255, 0.9)',
-  backdropFilter: 'blur(20px)',
-  border: '2px solid rgba(255, 255, 255, 0.3)',
-  transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+  background: 'rgba(211, 47, 47, 0.85)',
+  backdropFilter: 'blur(10px)',
+  border: '1px solid rgba(211, 47, 47, 0.3)',
+  transition: 'all 0.3s ease',
   height: '100%',
   display: 'flex',
   flexDirection: 'column',
@@ -153,23 +153,21 @@ const BenefitCard = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   position: 'relative',
   overflow: 'hidden',
+  boxShadow: '0 8px 32px rgba(211, 47, 47, 0.15)',
   '&::before': {
     content: '""',
     position: 'absolute',
     top: 0,
-    left: '-100%',
-    width: '100%',
-    height: '100%',
-    background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent)',
-    transition: 'left 0.5s',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)',
+    zIndex: 0,
   },
   '&:hover': {
-    transform: 'translateY(-10px) scale(1.02)',
-    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.5)',
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    '&::before': {
-      left: '100%',
-    },
+    transform: 'translateY(-5px)',
+    boxShadow: '0 12px 40px rgba(211, 47, 47, 0.25)',
+    background: 'rgba(211, 47, 47, 0.9)',
   },
 }));
 
@@ -206,41 +204,20 @@ export default function HomeTrustedBusinesses() {
       <ListPropertySection>
         <Container maxWidth="lg">
           <Box sx={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
-            {/* Logo with Zooming Effect */}
-            <LogoContainer>
-              <LogoIcon>
-                <BusinessIcon 
-                  sx={{ 
-                    fontSize: 60, 
-                    color: '#ff6b35',
-                    filter: 'drop-shadow(0 4px 8px rgba(255, 107, 53, 0.3))',
-                  }} 
-                />
-              </LogoIcon>
-            </LogoContainer>
-
             {/* Distinctive Title */}
             <Typography
               variant="h2"
               component="h1"
               sx={{
-                fontWeight: 900,
-                color: '#ffffff',
-                mb: 4,
-                fontSize: { xs: '2.5rem', sm: '3.5rem', md: '4.5rem' },
-                textShadow: '0 6px 12px rgba(0, 0, 0, 0.4), 0 0 40px rgba(255, 255, 255, 0.3)',
+                fontWeight: 800,
+                color: '#FF0000',
+                mb: 2,
+                fontSize: { xs: '1.8rem', sm: '2.2rem', md: '2.5rem' },
                 letterSpacing: '0.05em',
-                animation: 'titlePulse 3s ease-in-out infinite',
-                '@keyframes titlePulse': {
-                  '0%, 100%': { 
-                    transform: 'scale(1)',
-                    filter: 'brightness(1)',
-                  },
-                  '50%': { 
-                    transform: 'scale(1.02)',
-                    filter: 'brightness(1.1)',
-                  },
-                },
+                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                textShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                position: 'relative',
+                zIndex: 1,
               }}
             >
               LIST YOUR PROPERTY
@@ -250,39 +227,32 @@ export default function HomeTrustedBusinesses() {
               variant="h4"
               component="h2"
               sx={{
-                fontWeight: 700,
-                color: 'rgba(255, 255, 255, 0.95)',
-                mb: 6,
-                fontSize: { xs: '1.2rem', sm: '1.5rem', md: '1.8rem' },
-                textShadow: '0 3px 6px rgba(0, 0, 0, 0.3)',
+                fontWeight: 500,
+                color: '#2c2c2c',
+                mb: 3,
+                fontSize: { xs: '1rem', sm: '1.2rem', md: '1.3rem' },
                 letterSpacing: '0.02em',
-                animation: 'fadeInUp 2s ease-out',
-                '@keyframes fadeInUp': {
-                  '0%': { 
-                    opacity: 0,
-                    transform: 'translateY(30px)',
-                  },
-                  '100%': { 
-                    opacity: 1,
-                    transform: 'translateY(0)',
-                  },
-                },
+                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                position: 'relative',
+                zIndex: 1,
               }}
             >
               with CommercialUK
             </Typography>
 
             <Typography
-              variant="h6"
+              variant="body1"
               sx={{
-                color: 'rgba(255, 255, 255, 0.9)',
-                lineHeight: 1.7,
-                maxWidth: '900px',
+                color: '#4a4a4a',
+                lineHeight: 1.6,
+                maxWidth: '700px',
                 mx: 'auto',
-                mb: 6,
-                fontSize: { xs: '1rem', sm: '1.1rem', md: '1.3rem' },
-                textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
-                animation: 'fadeInUp 2s ease-out 0.5s both',
+                mb: 5,
+                fontSize: { xs: '0.9rem', sm: '1rem', md: '1.1rem' },
+                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                fontWeight: 400,
+                position: 'relative',
+                zIndex: 1,
               }}
             >
               CommercialUK facilitates landlords and agents letting or selling commercial property quicker by:
@@ -293,68 +263,80 @@ export default function HomeTrustedBusinesses() {
             display: 'flex', 
             flexWrap: 'wrap', 
             gap: 4, 
-            mb: 8,
-            justifyContent: 'center'
+            mb: 5,
+            justifyContent: 'center',
+            position: 'relative',
+            zIndex: 1,
+            maxWidth: '1000px',
+            mx: 'auto',
+            mt: 10,
           }}>
             {benefits.map((benefit, index) => (
               <Box key={index} sx={{ 
                 flex: { xs: '1 1 100%', md: '1 1 calc(33.333% - 32px)' },
-                minWidth: { xs: '100%', md: '300px' },
-                maxWidth: { xs: '100%', md: '400px' },
-                height: { xs: 'auto', md: '280px' },
-                display: 'flex',
-                flexDirection: 'column'
+                minWidth: { xs: '100%', md: '280px' },
+                maxWidth: { xs: '100%', md: '320px' },
+                textAlign: 'left',
+                px: 2,
+                position: 'relative',
+                '&:not(:last-child)': {
+                  '&::after': {
+                    content: '""',
+                    position: 'absolute',
+                    right: -16,
+                    top: '10%',
+                    bottom: '10%',
+                    width: '1px',
+                    backgroundColor: '#E0E0E0',
+                    display: { xs: 'none', md: 'block' },
+                  },
+                },
               }}>
-                <BenefitCard>
-                  <Box sx={{
-                    position: 'relative',
-                    mb: 3,
-                  }}>
-                    <benefit.icon
-                      sx={{
-                        fontSize: 64,
-                        color: '#667eea',
-                        filter: 'drop-shadow(0 4px 8px rgba(102, 126, 234, 0.3))',
-                      }}
-                    />
-                  </Box>
-                  <Typography
-                    variant="h5"
-                    sx={{
-                      fontWeight: 700,
-                      mb: 2,
-                      color: '#333',
-                      fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.3rem' },
-                      textShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                    }}
-                  >
-                    {benefit.title}
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    sx={{
-                      color: '#555',
-                      lineHeight: 1.6,
-                      fontSize: { xs: '0.9rem', sm: '1rem' },
-                    }}
-                  >
-                    {benefit.description}
-                  </Typography>
-                </BenefitCard>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontWeight: 700,
+                    mb: 2,
+                    color: '#000000',
+                    fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.3rem' },
+                    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                    lineHeight: 1.3,
+                    textAlign: 'center',
+                  }}
+                >
+                  {benefit.title}
+                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: '#666666',
+                    lineHeight: 1.6,
+                    fontSize: { xs: '0.9rem', sm: '1rem', md: '1.05rem' },
+                    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                    fontWeight: 400,
+                    textAlign: 'center',
+                  }}
+                >
+                  {benefit.description}
+                </Typography>
               </Box>
             ))}
           </Box>
 
-          <Box sx={{ textAlign: 'center', mb: 4 }}>
+          <Box sx={{ textAlign: 'center', mb: 4, position: 'relative', zIndex: 1 }}>
             <Typography
-              variant="h6"
+              variant="body1"
               sx={{
-                color: '#666',
+                color: '#4a4a4a',
                 lineHeight: 1.6,
-                maxWidth: '600px',
+                maxWidth: '650px',
                 mx: 'auto',
                 mb: 4,
-                fontSize: { xs: '1rem', sm: '1.1rem' },
+                fontSize: { xs: '0.9rem', sm: '1rem', md: '1.1rem' },
+                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                fontWeight: 400,
+                position: 'relative',
+                zIndex: 1,
               }}
             >
               Begin advertising with CommercialUK today and reach businesses and investors actively looking for property.
@@ -363,17 +345,18 @@ export default function HomeTrustedBusinesses() {
               variant="contained"
               size="large"
               sx={{
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
+                background: 'linear-gradient(135deg, #d32f2f 0%, #c62828 100%)',
                 color: 'white',
                 fontWeight: 700,
-                px: 6,
-                py: 3,
-                fontSize: '1.2rem',
-                borderRadius: 4,
+                px: 4,
+                py: 2,
+                fontSize: '1rem',
+                borderRadius: 3,
                 textTransform: 'none',
                 position: 'relative',
                 overflow: 'hidden',
-                boxShadow: '0 8px 32px rgba(102, 126, 234, 0.3)',
+                boxShadow: '0 6px 24px rgba(211, 47, 47, 0.3)',
+                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
                 '&::before': {
                   content: '""',
                   position: 'absolute',
@@ -381,24 +364,21 @@ export default function HomeTrustedBusinesses() {
                   left: '-100%',
                   width: '100%',
                   height: '100%',
-                  background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)',
+                  background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)',
                   transition: 'left 0.5s',
                 },
                 '&:hover': {
-                  transform: 'translateY(-3px) scale(1.05)',
-                  boxShadow: '0 12px 40px rgba(102, 126, 234, 0.4)',
+                  backgroundColor: '#c62828',
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 8px 32px rgba(211, 47, 47, 0.4)',
                   '&::before': {
                     left: '100%',
                   },
                 },
                 '&:active': {
-                  transform: 'translateY(-1px) scale(1.02)',
+                  transform: 'translateY(0px)',
                 },
-                animation: 'buttonGlow 3s ease-in-out infinite alternate',
-                '@keyframes buttonGlow': {
-                  '0%': { boxShadow: '0 8px 32px rgba(102, 126, 234, 0.3)' },
-                  '100%': { boxShadow: '0 8px 32px rgba(102, 126, 234, 0.5), 0 0 20px rgba(102, 126, 234, 0.3)' },
-                },
+                zIndex: 1,
               }}
             >
               🚀 Start Listing Today

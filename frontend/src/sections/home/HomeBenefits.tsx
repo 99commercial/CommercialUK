@@ -22,7 +22,7 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 
 const BenefitsSection = styled(Box)(({ theme }) => ({
   padding: theme.spacing(8, 0),
-  backgroundImage: 'url("https://t4.ftcdn.net/jpg/07/65/52/03/360_F_765520370_deyZELJd9dKt4hmXW9a4in6RumicRzCn.jpg")',
+  backgroundImage: 'url("https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80")',
   backgroundSize: 'cover',
   backgroundPosition: 'center',
   backgroundRepeat: 'no-repeat',
@@ -34,7 +34,7 @@ const BenefitsSection = styled(Box)(({ theme }) => ({
     left: 0,
     right: 0,
     bottom: 0,
-    background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 100%)',
+    background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.5) 100%)',
     backdropFilter: 'blur(1px)',
   },
 }));
@@ -112,7 +112,7 @@ export default function HomeBenefits() {
   return (
     <BenefitsSection>
       <Container maxWidth="lg">
-        <Box sx={{ textAlign: 'center', mb: 6, position: 'relative', zIndex: 1 }}>
+        {/* <Box sx={{ textAlign: 'center', mb: 6, position: 'relative', zIndex: 1 }}>
           <Typography
             variant="h4"
             component="h2"
@@ -176,10 +176,10 @@ export default function HomeBenefits() {
               </BenefitCard>
             </Box>
           ))}
-        </Box>
+        </Box> */}
 
         {/* Separator Line */}
-        <Box sx={{ 
+        {/* <Box sx={{ 
           display: 'flex', 
           justifyContent: 'center', 
           mb: 6, 
@@ -192,7 +192,7 @@ export default function HomeBenefits() {
             background: 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%)',
             borderRadius: '1px',
           }} />
-        </Box>
+        </Box> */}
 
         <Box sx={{ textAlign: 'center', mb: 6, position: 'relative', zIndex: 1 }}>
           <Typography

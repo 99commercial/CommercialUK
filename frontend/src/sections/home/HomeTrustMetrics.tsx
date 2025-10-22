@@ -165,9 +165,9 @@ export default function HomeTrustMetrics() {
                 maxWidth: { xs: '100%', md: '400px' },
               }}
             >
-              For over 30 years, LoopNet has been the trusted brand for{' '}
+              The Smarter Way to Sell or Let{' '}
               <Box component="span" sx={{ display: { xs: 'block', sm: 'inline' } }}>
-                Commercial Real Estate
+              Commercial Property
               </Box>
             </Typography>
           </Box>
@@ -195,11 +195,12 @@ export default function HomeTrustMetrics() {
                     fontWeight: 700,
                     color: '#000',
                     mb: 0.5,
-                    fontSize: { xs: '1.8rem', sm: '2.2rem', md: '2.5rem' },
+                    fontSize: { xs: '0.8rem', sm: '1.2rem', md: '1.5rem' },
                     lineHeight: 1.1,
+                    textAlign: 'start',
                   }}
                 >
-                  300K+
+                  Reach the Right People
                 </Typography>
                 <Typography 
                   variant="body2"
@@ -207,12 +208,13 @@ export default function HomeTrustMetrics() {
                     color: '#666',
                     fontSize: { xs: '0.8rem', sm: '0.9rem', md: '1rem' },
                     fontWeight: 400,
+                    textAlign: 'start',
                   }}
                 >
-                  Active Listings
+                  Connect with your ideal audience and grow your impact effortlessly.
                 </Typography>
               </MetricCard>
-              
+
               <MetricCard>
                 <Typography
                   variant={isMobile ? "h4" : "h3"}
@@ -220,11 +222,12 @@ export default function HomeTrustMetrics() {
                     fontWeight: 700,
                     color: '#000',
                     mb: 0.5,
-                    fontSize: { xs: '1.8rem', sm: '2.2rem', md: '2.5rem' },
+                    fontSize: { xs: '0.8rem', sm: '1.2rem', md: '1.5rem' },
                     lineHeight: 1.1,
+                    textAlign: 'start',
                   }}
                 >
-                  13M+
+                  Easy-to-Use Platform
                 </Typography>
                 <Typography 
                   variant="body2"
@@ -232,12 +235,13 @@ export default function HomeTrustMetrics() {
                     color: '#666',
                     fontSize: { xs: '0.8rem', sm: '0.9rem', md: '1rem' },
                     fontWeight: 400,
+                    textAlign: 'start',
                   }}
                 >
-                  Monthly Visitors
+                 Manage everything smoothly with our simple, intuitive interface.
                 </Typography>
               </MetricCard>
-              
+
               <MetricCard>
                 <Typography
                   variant={isMobile ? "h4" : "h3"}
@@ -245,11 +249,12 @@ export default function HomeTrustMetrics() {
                     fontWeight: 700,
                     color: '#000',
                     mb: 0.5,
-                    fontSize: { xs: '1.8rem', sm: '2.2rem', md: '2.5rem' },
+                    fontSize: { xs: '0.8rem', sm: '1.2rem', md: '1.5rem' },
                     lineHeight: 1.1,
+                    textAlign: 'start',
                   }}
                 >
-                  $520B+ CAD
+                  Property Solutions for Every Business
                 </Typography>
                 <Typography 
                   variant="body2"
@@ -257,16 +262,17 @@ export default function HomeTrustMetrics() {
                     color: '#666',
                     fontSize: { xs: '0.8rem', sm: '0.9rem', md: '1rem' },
                     fontWeight: 400,
+                    textAlign: 'start',
                   }}
                 >
-                  In Transaction Value
+                  Find the perfect property tailored to your business needs.
                 </Typography>
               </MetricCard>
             </Box>
           </Box>
         </Box>
 
-        <Box sx={{ mt: { xs: 4, md: 6 }, textAlign: 'center' }}>
+        {/* <Box sx={{ mt: { xs: 4, md: 6 }, textAlign: 'center' }}>
           <Typography
             variant={isMobile ? "body1" : "h6"}
             sx={{
@@ -279,7 +285,6 @@ export default function HomeTrustMetrics() {
             Companies actively searching on LoopNet
           </Typography>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 4, sm: 5 } }}>
-            {/* First line - moves right to left */}
             <InfiniteScrollContainer>
             <ScrollingContent sx={{ animationDuration: "20s" }}>
               {[...companies].map((company, index) => (
@@ -319,7 +324,9 @@ export default function HomeTrustMetrics() {
             </ScrollingContent>
             </InfiniteScrollContainer>
           </Box>
-        </Box>
+
+        </Box> */}
+        
       </Container>
     </TrustSection>
   );

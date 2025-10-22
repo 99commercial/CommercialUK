@@ -41,7 +41,7 @@ export default function HomePage() {
     <Page title="The World's #1 Commercial Real Estate Marketplace">
       <HomeHero />
       <ContentStyle>
-        {/* <HomeTrustMetrics /> */}
+        <HomeTrustMetrics />
         <HomeTrendingListings />
         <HomeAuction />
         <HomePopularCities />
