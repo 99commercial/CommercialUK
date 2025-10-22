@@ -262,11 +262,7 @@ export default function Navbar({ onAdvertise, onLanguageChange }: NavbarProps) {
   };
 
   const handleAdvertise = () => {
-    if (onAdvertise) {
-      onAdvertise();
-    } else {
-      console.log('Advertise clicked');
-    }
+    router.push('/advertise');
     setMobileOpen(false);
   };
 
