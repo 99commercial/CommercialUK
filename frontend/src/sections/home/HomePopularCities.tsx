@@ -131,7 +131,7 @@ export default function HomePopularCities() {
 
   return (
     <CitiesSection>
-      <Container maxWidth="lg">
+      <Container maxWidth="lg" sx={{ maxWidth: '100%' }}>
         <Typography
           variant="h4"
           component="h2"

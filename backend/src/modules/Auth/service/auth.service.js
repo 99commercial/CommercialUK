@@ -70,7 +70,7 @@ export class AuthService {
   /**
    * Login agent
    */
-  async login(email, password) {
+  async login(email, password, ipAddress) {
     // Find user with business details
     const user = await User.findOne({ email })
       .select('+password');
@@ -94,6 +94,11 @@ export class AuthService {
       const error = new Error('Invalid credentials');
       error.statusCode = 401;
       throw error;
+    }
+
+    // Update user's IP address
+    if (ipAddress && ipAddress !== 'unknown') {
+      await User.findByIdAndUpdate(user._id, { ip_address: ipAddress });
     }
 
     // Generate tokens using TokenService

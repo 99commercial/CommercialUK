@@ -67,6 +67,31 @@ const userSchema = new Schema(
       type: Boolean,
       default: true,
     },
+    user_status: {
+      type: String,
+      enum: ['excellent', 'good', 'average', 'poor', 'bad', 'banned'],
+      default: 'good',
+      required: true,
+    },
+    status_updated_by: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'user',
+      required: false,
+    },
+    status_updated_at: {
+      type: Date,
+      default: null,
+    },
+    status_reason: {
+      type: String,
+      trim: true,
+      maxlength: 500,
+    },
+
+    ip_address: {
+      type: String,
+      required: false,
+    },
     
     // Email verification fields
     emailVerificationToken: {

@@ -54,13 +54,30 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
     setError('');
 
     try {
+      // Fetch user's IP address
+      let ipAddress = '';
+      try {
+        const ipResponse = await fetch('https://api.ipify.org?format=json');
+        const ipData = await ipResponse.json();
+        ipAddress = ipData.ip;
+      } catch (ipError) {
+        console.error('Failed to fetch IP address:', ipError);
+        // Continue with login even if IP fetch fails
+      }
 
-      let res = await axiosInstance.post('/api/auth/login', formData);
+      // Add IP address to formData
+      const submitData = {
+        ...formData,
+        ipAddress
+      };
+
+      let res = await axiosInstance.post('/api/auth/login', submitData);
       
       // Store user data
       localStorage.setItem('user', JSON.stringify(res.data.user));
       localStorage.setItem('accessToken', res.data.accessData);
       localStorage.setItem('refreshToken', res.data.refreshData);
+
       // Redirect to appropriate dashboard
       router.push(`/${res.data.user.role}`);
 

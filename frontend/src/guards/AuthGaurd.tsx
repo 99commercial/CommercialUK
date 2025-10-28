@@ -51,7 +51,7 @@ export default function AuthGuard({ children }: AuthGuardProps) {
         // POINT 1: Check if user and accessToken exist
         if (!userString || !accessToken) {
           // No authentication - check if current URL has agent or user
-          if (currentPath.includes('/agent') || currentPath.includes('/user')) {
+          if (currentPath.includes('/agent') || currentPath.includes('/user') || currentPath.includes('/admin')) {
             // Trying to access protected route without auth - redirect to access denied
             router.push('/access-denied');
             setHasAccess(false);
@@ -82,6 +82,15 @@ export default function AuthGuard({ children }: AuthGuardProps) {
             router.push('/access-denied');
             setHasAccess(false);
           }
+        } else if (currentPath.includes('/admin')) {
+          // Admin route - check if user role is admin
+          if (userData?.role === 'admin') {
+            setHasAccess(true);
+          } else {
+            // User role is not admin - redirect to access denied
+            router.push('/access-denied');
+            setHasAccess(false);
+          }
         } else if (currentPath.includes('/auth/login') || currentPath.includes('/auth/register') || currentPath.includes('/auth/forget-password') || currentPath.includes('/auth/reset-password') || currentPath.includes('/auth/verify-email')) {
           // POINT 3: Auth pages - redirect based on user role
           if (userData?.role === 'agent') {
@@ -89,6 +98,9 @@ export default function AuthGuard({ children }: AuthGuardProps) {
             setHasAccess(false);
           } else if (userData?.role === 'user') {
             router.push('/user');
+            setHasAccess(false);
+          } else if (userData?.role === 'admin') {
+            router.push('/admin');
             setHasAccess(false);
           } else {
             // Invalid role - allow access to auth pages

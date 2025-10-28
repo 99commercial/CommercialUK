@@ -91,6 +91,7 @@ export default function HomeAuction() {
             minHeight: { xs: 'auto', md: '600px' },
           }}
         >
+
           {/* Card Section */}
           <Box sx={{ flex: { xs: '1', lg: '1' }, width: { xs: '100%', lg: '50%' } }}>
             <AuctionCard>
@@ -210,7 +211,7 @@ export default function HomeAuction() {
                   WebkitTextFillColor: 'transparent',
                 }}
               >
-                Discover Your Next Investment at Auction
+                Trusted by Leading Businesses
               </Typography>
 
               <Typography
@@ -222,14 +223,12 @@ export default function HomeAuction() {
                   fontSize: { xs: '1rem', md: '1.125rem' },
                 }}
               >
-                Access exclusive commercial real estate auctions with properties that offer 
-                exceptional value and investment opportunities. Our auction platform connects 
-                you with motivated sellers and unique properties not available through traditional 
-                channels.
+Trusted by Leading Businesses
+From start-ups to multinational corporations, CommercialUK is the market of choice for locating office space, retail units, and industrial property. Our site is employed by investors, agents, landlords, and developers keen to speed up the deal.
               </Typography>
 
               <Stack spacing={{ xs: 2, md: 3 }}>
-                <Button
+                {/* <Button
                   variant="text"
                   sx={{
                     color: '#d32f2f',
@@ -245,9 +244,9 @@ export default function HomeAuction() {
                   }}
                 >
                   Learn More About Auctions →
-                </Button>
+                </Button> */}
 
-                <LiveAuctionButton
+                {/* <LiveAuctionButton
                   startIcon={<AccessTimeIcon />}
                   endIcon={<ArrowForwardIcon />}
                   fullWidth={isMobile}
@@ -257,7 +256,7 @@ export default function HomeAuction() {
                   }}
                 >
                   Live Auction Now
-                </LiveAuctionButton>
+                </LiveAuctionButton> */}
 
                 <Button
                   variant="outlined"
@@ -276,7 +275,7 @@ export default function HomeAuction() {
                     },
                   }}
                 >
-                  See Available Listings
+                  Explore More
                 </Button>
               </Stack>
             </ContentBox>

@@ -51,6 +51,48 @@ type PagesPageConfig = {
   handler satisfies PagesPageConfig
 }
 
+// Validate ../../src/pages/admin/client-detail/[id].tsx
+{
+  const handler = {} as typeof import("../../src/pages/admin/client-detail/[id].js")
+  handler satisfies PagesPageConfig
+}
+
+// Validate ../../src/pages/admin/dashboard/approve-properties.tsx
+{
+  const handler = {} as typeof import("../../src/pages/admin/dashboard/approve-properties.js")
+  handler satisfies PagesPageConfig
+}
+
+// Validate ../../src/pages/admin/dashboard/list-agent.tsx
+{
+  const handler = {} as typeof import("../../src/pages/admin/dashboard/list-agent.js")
+  handler satisfies PagesPageConfig
+}
+
+// Validate ../../src/pages/admin/dashboard/list-user.tsx
+{
+  const handler = {} as typeof import("../../src/pages/admin/dashboard/list-user.js")
+  handler satisfies PagesPageConfig
+}
+
+// Validate ../../src/pages/admin/dashboard/properties.tsx
+{
+  const handler = {} as typeof import("../../src/pages/admin/dashboard/properties.js")
+  handler satisfies PagesPageConfig
+}
+
+// Validate ../../src/pages/admin/dashboard/users.tsx
+{
+  const handler = {} as typeof import("../../src/pages/admin/dashboard/users.js")
+  handler satisfies PagesPageConfig
+}
+
+// Validate ../../src/pages/admin/index.tsx
+{
+  const handler = {} as typeof import("../../src/pages/admin/index.js")
+  handler satisfies PagesPageConfig
+}
+
 // Validate ../../src/pages/advertise.tsx
 {
   const handler = {} as typeof import("../../src/pages/advertise.js")
@@ -186,6 +228,18 @@ type PagesPageConfig = {
 // Validate ../../src/pages/pricing.tsx
 {
   const handler = {} as typeof import("../../src/pages/pricing.js")
+  handler satisfies PagesPageConfig
+}
+
+// Validate ../../src/pages/property-for-rent.tsx
+{
+  const handler = {} as typeof import("../../src/pages/property-for-rent.js")
+  handler satisfies PagesPageConfig
+}
+
+// Validate ../../src/pages/property-for-sale.tsx
+{
+  const handler = {} as typeof import("../../src/pages/property-for-sale.js")
   handler satisfies PagesPageConfig
 }
 

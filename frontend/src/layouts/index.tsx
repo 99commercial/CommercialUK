@@ -5,6 +5,7 @@ import MainLayout from './Main/MainLayout';
 import { useRouter } from 'next/router';
 import AgentLayout from './Agent/AgentLayout';
 import UserLayout from './User/UserLayout';
+import AdminLayout from './Admin/AdminLayout';
 
 // ----------------------------------------------------------------------
 
@@ -23,6 +24,8 @@ export default function Layout({ children }: Props) {
     return <AgentLayout>{children}</AgentLayout>;
   } else if(queryArray.includes('user')) {
     return <UserLayout>{children}</UserLayout>;
+  } else if(queryArray.includes('admin')) {
+    return <AdminLayout>{children}</AdminLayout>;
   } else {
     return <MainLayout>{children}</MainLayout>;
   }

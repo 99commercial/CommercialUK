@@ -35,7 +35,7 @@ const AboutUs: NextPage = () => {
             'linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url(https://www.shutterstock.com/image-photo/why-choose-us-businessman-holding-600nw-1431803342.jpg) center/cover no-repeat',
         }}
       >
-        <Container maxWidth="lg">
+        <Container maxWidth="lg" sx={{ maxWidth: '100%' }}>
           <Stack spacing={2} alignItems="flex-start">
             <Typography variant="h2" component="h1" sx={{ fontWeight: 800, lineHeight: 1.1, color: 'common.white' }}>
               About CommercialUK
@@ -48,7 +48,7 @@ const AboutUs: NextPage = () => {
       </Box>
 
       {/* About narrative */}
-      <Container maxWidth="lg" sx={{ py: { xs: 8, md: 12 } }}>
+      <Container maxWidth="lg" sx={{ py: { xs: 8, md: 12 }, maxWidth: '100%' }}>
         <Stack direction={{ xs: 'column', md: 'row' }} spacing={6} alignItems="center">
           <Box sx={{ width: { xs: '100%', md: '50%' } }}>
             <Stack spacing={2}>
@@ -96,7 +96,8 @@ const AboutUs: NextPage = () => {
       </Container>
 
       {/* Why CommercialUK */}
-      <Box sx={{ py: { xs: 8, md: 12 }, bgcolor: 'background.default' ,  }}>
+      <Container maxWidth="lg" sx={{ maxWidth: '100%' }}>
+      <Box  sx={{ py: { xs: 8, md: 12 }, bgcolor: 'background.default' , maxWidth: '100%' }}>
         <Container maxWidth="lg">
           <Stack spacing={2} sx={{ mb: 4 }}>
             <Typography variant="overline" color="error" sx={{ fontWeight: 700 }}>
@@ -171,9 +172,10 @@ const AboutUs: NextPage = () => {
           </Box>
         </Container>
       </Box>
+      </Container>
 
       {/* Footer note */}
-      <Container maxWidth="md" sx={{ py: 6 }}>
+      <Container maxWidth="md" sx={{ py: 6, maxWidth: '100%' }}>
         <Stack direction="row" spacing={1} alignItems="center" justifyContent="center">
           <PublicIcon color="error" />
           <Typography variant="body2" color="text.secondary" align="center">

@@ -84,27 +84,22 @@ const whyChooseBenefits = [
   {
     icon: SecurityIcon,
     title: 'Trusted UK Platform',
-    description: 'Why Choose CommercialUK',
   },
   {
     icon: ListIcon,
     title: 'Broad Listings',
-    description: 'Why Choose CommercialUK',
   },
   {
     icon: PublicIcon,
     title: 'International Exposure',
-    description: 'Why Choose CommercialUK',
   },
   {
     icon: SpeedIcon,
     title: 'Quicker Deals',
-    description: 'Why Choose CommercialUK',
   },
   {
     icon: TrendingUpIcon,
     title: 'Stronger Marketing',
-    description: 'Why Choose CommercialUK',
   },
 ];
 
@@ -246,16 +241,6 @@ export default function HomeBenefits() {
                   }}
                 >
                   {benefit.title}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: 'rgba(255, 255, 255, 0.8)',
-                    lineHeight: 1.4,
-                    fontSize: '0.85rem',
-                  }}
-                >
-                  {benefit.description}
                 </Typography>
               </BenefitCard>
             </Box>

@@ -10,21 +10,15 @@ const __dirname = path.dirname(__filename);
 export class emailService {
   constructor() {
     
-    // Create reusable transporter object with Brevo SMTP configuration
+    // Create reusable transporter object with Zoho SMTP configuration
     this.transporter = nodemailer.createTransport({
-      host: 'smtp-relay.brevo.com', // Always this for Brevo
-      port: 443, // Use 587 for TLS
-      secure: true, // Must be false for port 587
+      host: 'smtppro.zoho.in',
+      port: 465,
+      secure: true, // SSL
       auth: {
-        user: EMAIL_USER, // Brevo SMTP login (your email or username)
-        pass: EMAIL_PASS, // Brevo SMTP password (API key)
-      },
-      connectionTimeout: 60000, // 60 seconds
-      greetingTimeout: 30000,   // 30 seconds
-      socketTimeout: 60000,     // 60 seconds
-      tls: {
-        rejectUnauthorized: true, // ✅ should be true in production
-      },
+        user: process.env.EMAIL_USER, // your Zoho email
+        pass: process.env.EMAIL_PASS  // your Zoho app password
+      }
     });
     
 
@@ -40,24 +34,34 @@ export class emailService {
       extName: '.hbs',
     }));
     
-    // Verify Brevo SMTP connection
-    this.verifyBrevoConnection();
+    // Verify Zoho SMTP connection
+    this.verifyZohoConnection();
   }
 
   /**
-   * Verify Brevo SMTP connection
+   * Verify Zoho SMTP connection
    */
-  async verifyBrevoConnection() {
+  async verifyZohoConnection() {
     try {
-      await this.transporter.verify();
-      console.log(EMAIL_USER,EMAIL_PASS);
+      console.log('🔍 Testing Zoho SMTP connection...');
+      console.log('📧 Email User:', EMAIL_USER);
+      console.log('🔑 Password length:', EMAIL_PASS ? EMAIL_PASS.length : 'undefined');
       
-      console.log('✅ Brevo SMTP connection verified successfully');
+      await this.transporter.verify();
+      
+      console.log('✅ Zoho SMTP connection verified successfully');
     } catch (error) {
-      console.log(EMAIL_USER,EMAIL_PASS);
-
-      console.error('❌ Brevo SMTP connection verification failed:', error.message);
-      console.error('Please check your Brevo SMTP credentials and settings');
+      console.error('❌ Zoho SMTP connection verification failed:', error.message);
+      console.error('🔍 Error details:', error);
+      console.error('📧 Please check your Zoho SMTP credentials and settings');
+      
+      // Additional debugging for common Zoho issues
+      if (error.message.includes('535')) {
+        console.error('🚨 535 Error: Authentication failed - check app-specific password');
+      }
+      if (error.message.includes('553')) {
+        console.error('🚨 553 Error: Relay not allowed - check Zoho SMTP settings');
+      }
     }
   }
 
@@ -70,7 +74,7 @@ export class emailService {
   async sendWelcomeEmail(email, firstName, lastName) {
     try {
       const mailOptions = {
-        from: `"99Commercial" <shardul@99home.co.uk>`,
+        from: `"99Commercial" <noreply@commercialuk.co.uk>`,
         to: email,
         subject: 'Welcome to 99Commercial - Your Commercial Real Estate Platform',
         template: 'welcome',
@@ -107,7 +111,7 @@ export class emailService {
   async sendVerificationEmail(email, verificationToken, firstName, lastName) {
     try {
       const mailOptions = {
-        from: `"99Commercial" <shardul@99home.co.uk>`,
+        from: `"99Commercial" <noreply@commercialuk.co.uk>`,
         to: email,
         subject: 'Verify Your Email - 99Commercial',
         template: 'verification',
@@ -144,7 +148,7 @@ export class emailService {
    */
   async sendPasswordResetEmail(email, resetToken, firstName, lastName) {
     const mailOptions = {
-      from: `"99Commercial" <shardul@99home.co.uk>`,
+      from: `"99Commercial" <noreply@commercialuk.co.uk>`,
       to: email,
       subject: 'Reset Your Password - 99Commercial',
       template: 'password-reset',
@@ -157,21 +161,21 @@ export class emailService {
       },
     };
 
-    // Enhanced retry mechanism for Brevo SMTP
+    // Enhanced retry mechanism for Zoho SMTP
     for (let attempt = 1; attempt <= 3; attempt++) {
       try {
         const sendPromise = this.transporter.sendMail(mailOptions);
         const timeoutPromise = new Promise((_, reject) => {
-          setTimeout(() => reject(new Error('Brevo email send timeout')), 30000);
+          setTimeout(() => reject(new Error('Zoho email send timeout')), 30000);
         });
         
         const result = await Promise.race([sendPromise, timeoutPromise]);
-        console.log(`✅ Password reset email sent successfully via Brevo (attempt ${attempt}):`, result.messageId);
+        console.log(`✅ Password reset email sent successfully via Zoho (attempt ${attempt}):`, result.messageId);
         return result;
       } catch (error) {
         console.error(`❌ Password reset email attempt ${attempt} failed:`, error.message);
         
-        // Handle Brevo-specific errors
+        // Handle Zoho-specific errors
         if (error.message.includes('socket close') || 
             error.message.includes('ECONNRESET') || 
             error.message.includes('EPIPE') ||
@@ -180,12 +184,12 @@ export class emailService {
           
           console.log(`🔄 Socket error detected, retrying with new connection (attempt ${attempt})`);
           
-          // Recreate transporter for Brevo
+          // Recreate transporter for Zoho
           this.transporter.close();
           this.transporter = nodemailer.createTransport({
-            host: EMAIL_HOST,
-            port: EMAIL_PORT,
-            secure: EMAIL_SECURE,
+            host: 'smtp.zoho.com',
+            port: 587,
+            secure: false,
             auth: {
               user: EMAIL_USER,
               pass: EMAIL_PASS,
@@ -196,7 +200,9 @@ export class emailService {
             tls: {
               rejectUnauthorized: false,
               ciphers: 'SSLv3'
-            }
+            },
+            debug: true,
+            logger: true,
           });
           
           // Reconfigure handlebars
@@ -213,8 +219,8 @@ export class emailService {
         }
         
         if (attempt === 3) {
-          console.error('❌ All password reset email attempts failed via Brevo');
-          throw new Error(`Failed to send password reset email via Brevo after 3 attempts: ${error.message}`);
+          console.error('❌ All password reset email attempts failed via Zoho');
+          throw new Error(`Failed to send password reset email via Zoho after 3 attempts: ${error.message}`);
         }
         
         // Wait before retry (exponential backoff)

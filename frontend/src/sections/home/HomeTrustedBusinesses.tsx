@@ -191,18 +191,18 @@ const trendingProperties = [
 const benefits = [
   {
     icon: CampaignIcon,
-    title: 'Reaching the correct audience of business decision-makers',
-    description: 'Target the right professionals actively seeking commercial property',
+    title: 'Accessing a Wide Range of Properties',
+    description: 'Discover offices, retail spaces, warehouses, and investment options across the UK — all in one place.',
   },
   {
     icon: PhotoCameraIcon,
-    title: 'Providing professional marketing materials',
-    description: 'High-quality images, floorplans, and drone shots to showcase your property',
+    title: 'Viewing Verified Listings with Professional Details',
+    description: 'See up-to-date details, floor plans, and quality images to make confident decisions',
   },
   {
     icon: SearchIcon,
-    title: 'Producing more enquiries and quality leads',
-    description: 'Generate better leads and faster deal closures',
+    title: 'Connecting Directly with Agents and Landlords',
+    description: 'Request info, book viewings, and secure your ideal space quickly and easily.',
   },
 ];
 
@@ -229,7 +229,7 @@ export default function HomeTrustedBusinesses() {
                 zIndex: 1,
               }}
             >
-              LIST YOUR PROPERTY
+              FIND​‍​‌‍​‍‌​‍​‌‍​‍‌ YOUR NEXT COMMERCIAL SPACE
             </Typography>
 
             <Typography
@@ -264,7 +264,7 @@ export default function HomeTrustedBusinesses() {
                 zIndex: 1,
               }}
             >
-              CommercialUK facilitates landlords and agents letting or selling commercial property quicker by:
+              CommercialUK simplifies the property search journey for purchasers and tenants by enabling them to locate the most suitable commercial property in less time by:
             </Typography>
           </Box>
 

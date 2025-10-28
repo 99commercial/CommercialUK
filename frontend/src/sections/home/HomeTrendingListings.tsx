@@ -165,7 +165,7 @@ export default function HomeTrendingListings() {
 
   return (
     <TrendingSection>
-      <Container maxWidth="lg">
+      <Container maxWidth="lg" sx={{ maxWidth: '100%' }}>
         <Stack
           direction={{ xs: 'column', sm: 'row' }}
           justifyContent="space-between"
@@ -181,7 +181,7 @@ export default function HomeTrendingListings() {
               fontSize: { xs: '1.75rem', sm: '2rem', md: '2.25rem' },
             }}
           >
-            Trending on CommercialUK
+            Trending Commercial Properties
           </Typography>
           <Link
             href="/general/all-properties"

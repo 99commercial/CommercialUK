@@ -13,6 +13,7 @@ import agentRoutes from './src/modules/Agent/Property/routes/agent.routes.js';
 import accountRoutes from './src/modules/Agent/Account/routes/account.routes.js';
 import userRoutes from './src/modules/User/Property/routes/user.routes.js';
 import userAccountRoutes from './src/modules/User/Account/routes/account.routes.js';
+import adminRoutes from './src/modules/admin/Features/routes/features.routes.js';
 import validateSecurity from './src/utils/security.validation.js';
 const app = express();
 
@@ -86,6 +87,9 @@ app.use('/api/user', userRoutes);
 
 // User account routes
 app.use('/api/user', userAccountRoutes);
+
+// Admin routes
+app.use('/api/admin', adminRoutes);
 
 
 /* ==========================

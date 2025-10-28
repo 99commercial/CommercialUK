@@ -139,7 +139,7 @@ export default function HomeTrustMetrics() {
 
   return (
     <TrustSection>
-      <Container maxWidth="lg">
+      <Container maxWidth="lg" sx={{ maxWidth: '100%' }}>
         <Box
           sx={{
             display: 'flex',
