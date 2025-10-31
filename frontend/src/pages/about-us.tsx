@@ -180,7 +180,7 @@ const AboutUs: NextPage = () => {
           <PublicIcon color="error" />
           <Typography variant="body2" color="text.secondary" align="center">
             For media inquiries or partnerships, email{' '}
-            <MUILink href="mailto:sales@commercialuk.com"  color="error.main">sales@commercialuk.com</MUILink>.
+            <MUILink href="mailto:sales@commercialuk.com"  color="error.main">info@commercialuk.com</MUILink>.
           </Typography>
         </Stack>
       </Container>

@@ -313,8 +313,8 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
             <Typography variant="h6" gutterBottom>
               Energy Performance Certificate (EPC)
             </Typography>
-            <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
-              <FormControl sx={{ flex: 1, minWidth: 120 }}>
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' }, gap: 2, width: '100%' }}>
+              <FormControl fullWidth>
                 <InputLabel>EPC Rating</InputLabel>
                 <Select
                   value={formData.epc.rating || ''}
@@ -332,30 +332,30 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
               <TextField
                 label="EPC Score"
                 type="number"
+                fullWidth
                 value={formData.epc.score || ''}
                 onChange={(e) => handleEPCChange('score', parseInt(e.target.value) || 0)}
                 error={!!fieldErrors.epc_score}
                 helperText={fieldErrors.epc_score}
                 inputProps={{ min: 0, max: 100 }}
-                sx={{ flex: 1, minWidth: 120 }}
               />
 
               <TextField
                 label="Certificate Number"
+                fullWidth
                 value={formData.epc.certificate_number || ''}
                 onChange={(e) => handleEPCChange('certificate_number', e.target.value)}
-                sx={{ flex: 2, minWidth: 200 }}
               />
 
               <TextField
                 label="Expiry Date"
                 type="date"
+                fullWidth
                 value={formData.epc.expiry_date || ''}
                 onChange={(e) => handleEPCChange('expiry_date', e.target.value)}
                 error={!!fieldErrors.epc_expiry}
                 helperText={fieldErrors.epc_expiry}
                 InputLabelProps={{ shrink: true }}
-                sx={{ flex: 1, minWidth: 150 }}
               />
             </Box>
           </CardContent>
@@ -367,8 +367,8 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
             <Typography variant="h6" gutterBottom>
               Council Tax
             </Typography>
-            <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
-              <FormControl sx={{ flex: 1, minWidth: 120 }}>
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 2fr' }, gap: 2, width: '100%' }}>
+              <FormControl fullWidth>
                 <InputLabel>Council Tax Band</InputLabel>
                 <Select
                   value={formData.council_tax.band || ''}
@@ -385,9 +385,9 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
 
               <TextField
                 label="Council Authority"
+                fullWidth
                 value={formData.council_tax.authority || ''}
                 onChange={(e) => handleCouncilTaxChange('authority', e.target.value)}
-                sx={{ flex: 2, minWidth: 200 }}
               />
             </Box>
           </CardContent>
@@ -421,8 +421,8 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
             <Typography variant="h6" gutterBottom>
               Planning Information
             </Typography>
-            <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
-              <FormControl sx={{ flex: 1, minWidth: 150 }}>
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 2fr 1fr' }, gap: 2, width: '100%' }}>
+              <FormControl fullWidth>
                 <InputLabel>Planning Status</InputLabel>
                 <Select
                   value={formData.planning.status || ''}
@@ -439,31 +439,32 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
 
               <TextField
                 label="Application Number"
+                fullWidth
                 value={formData.planning.application_number || ''}
                 onChange={(e) => handlePlanningChange('application_number', e.target.value)}
-                sx={{ flex: 2, minWidth: 200 }}
               />
 
               <TextField
                 label="Decision Date"
                 type="date"
+                fullWidth
                 value={formData.planning.decision_date || ''}
                 onChange={(e) => handlePlanningChange('decision_date', e.target.value)}
                 error={!!fieldErrors.planning_decision}
                 helperText={fieldErrors.planning_decision}
                 InputLabelProps={{ shrink: true }}
-                sx={{ flex: 1, minWidth: 150 }}
               />
             </Box>
           </CardContent>
         </Card>
 
-        <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end' }}>
+        <Box sx={{ mt: 4, display: 'flex', justifyContent: { xs: 'stretch', sm: 'flex-end' } }}>
           <Button
             type="submit"
             variant="contained"
             startIcon={isSubmitting ? <CircularProgress size={20} /> : <Save />}
             disabled={isSubmitting || !hasChanges}
+            fullWidth
             sx={{
               minWidth: 200,
               backgroundColor: hasChanges ? '#2563eb' : '#9ca3af',

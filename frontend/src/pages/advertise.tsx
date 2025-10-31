@@ -618,15 +618,15 @@ const Advertise: NextPage = () => {
 
                 {/* Enhancement Packages Comparison Table */}
                 <Box sx={{ overflow: 'auto' }}>
-                  <TableContainer sx={{ borderRadius: 3, border: '2px solid rgba(220,53,69,0.2)' }}>
-                    <Table>
+                  <TableContainer sx={{ borderRadius: 3, border: '2px solid rgba(220,53,69,0.2)', width: '100%' }}>
+                    <Table sx={{ tableLayout: 'fixed', width: '100%' }}>
                       <TableHead>
                         <TableRow sx={{ bgcolor: 'rgba(220,53,69,0.1)' }}>
-                          <TableCell sx={{ fontWeight: 700, fontSize: '1.1rem' }}>LISTING FEATURES</TableCell>
-                          <TableCell align="center" sx={{ fontWeight: 900, fontSize: '1.2rem', color: 'error.main' }}>DIAMOND</TableCell>
-                          <TableCell align="center" sx={{ fontWeight: 700, fontSize: '1.1rem' }}>PLATINUM</TableCell>
-                          <TableCell align="center" sx={{ fontWeight: 700, fontSize: '1.1rem' }}>GOLD</TableCell>
-                          <TableCell align="center" sx={{ fontWeight: 700, fontSize: '1.1rem' }}>SILVER</TableCell>
+                          <TableCell sx={{ fontWeight: 700, fontSize: '1.1rem', width: '35%' }}>LISTING FEATURES</TableCell>
+                          <TableCell align="center" sx={{ fontWeight: 900, fontSize: '1.2rem', color: 'error.main', width: '16.25%' }}>DIAMOND</TableCell>
+                          <TableCell align="center" sx={{ fontWeight: 700, fontSize: '1.1rem', width: '16.25%' }}>PLATINUM</TableCell>
+                          <TableCell align="center" sx={{ fontWeight: 700, fontSize: '1.1rem', width: '16.25%' }}>GOLD</TableCell>
+                          <TableCell align="center" sx={{ fontWeight: 700, fontSize: '1.1rem', width: '16.25%' }}>SILVER</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -689,15 +689,15 @@ const Advertise: NextPage = () => {
                   <Typography variant="h5" sx={{ fontWeight: 800, mb: 3, color: 'error.main' }}>
                     Media & Visual Marketing
                   </Typography>
-                  <TableContainer sx={{ borderRadius: 3, border: '2px solid rgba(220,53,69,0.2)' }}>
-                    <Table>
+                  <TableContainer sx={{ borderRadius: 3, border: '2px solid rgba(220,53,69,0.2)', width: '100%' }}>
+                    <Table sx={{ tableLayout: 'fixed', width: '100%' }}>
                       <TableHead>
                         <TableRow sx={{ bgcolor: 'rgba(220,53,69,0.1)' }}>
-                          <TableCell sx={{ fontWeight: 700, fontSize: '1.1rem' }}>FEATURE</TableCell>
-                          <TableCell align="center" sx={{ fontWeight: 900, fontSize: '1.2rem', color: 'error.main' }}>DIAMOND</TableCell>
-                          <TableCell align="center" sx={{ fontWeight: 700, fontSize: '1.1rem' }}>PLATINUM</TableCell>
-                          <TableCell align="center" sx={{ fontWeight: 700, fontSize: '1.1rem' }}>GOLD</TableCell>
-                          <TableCell align="center" sx={{ fontWeight: 700, fontSize: '1.1rem' }}>SILVER</TableCell>
+                          <TableCell sx={{ fontWeight: 700, fontSize: '1.1rem', width: '35%' }}>FEATURE</TableCell>
+                          <TableCell align="center" sx={{ fontWeight: 900, fontSize: '1.2rem', color: 'error.main', width: '16.25%' }}>DIAMOND</TableCell>
+                          <TableCell align="center" sx={{ fontWeight: 700, fontSize: '1.1rem', width: '16.25%' }}>PLATINUM</TableCell>
+                          <TableCell align="center" sx={{ fontWeight: 700, fontSize: '1.1rem', width: '16.25%' }}>GOLD</TableCell>
+                          <TableCell align="center" sx={{ fontWeight: 700, fontSize: '1.1rem', width: '16.25%' }}>SILVER</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>

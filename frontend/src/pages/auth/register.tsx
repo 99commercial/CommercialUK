@@ -323,7 +323,7 @@ export default function RegisterPage() {
                         textAlign: { xs: 'center', md: 'left' },
                       }}
                     >
-                      99Commercial
+                      CommercialUK
                     </Typography>
                     <Typography
                       variant="h5"
@@ -449,7 +449,7 @@ export default function RegisterPage() {
                   fontSize: { xs: '1.5rem', sm: '2rem' },
                 }}
               >
-                Why Choose 99Commercial?
+                Why Choose CommercialUK?
               </Typography>
               <InfiniteScrollContainer>
                 <ScrollingContent

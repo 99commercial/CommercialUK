@@ -472,7 +472,7 @@ const RegisterForm = () => {
               </InputAdornment>
             }
           >
-            <MenuItem value="user">User</MenuItem>
+            <MenuItem value="user">Tenant</MenuItem>
             <MenuItem value="agent">Agent</MenuItem>
           </Select>
           {fieldErrors.role && (

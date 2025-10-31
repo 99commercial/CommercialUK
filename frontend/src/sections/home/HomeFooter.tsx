@@ -12,6 +12,7 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import TwitterIcon from '@mui/icons-material/Twitter';
+import NextLink from 'next/link';
 
 // ----------------------------------------------------------------------
 
@@ -80,6 +81,21 @@ export default function HomeFooter() {
   return (
     <FooterSection>
       <Container maxWidth="lg">
+        {/* Pages Section - Above all other details */}
+        <Box sx={{ mb: 4 }}>
+          <Box sx={{ mb: 3 }}>
+            <FooterTitle>Pages</FooterTitle>
+            <Stack spacing={1}>
+              <NextLink href="/property-for-rent" passHref legacyBehavior>
+                <FooterLink>Property For Rent</FooterLink>
+              </NextLink>
+              <NextLink href="/property-for-sale" passHref legacyBehavior>
+                <FooterLink>Property For Sale</FooterLink>
+              </NextLink>
+            </Stack>
+          </Box>
+        </Box>
+
         {/* Top Navigation Tabs */}
         {/* <Box sx={{ mb: 4 }}>
           <Stack
@@ -189,7 +205,7 @@ export default function HomeFooter() {
                   mb: 1,
                 }}
               >
-                © 2025 CoStar Group
+                © 2025 CommercialUK
               </Typography>
               <Stack
                 direction="row"
