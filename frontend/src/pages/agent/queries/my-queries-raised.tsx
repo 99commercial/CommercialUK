@@ -1,5 +1,5 @@
 import React from 'react';
-import { MyQueriesRaised, MyQueryData } from '../../../sections/user/queries';
+import { MyQueriesRaised, MyQueryData } from '../../../sections/agent/queries';
 import HeaderCard from '../../../components/HeaderCard';
 
 const MyQueriesRaisedPage: React.FC = () => {

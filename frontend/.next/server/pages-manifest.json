@@ -2,8 +2,7 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/agent/queries/my-property-queries": "pages/agent/queries/my-property-queries.js",
-  "/agent/queries/my-queries-raised": "pages/agent/queries/my-queries-raised.js",
-  "/auth/login": "pages/auth/login.js",
-  "/about-us": "pages/about-us.js"
+  "/user/queries/my-property-queries": "pages/user/queries/my-property-queries.js",
+  "/user/queries/my-queries-raised": "pages/user/queries/my-queries-raised.js",
+  "/auth/login": "pages/auth/login.js"
 }

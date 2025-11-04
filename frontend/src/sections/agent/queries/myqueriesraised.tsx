@@ -229,7 +229,7 @@ const MyQueriesRaised: React.FC<MyQueriesRaisedProps> = ({
       setIsLoading(true);
       setError(null);
       
-      const response = await axiosInstance.get(`/api/user/queries/my-queries?page=${pageNumber}&limit=${limit}`);
+      const response = await axiosInstance.get(`/api/agent/queries/my-queries?page=${pageNumber}&limit=${limit}`);
       
       if (response.data.success) {
         const queriesData = response.data.data?.queries || [];

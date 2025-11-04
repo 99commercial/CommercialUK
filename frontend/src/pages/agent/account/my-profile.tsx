@@ -12,8 +12,8 @@ import {
 import { Person as PersonIcon, Business as BusinessIcon } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import { Page } from '../../../components';
-import UserProfile from '../../../sections/user/user-profile';
-import UserBusinessProfile from '../../../sections/user/user-business-profile';
+import UserProfile from '../../../sections/agent/user-profile';
+import UserBusinessProfile from '../../../sections/agent/user-business-profile';
 import HeaderCard from '../../../components/HeaderCard';
 import axiosInstance from '../../../utils/axios';
 import Loader from '@/components/Loader';

@@ -23,20 +23,20 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/about-us": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/about-us.js"
-    ],
-    "/agent/queries/my-queries-raised": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/agent/queries/my-queries-raised.js"
-    ],
     "/auth/login": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/auth/login.js"
+    ],
+    "/user/queries/my-property-queries": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/user/queries/my-property-queries.js"
+    ],
+    "/user/queries/my-queries-raised": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/user/queries/my-queries-raised.js"
     ]
   },
   "ampFirstPages": []

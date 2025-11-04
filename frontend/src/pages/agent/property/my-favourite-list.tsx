@@ -2,7 +2,7 @@ import React from 'react';
 import { Box } from '@mui/material';
 import { useRouter } from 'next/router';
 import HeaderCard from '../../../components/HeaderCard';
-import { MyFavoriteProperties } from '../../../sections/user/property';
+import { MyFavoriteProperties } from '../../../sections/agent/property';
 
 // ----------------------------------------------------------------------
 

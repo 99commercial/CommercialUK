@@ -1,5 +1,5 @@
 import React from 'react';
-import { MyPropertyQueries, QueryData } from '../../../sections/user/queries';
+import { MyPropertyQueries, QueryData } from '../../../sections/agent/queries';
 import HeaderCard from '../../../components/HeaderCard';
 
 const MyPropertyQueriesPage: React.FC = () => {

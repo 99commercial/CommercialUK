@@ -117,7 +117,7 @@ const MyFavoriteProperties: React.FC<MyFavoritePropertiesProps> = ({
   const fetchFavoriteProperties = async (page = 1, limit = 20) => {
     try {
       setError(null);
-      const response = await axiosInstance.get('/api/agent/favorites/details', {
+      const response = await axiosInstance.get('/api/user/favorites/details', {
         params: { page, limit }
       });
 

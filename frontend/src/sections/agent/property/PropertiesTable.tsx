@@ -257,7 +257,7 @@ const PropertiesTable: React.FC = () => {
         throw new Error('User not authenticated');
       }
 
-      const response = await axiosInstance.get(`/api/user/agents/${user.id}/properties`, {
+      const response = await axiosInstance.get(`/api/agent/agents/${user.id}/properties`, {
         params: {
           page: page + 1,
           limit: rowsPerPage,
@@ -333,7 +333,7 @@ const PropertiesTable: React.FC = () => {
   const handleDeleteConfirm = async () => {
     if (selectedProperty) {
       try {
-        let res = await axiosInstance.delete(`/api/user/properties/${selectedProperty._id}`);
+        let res = await axiosInstance.delete(`/api/agent/properties/${selectedProperty._id}`);
         await fetchProperties(); // Refresh the list
 
         enqueueSnackbar(res.data.message, {
@@ -358,9 +358,9 @@ const PropertiesTable: React.FC = () => {
 
   const handleEditOrComplete = (property: Property) => {
     if (property.property_status === 'Active') {
-      router.push(`/user/property/edit/${property._id}`);
+      router.push(`/agent/property/edit/${property._id}`);
     } else {
-      router.push(`/user/property/complete/${property._id}`);
+      router.push(`/agent/property/complete/${property._id}`);
     }
   };
 

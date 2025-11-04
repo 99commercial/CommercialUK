@@ -350,7 +350,7 @@ const MyPropertyQueries: React.FC<MyPropertyQueriesProps> = ({
       setIsLoading(true);
       setError(null);
       
-      const response = await axiosInstance.get(`/api/user/agents/${agentId}/queries?page=${pageNumber}&limit=${limit}`);
+      const response = await axiosInstance.get(`/api/agent/agents/${agentId}/queries?page=${pageNumber}&limit=${limit}`);
       
       if (response.data.success) {
         setQueries(response.data.data?.queries || []);

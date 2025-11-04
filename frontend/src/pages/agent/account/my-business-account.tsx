@@ -11,7 +11,7 @@ import {
   Button,
 } from '@mui/material';
 import { Page } from '../../../components';
-import BusinessDetailsEdit from '../../../sections/user/BusinessDetailsEdit';
+import BusinessDetailsEdit from '../../../sections/agent/BusinessDetailsEdit';
 import HeaderCard from '../../../components/HeaderCard'; 
 import axiosInstance from '@/utils/axios';
 import { enqueueSnackbar } from 'notistack';
@@ -20,7 +20,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import CreateBusinessForm from '@/sections/user/CreateBusinessForm';
+import CreateBusinessForm from '@/sections/agent/CreateBusinessForm';
 import Loader from '@/components/Loader';
 
 const MyBusinessAccount: React.FC = () => {

@@ -284,7 +284,7 @@ const PersonalDetailsEdit: React.FC<PersonalDetailsEditProps> = ({
         about: formData.about,
       };
 
-      const response = await axiosInstance.put('/api/user/users/profile', payload);
+      const response = await axiosInstance.put('/api/agent/users/profile', payload);
 
       const updated = (response as any)?.data?.data || payload;
       setSuccess('Profile updated successfully.');

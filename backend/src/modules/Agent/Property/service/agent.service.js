@@ -1556,7 +1556,12 @@ class AgentService {
       const options = {
         page: parseInt(page),
         limit: parseInt(limit),
-        sort
+        sort,
+        populate: [
+          { path: 'property_id', select: 'general_details.building_name general_details.address general_details.town_city general_details.property_type' },
+          { path: 'agent_id', select: 'first_name last_name email phone company_name' },
+          { path: 'user_id', select: 'first_name last_name email phone' }
+        ]
       };
 
       const result = await this.PropertyQuery.paginate(filter, options);
