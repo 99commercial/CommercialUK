@@ -21,25 +21,41 @@ import { useRouter } from 'next/router';
 
 const FavouritePropertyCard = styled(Card)(({ theme }) => ({
   position: 'relative',
-  borderRadius: theme.spacing(2),
+  borderRadius: theme.spacing(3),
   overflow: 'hidden',
-  transition: 'all 0.3s ease',
+  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
   backgroundColor: '#ffffff',
-  border: '1px solid #e2e8f0',
-  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+  border: '1px solid rgba(226, 232, 240, 0.8)',
+  boxShadow: '0 4px 24px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.02)',
   '&:hover': {
-    transform: 'translateY(-4px)',
-    boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
-    borderColor: '#dc2626',
+    transform: 'translateY(-8px) scale(1.02)',
+    boxShadow: '0 20px 60px rgba(220, 38, 38, 0.25), 0 0 0 1px rgba(220, 38, 38, 0.1)',
+    borderColor: 'rgba(220, 38, 38, 0.3)',
   },
 }));
 
 const ImageContainer = styled(Box)(({ theme }) => ({
   position: 'relative',
   width: '100%',
-  height: '250px',
+  height: '280px',
   overflow: 'hidden',
   backgroundColor: '#f5f5f5',
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: 'linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.3) 100%)',
+    zIndex: 1,
+    opacity: 0,
+    transition: 'opacity 0.3s ease',
+    pointerEvents: 'none',
+  },
+  '&:hover::before': {
+    opacity: 1,
+  },
 }));
 
 const PropertyImage = styled(CardMedia)(({ theme }) => ({
@@ -66,20 +82,25 @@ const NavigationButton = styled(IconButton)(({ theme }) => ({
   position: 'absolute',
   top: '50%',
   transform: 'translateY(-50%)',
-  backgroundColor: 'rgba(255, 255, 255, 0.9)',
-  color: '#000000',
-  width: '32px',
-  height: '32px',
+  backgroundColor: 'rgba(255, 255, 255, 0.95)',
+  backdropFilter: 'blur(10px)',
+  color: '#1e293b',
+  width: '40px',
+  height: '40px',
   borderRadius: '50%',
   zIndex: 4,
   opacity: 0,
-  transition: 'opacity 0.3s ease',
+  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
   '&:hover': {
     backgroundColor: '#ffffff',
+    color: '#dc2626',
     opacity: 1,
+    transform: 'translateY(-50%) scale(1.1)',
+    boxShadow: '0 6px 20px rgba(0, 0, 0, 0.25)',
   },
   '&.visible': {
-    opacity: 0.8,
+    opacity: 0.9,
   },
 }));
 
@@ -93,17 +114,22 @@ const NextButton = styled(NavigationButton)({
 
 const FavoriteButton = styled(IconButton)(({ theme }) => ({
   position: 'absolute',
-  top: theme.spacing(1),
-  right: theme.spacing(1),
-  zIndex: 3,
-  backgroundColor: 'rgba(255, 255, 255, 0.9)',
+  top: theme.spacing(2),
+  right: theme.spacing(2),
+  zIndex: 5,
+  backgroundColor: 'rgba(255, 255, 255, 0.95)',
   color: '#dc2626',
-  width: '32px',
-  height: '32px',
+  width: '44px',
+  height: '44px',
   borderRadius: '50%',
+  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+  backdropFilter: 'blur(10px)',
+  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
   '&:hover': {
-    backgroundColor: '#ffffff',
-    color: '#b91c1c',
+    backgroundColor: '#dc2626',
+    color: '#ffffff',
+    transform: 'scale(1.15) rotate(5deg)',
+    boxShadow: '0 6px 20px rgba(220, 38, 38, 0.4)',
   },
 }));
 
@@ -223,15 +249,19 @@ const ImageGallery: React.FC<{ images: Array<any> }> = ({ images }) => {
       <Box
         sx={{
           position: 'absolute',
-          bottom: 8,
-          right: 8,
-          backgroundColor: 'rgba(0, 0, 0, 0.6)',
+          bottom: 12,
+          right: 12,
+          background: 'rgba(0, 0, 0, 0.7)',
+          backdropFilter: 'blur(10px)',
           color: 'white',
-          padding: '4px 8px',
-          borderRadius: '8px',
-          fontSize: '0.75rem',
-          fontWeight: 600,
-          zIndex: 3,
+          padding: '6px 12px',
+          borderRadius: '20px',
+          fontSize: '0.8rem',
+          fontFamily: '"Lato", sans-serif',
+          fontWeight: 700,
+          zIndex: 4,
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
+          letterSpacing: '0.01em',
         }}
       >
         {currentIndex + 1} / {images.length}
@@ -282,45 +312,56 @@ const FavouritePropertyCardComponent: React.FC<FavouritePropertyCardProps> = ({
       </ImageContainer>
       
       {/* Content Section */}
-      <CardContent sx={{ p: 3 }}>
+      <CardContent sx={{ p: 3.5, pb: 3 }}>
         <Typography 
           variant="h5" 
           component="h3" 
           sx={{ 
             fontWeight: 700, 
-            mb: 1,
-            fontSize: '1.4rem',
-            lineHeight: 1.2,
+            mb: 1.5,
+            fontSize: '1.5rem',
+            lineHeight: 1.3,
             color: '#1e293b',
+            fontFamily: '"Montserrat", sans-serif',
+            letterSpacing: '-0.01em',
           }}
         >
           {property.general_details?.building_name || 'Property'}
         </Typography>
         
-        <Typography 
-          variant="body1" 
-          color="text.secondary" 
-          sx={{ 
-            mb: 2, 
-            fontWeight: 500,
-            fontSize: '1rem',
-          }}
-        >
-          {property.general_details?.address || 'Address not available'}
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+          <Typography 
+            variant="body1" 
+            color="text.secondary" 
+            sx={{ 
+              fontWeight: 400,
+              fontSize: '0.95rem',
+              fontFamily: '"Lato", sans-serif',
+              color: '#64748b',
+              lineHeight: 1.5,
+              letterSpacing: '0.01em',
+            }}
+          >
+            {property.general_details?.address || 'Address not available'}
+          </Typography>
+        </Box>
 
         {property.descriptions_id?.general && (
           <Typography 
             variant="body2" 
             color="text.secondary" 
             sx={{ 
-              mb: 2,
-              lineHeight: 1.5,
+              mb: 3,
+              lineHeight: 1.7,
               display: '-webkit-box',
               WebkitLineClamp: 3,
               WebkitBoxOrient: 'vertical',
               overflow: 'hidden',
-              fontSize: '0.9rem',
+              fontSize: '0.95rem',
+              fontFamily: '"Lato", sans-serif',
+              color: '#64748b',
+              fontWeight: 400,
+              letterSpacing: '0.01em',
             }}
           >
             {property.descriptions_id.general}
@@ -332,11 +373,21 @@ const FavouritePropertyCardComponent: React.FC<FavouritePropertyCardProps> = ({
           fullWidth
           onClick={handleViewDetails}
           sx={{
-            backgroundColor: '#dc2626',
+            background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
+            color: '#ffffff',
+            fontFamily: '"Montserrat", sans-serif',
             fontWeight: 600,
-            py: 1.5,
+            fontSize: '1rem',
+            py: 1.75,
+            borderRadius: '12px',
+            textTransform: 'none',
+            letterSpacing: '0.02em',
+            boxShadow: '0 4px 14px rgba(220, 38, 38, 0.4)',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
             '&:hover': {
-              backgroundColor: '#b91c1c',
+              background: 'linear-gradient(135deg, #b91c1c 0%, #991b1b 100%)',
+              boxShadow: '0 6px 20px rgba(220, 38, 38, 0.5)',
+              transform: 'translateY(-2px)',
             },
           }}
         >

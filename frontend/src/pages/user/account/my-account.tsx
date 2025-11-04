@@ -23,6 +23,7 @@ import PersonalDetailsEdit from '../../../sections/user/PersonalDetailsEdit';
 import PhotoUpdate from '../../../sections/user/PhotoUpdate';
 import PasswordUpdate from '../../../sections/user/PasswordUpdate';
 import axiosInstance from '@/utils/axios';
+import Loader from '@/components/Loader';
 
 const StyledTabs = styled(Tabs)(({ theme }) => ({
   '& .MuiTabs-indicator': {
@@ -199,7 +200,13 @@ const MyAccount: React.FC = () => {
           <HeaderCard 
             title="Account"
             breadcrumbs={['Dashboard', 'User', userData ? `${userData.firstName} ${userData.lastName}` : 'Loading...']}
-            userData={userData}
+            tabs={[
+              { label: 'Personal Details', value: 0, icon: <PersonIcon /> },
+              { label: 'Profile Photo', value: 1, icon: <PhotoCameraIcon /> },
+              { label: 'Password & Security', value: 2, icon: <SecurityIcon /> },
+            ]}
+            defaultTab={0}
+            onTabChange={(value: number) => handleTabChange(null, value)}
           />
 
           {/* Main Content */}
@@ -216,7 +223,7 @@ const MyAccount: React.FC = () => {
               minHeight: '600px'
             }}>
               {/* Sidebar Tabs */}
-              <Box sx={{ 
+              {/* <Box sx={{ 
                 width: { xs: '100%', md: '280px' },
                 backgroundColor: '#f8fafc',
                 borderRight: { md: '1px solid #e5e7eb' },
@@ -391,7 +398,7 @@ const MyAccount: React.FC = () => {
                   }}
                 />
                 </StyledTabs>
-              </Box>
+              </Box> */}
 
               {/* Tab Content */}
               <Box sx={{ 
@@ -401,7 +408,10 @@ const MyAccount: React.FC = () => {
               }}>
                 {/* Loading / Error States */}
                 {loading && (
-                  <Typography variant="body1" sx={{ p: 3 }}>Loading profile...</Typography>
+                  <Loader
+                    fullscreen={true}
+                    size="medium"
+                  />
                 )}
                 {error && !loading && (
                   <Typography color="error" variant="body1" sx={{ p: 3 }}>{error}</Typography>

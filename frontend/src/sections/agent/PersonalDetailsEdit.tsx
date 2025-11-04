@@ -28,56 +28,188 @@ import { styled } from '@mui/material/styles';
 import axiosInstance from '../../utils/axios';
 
 const StyledCard = styled(Card)(({ theme }) => ({
-  borderRadius: 12,
-  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-  border: 'none',
+  borderRadius: 16,
+  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04)',
+  border: '1px solid rgba(220, 38, 38, 0.08)',
   background: '#ffffff',
   overflow: 'hidden',
+  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+  '&:hover': {
+    boxShadow: '0 12px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06)',
+  },
 }));
 
 const SectionHeader = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
-  gap: theme.spacing(1),
-  marginBottom: theme.spacing(3),
-  padding: theme.spacing(2),
+  gap: theme.spacing(1.5),
+  marginBottom: 0,
+  padding: theme.spacing(2.5, 3),
   background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
-  borderRadius: '8px 8px 0 0',
+  borderRadius: '16px 16px 0 0',
   color: 'white',
+  boxShadow: '0 4px 12px rgba(220, 38, 38, 0.2)',
 }));
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
   '& .MuiOutlinedInput-root': {
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    borderRadius: 8,
+    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    fontSize: '1.125rem',
+    backgroundColor: '#ffffff',
+    borderRadius: 14,
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    // 3D Effect - Multiple layered shadows for depth
+    boxShadow: `
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.9),
+      inset 0 -1px 0 0 rgba(0, 0, 0, 0.05)
+    `,
+    border: '1px solid rgba(0, 0, 0, 0.08)',
+    position: 'relative',
+    '&::before': {
+      content: '""',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      borderRadius: 14,
+      background: 'linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 100%)',
+      pointerEvents: 'none',
+      zIndex: 0,
+    },
     '& fieldset': {
+      border: 'none',
+    },
+    '&:hover': {
+      transform: 'translateY(-2px)',
+      boxShadow: `
+        0 8px 12px -2px rgba(0, 0, 0, 0.15),
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.95),
+        inset 0 -2px 0 0 rgba(220, 38, 38, 0.2),
+        0 0 0 1px rgba(220, 38, 38, 0.15)
+      `,
+    },
+    '&.Mui-focused': {
+      transform: 'translateY(-1px)',
+      boxShadow: `
+        0 10px 20px -4px rgba(220, 38, 38, 0.25),
+        0 6px 12px -2px rgba(220, 38, 38, 0.15),
+        inset 0 2px 0 0 rgba(255, 255, 255, 0.95),
+        inset 0 -2px 0 0 rgba(220, 38, 38, 0.3),
+        0 0 0 3px rgba(220, 38, 38, 0.1)
+      `,
+      borderColor: 'rgba(220, 38, 38, 0.4)',
+    },
+    '&.Mui-error': {
+      boxShadow: `
+        0 4px 6px -1px rgba(220, 38, 38, 0.2),
+        0 2px 4px -1px rgba(220, 38, 38, 0.1),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.9),
+        inset 0 -1px 0 0 rgba(220, 38, 38, 0.2)
+      `,
       borderColor: 'rgba(220, 38, 38, 0.3)',
     },
-    '&:hover fieldset': {
-      borderColor: '#dc2626',
+    '&.MuiInputBase-multiline': {
+      padding: theme.spacing(1.75),
+      '& textarea': {
+        padding: theme.spacing(1.75, 1.75),
+        fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+        fontSize: '1.125rem',
+        lineHeight: 1.6,
+        color: '#1f2937',
+        resize: 'vertical',
+        position: 'relative',
+        zIndex: 1,
+        '&::placeholder': {
+          color: '#9ca3af',
+          opacity: 1,
+          fontSize: '1.125rem',
+        },
+      },
     },
-    '&.Mui-focused fieldset': {
-      borderColor: '#dc2626',
-      borderWidth: 2,
+  },
+  '& .MuiOutlinedInput-input': {
+    padding: theme.spacing(1.75, 1.75),
+    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    fontWeight: 400,
+    color: '#1f2937',
+    fontSize: '1.125rem',
+    lineHeight: 1.6,
+    position: 'relative',
+    zIndex: 1,
+    '&::placeholder': {
+      color: '#9ca3af',
+      opacity: 1,
+      fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+      fontSize: '1.125rem',
     },
   },
   '& .MuiInputLabel-root': {
+    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    fontWeight: 500,
+    fontSize: '1rem',
     color: '#6b7280',
+    transform: 'translate(18px, 20px) scale(1)',
+    transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
     '&.Mui-focused': {
       color: '#dc2626',
+      fontWeight: 600,
+      fontSize: '1rem',
+    },
+    '&.MuiInputLabel-shrink': {
+      transform: 'translate(18px, -9px) scale(0.85)',
+      fontWeight: 600,
     },
   },
-  '& .MuiInputBase-input': {
-    color: '#1f2937',
+  '& .MuiInputAdornment-root': {
+    position: 'relative',
+    zIndex: 1,
+    '& .MuiSvgIcon-root': {
+      fontSize: '1.5rem',
+      transition: 'all 0.2s ease',
+    },
+    '&.MuiInputAdornment-positionStart': {
+      marginRight: theme.spacing(1.5),
+    },
   },
 }));
 
 const ActionButton = styled(Button)(({ theme }) => ({
-  borderRadius: 8,
+  borderRadius: 14,
   textTransform: 'none',
+  fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
   fontWeight: 600,
-  padding: theme.spacing(1.5, 3),
-  minWidth: 120,
+  fontSize: '1.125rem',
+  padding: theme.spacing(2, 5),
+  minWidth: 160,
+  letterSpacing: '0.02em',
+  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+  boxShadow: '0 6px 16px rgba(220, 38, 38, 0.25), 0 2px 4px rgba(220, 38, 38, 0.1)',
+  '&:hover': {
+    transform: 'translateY(-2px)',
+    boxShadow: '0 10px 24px rgba(220, 38, 38, 0.35), 0 4px 8px rgba(220, 38, 38, 0.15)',
+  },
+  '&:active': {
+    transform: 'translateY(0)',
+    boxShadow: '0 4px 12px rgba(220, 38, 38, 0.2)',
+  },
+}));
+
+const SectionTitle = styled(Typography)(({ theme }) => ({
+  fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+  fontWeight: 600,
+  fontSize: '1.375rem',
+  letterSpacing: '-0.01em',
+}));
+
+const SectionSubtitle = styled(Typography)(({ theme }) => ({
+  fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+  fontWeight: 400,
+  fontSize: '1rem',
+  opacity: 0.8,
 }));
 
 interface PersonalDetailsEditProps {
@@ -170,23 +302,64 @@ const PersonalDetailsEdit: React.FC<PersonalDetailsEditProps> = ({
   return (
     <StyledCard>
       <SectionHeader>
-        <EditIcon />
-        <Typography variant="h6" sx={{ fontWeight: 600 }}>
+        <EditIcon sx={{ fontSize: '1.75rem' }} />
+        <Typography 
+          variant="h6" 
+          sx={{ 
+            fontWeight: 600,
+            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+            fontSize: '1.5rem',
+            letterSpacing: '-0.01em',
+          }}
+        >
           Edit Personal Details
         </Typography>
       </SectionHeader>
 
-      <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+      <CardContent sx={{ p: { xs: 3, md: 4.5 }, pt: { xs: 3.5, md: 4.5 } }}>
         {error && (
-          <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>
-            <Typography component="pre" sx={{ whiteSpace: 'pre-line', margin: 0, fontFamily: 'inherit' }}>
+          <Alert 
+            severity="error" 
+            sx={{ 
+              mb: 3, 
+              borderRadius: 2,
+              fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+              fontSize: '1rem',
+              boxShadow: '0 2px 8px rgba(220, 38, 38, 0.1)',
+              '& .MuiAlert-message': {
+                fontSize: '1rem',
+              },
+            }}
+          >
+            <Typography 
+              component="pre" 
+              sx={{ 
+                whiteSpace: 'pre-line', 
+                margin: 0, 
+                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                fontSize: '1rem',
+                fontWeight: 400,
+              }}
+            >
               {error}
             </Typography>
           </Alert>
         )}
 
         {success && (
-          <Alert severity="success" sx={{ mb: 3, borderRadius: 2 }}>
+          <Alert 
+            severity="success" 
+            sx={{ 
+              mb: 3, 
+              borderRadius: 2,
+              fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+              fontSize: '1rem',
+              boxShadow: '0 2px 8px rgba(34, 197, 94, 0.1)',
+              '& .MuiAlert-message': {
+                fontSize: '1rem',
+              },
+            }}
+          >
             {success}
           </Alert>
         )}
@@ -195,25 +368,20 @@ const PersonalDetailsEdit: React.FC<PersonalDetailsEditProps> = ({
           <Grid container spacing={3}>
             {/* Basic Information */}
             <Grid size={12}>
-              <Typography variant="h6" sx={{ 
-                color: '#dc2626', 
-                fontWeight: 600, 
-                mb: 2,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
+              <Box sx={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 1.5,
+                mb: 0.5,
               }}>
-                <PersonIcon />
-                Basic Information
-                <Typography component="span" sx={{ 
-                  color: '#dc2626', 
-                  fontSize: '0.875rem', 
-                  fontWeight: 400,
-                  ml: 1
-                }}>
-                  (Required)
-                </Typography>
-              </Typography>
+                <PersonIcon sx={{ color: '#dc2626', fontSize: '1.75rem' }} />
+                <SectionTitle sx={{ color: '#1f2937' }}>
+                  Basic Information
+                </SectionTitle>
+              </Box>
+              <SectionSubtitle sx={{ color: '#6b7280', ml: 4.5, mb: 2.5 }}>
+                Fields marked with an asterisk (*) are required
+              </SectionSubtitle>
             </Grid>
 
             <Grid size={{ xs: 12, md: 6 }}>
@@ -292,26 +460,27 @@ const PersonalDetailsEdit: React.FC<PersonalDetailsEditProps> = ({
             </Grid>
 
             <Grid size={12}>
-              <Divider sx={{ my: 2 }} />
-              <Typography variant="h6" sx={{ 
-                color: '#6b7280', 
-                fontWeight: 600, 
-                mb: 2,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
+              <Divider 
+                sx={{ 
+                  my: 3.5,
+                  borderColor: 'rgba(0, 0, 0, 0.08)',
+                  borderWidth: '1px',
+                }} 
+              />
+              <Box sx={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 1.5,
+                mb: 0.5,
               }}>
-                <LocationIcon />
-                Additional Information
-                <Typography component="span" sx={{ 
-                  color: '#6b7280', 
-                  fontSize: '0.875rem', 
-                  fontWeight: 400,
-                  ml: 1
-                }}>
-                  (Optional)
-                </Typography>
-              </Typography>
+                <LocationIcon sx={{ color: '#6b7280', fontSize: '1.75rem' }} />
+                <SectionTitle sx={{ color: '#6b7280' }}>
+                  Additional Information
+                </SectionTitle>
+              </Box>
+              <SectionSubtitle sx={{ color: '#9ca3af', ml: 4.5, mb: 2.5 }}>
+                Optional details to help us know you better
+              </SectionSubtitle>
             </Grid>
 
             <Grid size={12}>
@@ -353,14 +522,16 @@ const PersonalDetailsEdit: React.FC<PersonalDetailsEditProps> = ({
             display: 'flex', 
             gap: 2, 
             justifyContent: 'flex-end', 
-            mt: 4,
+            mt: 5,
+            pt: 3,
+            borderTop: '1px solid rgba(0, 0, 0, 0.08)',
             flexDirection: { xs: 'column', sm: 'row' }
           }}>
             <ActionButton
               type="submit"
               variant="contained"
               disabled={loading || !isDirty}
-              startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />}
+              startIcon={loading ? <CircularProgress size={22} color="inherit" /> : <SaveIcon sx={{ fontSize: '1.5rem' }} />}
               sx={{
                 backgroundColor: '#dc2626',
                 '&:hover': {
@@ -368,6 +539,8 @@ const PersonalDetailsEdit: React.FC<PersonalDetailsEditProps> = ({
                 },
                 '&:disabled': {
                   backgroundColor: '#fca5a5',
+                  boxShadow: 'none',
+                  transform: 'none',
                 },
               }}
             >

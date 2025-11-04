@@ -21,6 +21,7 @@ import DialogContent from '@mui/material/DialogContent';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import CreateBusinessForm from '@/sections/user/CreateBusinessForm';
+import Loader from '@/components/Loader';
 
 const MyBusinessAccount: React.FC = () => {
   const theme = useTheme();
@@ -67,9 +68,10 @@ const MyBusinessAccount: React.FC = () => {
           />
 
         {isLoading ? (
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', py: 10 }}>
-            <CircularProgress />
-          </Box>
+          <Loader
+            fullscreen={true}
+            size="medium"
+          />
         ) : businessData ? (
           <BusinessDetailsEdit 
               businessData={businessData}

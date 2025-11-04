@@ -151,54 +151,48 @@ const LocationDetailsForm: React.FC<LocationDetailsFormProps> = ({ onStepSubmitt
     }
   };
 
-  // Mock geocoding function - in real app, this would call a geocoding service
-  const handleGeocode = async () => {
-    setIsGeocoding(true);
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Mock coordinates for demonstration
-      setFormData(prev => ({
+// Real geocoding function using postcode
+const handleGeocode = async () => {
+  const postcode = formData.address_details?.postal_code?.trim();
+  if (!postcode) {
+    setFieldErrors({
+      'address_details.postal_code': 'Please enter a valid postal code before geocoding.',
+    });
+    enqueueSnackbar("Please enter a valid postal code before geocoding.", { variant: 'error' });
+    return;
+  }
+
+  setIsGeocoding(true);
+  try {
+    // Call OpenStreetMap's Nominatim API
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/search?postalcode=${encodeURIComponent(
+        postcode
+      )}&format=json&addressdetails=1&limit=1`
+    );
+    const data = await response.json();
+
+    if (data && data.length > 0) {
+      const location = data[0];
+
+      setFormData((prev) => ({
         ...prev,
         coordinates: {
           ...prev.coordinates,
-          latitude: 51.5074,
-          longitude: -0.1278
+          latitude: parseFloat(location.lat),
+          longitude: parseFloat(location.lon),
         },
-        address_details: {
-          ...prev.address_details,
-          formatted_address: 'London, UK',
-          country: 'United Kingdom',
-          postal_code: 'SW1A 1AA'
-        }
       }));
-    } catch (error) {
-      console.error('Geocoding failed:', error);
-    } finally {
-      setIsGeocoding(false);
+    } else {
+      alert("No results found for the given postal code.");
     }
-  };
-
-  const handleCurrentLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setFormData(prev => ({
-            ...prev,
-            coordinates: {
-              ...prev.coordinates,
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude
-            }
-          }));
-        },
-        (error) => {
-          console.error('Geolocation error:', error);
-        }
-      );
-    }
-  };
+  } catch (error) {
+    console.error("Geocoding failed:", error);
+    alert("Failed to fetch location data. Please try again.");
+  } finally {
+    setIsGeocoding(false);
+  }
+};
 
   const handleSave = async () => {
     const propertyId = getPropertyId();
@@ -288,14 +282,6 @@ const LocationDetailsForm: React.FC<LocationDetailsFormProps> = ({ onStepSubmitt
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 1 }}>
                   <Button
-                    startIcon={<MyLocation />}
-                    onClick={handleCurrentLocation}
-                    variant="outlined"
-                    size="small"
-                  >
-                    Current Location
-                  </Button>
-                  <Button
                     startIcon={<LocationOn />}
                     onClick={handleGeocode}
                     variant="outlined"
@@ -311,6 +297,27 @@ const LocationDetailsForm: React.FC<LocationDetailsFormProps> = ({ onStepSubmitt
               </Typography>
 
               <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
+                  <TextField
+                      label="Postal Code"
+                      fullWidth
+                      value={formData.address_details?.postal_code || ''}
+                      error={!!getFieldError('address_details.postal_code')}
+                      helperText={getFieldError('address_details.postal_code')}
+                      placeholder="e.g., SW1A 1AA"
+                      onChange={(e) => {
+                        setFormData(prev => ({
+                          ...prev,
+                          address_details: {
+                            ...prev.address_details,
+                            postal_code: e.target.value
+                          }
+                        }));
+                        clearFieldError('address_details.postal_code');
+                      }}
+                  />
+                </Box>
+
                 <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
                   <TextField
                     label="Latitude"
@@ -355,7 +362,7 @@ const LocationDetailsForm: React.FC<LocationDetailsFormProps> = ({ onStepSubmitt
                       clearFieldError('coordinates.longitude');
                     }}
                   />
-                </Box>
+                </Box>          
               </Box>
             </CardContent>
           </Card>
@@ -523,29 +530,6 @@ const LocationDetailsForm: React.FC<LocationDetailsFormProps> = ({ onStepSubmitt
                           }
                         }));
                         clearFieldError('address_details.country');
-                      }}
-                    />
-                  </Box>
-                </Box>
-
-                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                  <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
-                    <TextField
-                      label="Postal Code"
-                      fullWidth
-                      value={formData.address_details?.postal_code || ''}
-                      error={!!getFieldError('address_details.postal_code')}
-                      helperText={getFieldError('address_details.postal_code')}
-                      placeholder="e.g., SW1A 1AA"
-                      onChange={(e) => {
-                        setFormData(prev => ({
-                          ...prev,
-                          address_details: {
-                            ...prev.address_details,
-                            postal_code: e.target.value
-                          }
-                        }));
-                        clearFieldError('address_details.postal_code');
                       }}
                     />
                   </Box>

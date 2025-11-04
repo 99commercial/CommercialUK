@@ -25,81 +25,197 @@ import { styled } from '@mui/material/styles';
 import axiosInstance from '../../utils/axios';
 
 const StyledCard = styled(Card)(({ theme }) => ({
-  borderRadius: 12,
-  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-  border: 'none',
+  borderRadius: 16,
+  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04)',
+  border: '1px solid rgba(220, 38, 38, 0.08)',
   background: '#ffffff',
   overflow: 'hidden',
+  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+  '&:hover': {
+    boxShadow: '0 12px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06)',
+  },
 }));
 
 const SectionHeader = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
-  gap: theme.spacing(1),
-  marginBottom: theme.spacing(3),
-  padding: theme.spacing(2),
+  gap: theme.spacing(1.5),
+  marginBottom: 0,
+  padding: theme.spacing(2.5, 3),
   background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
-  borderRadius: '8px 8px 0 0',
+  borderRadius: '16px 16px 0 0',
   color: 'white',
+  boxShadow: '0 4px 12px rgba(220, 38, 38, 0.2)',
 }));
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
   '& .MuiOutlinedInput-root': {
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    borderRadius: 8,
+    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    fontSize: '1.125rem',
+    backgroundColor: '#ffffff',
+    borderRadius: 14,
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    // 3D Effect - Multiple layered shadows for depth
+    boxShadow: `
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.9),
+      inset 0 -1px 0 0 rgba(0, 0, 0, 0.05)
+    `,
+    border: '1px solid rgba(0, 0, 0, 0.08)',
+    position: 'relative',
     '& fieldset': {
+      border: 'none',
+    },
+    '&:hover': {
+      transform: 'translateY(-2px)',
+      boxShadow: `
+        0 8px 12px -2px rgba(0, 0, 0, 0.15),
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.95),
+        inset 0 -2px 0 0 rgba(220, 38, 38, 0.2),
+        0 0 0 1px rgba(220, 38, 38, 0.15)
+      `,
+    },
+    '&.Mui-focused': {
+      transform: 'translateY(-1px)',
+      boxShadow: `
+        0 10px 20px -4px rgba(220, 38, 38, 0.25),
+        0 6px 12px -2px rgba(220, 38, 38, 0.15),
+        inset 0 2px 0 0 rgba(255, 255, 255, 0.95),
+        inset 0 -2px 0 0 rgba(220, 38, 38, 0.3),
+        0 0 0 3px rgba(220, 38, 38, 0.1)
+      `,
+      borderColor: 'rgba(220, 38, 38, 0.4)',
+    },
+    '&.Mui-error': {
+      boxShadow: `
+        0 4px 6px -1px rgba(220, 38, 38, 0.2),
+        0 2px 4px -1px rgba(220, 38, 38, 0.1),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.9),
+        inset 0 -1px 0 0 rgba(220, 38, 38, 0.2)
+      `,
       borderColor: 'rgba(220, 38, 38, 0.3)',
     },
-    '&:hover fieldset': {
-      borderColor: '#dc2626',
-    },
-    '&.Mui-focused fieldset': {
-      borderColor: '#dc2626',
-      borderWidth: 2,
+  },
+  '& .MuiOutlinedInput-input': {
+    padding: theme.spacing(1.75, 1.75),
+    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    fontWeight: 400,
+    color: '#1f2937',
+    fontSize: '1.125rem',
+    lineHeight: 1.6,
+    position: 'relative',
+    zIndex: 1,
+    '&::placeholder': {
+      color: '#9ca3af',
+      opacity: 1,
+      fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+      fontSize: '1.125rem',
     },
   },
   '& .MuiInputLabel-root': {
+    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    fontWeight: 500,
+    fontSize: '1rem',
     color: '#6b7280',
+    transform: 'translate(18px, 20px) scale(1)',
+    transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
     '&.Mui-focused': {
       color: '#dc2626',
+      fontWeight: 600,
+      fontSize: '1rem',
+    },
+    '&.MuiInputLabel-shrink': {
+      transform: 'translate(18px, -9px) scale(0.85)',
+      fontWeight: 600,
     },
   },
-  '& .MuiInputBase-input': {
-    color: '#1f2937',
+  '& .MuiFormHelperText-root': {
+    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    fontSize: '0.9375rem',
+    marginTop: theme.spacing(1),
+  },
+  '& .MuiInputAdornment-root': {
+    position: 'relative',
+    zIndex: 1,
+    '& .MuiSvgIcon-root': {
+      fontSize: '1.5rem',
+      transition: 'color 0.2s ease',
+    },
+    '&.MuiInputAdornment-positionStart': {
+      marginRight: theme.spacing(1.5),
+    },
   },
 }));
 
 const ActionButton = styled(Button)(({ theme }) => ({
-  borderRadius: 8,
+  borderRadius: 14,
   textTransform: 'none',
+  fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
   fontWeight: 600,
-  padding: theme.spacing(1.5, 3),
-  minWidth: 120,
+  fontSize: '1.125rem',
+  padding: theme.spacing(2, 5),
+  minWidth: 160,
+  letterSpacing: '0.02em',
+  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+  boxShadow: '0 6px 16px rgba(220, 38, 38, 0.25), 0 2px 4px rgba(220, 38, 38, 0.1)',
+  '&:hover': {
+    transform: 'translateY(-2px)',
+    boxShadow: '0 10px 24px rgba(220, 38, 38, 0.35), 0 4px 8px rgba(220, 38, 38, 0.15)',
+  },
+  '&:active': {
+    transform: 'translateY(0)',
+    boxShadow: '0 4px 12px rgba(220, 38, 38, 0.2)',
+  },
 }));
 
 const PasswordStrengthIndicator = styled(Box)(({ strength }: { strength: number }) => ({
   width: '100%',
-  height: 4,
+  height: 6,
   backgroundColor: '#e5e7eb',
-  borderRadius: 2,
+  borderRadius: 3,
   overflow: 'hidden',
   marginTop: 8,
+  boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.1)',
+  position: 'relative',
   '&::after': {
     content: '""',
     display: 'block',
     width: `${strength}%`,
     height: '100%',
     backgroundColor: strength < 30 ? '#ef4444' : strength < 70 ? '#f59e0b' : '#10b981',
-    transition: 'all 0.3s ease',
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    boxShadow: `
+      0 2px 4px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3)
+    `,
+    borderRadius: 3,
   },
 }));
 
 const PasswordRequirements = styled(Box)(({ theme }) => ({
-  marginTop: theme.spacing(2),
-  padding: theme.spacing(2),
+  marginTop: theme.spacing(3),
+  padding: theme.spacing(3.5),
   backgroundColor: '#f8fafc',
-  borderRadius: 8,
-  border: '1px solid #e5e7eb',
+  borderRadius: 14,
+  border: '1px solid rgba(0, 0, 0, 0.08)',
+  // 3D Effect
+  boxShadow: `
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.05)
+  `,
+  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+  '&:hover': {
+    boxShadow: `
+      0 6px 12px -2px rgba(0, 0, 0, 0.15),
+      0 3px 6px -1px rgba(0, 0, 0, 0.1),
+      inset 0 2px 0 0 rgba(255, 255, 255, 0.95),
+      inset 0 -2px 0 0 rgba(0, 0, 0, 0.08)
+    `,
+  },
 }));
 
 interface PasswordUpdateProps {
@@ -276,21 +392,53 @@ const PasswordUpdate: React.FC<PasswordUpdateProps> = ({
   return (
     <StyledCard>
       <SectionHeader>
-        <SecurityIcon />
-        <Typography variant="h6" sx={{ fontWeight: 600 }}>
+        <SecurityIcon sx={{ fontSize: '1.75rem' }} />
+        <Typography 
+          variant="h6" 
+          sx={{ 
+            fontWeight: 600,
+            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+            fontSize: '1.5rem',
+            letterSpacing: '-0.01em',
+          }}
+        >
           Update Password
         </Typography>
       </SectionHeader>
 
-      <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+      <CardContent sx={{ p: { xs: 3, md: 4.5 }, pt: { xs: 3.5, md: 4.5 } }}>
         {error && (
-          <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>
+          <Alert 
+            severity="error" 
+            sx={{ 
+              mb: 3, 
+              borderRadius: 2,
+              fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+              fontSize: '1rem',
+              boxShadow: '0 2px 8px rgba(220, 38, 38, 0.1)',
+              '& .MuiAlert-message': {
+                fontSize: '1rem',
+              },
+            }}
+          >
             {error}
           </Alert>
         )}
 
         {success && (
-          <Alert severity="success" sx={{ mb: 3, borderRadius: 2 }}>
+          <Alert 
+            severity="success" 
+            sx={{ 
+              mb: 3, 
+              borderRadius: 2,
+              fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+              fontSize: '1rem',
+              boxShadow: '0 2px 8px rgba(34, 197, 94, 0.1)',
+              '& .MuiAlert-message': {
+                fontSize: '1rem',
+              },
+            }}
+          >
             {success}
           </Alert>
         )}
@@ -311,7 +459,7 @@ const PasswordUpdate: React.FC<PasswordUpdateProps> = ({
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <LockIcon sx={{ color: '#dc2626' }} />
+                  <LockIcon sx={{ color: '#dc2626', fontSize: '1.5rem' }} />
                 </InputAdornment>
               ),
               endAdornment: (
@@ -319,6 +467,11 @@ const PasswordUpdate: React.FC<PasswordUpdateProps> = ({
                   <IconButton
                     onClick={() => togglePasswordVisibility('current')}
                     edge="end"
+                    sx={{
+                      '& .MuiSvgIcon-root': {
+                        fontSize: '1.5rem',
+                      },
+                    }}
                   >
                     {showPasswords.current ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
@@ -342,7 +495,7 @@ const PasswordUpdate: React.FC<PasswordUpdateProps> = ({
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <LockIcon sx={{ color: '#dc2626' }} />
+                  <LockIcon sx={{ color: '#dc2626', fontSize: '1.5rem' }} />
                 </InputAdornment>
               ),
               endAdornment: (
@@ -350,6 +503,11 @@ const PasswordUpdate: React.FC<PasswordUpdateProps> = ({
                   <IconButton
                     onClick={() => togglePasswordVisibility('new')}
                     edge="end"
+                    sx={{
+                      '& .MuiSvgIcon-root': {
+                        fontSize: '1.5rem',
+                      },
+                    }}
                   >
                     {showPasswords.new ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
@@ -360,9 +518,17 @@ const PasswordUpdate: React.FC<PasswordUpdateProps> = ({
 
           {/* Password Strength Indicator */}
           {formData.newPassword && (
-            <Box sx={{ mt: 1 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-                <Typography variant="body2" sx={{ color: '#6b7280' }}>
+            <Box sx={{ mt: 2, mb: 1 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
+                <Typography 
+                  variant="body2" 
+                  sx={{ 
+                    color: '#6b7280',
+                    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                    fontSize: '1rem',
+                    fontWeight: 500,
+                  }}
+                >
                   Password Strength
                 </Typography>
                 <Typography 
@@ -370,6 +536,8 @@ const PasswordUpdate: React.FC<PasswordUpdateProps> = ({
                   sx={{ 
                     color: getPasswordStrengthColor(passwordStrength),
                     fontWeight: 600,
+                    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                    fontSize: '1rem',
                   }}
                 >
                   {getPasswordStrengthText(passwordStrength)}
@@ -394,7 +562,7 @@ const PasswordUpdate: React.FC<PasswordUpdateProps> = ({
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <LockIcon sx={{ color: '#dc2626' }} />
+                  <LockIcon sx={{ color: '#dc2626', fontSize: '1.5rem' }} />
                 </InputAdornment>
               ),
               endAdornment: (
@@ -402,6 +570,11 @@ const PasswordUpdate: React.FC<PasswordUpdateProps> = ({
                   <IconButton
                     onClick={() => togglePasswordVisibility('confirm')}
                     edge="end"
+                    sx={{
+                      '& .MuiSvgIcon-root': {
+                        fontSize: '1.5rem',
+                      },
+                    }}
                   >
                     {showPasswords.confirm ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
@@ -412,23 +585,71 @@ const PasswordUpdate: React.FC<PasswordUpdateProps> = ({
 
           {/* Password Requirements */}
           <PasswordRequirements>
-            <Typography variant="h6" sx={{ color: '#dc2626', fontWeight: 600, mb: 2 }}>
+            <Typography 
+              variant="h6" 
+              sx={{ 
+                color: '#dc2626', 
+                fontWeight: 600, 
+                mb: 2,
+                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                fontSize: '1.375rem',
+              }}
+            >
               Password Requirements
             </Typography>
-            <Box component="ul" sx={{ m: 0, pl: 2, color: '#6b7280' }}>
-              <Typography component="li" variant="body2" sx={{ mb: 1 }}>
+            <Box component="ul" sx={{ m: 0, pl: 2.5, color: '#6b7280' }}>
+              <Typography 
+                component="li" 
+                variant="body2" 
+                sx={{ 
+                  mb: 1.5,
+                  fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                  fontSize: '1rem',
+                }}
+              >
                 At least 8 characters long
               </Typography>
-              <Typography component="li" variant="body2" sx={{ mb: 1 }}>
+              <Typography 
+                component="li" 
+                variant="body2" 
+                sx={{ 
+                  mb: 1.5,
+                  fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                  fontSize: '1rem',
+                }}
+              >
                 Contains uppercase and lowercase letters
               </Typography>
-              <Typography component="li" variant="body2" sx={{ mb: 1 }}>
+              <Typography 
+                component="li" 
+                variant="body2" 
+                sx={{ 
+                  mb: 1.5,
+                  fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                  fontSize: '1rem',
+                }}
+              >
                 Contains at least one number
               </Typography>
-              <Typography component="li" variant="body2" sx={{ mb: 1 }}>
+              <Typography 
+                component="li" 
+                variant="body2" 
+                sx={{ 
+                  mb: 1.5,
+                  fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                  fontSize: '1rem',
+                }}
+              >
                 Contains at least one special character
               </Typography>
-              <Typography component="li" variant="body2">
+              <Typography 
+                component="li" 
+                variant="body2"
+                sx={{
+                  fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                  fontSize: '1rem',
+                }}
+              >
                 Different from your current password
               </Typography>
             </Box>
@@ -439,14 +660,16 @@ const PasswordUpdate: React.FC<PasswordUpdateProps> = ({
             display: 'flex', 
             gap: 2, 
             justifyContent: 'flex-end', 
-            mt: 4,
+            mt: 5,
+            pt: 3,
+            borderTop: '1px solid rgba(0, 0, 0, 0.08)',
             flexDirection: { xs: 'column', sm: 'row' }
           }}>
             <ActionButton
               type="submit"
               variant="contained"
               disabled={loading}
-              startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <CheckCircleIcon />}
+              startIcon={loading ? <CircularProgress size={22} color="inherit" /> : <CheckCircleIcon sx={{ fontSize: '1.5rem' }} />}
               sx={{
                 backgroundColor: '#dc2626',
                 '&:hover': {
@@ -454,6 +677,8 @@ const PasswordUpdate: React.FC<PasswordUpdateProps> = ({
                 },
                 '&:disabled': {
                   backgroundColor: '#fca5a5',
+                  boxShadow: 'none',
+                  transform: 'none',
                 },
               }}
             >

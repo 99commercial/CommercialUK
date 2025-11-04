@@ -19,8 +19,23 @@ import {
   CardContent,
   Chip,
   TablePagination,
+  Divider,
+  IconButton,
+  Stack,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import CloseIcon from '@mui/icons-material/Close';
+import PersonIcon from '@mui/icons-material/Person';
+import BusinessIcon from '@mui/icons-material/Business';
+import HomeIcon from '@mui/icons-material/Home';
+import InfoIcon from '@mui/icons-material/Info';
+import EmailIcon from '@mui/icons-material/Email';
+import PhoneIcon from '@mui/icons-material/Phone';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import axiosInstance from '../../../utils/axios';
+import Loader from '@/components/Loader';
 
 // Interface for the query data structure
 export interface QueryData {
@@ -62,9 +77,253 @@ interface MyPropertyQueriesProps {
   onQueryClick?: (query: QueryData) => void;
 }
 
+// Styled Components
+const StyledContainer = styled(Box)(({ theme }) => ({
+  backgroundColor: '#f8fafc',
+  minHeight: '100vh',
+  padding: theme.spacing(3),
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(2),
+  },
+}));
+
+const HeaderSection = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: theme.spacing(4),
+  padding: theme.spacing(3, 4),
+  background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+  borderRadius: theme.spacing(3),
+  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+  border: '1px solid rgba(220, 38, 38, 0.1)',
+  [theme.breakpoints.down('sm')]: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: theme.spacing(1.5),
+    padding: theme.spacing(2, 2.5),
+    marginBottom: theme.spacing(2.5),
+  },
+}));
+
+const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
+  borderRadius: theme.spacing(3),
+  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+  border: '1px solid rgba(226, 232, 240, 0.8)',
+  overflowX: 'auto',
+  overflowY: 'hidden',
+  background: '#ffffff',
+  [theme.breakpoints.down('md')]: {
+    borderRadius: theme.spacing(2),
+  },
+  [theme.breakpoints.down('sm')]: {
+    borderRadius: theme.spacing(1.5),
+    overflowX: 'scroll',
+    WebkitOverflowScrolling: 'touch',
+    '&::-webkit-scrollbar': {
+      height: '8px',
+    },
+    '&::-webkit-scrollbar-track': {
+      background: '#f1f1f1',
+      borderRadius: '4px',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      background: '#dc2626',
+      borderRadius: '4px',
+      '&:hover': {
+        background: '#b91c1c',
+      },
+    },
+  },
+}));
+
+const StyledTable = styled(Table)({
+  '& .MuiTableHead-root': {
+    backgroundColor: '#f8fafc',
+  },
+});
+
+const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
+  fontWeight: 700,
+  fontSize: '0.95rem',
+  fontFamily: '"Montserrat", sans-serif',
+  color: '#1e293b',
+  letterSpacing: '0.02em',
+  padding: theme.spacing(2, 3),
+  borderBottom: '2px solid rgba(220, 38, 38, 0.2)',
+  backgroundColor: '#f8fafc',
+  whiteSpace: 'nowrap',
+  [theme.breakpoints.down('md')]: {
+    padding: theme.spacing(1.5, 2),
+    fontSize: '0.85rem',
+    minWidth: '120px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(1, 1.5),
+    fontSize: '0.8rem',
+    minWidth: '100px',
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  cursor: 'pointer',
+  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+  borderBottom: '1px solid rgba(226, 232, 240, 0.8)',
+  '&:hover': {
+    backgroundColor: 'rgba(220, 38, 38, 0.05)',
+    transform: 'translateX(4px)',
+    boxShadow: 'inset 4px 0 0 #dc2626',
+  },
+  '&:last-child td': {
+    borderBottom: 'none',
+  },
+}));
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  fontFamily: '"Lato", sans-serif',
+  fontSize: '0.95rem',
+  color: '#334155',
+  padding: theme.spacing(2.5, 3),
+  fontWeight: 400,
+  letterSpacing: '0.01em',
+  borderBottom: '1px solid rgba(226, 232, 240, 0.6)',
+  [theme.breakpoints.down('md')]: {
+    padding: theme.spacing(1.5, 2),
+    fontSize: '0.85rem',
+    minWidth: '120px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(1, 1.5),
+    fontSize: '0.8rem',
+    minWidth: '100px',
+  },
+}));
+
+const StyledDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiDialog-paper': {
+    borderRadius: theme.spacing(3),
+    boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
+    overflow: 'hidden',
+    margin: theme.spacing(2),
+    maxHeight: 'calc(100% - 32px)',
+    [theme.breakpoints.down('sm')]: {
+      borderRadius: 0,
+      margin: 0,
+      maxHeight: '100%',
+      height: '100%',
+      maxWidth: '100%',
+      width: '100%',
+    },
+  },
+}));
+
+const StyledDialogTitle = styled(DialogTitle)(({ theme }) => ({
+  background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
+  color: '#ffffff',
+  fontFamily: '"Montserrat", sans-serif',
+  fontWeight: 700,
+  fontSize: '1.5rem',
+  letterSpacing: '-0.01em',
+  padding: theme.spacing(3, 4),
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  borderBottom: 'none',
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(2, 2.5),
+    fontSize: '1.25rem',
+    flexWrap: 'wrap',
+    gap: theme.spacing(1),
+  },
+}));
+
+const StyledDialogContent = styled(DialogContent)(({ theme }) => ({
+  padding: theme.spacing(3),
+  backgroundColor: '#f8fafc',
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(2),
+    maxHeight: 'calc(100vh - 140px)',
+    overflowY: 'auto',
+    '&::-webkit-scrollbar': {
+      width: '6px',
+    },
+    '&::-webkit-scrollbar-track': {
+      background: '#f1f1f1',
+      borderRadius: '3px',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      background: '#dc2626',
+      borderRadius: '3px',
+      '&:hover': {
+        background: '#b91c1c',
+      },
+    },
+  },
+}));
+
+const StyledCard = styled(Card)(({ theme }) => ({
+  borderRadius: theme.spacing(2),
+  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+  border: '1px solid rgba(226, 232, 240, 0.8)',
+  backgroundColor: '#ffffff',
+  transition: 'all 0.3s ease',
+  '&:hover': {
+    boxShadow: '0 8px 30px rgba(0, 0, 0, 0.12)',
+    borderColor: 'rgba(220, 38, 38, 0.3)',
+  },
+}));
+
+const StyledCardHeader = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing(1.5),
+  marginBottom: theme.spacing(2.5),
+  paddingBottom: theme.spacing(2),
+  borderBottom: '2px solid rgba(220, 38, 38, 0.2)',
+}));
+
+const InfoField = styled(Box)(({ theme }) => ({
+  minWidth: '200px',
+  flex: '1 1 200px',
+  padding: theme.spacing(1.5),
+  borderRadius: theme.spacing(1.5),
+  backgroundColor: '#f8fafc',
+  border: '1px solid rgba(226, 232, 240, 0.8)',
+  transition: 'all 0.2s ease',
+  '&:hover': {
+    backgroundColor: '#ffffff',
+    borderColor: 'rgba(220, 38, 38, 0.2)',
+    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+  },
+  [theme.breakpoints.down('sm')]: {
+    minWidth: '100%',
+    flex: '1 1 100%',
+    padding: theme.spacing(1.25),
+  },
+}));
+
+const StyledChip = styled(Chip)(({ theme }) => ({
+  fontFamily: '"Montserrat", sans-serif',
+  fontWeight: 600,
+  fontSize: '0.85rem',
+  height: '28px',
+}));
+
+const EmptyStateCard = styled(Card)(({ theme }) => ({
+  padding: theme.spacing(8),
+  textAlign: 'center',
+  background: 'linear-gradient(135deg, #ffffff 0%, #fafafa 100%)',
+  borderRadius: theme.spacing(3),
+  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+  border: '2px dashed rgba(220, 38, 38, 0.2)',
+}));
+
 const MyPropertyQueries: React.FC<MyPropertyQueriesProps> = ({ 
   onQueryClick 
 }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  
   const [queries, setQueries] = useState<QueryData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -91,7 +350,7 @@ const MyPropertyQueries: React.FC<MyPropertyQueriesProps> = ({
       setIsLoading(true);
       setError(null);
       
-      const response = await axiosInstance.get(`/api/user/agents/${agentId}/queries?page=${pageNumber}&limit=${limit}`);
+      const response = await axiosInstance.get(`/api/agent/agents/${agentId}/queries?page=${pageNumber}&limit=${limit}`);
       
       if (response.data.success) {
         setQueries(response.data.data?.queries || []);
@@ -117,56 +376,51 @@ const MyPropertyQueries: React.FC<MyPropertyQueriesProps> = ({
   // If loading, show loading state
   if (isLoading) {
     return (
-      <Box 
-        sx={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          alignItems: 'center', 
-          minHeight: '300px',
-          flexDirection: 'column',
-          gap: 2
-        }}
-      >
-        <CircularProgress size={40} />
-        <Typography 
-          variant="body1"
+      <StyledContainer>
+        <Paper 
           sx={{ 
-            color: '#1976d2',
-            fontWeight: 500,
-            fontSize: '16px',
-            fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif'
+            p: 4,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: '400px',
+            borderRadius: 3,
+            background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
           }}
         >
-          Loading property queries...
-        </Typography>
-      </Box>
+          <Loader
+            fullscreen={false}
+            size="medium"
+          />
+        </Paper>
+      </StyledContainer>
     );
   }
 
   // If error, show error state with table structure
   if (error) {
     return (
-      <Box>
+      <StyledContainer>
         {/* Error Message Banner */}
-        <Box 
+        <Card 
           sx={{ 
-            backgroundColor: '#ffebee',
-            border: '1px solid #f44336',
-            borderRadius: '8px',
-            padding: '16px',
-            margin: '16px 0',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 2
+            backgroundColor: '#fff5f5',
+            border: '2px solid #fecaca',
+            borderRadius: 3,
+            padding: 3,
+            marginBottom: 3,
+            boxShadow: '0 4px 20px rgba(220, 38, 38, 0.15)',
           }}
         >
           <Typography 
             variant="h6" 
             sx={{ 
-              color: '#d32f2f',
-              fontWeight: 600,
-              fontSize: '18px',
-              fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif'
+              color: '#dc2626',
+              fontWeight: 700,
+              fontSize: '1.25rem',
+              fontFamily: '"Montserrat", sans-serif',
+              mb: 1,
             }}
           >
             ⚠️ Error Loading Property Queries
@@ -174,26 +428,26 @@ const MyPropertyQueries: React.FC<MyPropertyQueriesProps> = ({
           <Typography 
             variant="body1"
             sx={{ 
-              color: '#b71c1c',
-              fontWeight: 500,
-              fontSize: '14px',
-              fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif'
+              color: '#991b1b',
+              fontWeight: 400,
+              fontSize: '1rem',
+              fontFamily: '"Lato", sans-serif',
             }}
           >
             {error}
           </Typography>
-        </Box>
+        </Card>
 
         {/* Empty Table with Error State */}
-        <TableContainer component={Paper} sx={{ mt: 1 }}>
-          <Table>
+        <StyledTableContainer>
+          <StyledTable>
             <TableHead>
-              <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-                <TableCell sx={{ fontWeight: 600 }}>Name</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Phone</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Company</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Property ID</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Agent ID</TableCell>
+              <TableRow>
+                <StyledTableHeadCell>Name</StyledTableHeadCell>
+                <StyledTableHeadCell>Phone</StyledTableHeadCell>
+                <StyledTableHeadCell>Company</StyledTableHeadCell>
+                <StyledTableHeadCell>Property ID</StyledTableHeadCell>
+                <StyledTableHeadCell>Agent ID</StyledTableHeadCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -204,17 +458,17 @@ const MyPropertyQueries: React.FC<MyPropertyQueriesProps> = ({
                       display: 'flex',
                       justifyContent: 'center',
                       alignItems: 'center',
-                      padding: '40px 20px',
+                      padding: { xs: '40px 15px', sm: '60px 20px' },
                       textAlign: 'center'
                     }}
                   >
                     <Typography 
                       variant="body1"
                       sx={{ 
-                        color: '#666666',
+                        color: '#64748b',
                         fontWeight: 400,
-                        fontSize: '14px',
-                        fontStyle: 'italic'
+                        fontSize: { xs: '0.875rem', sm: '1rem' },
+                        fontFamily: '"Lato", sans-serif',
                       }}
                     >
                       Unable to load property queries due to an error
@@ -222,50 +476,63 @@ const MyPropertyQueries: React.FC<MyPropertyQueriesProps> = ({
                   </Box>
                 </TableCell>
               </TableRow>
-            </ TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
+            </TableBody>
+          </StyledTable>
+        </StyledTableContainer>
+      </StyledContainer>
     );
   }
 
   // If no queries, show empty state centered
   if (!queries || queries.length === 0) {
     return (
-      <Box 
-        sx={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          alignItems: 'center', 
-          minHeight: '400px',
-          flexDirection: 'column',
-          gap: 2
-        }}
-      >
-        <Typography 
-          variant="h5" 
-          sx={{ 
-            color: '#666666',
-            fontWeight: 500,
-            fontSize: '20px',
-            fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif'
-          }}
-        >
-          No property queries received yet
-        </Typography>
-        <Typography 
-          variant="body1"
-          sx={{ 
-            color: '#999999',
-            fontWeight: 400,
-            fontSize: '14px',
-            fontStyle: 'italic',
-            fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif'
-          }}
-        >
-          When users enquire about your properties, they will appear here
-        </Typography>
-      </Box>
+      <StyledContainer>
+        <HeaderSection>
+          <Box>
+            <Typography 
+              variant="h4" 
+              sx={{ 
+                fontWeight: 700, 
+                color: '#1e293b',
+                fontFamily: '"Montserrat", sans-serif',
+                fontSize: { xs: '1.75rem', md: '2.25rem' },
+                letterSpacing: '-0.015em',
+                mb: 0.5,
+              }}
+            >
+              Property Queries Received
+            </Typography>
+          </Box>
+        </HeaderSection>
+        <EmptyStateCard>
+          <Typography 
+            variant="h5" 
+            sx={{ 
+              color: '#1e293b',
+              fontWeight: 700,
+              fontSize: '1.75rem',
+              fontFamily: '"Montserrat", sans-serif',
+              mb: 2,
+              letterSpacing: '-0.015em',
+            }}
+          >
+            No property queries received yet
+          </Typography>
+          <Typography 
+            variant="body1"
+            sx={{ 
+              color: '#64748b',
+              fontWeight: 400,
+              fontSize: '1.1rem',
+              fontFamily: '"Lato", sans-serif',
+              lineHeight: 1.6,
+              letterSpacing: '0.01em',
+            }}
+          >
+            When users enquire about your properties, they will appear here
+          </Typography>
+        </EmptyStateCard>
+      </StyledContainer>
     );
   }
 
@@ -296,328 +563,1017 @@ const MyPropertyQueries: React.FC<MyPropertyQueriesProps> = ({
   };
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h6" gutterBottom>
-        Property Queries Received
-      </Typography>
+    <StyledContainer>
+      <HeaderSection>
+        <Box>
+          <Typography 
+            variant="h4" 
+            sx={{ 
+              fontWeight: 700, 
+              color: '#1e293b',
+              fontFamily: '"Montserrat", sans-serif',
+              fontSize: { xs: '1.75rem', md: '2.25rem' },
+              letterSpacing: '-0.015em',
+              mb: 0.5,
+            }}
+          >
+            Property Queries Received
+          </Typography>
+          <Typography 
+            variant="body1" 
+            sx={{ 
+              color: '#64748b', 
+              mt: 0.5,
+              fontFamily: '"Lato", sans-serif',
+              fontSize: '1rem',
+              fontWeight: 400,
+              letterSpacing: '0.01em',
+            }}
+          >
+            {pagination.total_documents} {pagination.total_documents === 1 ? 'query' : 'queries'} received
+          </Typography>
+        </Box>
+      </HeaderSection>
       
-      <TableContainer component={Paper} sx={{ mt: 2 }}>
-        <Table>
+      <StyledTableContainer>
+        <StyledTable>
           <TableHead>
-            <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-              <TableCell sx={{ fontWeight: 600 }}>Name</TableCell>
-              <TableCell sx={{ fontWeight: 600 }}>Phone</TableCell>
-              <TableCell sx={{ fontWeight: 600 }}>Company</TableCell>
-              <TableCell sx={{ fontWeight: 600 }}>Property ID</TableCell>
-              <TableCell sx={{ fontWeight: 600 }}>Agent ID</TableCell>
+            <TableRow>
+              <StyledTableHeadCell>Name</StyledTableHeadCell>
+              <StyledTableHeadCell>Phone</StyledTableHeadCell>
+              <StyledTableHeadCell>Company</StyledTableHeadCell>
+              <StyledTableHeadCell>Property ID</StyledTableHeadCell>
+              <StyledTableHeadCell>Agent ID</StyledTableHeadCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {queries.map((query) => (
-              <TableRow 
+            {queries.map((query, index) => (
+              <StyledTableRow 
                 key={query._id} 
-                hover
                 onClick={() => handleRowClick(query)}
-                sx={{ cursor: 'pointer' }}
               >
-                <TableCell>
-                  {query.first_name} {query.last_name}
-                </TableCell>
-                <TableCell>
-                  {query.phone}
-                </TableCell>
-                <TableCell>
-                  {query.company}
-                </TableCell>
-                <TableCell>
-                  {query.property_id?._id || 'N/A'}
-                </TableCell>
-                <TableCell>
-                  {query.agent_id}
-                </TableCell>
-              </TableRow>
+                <StyledTableCell>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <PersonIcon sx={{ fontSize: { xs: '1rem', sm: '1.2rem' }, color: '#dc2626', opacity: 0.7, flexShrink: 0 }} />
+                    <Typography sx={{ 
+                      fontFamily: '"Lato", sans-serif', 
+                      fontWeight: 500,
+                      fontSize: { xs: '0.75rem', sm: '0.95rem' },
+                      whiteSpace: 'nowrap',
+                    }}>
+                      {query.first_name} {query.last_name}
+                    </Typography>
+                  </Box>
+                </StyledTableCell>
+                <StyledTableCell>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <PhoneIcon sx={{ fontSize: { xs: '0.9rem', sm: '1.1rem' }, color: '#64748b', opacity: 0.6, flexShrink: 0 }} />
+                    <Typography sx={{ 
+                      fontFamily: '"Lato", sans-serif',
+                      fontSize: { xs: '0.75rem', sm: '0.95rem' },
+                      whiteSpace: 'nowrap',
+                      wordBreak: { xs: 'break-all', sm: 'normal' },
+                    }}>
+                      {query.phone}
+                    </Typography>
+                  </Box>
+                </StyledTableCell>
+                <StyledTableCell>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <BusinessIcon sx={{ fontSize: { xs: '0.9rem', sm: '1.1rem' }, color: '#64748b', opacity: 0.6, flexShrink: 0 }} />
+                    <Typography sx={{ 
+                      fontFamily: '"Lato", sans-serif',
+                      fontSize: { xs: '0.75rem', sm: '0.95rem' },
+                      whiteSpace: 'nowrap',
+                    }}>
+                      {query.company || 'N/A'}
+                    </Typography>
+                  </Box>
+                </StyledTableCell>
+                <StyledTableCell>
+                  <Chip 
+                    label={query.property_id?._id?.substring(0, 8) + '...' || 'N/A'} 
+                    size="small" 
+                    sx={{ 
+                      fontFamily: '"Montserrat", sans-serif',
+                      fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                      fontWeight: 600,
+                      backgroundColor: 'rgba(220, 38, 38, 0.1)',
+                      color: '#dc2626',
+                      whiteSpace: 'nowrap',
+                    }}
+                  />
+                </StyledTableCell>
+                <StyledTableCell>
+                  <Chip 
+                    label={query.agent_id?.substring(0, 8) + '...' || 'N/A'} 
+                    size="small" 
+                    sx={{ 
+                      fontFamily: '"Montserrat", sans-serif',
+                      fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                      fontWeight: 600,
+                      backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                      color: '#3b82f6',
+                      whiteSpace: 'nowrap',
+                    }}
+                  />
+                </StyledTableCell>
+              </StyledTableRow>
             ))}
           </TableBody>
-        </Table>
-      </TableContainer>
+        </StyledTable>
+      </StyledTableContainer>
 
       {/* TablePagination */}
-      <TablePagination
-        component="div"
-        count={pagination.total_documents}
-        page={pagination.current_page - 1}
-        onPageChange={(event, newPage) => fetchPropertyQueries(newPage + 1)}
-        rowsPerPage={pagination.limit}
-        onRowsPerPageChange={(event) => fetchPropertyQueries(1, parseInt(event.target.value))}
-        rowsPerPageOptions={[5, 10, 25, 50]}
-        sx={{
-          backgroundColor: '#f5f5f5',
-        }}
-      />
+      {pagination.total_pages > 0 && (
+        <Box sx={{ 
+          mt: { xs: 2, sm: 3 },
+          background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+          borderRadius: { xs: 2, sm: 3 },
+          p: { xs: 1.5, sm: 2 },
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+          border: '1px solid rgba(220, 38, 38, 0.1)',
+          overflowX: 'auto',
+        }}>
+          <TablePagination
+            component="div"
+            count={pagination.total_documents}
+            page={pagination.current_page - 1}
+            onPageChange={(event, newPage) => fetchPropertyQueries(newPage + 1)}
+            rowsPerPage={pagination.limit}
+            onRowsPerPageChange={(event) => fetchPropertyQueries(1, parseInt(event.target.value))}
+            rowsPerPageOptions={[5, 10, 25, 50]}
+            sx={{
+              '& .MuiTablePagination-toolbar': {
+                fontFamily: '"Lato", sans-serif',
+                flexWrap: { xs: 'wrap', sm: 'nowrap' },
+                gap: { xs: 1, sm: 0 },
+                padding: { xs: '8px 0', sm: '0' },
+              },
+              '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
+                fontFamily: '"Lato", sans-serif',
+                fontWeight: 500,
+                fontSize: { xs: '0.8rem', sm: '0.95rem' },
+              },
+              '& .MuiTablePagination-select, & .MuiTablePagination-actions': {
+                fontSize: { xs: '0.8rem', sm: '0.95rem' },
+              },
+            }}
+          />
+        </Box>
+      )}
 
       {/* Query Details Modal */}
-      <Dialog 
+      <StyledDialog 
         open={modalOpen} 
         onClose={handleCloseModal}
         maxWidth="md"
         fullWidth
+        fullScreen={isMobile}
       >
-        <DialogTitle>
-          Query Details - Property ID: {selectedQuery?.property_id?._id}
-        </DialogTitle>
-        <DialogContent>
+        <StyledDialogTitle>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, sm: 1.5 }, flex: 1 }}>
+            <HomeIcon sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' }, flexShrink: 0 }} />
+            <Box sx={{ minWidth: 0, flex: 1 }}>
+              <Typography 
+                variant="h6" 
+                sx={{ 
+                  fontFamily: '"Montserrat", sans-serif', 
+                  fontWeight: 700, 
+                  mb: { xs: 0.25, sm: 0.5 },
+                  fontSize: { xs: '1rem', sm: '1.25rem' },
+                }}
+              >
+                Query Details
+              </Typography>
+              <Typography 
+                variant="body2" 
+                sx={{ 
+                  fontFamily: '"Lato", sans-serif', 
+                  opacity: 0.9, 
+                  fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                  wordBreak: 'break-word',
+                }}
+              >
+                Property ID: {selectedQuery?.property_id?._id?.substring(0, isMobile ? 12 : 16)}...
+              </Typography>
+            </Box>
+          </Box>
+          <IconButton 
+            onClick={handleCloseModal}
+            sx={{ 
+              color: '#ffffff',
+              flexShrink: 0,
+              padding: { xs: '4px', sm: '8px' },
+              '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.2)' }
+            }}
+          >
+            <CloseIcon sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }} />
+          </IconButton>
+        </StyledDialogTitle>
+        <StyledDialogContent>
           {selectedQuery && (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-              {/* Personal Information */}
-              <Card>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom color="primary">
-                    Personal Information
-                  </Typography>
+            <StyledCard>
+              <CardContent sx={{ p: { xs: 2.5, sm: 4 } }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 2.5, sm: 4 } }}>
+                  {/* Personal Information */}
+                  <Box>
+                    <StyledCardHeader>
+                      <PersonIcon sx={{ color: '#dc2626', fontSize: { xs: '1.25rem', sm: '1.5rem' }, flexShrink: 0 }} />
+                      <Typography 
+                        variant="h6" 
+                        sx={{ 
+                          fontFamily: '"Montserrat", sans-serif',
+                          fontWeight: 700,
+                          color: '#1e293b',
+                          fontSize: { xs: '1.1rem', sm: '1.25rem' },
+                        }}
+                      >
+                        Personal Information
+                      </Typography>
+                    </StyledCardHeader>
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-                    <Box sx={{ minWidth: '200px', flex: '1 1 200px' }}>
-                      <Typography variant="body2" color="text.secondary">
+                    <InfoField>
+                      <Typography 
+                        variant="body2" 
+                        sx={{ 
+                          color: '#64748b',
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 600,
+                          fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                          mb: 0.5,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.05em',
+                        }}
+                      >
                         Title:
                       </Typography>
-                      <Typography variant="body1">
+                      <Typography 
+                        variant="body1"
+                        sx={{ 
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 500,
+                          color: '#1e293b',
+                          fontSize: { xs: '0.9rem', sm: '1rem' },
+                        }}
+                      >
                         {selectedQuery.title}
                       </Typography>
-                    </Box>
-                    <Box sx={{ minWidth: '200px', flex: '1 1 200px' }}>
-                      <Typography variant="body2" color="text.secondary">
+                    </InfoField>
+                    <InfoField>
+                      <Typography 
+                        variant="body2" 
+                        sx={{ 
+                          color: '#64748b',
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 600,
+                          fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                          mb: 0.5,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.05em',
+                        }}
+                      >
                         Company:
                       </Typography>
-                      <Typography variant="body1">
-                        {selectedQuery.company}
+                      <Typography 
+                        variant="body1"
+                        sx={{ 
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 500,
+                          color: '#1e293b',
+                          fontSize: { xs: '0.9rem', sm: '1rem' },
+                        }}
+                      >
+                        {selectedQuery.company || 'N/A'}
                       </Typography>
-                    </Box>
-                    <Box sx={{ minWidth: '200px', flex: '1 1 200px' }}>
-                      <Typography variant="body2" color="text.secondary">
+                    </InfoField>
+                    <InfoField>
+                      <Typography 
+                        variant="body2" 
+                        sx={{ 
+                          color: '#64748b',
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 600,
+                          fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                          mb: 0.5,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.05em',
+                        }}
+                      >
                         First Name:
                       </Typography>
-                      <Typography variant="body1">
+                      <Typography 
+                        variant="body1"
+                        sx={{ 
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 500,
+                          color: '#1e293b',
+                          fontSize: { xs: '0.9rem', sm: '1rem' },
+                        }}
+                      >
                         {selectedQuery.first_name}
                       </Typography>
-                    </Box>
-                    <Box sx={{ minWidth: '200px', flex: '1 1 200px' }}>
-                      <Typography variant="body2" color="text.secondary">
+                    </InfoField>
+                    <InfoField>
+                      <Typography 
+                        variant="body2" 
+                        sx={{ 
+                          color: '#64748b',
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 600,
+                          fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                          mb: 0.5,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.05em',
+                        }}
+                      >
                         Last Name:
                       </Typography>
-                      <Typography variant="body1">
+                      <Typography 
+                        variant="body1"
+                        sx={{ 
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 500,
+                          color: '#1e293b',
+                          fontSize: { xs: '0.9rem', sm: '1rem' },
+                        }}
+                      >
                         {selectedQuery.last_name}
                       </Typography>
-                    </Box>
-                    <Box sx={{ minWidth: '200px', flex: '1 1 200px' }}>
-                      <Typography variant="body2" color="text.secondary">
-                        Email:
-                      </Typography>
-                      <Typography variant="body1">
+                    </InfoField>
+                    <InfoField>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                        <EmailIcon sx={{ fontSize: { xs: '0.9rem', sm: '1rem' }, color: '#64748b', flexShrink: 0 }} />
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            color: '#64748b',
+                            fontFamily: '"Lato", sans-serif',
+                            fontWeight: 600,
+                            fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em',
+                          }}
+                        >
+                          Email:
+                        </Typography>
+                      </Box>
+                      <Typography 
+                        variant="body1"
+                        sx={{ 
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 500,
+                          color: '#1e293b',
+                          fontSize: { xs: '0.9rem', sm: '1rem' },
+                          wordBreak: 'break-word',
+                        }}
+                      >
                         {selectedQuery.email}
                       </Typography>
-                    </Box>
-                    <Box sx={{ minWidth: '200px', flex: '1 1 200px' }}>
-                      <Typography variant="body2" color="text.secondary">
-                        Phone:
-                      </Typography>
-                      <Typography variant="body1">
+                    </InfoField>
+                    <InfoField>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                        <PhoneIcon sx={{ fontSize: { xs: '0.9rem', sm: '1rem' }, color: '#64748b', flexShrink: 0 }} />
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            color: '#64748b',
+                            fontFamily: '"Lato", sans-serif',
+                            fontWeight: 600,
+                            fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em',
+                          }}
+                        >
+                          Phone:
+                        </Typography>
+                      </Box>
+                      <Typography 
+                        variant="body1"
+                        sx={{ 
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 500,
+                          color: '#1e293b',
+                          fontSize: { xs: '0.9rem', sm: '1rem' },
+                        }}
+                      >
                         {selectedQuery.phone}
                       </Typography>
-                    </Box>
+                    </InfoField>
                   </Box>
-                </CardContent>
-              </Card>
+                </Box>
 
-              {/* Query Details */}
-              <Card>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom color="primary">
-                    Query Details
-                  </Typography>
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-                    <Box sx={{ minWidth: '200px', flex: '1 1 200px' }}>
-                      <Typography variant="body2" color="text.secondary">
+                <Divider sx={{ my: { xs: 2, sm: 3 } }} />
+
+                {/* Query Details */}
+                <Box>
+                  <StyledCardHeader>
+                    <InfoIcon sx={{ color: '#dc2626', fontSize: { xs: '1.25rem', sm: '1.5rem' }, flexShrink: 0 }} />
+                    <Typography 
+                      variant="h6" 
+                      sx={{ 
+                        fontFamily: '"Montserrat", sans-serif',
+                        fontWeight: 700,
+                        color: '#1e293b',
+                        fontSize: { xs: '1.1rem', sm: '1.25rem' },
+                      }}
+                    >
+                      Query Details
+                    </Typography>
+                  </StyledCardHeader>
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: { xs: 1.5, sm: 2 } }}>
+                    <InfoField>
+                      <Typography 
+                        variant="body2" 
+                        sx={{ 
+                          color: '#64748b',
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 600,
+                          fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                          mb: 0.5,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.05em',
+                        }}
+                      >
                         No of People:
                       </Typography>
-                      <Typography variant="body1">
+                      <Typography 
+                        variant="body1"
+                        sx={{ 
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 500,
+                          color: '#1e293b',
+                          fontSize: { xs: '0.9rem', sm: '1rem' },
+                        }}
+                      >
                         {selectedQuery.no_of_people}
                       </Typography>
-                    </Box>
-                    <Box sx={{ minWidth: '200px', flex: '1 1 200px' }}>
-                      <Typography variant="body2" color="text.secondary">
+                    </InfoField>
+                    <InfoField>
+                      <Typography 
+                        variant="body2" 
+                        sx={{ 
+                          color: '#64748b',
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 600,
+                          fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                          mb: 0.5,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.05em',
+                        }}
+                      >
                         Length of Term:
                       </Typography>
-                      <Typography variant="body1">
+                      <Typography 
+                        variant="body1"
+                        sx={{ 
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 500,
+                          color: '#1e293b',
+                          fontSize: { xs: '0.9rem', sm: '1rem' },
+                        }}
+                      >
                         {selectedQuery.length_of_term}
                       </Typography>
-                    </Box>
-                    <Box sx={{ minWidth: '200px', flex: '1 1 200px' }}>
-                      <Typography variant="body2" color="text.secondary">
-                        Start Date:
+                    </InfoField>
+                    <InfoField>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                        <CalendarTodayIcon sx={{ fontSize: { xs: '0.9rem', sm: '1rem' }, color: '#64748b', flexShrink: 0 }} />
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            color: '#64748b',
+                            fontFamily: '"Lato", sans-serif',
+                            fontWeight: 600,
+                            fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em',
+                          }}
+                        >
+                          Start Date:
+                        </Typography>
+                      </Box>
+                      <Typography 
+                        variant="body1"
+                        sx={{ 
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 500,
+                          color: '#1e293b',
+                          fontSize: { xs: '0.9rem', sm: '1rem' },
+                        }}
+                      >
+                        {new Date(selectedQuery.start_date).toLocaleDateString('en-US', { 
+                          year: 'numeric', 
+                          month: 'long', 
+                          day: 'numeric' 
+                        })}
                       </Typography>
-                      <Typography variant="body1">
-                        {new Date(selectedQuery.start_date).toLocaleDateString()}
-                      </Typography>
-                    </Box>
-                    <Box sx={{ minWidth: '100%', flex: '1 1 100%' }}>
-                      <Typography variant="body2" color="text.secondary">
+                    </InfoField>
+                    <InfoField sx={{ minWidth: '100%', flex: '1 1 100%' }}>
+                      <Typography 
+                        variant="body2" 
+                        sx={{ 
+                          color: '#64748b',
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 600,
+                          fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                          mb: 1,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.05em',
+                        }}
+                      >
                         Message:
                       </Typography>
-                      <Typography variant="body1">
-                        {selectedQuery.message}
+                      <Typography 
+                        variant="body1"
+                        sx={{ 
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 400,
+                          color: '#334155',
+                          fontSize: { xs: '0.9rem', sm: '1rem' },
+                          lineHeight: 1.7,
+                          whiteSpace: 'pre-wrap',
+                          wordBreak: 'break-word',
+                        }}
+                      >
+                        {selectedQuery.message || 'No message provided'}
                       </Typography>
-                    </Box>
+                    </InfoField>
                   </Box>
-                </CardContent>
-              </Card>
+                </Box>
 
-              {/* Property Information */}
-              <Card>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom color="primary">
-                    Property Information
-                  </Typography>
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-                    <Box sx={{ minWidth: '100%', flex: '1 1 100%' }}>
-                      <Typography variant="body2" color="text.secondary">
+                <Divider sx={{ my: { xs: 2, sm: 3 } }} />
+
+                {/* Property Information */}
+                <Box>
+                  <StyledCardHeader>
+                    <HomeIcon sx={{ color: '#dc2626', fontSize: { xs: '1.25rem', sm: '1.5rem' }, flexShrink: 0 }} />
+                    <Typography 
+                      variant="h6" 
+                      sx={{ 
+                        fontFamily: '"Montserrat", sans-serif',
+                        fontWeight: 700,
+                        color: '#1e293b',
+                        fontSize: { xs: '1.1rem', sm: '1.25rem' },
+                      }}
+                    >
+                      Property Information
+                    </Typography>
+                  </StyledCardHeader>
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: { xs: 1.5, sm: 2 } }}>
+                    <InfoField sx={{ minWidth: '100%', flex: '1 1 100%' }}>
+                      <Typography 
+                        variant="body2" 
+                        sx={{ 
+                          color: '#64748b',
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 600,
+                          fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                          mb: 0.5,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.05em',
+                        }}
+                      >
                         Property ID:
                       </Typography>
-                      <Typography variant="body1">
-                        {selectedQuery.property_id?._id}
-                      </Typography>
-                    </Box>
-                    <Box sx={{ minWidth: '100%', flex: '1 1 100%' }}>
-                      <Typography variant="body2" color="text.secondary">
+                      <Chip 
+                        label={selectedQuery.property_id?._id || 'N/A'} 
+                        size="small" 
+                        sx={{ 
+                          fontFamily: '"Montserrat", sans-serif',
+                          fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                          fontWeight: 600,
+                          backgroundColor: 'rgba(220, 38, 38, 0.1)',
+                          color: '#dc2626',
+                          height: 'auto',
+                          py: 0.5,
+                        }}
+                      />
+                    </InfoField>
+                    <InfoField sx={{ minWidth: '100%', flex: '1 1 100%' }}>
+                      <Typography 
+                        variant="body2" 
+                        sx={{ 
+                          color: '#64748b',
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 600,
+                          fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                          mb: 0.5,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.05em',
+                        }}
+                      >
                         Building Name:
                       </Typography>
-                      <Typography variant="body1">
+                      <Typography 
+                        variant="body1"
+                        sx={{ 
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 500,
+                          color: '#1e293b',
+                          fontSize: { xs: '0.9rem', sm: '1rem' },
+                        }}
+                      >
                         {selectedQuery.property_id?.general_details?.building_name || 'N/A'}
                       </Typography>
-                    </Box>
-                    <Box sx={{ minWidth: '100%', flex: '1 1 100%' }}>
-                      <Typography variant="body2" color="text.secondary">
+                    </InfoField>
+                    <InfoField sx={{ minWidth: '100%', flex: '1 1 100%' }}>
+                      <Typography 
+                        variant="body2" 
+                        sx={{ 
+                          color: '#64748b',
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 600,
+                          fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                          mb: 0.5,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.05em',
+                        }}
+                      >
                         Address:
                       </Typography>
-                      <Typography variant="body1">
+                      <Typography 
+                        variant="body1"
+                        sx={{ 
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 500,
+                          color: '#1e293b',
+                          fontSize: { xs: '0.9rem', sm: '1rem' },
+                          lineHeight: 1.6,
+                        }}
+                      >
                         {selectedQuery.property_id?.general_details?.address || 'N/A'}
                       </Typography>
-                    </Box>
-                    <Box sx={{ minWidth: '200px', flex: '1 1 200px' }}>
-                      <Typography variant="body2" color="text.secondary">
+                    </InfoField>
+                    <InfoField>
+                      <Typography 
+                        variant="body2" 
+                        sx={{ 
+                          color: '#64748b',
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 600,
+                          fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                          mb: 0.5,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.05em',
+                        }}
+                      >
                         City:
                       </Typography>
-                      <Typography variant="body1">
+                      <Typography 
+                        variant="body1"
+                        sx={{ 
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 500,
+                          color: '#1e293b',
+                          fontSize: { xs: '0.9rem', sm: '1rem' },
+                        }}
+                      >
                         {selectedQuery.property_id?.general_details?.town_city || 'N/A'}
                       </Typography>
-                    </Box>
-                    <Box sx={{ minWidth: '200px', flex: '1 1 200px' }}>
-                      <Typography variant="body2" color="text.secondary">
+                    </InfoField>
+                    <InfoField>
+                      <Typography 
+                        variant="body2" 
+                        sx={{ 
+                          color: '#64748b',
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 600,
+                          fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                          mb: 0.5,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.05em',
+                        }}
+                      >
                         Property Type:
                       </Typography>
-                      <Typography variant="body1">
-                        {selectedQuery.property_id?.general_details?.property_type || 'N/A'}
-                      </Typography>
-                    </Box>
+                      <Chip 
+                        label={selectedQuery.property_id?.general_details?.property_type || 'N/A'} 
+                        size="small" 
+                        sx={{ 
+                          fontFamily: '"Montserrat", sans-serif',
+                          fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                          fontWeight: 600,
+                          backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                          color: '#3b82f6',
+                        }}
+                      />
+                    </InfoField>
                   </Box>
-                </CardContent>
-              </Card>
+                </Box>
 
-              {/* User Information */}
-              <Card>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom color="primary">
-                    User Information
-                  </Typography>
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-                    <Box sx={{ minWidth: '100%', flex: '1 1 100%' }}>
-                      <Typography variant="body2" color="text.secondary">
+                <Divider sx={{ my: { xs: 2, sm: 3 } }} />
+
+                {/* User Information */}
+                <Box>
+                  <StyledCardHeader>
+                    <PersonIcon sx={{ color: '#dc2626', fontSize: { xs: '1.25rem', sm: '1.5rem' }, flexShrink: 0 }} />
+                    <Typography 
+                      variant="h6" 
+                      sx={{ 
+                        fontFamily: '"Montserrat", sans-serif',
+                        fontWeight: 700,
+                        color: '#1e293b',
+                        fontSize: { xs: '1.1rem', sm: '1.25rem' },
+                      }}
+                    >
+                      User Information
+                    </Typography>
+                  </StyledCardHeader>
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: { xs: 1.5, sm: 2 } }}>
+                    <InfoField sx={{ minWidth: '100%', flex: '1 1 100%' }}>
+                      <Typography 
+                        variant="body2" 
+                        sx={{ 
+                          color: '#64748b',
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 600,
+                          fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                          mb: 0.5,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.05em',
+                        }}
+                      >
                         User ID:
                       </Typography>
-                      <Typography variant="body1">
-                        {selectedQuery.user_id._id}
-                      </Typography>
-                    </Box>
-                    <Box sx={{ minWidth: '200px', flex: '1 1 200px' }}>
-                      <Typography variant="body2" color="text.secondary">
-                        Email:
-                      </Typography>
-                      <Typography variant="body1">
+                      <Chip 
+                        label={selectedQuery.user_id._id} 
+                        size="small" 
+                        sx={{ 
+                          fontFamily: '"Montserrat", sans-serif',
+                          fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                          fontWeight: 600,
+                          backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                          color: '#10b981',
+                        }}
+                      />
+                    </InfoField>
+                    <InfoField>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                        <EmailIcon sx={{ fontSize: { xs: '0.9rem', sm: '1rem' }, color: '#64748b', flexShrink: 0 }} />
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            color: '#64748b',
+                            fontFamily: '"Lato", sans-serif',
+                            fontWeight: 600,
+                            fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em',
+                          }}
+                        >
+                          Email:
+                        </Typography>
+                      </Box>
+                      <Typography 
+                        variant="body1"
+                        sx={{ 
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 500,
+                          color: '#1e293b',
+                          fontSize: { xs: '0.9rem', sm: '1rem' },
+                          wordBreak: 'break-word',
+                        }}
+                      >
                         {selectedQuery.user_id.email}
                       </Typography>
-                    </Box>
-                    <Box sx={{ minWidth: '200px', flex: '1 1 200px' }}>
-                      <Typography variant="body2" color="text.secondary">
-                        Phone:
+                    </InfoField>
+                    <InfoField>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                        <PhoneIcon sx={{ fontSize: { xs: '0.9rem', sm: '1rem' }, color: '#64748b', flexShrink: 0 }} />
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            color: '#64748b',
+                            fontFamily: '"Lato", sans-serif',
+                            fontWeight: 600,
+                            fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em',
+                          }}
+                        >
+                          Phone:
+                        </Typography>
+                      </Box>
+                      <Typography 
+                        variant="body1"
+                        sx={{ 
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 500,
+                          color: '#1e293b',
+                          fontSize: { xs: '0.9rem', sm: '1rem' },
+                        }}
+                      >
+                        {selectedQuery.user_id.phone || 'N/A'}
                       </Typography>
-                      <Typography variant="body1">
-                        {selectedQuery.user_id.phone}
-                      </Typography>
-                    </Box>
+                    </InfoField>
                   </Box>
-                </CardContent>
-              </Card>
+                </Box>
 
-              {/* System Information */}
-              <Card>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom color="primary">
-                    System Information
-                  </Typography>
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-                    <Box sx={{ minWidth: '100%', flex: '1 1 100%' }}>
-                      <Typography variant="body2" color="text.secondary">
+                <Divider sx={{ my: { xs: 2, sm: 3 } }} />
+
+                {/* System Information */}
+                <Box>
+                  <StyledCardHeader>
+                    <InfoIcon sx={{ color: '#dc2626', fontSize: { xs: '1.25rem', sm: '1.5rem' }, flexShrink: 0 }} />
+                    <Typography 
+                      variant="h6" 
+                      sx={{ 
+                        fontFamily: '"Montserrat", sans-serif',
+                        fontWeight: 700,
+                        color: '#1e293b',
+                        fontSize: { xs: '1.1rem', sm: '1.25rem' },
+                      }}
+                    >
+                      System Information
+                    </Typography>
+                  </StyledCardHeader>
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: { xs: 1.5, sm: 2 } }}>
+                    <InfoField sx={{ minWidth: '100%', flex: '1 1 100%' }}>
+                      <Typography 
+                        variant="body2" 
+                        sx={{ 
+                          color: '#64748b',
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 600,
+                          fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                          mb: 0.5,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.05em',
+                        }}
+                      >
                         Query ID:
                       </Typography>
-                      <Typography variant="body1">
-                        {selectedQuery._id}
-                      </Typography>
-                    </Box>
-                    <Box sx={{ minWidth: '200px', flex: '1 1 200px' }}>
-                      <Typography variant="body2" color="text.secondary">
+                      <Chip 
+                        label={selectedQuery._id} 
+                        size="small" 
+                        sx={{ 
+                          fontFamily: '"Montserrat", sans-serif',
+                          fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                          fontWeight: 600,
+                          backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                          color: '#8b5cf6',
+                        }}
+                      />
+                    </InfoField>
+                    <InfoField>
+                      <Typography 
+                        variant="body2" 
+                        sx={{ 
+                          color: '#64748b',
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 600,
+                          fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                          mb: 0.5,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.05em',
+                        }}
+                      >
                         Agent ID:
                       </Typography>
-                      <Typography variant="body1">
-                        {selectedQuery.agent_id}
+                      <Chip 
+                        label={selectedQuery.agent_id?.substring(0, 16) + '...'} 
+                        size="small" 
+                        sx={{ 
+                          fontFamily: '"Montserrat", sans-serif',
+                          fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                          fontWeight: 600,
+                          backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                          color: '#3b82f6',
+                        }}
+                      />
+                    </InfoField>
+                    <InfoField>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                        <CalendarTodayIcon sx={{ fontSize: { xs: '0.9rem', sm: '1rem' }, color: '#64748b', flexShrink: 0 }} />
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            color: '#64748b',
+                            fontFamily: '"Lato", sans-serif',
+                            fontWeight: 600,
+                            fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em',
+                          }}
+                        >
+                          Created At:
+                        </Typography>
+                      </Box>
+                      <Typography 
+                        variant="body1"
+                        sx={{ 
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 500,
+                          color: '#1e293b',
+                          fontSize: { xs: '0.9rem', sm: '1rem' },
+                        }}
+                      >
+                        {new Date(selectedQuery.createdAt).toLocaleString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
                       </Typography>
-                    </Box>
-                    <Box sx={{ minWidth: '200px', flex: '1 1 200px' }}>
-                      <Typography variant="body2" color="text.secondary">
-                        Created At:
+                    </InfoField>
+                    <InfoField>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                        <CalendarTodayIcon sx={{ fontSize: { xs: '0.9rem', sm: '1rem' }, color: '#64748b', flexShrink: 0 }} />
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            color: '#64748b',
+                            fontFamily: '"Lato", sans-serif',
+                            fontWeight: 600,
+                            fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em',
+                          }}
+                        >
+                          Updated At:
+                        </Typography>
+                      </Box>
+                      <Typography 
+                        variant="body1"
+                        sx={{ 
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 500,
+                          color: '#1e293b',
+                          fontSize: { xs: '0.9rem', sm: '1rem' },
+                        }}
+                      >
+                        {new Date(selectedQuery.updatedAt).toLocaleString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
                       </Typography>
-                      <Typography variant="body1">
-                        {new Date(selectedQuery.createdAt).toLocaleString()}
-                      </Typography>
-                    </Box>
-                    <Box sx={{ minWidth: '200px', flex: '1 1 200px' }}>
-                      <Typography variant="body2" color="text.secondary">
-                        Updated At:
-                      </Typography>
-                      <Typography variant="body1">
-                        {new Date(selectedQuery.updatedAt).toLocaleString()}
-                      </Typography>
-                    </Box>
-                    <Box sx={{ minWidth: '200px', flex: '1 1 200px' }}>
-                      <Typography variant="body2" color="text.secondary">
+                    </InfoField>
+                    <InfoField>
+                      <Typography 
+                        variant="body2" 
+                        sx={{ 
+                          color: '#64748b',
+                          fontFamily: '"Lato", sans-serif',
+                          fontWeight: 600,
+                          fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                          mb: 0.5,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.05em',
+                        }}
+                      >
                         Status:
                       </Typography>
-                      <Chip 
+                      <StyledChip 
                         label={selectedQuery.deleted_at ? 'Deleted' : 'Active'} 
                         color={selectedQuery.deleted_at ? 'error' : 'success'}
                         size="small"
                       />
-                    </Box>
+                    </InfoField>
                   </Box>
-                </CardContent>
-              </Card>
-            </Box>
+                </Box>
+              </Box>
+              </CardContent>
+            </StyledCard>
           )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseModal} color="primary">
+        </StyledDialogContent>
+        <DialogActions sx={{ 
+          p: { xs: 2, sm: 3 }, 
+          backgroundColor: '#f8fafc', 
+          borderTop: '1px solid rgba(226, 232, 240, 0.8)' 
+        }}>
+          <Button 
+            onClick={handleCloseModal} 
+            variant="contained"
+            fullWidth={isMobile}
+            sx={{
+              background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
+              color: '#ffffff',
+              fontFamily: '"Montserrat", sans-serif',
+              fontWeight: 600,
+              fontSize: { xs: '0.9rem', sm: '1rem' },
+              padding: { xs: '8px 24px', sm: '10px 32px' },
+              borderRadius: '12px',
+              textTransform: 'none',
+              letterSpacing: '0.02em',
+              boxShadow: '0 4px 14px rgba(220, 38, 38, 0.4)',
+              '&:hover': {
+                background: 'linear-gradient(135deg, #b91c1c 0%, #991b1b 100%)',
+                boxShadow: '0 6px 20px rgba(220, 38, 38, 0.5)',
+                transform: 'translateY(-2px)',
+              },
+              transition: 'all 0.3s ease',
+            }}
+          >
             Close
           </Button>
         </DialogActions>
-      </Dialog>
-    </Box>
+      </StyledDialog>
+    </StyledContainer>
   );
 };
 

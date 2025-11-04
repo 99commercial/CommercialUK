@@ -18,6 +18,7 @@ import {
   InputAdornment,
   CircularProgress,
 } from '@mui/material';
+// Removed Grid in favor of responsive CSS grid via Box
 import { LocationOn, MyLocation, Map, Save } from '@mui/icons-material';
 import axiosInstance from '../../../../utils/axios';
 import { enqueueSnackbar } from 'notistack';
@@ -122,6 +123,7 @@ const UpdateLocationDetailsForm: React.FC<UpdateLocationDetailsFormProps> = ({
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [hasChanges, setHasChanges] = useState(false);
+  const [isGeocoding, setIsGeocoding] = useState(false);
 
   // Update form data when initialData changes
   React.useEffect(() => {
@@ -305,6 +307,49 @@ const UpdateLocationDetailsForm: React.FC<UpdateLocationDetailsFormProps> = ({
     }
   };
 
+  // Real geocoding function using postcode
+const handleGeocode = async () => {
+  const postcode = formData.address_details?.postal_code?.trim();
+  if (!postcode) {
+    setFieldErrors({
+      'address_details.postal_code': 'Please enter a valid postal code before geocoding.',
+    });
+    enqueueSnackbar("Please enter a valid postal code before geocoding.", { variant: 'error' });
+    return;
+  }
+
+  setIsGeocoding(true);
+  try {
+    // Call OpenStreetMap's Nominatim API
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/search?postalcode=${encodeURIComponent(
+        postcode
+      )}&format=json&addressdetails=1&limit=1`
+    );
+    const data = await response.json();
+
+    if (data && data.length > 0) {
+      const location = data[0];
+
+      setFormData((prev) => ({
+        ...prev,
+        coordinates: {
+          ...prev.coordinates,
+          latitude: parseFloat(location.lat),
+          longitude: parseFloat(location.lon),
+        },
+      }));
+    } else {
+      enqueueSnackbar("No results found for the given postal code.", { variant: 'error' });
+    }
+  } catch (error) {
+    console.error("Geocoding failed:", error);
+    enqueueSnackbar("Failed to fetch location data. Please try again.", { variant: 'error' });
+  } finally {
+    setIsGeocoding(false);
+  }
+};
+
   return (
     <Box>
       <form onSubmit={handleSubmit}>
@@ -321,58 +366,90 @@ const UpdateLocationDetailsForm: React.FC<UpdateLocationDetailsFormProps> = ({
               <MyLocation color="primary" />
               Coordinates
             </Typography>
-            <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
-              <TextField
-                label="Latitude"
-                type="number"
-                value={formData.coordinates.latitude || ''}
-                onChange={(e) => handleCoordinatesChange('latitude', parseFloat(e.target.value) || 0)}
-                error={!!fieldErrors.latitude}
-                helperText={fieldErrors.latitude}
-                inputProps={{ min: -90, max: 90, step: 'any' }}
-                sx={{ flex: 1, minWidth: 150 }}
-              />
 
-              <TextField
-                label="Longitude"
-                type="number"
-                value={formData.coordinates.longitude || ''}
-                onChange={(e) => handleCoordinatesChange('longitude', parseFloat(e.target.value) || 0)}
-                error={!!fieldErrors.longitude}
-                helperText={fieldErrors.longitude}
-                inputProps={{ min: -180, max: 180, step: 'any' }}
-                sx={{ flex: 1, minWidth: 150 }}
-              />
+            <Box sx={{ display: 'flex', justifyContent: { xs: 'flex-start', md: 'flex-end' }, alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 1 }}>
+              <Button
+                startIcon={<LocationOn />}
+                onClick={handleGeocode}
+                variant="outlined"
+                size="small"
+                disabled={isGeocoding}
+              >
+                {isGeocoding ? 'Geocoding...' : 'Geocode Address'}
+              </Button>
+            </Box>
 
-              <FormControl sx={{ flex: 1, minWidth: 150 }}>
-                <InputLabel>Geocoding Service</InputLabel>
-                <Select
-                  value={formData.geocoding_info.geocoding_service || 'Google'}
-                  onChange={(e) => handleGeocodingInfoChange('geocoding_service', e.target.value)}
-                  label="Geocoding Service"
-                >
-                  {geocodingServices.map((service) => (
-                    <MenuItem key={service} value={service}>
-                      {service}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 2, width: '100%' }}>
+              <Box>
+                <TextField
+                  label="Postal Code"
+                  fullWidth
+                  value={formData.address_details.postal_code || ''}
+                  onChange={(e) => handleAddressChange('postal_code', e.target.value)}
+                  error={!!fieldErrors['address_details.postal_code']}
+                  helperText={fieldErrors['address_details.postal_code']}
+                />
+              </Box>
 
-              <FormControl sx={{ flex: 1, minWidth: 180 }}>
-                <InputLabel>Geocoding Accuracy</InputLabel>
-                <Select
-                  value={formData.geocoding_info.geocoding_accuracy || 'ROOFTOP'}
-                  onChange={(e) => handleGeocodingInfoChange('geocoding_accuracy', e.target.value)}
-                  label="Geocoding Accuracy"
-                >
-                  {geocodingAccuracies.map((accuracy) => (
-                    <MenuItem key={accuracy} value={accuracy}>
-                      {accuracy}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <Box>
+                <TextField
+                  label="Latitude"
+                  type="number"
+                  fullWidth
+                  value={formData.coordinates.latitude || ''}
+                  onChange={(e) => handleCoordinatesChange('latitude', parseFloat(e.target.value) || 0)}
+                  error={!!fieldErrors.latitude}
+                  helperText={fieldErrors.latitude}
+                  inputProps={{ min: -90, max: 90, step: 'any' }}
+                />
+              </Box>
+
+              <Box>
+                <TextField
+                  label="Longitude"
+                  type="number"
+                  fullWidth
+                  value={formData.coordinates.longitude || ''}
+                  onChange={(e) => handleCoordinatesChange('longitude', parseFloat(e.target.value) || 0)}
+                  error={!!fieldErrors.longitude}
+                  helperText={fieldErrors.longitude}
+                  inputProps={{ min: -180, max: 180, step: 'any' }}
+                />
+              </Box>
+
+              <Box>
+                <FormControl fullWidth>
+                  <InputLabel>Geocoding Service</InputLabel>
+                  <Select
+                    value={formData.geocoding_info.geocoding_service || 'Google'}
+                    onChange={(e) => handleGeocodingInfoChange('geocoding_service', e.target.value)}
+                    label="Geocoding Service"
+                  >
+                    {geocodingServices.map((service) => (
+                      <MenuItem key={service} value={service}>
+                        {service}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
+
+              <Box>
+                <FormControl fullWidth>
+                  <InputLabel>Geocoding Accuracy</InputLabel>
+                  <Select
+                    value={formData.geocoding_info.geocoding_accuracy || 'ROOFTOP'}
+                    onChange={(e) => handleGeocodingInfoChange('geocoding_accuracy', e.target.value)}
+                    label="Geocoding Accuracy"
+                  >
+                    {geocodingAccuracies.map((accuracy) => (
+                      <MenuItem key={accuracy} value={accuracy}>
+                        {accuracy}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
             </Box>
           </CardContent>
         </Card>
@@ -385,59 +462,49 @@ const UpdateLocationDetailsForm: React.FC<UpdateLocationDetailsFormProps> = ({
               Address Details
             </Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
-                <TextField
-                  label="Street Number"
-                  value={formData.address_details.street_number || ''}
-                  onChange={(e) => handleAddressChange('street_number', e.target.value)}
-                  sx={{ flex: 0.5, minWidth: 150 }}
-                />
-
-                <TextField
-                  label="Route"
-                  value={formData.address_details.route || ''}
-                  onChange={(e) => handleAddressChange('route', e.target.value)}
-                  sx={{ flex: 1.5, minWidth: 200 }}
-                />
-
-                <TextField
-                  label="Locality"
-                  value={formData.address_details.locality || ''}
-                  onChange={(e) => handleAddressChange('locality', e.target.value)}
-                  sx={{ flex: 1, minWidth: 200 }}
-                />
+              <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: '3fr 5fr 4fr' }, gap: 2 }}>
+                  <TextField
+                    label="Street Number"
+                    value={formData.address_details.street_number || ''}
+                    onChange={(e) => handleAddressChange('street_number', e.target.value)}
+                    fullWidth
+                  />
+                  <TextField
+                    label="Route"
+                    value={formData.address_details.route || ''}
+                    onChange={(e) => handleAddressChange('route', e.target.value)}
+                    fullWidth
+                  />
+                  <TextField
+                    label="Locality"
+                    value={formData.address_details.locality || ''}
+                    onChange={(e) => handleAddressChange('locality', e.target.value)}
+                    fullWidth
+                  />
               </Box>
 
-              <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
-                <TextField
-                  label="Administrative Area Level 1"
-                  value={formData.address_details.administrative_area_level_1 || ''}
-                  onChange={(e) => handleAddressChange('administrative_area_level_1', e.target.value)}
-                  sx={{ flex: 1, minWidth: 200 }}
-                />
-
-                <TextField
-                  label="Administrative Area Level 2"
-                  value={formData.address_details.administrative_area_level_2 || ''}
-                  onChange={(e) => handleAddressChange('administrative_area_level_2', e.target.value)}
-                  sx={{ flex: 1, minWidth: 200 }}
-                />
+              <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' }, gap: 2 }}>
+                  <TextField
+                    label="Administrative Area Level 1"
+                    value={formData.address_details.administrative_area_level_1 || ''}
+                    onChange={(e) => handleAddressChange('administrative_area_level_1', e.target.value)}
+                    fullWidth
+                  />
+                  <TextField
+                    label="Administrative Area Level 2"
+                    value={formData.address_details.administrative_area_level_2 || ''}
+                    onChange={(e) => handleAddressChange('administrative_area_level_2', e.target.value)}
+                    fullWidth
+                  />
               </Box>
 
-              <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
-                <TextField
-                  label="Postal Code"
-                  value={formData.address_details.postal_code || ''}
-                  onChange={(e) => handleAddressChange('postal_code', e.target.value)}
-                  sx={{ flex: 0.5, minWidth: 150 }}
-                />
-
-                <TextField
-                  label="Country"
-                  value={formData.address_details.country || ''}
-                  onChange={(e) => handleAddressChange('country', e.target.value)}
-                  sx={{ flex: 1, minWidth: 200 }}
-                />
+              <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr' }, gap: 2 }}>
+                  <TextField
+                    label="Country"
+                    value={formData.address_details.country || ''}
+                    onChange={(e) => handleAddressChange('country', e.target.value)}
+                    fullWidth
+                  />
               </Box>
 
               <TextField
@@ -468,53 +535,58 @@ const UpdateLocationDetailsForm: React.FC<UpdateLocationDetailsFormProps> = ({
               <Map color="primary" />
               Map Settings
             </Typography>
-            <Box sx={{ display: 'flex', gap: 2, width: '100%', alignItems: 'center' }}>
-              <FormControl sx={{ flex: 1, minWidth: 150 }}>
-                <InputLabel>Map Type</InputLabel>
-                <Select
-                  value={formData.map_settings.map_type || 'roadmap'}
-                  onChange={(e) => handleMapSettingsChange('map_type', e.target.value)}
-                  label="Map Type"
-                >
-                  {mapTypes.map((type) => (
-                    <MenuItem key={type} value={type}>
-                      {type}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 2, width: '100%', alignItems: 'center' }}>
+              <Box>
+                <FormControl fullWidth>
+                  <InputLabel>Map Type</InputLabel>
+                  <Select
+                    value={formData.map_settings.map_type || 'roadmap'}
+                    onChange={(e) => handleMapSettingsChange('map_type', e.target.value)}
+                    label="Map Type"
+                  >
+                    {mapTypes.map((type) => (
+                      <MenuItem key={type} value={type}>
+                        {type}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
 
-              <TextField
-                label="Zoom Level"
-                type="number"
-                value={formData.map_settings.map_zoom_level || ''}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (value === '') {
-                    handleMapSettingsChange('map_zoom_level', '');
-                  } else {
-                    const numValue = parseInt(value);
-                    if (!isNaN(numValue) && numValue >= 0 && numValue <= 20) {
-                      handleMapSettingsChange('map_zoom_level', numValue);
+              <Box>
+                <TextField
+                  label="Zoom Level"
+                  type="number"
+                  fullWidth
+                  value={formData.map_settings.map_zoom_level || ''}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === '') {
+                      handleMapSettingsChange('map_zoom_level', '');
+                    } else {
+                      const numValue = parseInt(value);
+                      if (!isNaN(numValue) && numValue >= 0 && numValue <= 20) {
+                        handleMapSettingsChange('map_zoom_level', numValue);
+                      }
                     }
-                  }
-                }}
-                error={!!fieldErrors.zoom_level}
-                helperText={fieldErrors.zoom_level}
-                inputProps={{ min: 0, max: 20 }}
-                sx={{ flex: 0.5, minWidth: 120 }}
-              />
+                  }}
+                  error={!!fieldErrors.zoom_level}
+                  helperText={fieldErrors.zoom_level}
+                  inputProps={{ min: 0, max: 20 }}
+                />
+              </Box>
 
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={formData.map_settings.disable_map_display || false}
-                    onChange={(e) => handleMapSettingsChange('disable_map_display', e.target.checked)}
-                  />
-                }
-                label="Disable Map Display"
-                sx={{ flex: 1 }}
-              />
+              <Box>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={formData.map_settings.disable_map_display || false}
+                      onChange={(e) => handleMapSettingsChange('disable_map_display', e.target.checked)}
+                    />
+                  }
+                  label="Disable Map Display"
+                />
+              </Box>
             </Box>
           </CardContent>
         </Card>
@@ -549,12 +621,13 @@ const UpdateLocationDetailsForm: React.FC<UpdateLocationDetailsFormProps> = ({
           </CardContent>
         </Card>
 
-        <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end' }}>
+        <Box sx={{ mt: 4, display: 'flex', justifyContent: { xs: 'stretch', sm: 'flex-end' } }}>
           <Button
             type="submit"
             variant="contained"
             startIcon={isSubmitting ? <CircularProgress size={20} /> : <Save />}
             disabled={isSubmitting || !hasChanges}
+            fullWidth
             sx={{
               minWidth: 200,
               backgroundColor: hasChanges ? '#7c3aed' : '#9ca3af',

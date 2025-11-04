@@ -2,7 +2,7 @@ import React from 'react';
 import { Box } from '@mui/material';
 import { useRouter } from 'next/router';
 import HeaderCard from '../../../components/HeaderCard';
-import { PropertiesTable } from '../../../sections/agent/property';
+import { PropertiesTable } from '../../../sections/user/property';
 
 const MyPropertiesPage: React.FC = () => {
   const router = useRouter();

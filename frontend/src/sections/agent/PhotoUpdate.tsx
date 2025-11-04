@@ -23,36 +23,61 @@ import { styled } from '@mui/material/styles';
 import axiosInstance from '../../utils/axios';
 
 const StyledCard = styled(Card)(({ theme }) => ({
-  borderRadius: 12,
-  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-  border: 'none',
+  borderRadius: 16,
+  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04)',
+  border: '1px solid rgba(220, 38, 38, 0.08)',
   background: '#ffffff',
   overflow: 'hidden',
+  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+  '&:hover': {
+    boxShadow: '0 12px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06)',
+  },
 }));
 
 const SectionHeader = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
-  gap: theme.spacing(1),
-  marginBottom: theme.spacing(3),
-  padding: theme.spacing(2),
+  gap: theme.spacing(1.5),
+  marginBottom: 0,
+  padding: theme.spacing(2.5, 3),
   background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
-  borderRadius: '8px 8px 0 0',
+  borderRadius: '16px 16px 0 0',
   color: 'white',
+  boxShadow: '0 4px 12px rgba(220, 38, 38, 0.2)',
 }));
 
 interface UploadAreaProps { isDragOver: boolean }
 const UploadArea = styled(Box, { shouldForwardProp: (prop) => prop !== 'isDragOver' })<UploadAreaProps>(({ theme, isDragOver }) => ({
   border: `2px dashed ${isDragOver ? '#dc2626' : '#d1d5db'}`,
-  borderRadius: 12,
+  borderRadius: 14,
   padding: theme.spacing(4),
   textAlign: 'center',
   backgroundColor: isDragOver ? 'rgba(220, 38, 38, 0.05)' : '#f9fafb',
   cursor: 'pointer',
-  transition: 'all 0.3s ease',
+  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+  position: 'relative',
+  // 3D Effect
+  boxShadow: isDragOver ? `
+    0 8px 16px -4px rgba(220, 38, 38, 0.2),
+    0 4px 8px -2px rgba(220, 38, 38, 0.15),
+    inset 0 2px 0 0 rgba(255, 255, 255, 0.95),
+    inset 0 -2px 0 0 rgba(220, 38, 38, 0.1)
+  ` : `
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.05)
+  `,
   '&:hover': {
     borderColor: '#dc2626',
     backgroundColor: 'rgba(220, 38, 38, 0.05)',
+    transform: 'translateY(-2px)',
+    boxShadow: `
+      0 8px 16px -4px rgba(220, 38, 38, 0.2),
+      0 4px 8px -2px rgba(220, 38, 38, 0.15),
+      inset 0 2px 0 0 rgba(255, 255, 255, 0.95),
+      inset 0 -2px 0 0 rgba(220, 38, 38, 0.1)
+    `,
   },
 }));
 
@@ -63,16 +88,46 @@ const PreviewContainer = styled(Box)(({ theme }) => ({
   gap: theme.spacing(2),
   padding: theme.spacing(3),
   backgroundColor: '#f8fafc',
-  borderRadius: 12,
+  borderRadius: 14,
   border: '1px solid #e5e7eb',
+  // 3D Effect
+  boxShadow: `
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.05)
+  `,
+  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+  '&:hover': {
+    boxShadow: `
+      0 6px 12px -2px rgba(0, 0, 0, 0.15),
+      0 3px 6px -1px rgba(0, 0, 0, 0.1),
+      inset 0 2px 0 0 rgba(255, 255, 255, 0.95),
+      inset 0 -2px 0 0 rgba(0, 0, 0, 0.08)
+    `,
+    transform: 'translateY(-2px)',
+  },
 }));
 
 const ActionButton = styled(Button)(({ theme }) => ({
-  borderRadius: 8,
+  borderRadius: 14,
   textTransform: 'none',
+  fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
   fontWeight: 600,
-  padding: theme.spacing(1.5, 3),
-  minWidth: 120,
+  fontSize: '1.125rem',
+  padding: theme.spacing(2, 5),
+  minWidth: 160,
+  letterSpacing: '0.02em',
+  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+  boxShadow: '0 6px 16px rgba(220, 38, 38, 0.25), 0 2px 4px rgba(220, 38, 38, 0.1)',
+  '&:hover': {
+    transform: 'translateY(-2px)',
+    boxShadow: '0 10px 24px rgba(220, 38, 38, 0.35), 0 4px 8px rgba(220, 38, 38, 0.15)',
+  },
+  '&:active': {
+    transform: 'translateY(0)',
+    boxShadow: '0 4px 12px rgba(220, 38, 38, 0.2)',
+  },
 }));
 
 interface PhotoUpdateProps {
@@ -186,21 +241,53 @@ const PhotoUpdate: React.FC<PhotoUpdateProps> = ({
   return (
     <StyledCard>
       <SectionHeader>
-        <PhotoCameraIcon />
-        <Typography variant="h6" sx={{ fontWeight: 600 }}>
+        <PhotoCameraIcon sx={{ fontSize: '1.75rem' }} />
+        <Typography 
+          variant="h6" 
+          sx={{ 
+            fontWeight: 600,
+            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+            fontSize: '1.5rem',
+            letterSpacing: '-0.01em',
+          }}
+        >
           Update Profile Photo
         </Typography>
       </SectionHeader>
 
-      <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+      <CardContent sx={{ p: { xs: 3, md: 4.5 }, pt: { xs: 3.5, md: 4.5 } }}>
         {error && (
-          <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>
+          <Alert 
+            severity="error" 
+            sx={{ 
+              mb: 3, 
+              borderRadius: 2,
+              fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+              fontSize: '1rem',
+              boxShadow: '0 2px 8px rgba(220, 38, 38, 0.1)',
+              '& .MuiAlert-message': {
+                fontSize: '1rem',
+              },
+            }}
+          >
             {error}
           </Alert>
         )}
 
         {success && (
-          <Alert severity="success" sx={{ mb: 3, borderRadius: 2 }}>
+          <Alert 
+            severity="success" 
+            sx={{ 
+              mb: 3, 
+              borderRadius: 2,
+              fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+              fontSize: '1rem',
+              boxShadow: '0 2px 8px rgba(34, 197, 94, 0.1)',
+              '& .MuiAlert-message': {
+                fontSize: '1rem',
+              },
+            }}
+          >
             {success}
           </Alert>
         )}
@@ -208,17 +295,31 @@ const PhotoUpdate: React.FC<PhotoUpdateProps> = ({
         {/* Current Photo Preview */}
         {previewUrl && (
           <PreviewContainer>
-            <Typography variant="h6" sx={{ color: '#dc2626', fontWeight: 600, mb: 1 }}>
+            <Typography 
+              variant="h6" 
+              sx={{ 
+                color: '#dc2626', 
+                fontWeight: 600, 
+                mb: 1,
+                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                fontSize: '1.375rem',
+              }}
+            >
               Photo Preview
             </Typography>
             <Box sx={{ position: 'relative' }}>
               <Avatar
                 src={previewUrl}
                 sx={{
-                  width: { xs: 120, md: 150 },
-                  height: { xs: 120, md: 150 },
-                  border: '4px solid #dc2626',
-                  boxShadow: '0 8px 25px rgba(220, 38, 38, 0.3)',
+                  width: { xs: 140, md: 180 },
+                  height: { xs: 140, md: 180 },
+                  border: '5px solid #dc2626',
+                  boxShadow: `
+                    0 10px 30px rgba(220, 38, 38, 0.35),
+                    0 4px 12px rgba(220, 38, 38, 0.25),
+                    inset 0 2px 0 0 rgba(255, 255, 255, 0.2)
+                  `,
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 }}
               />
               <IconButton
@@ -229,17 +330,29 @@ const PhotoUpdate: React.FC<PhotoUpdateProps> = ({
                   right: -8,
                   backgroundColor: '#ef4444',
                   color: 'white',
+                  width: 40,
+                  height: 40,
+                  boxShadow: '0 4px 12px rgba(239, 68, 68, 0.4)',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   '&:hover': {
                     backgroundColor: '#dc2626',
+                    transform: 'scale(1.1)',
+                    boxShadow: '0 6px 16px rgba(220, 38, 38, 0.5)',
                   },
-                  width: 32,
-                  height: 32,
                 }}
               >
-                <DeleteIcon fontSize="small" />
+                <DeleteIcon sx={{ fontSize: '1.25rem' }} />
               </IconButton>
             </Box>
-            <Typography variant="body2" sx={{ color: '#6b7280', textAlign: 'center' }}>
+            <Typography 
+              variant="body2" 
+              sx={{ 
+                color: '#6b7280', 
+                textAlign: 'center',
+                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                fontSize: '1rem',
+              }}
+            >
               {selectedFile ? `Selected: ${selectedFile.name}` : 'Current profile photo'}
             </Typography>
           </PreviewContainer>
@@ -254,26 +367,61 @@ const PhotoUpdate: React.FC<PhotoUpdateProps> = ({
             onDragLeave={handleDragLeave}
             onClick={handleBrowseClick}
           >
-            <CloudUploadIcon sx={{ fontSize: 48, color: '#dc2626', mb: 2 }} />
-            <Typography variant="h6" sx={{ color: '#374151', fontWeight: 600, mb: 1 }}>
+            <CloudUploadIcon sx={{ fontSize: 64, color: '#dc2626', mb: 2 }} />
+            <Typography 
+              variant="h6" 
+              sx={{ 
+                color: '#374151', 
+                fontWeight: 600, 
+                mb: 1,
+                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                fontSize: '1.375rem',
+              }}
+            >
               Upload Profile Photo
             </Typography>
-            <Typography variant="body2" sx={{ color: '#6b7280', mb: 3 }}>
+            <Typography 
+              variant="body2" 
+              sx={{ 
+                color: '#6b7280', 
+                mb: 3,
+                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                fontSize: '1rem',
+              }}
+            >
               Drag and drop an image here, or click to browse
             </Typography>
             <Button
               variant="contained"
-              startIcon={<PhotoCameraIcon />}
-              sx={{
+              startIcon={<PhotoCameraIcon sx={{ fontSize: '1.5rem' }} />}
+              sx={(theme) => ({
                 backgroundColor: '#dc2626',
+                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                fontSize: '1.125rem',
+                fontWeight: 600,
+                padding: theme.spacing(1.75, 4),
+                borderRadius: 14,
+                boxShadow: '0 6px 16px rgba(220, 38, 38, 0.25), 0 2px 4px rgba(220, 38, 38, 0.1)',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 '&:hover': {
                   backgroundColor: '#b91c1c',
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 10px 24px rgba(220, 38, 38, 0.35), 0 4px 8px rgba(220, 38, 38, 0.15)',
                 },
-              }}
+              })}
             >
               Choose File
             </Button>
-            <Typography variant="caption" sx={{ color: '#9ca3af', mt: 2, display: 'block' }}>
+            <Typography 
+              variant="caption" 
+              sx={{ 
+                color: '#9ca3af', 
+                mt: 2, 
+                display: 'block',
+                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                fontSize: '0.9375rem',
+              }}
+            >
               Supports: JPG, PNG, GIF (Max 5MB)
             </Typography>
           </UploadArea>
@@ -300,13 +448,15 @@ const PhotoUpdate: React.FC<PhotoUpdateProps> = ({
             <ActionButton
               variant="outlined"
               onClick={handleRemove}
-              startIcon={<DeleteIcon />}
+              startIcon={<DeleteIcon sx={{ fontSize: '1.5rem' }} />}
               sx={{
                 borderColor: '#ef4444',
                 color: '#ef4444',
+                borderWidth: '2px',
                 '&:hover': {
                   borderColor: '#dc2626',
                   backgroundColor: 'rgba(239, 68, 68, 0.04)',
+                  borderWidth: '2px',
                 },
               }}
             >
@@ -317,7 +467,7 @@ const PhotoUpdate: React.FC<PhotoUpdateProps> = ({
               variant="contained"
               onClick={handleUpload}
               disabled={loading || !selectedFile}
-              startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <CheckCircleIcon />}
+              startIcon={loading ? <CircularProgress size={22} color="inherit" /> : <CheckCircleIcon sx={{ fontSize: '1.5rem' }} />}
               sx={{
                 backgroundColor: '#dc2626',
                 '&:hover': {
@@ -325,6 +475,8 @@ const PhotoUpdate: React.FC<PhotoUpdateProps> = ({
                 },
                 '&:disabled': {
                   backgroundColor: '#fca5a5',
+                  boxShadow: 'none',
+                  transform: 'none',
                 },
               }}
             >
@@ -334,24 +486,96 @@ const PhotoUpdate: React.FC<PhotoUpdateProps> = ({
         )}
 
         {/* Photo Guidelines */}
-        <Box sx={{ mt: 4, p: 3, backgroundColor: '#f8fafc', borderRadius: 2 }}>
-          <Typography variant="h6" sx={{ color: '#dc2626', fontWeight: 600, mb: 2 }}>
+        <Box 
+          sx={{ 
+            mt: 4, 
+            p: 3.5, 
+            backgroundColor: '#f8fafc', 
+            borderRadius: 14,
+            // 3D Effect
+            boxShadow: `
+              0 4px 6px -1px rgba(0, 0, 0, 0.1),
+              0 2px 4px -1px rgba(0, 0, 0, 0.06),
+              inset 0 1px 0 0 rgba(255, 255, 255, 0.9),
+              inset 0 -1px 0 0 rgba(0, 0, 0, 0.05)
+            `,
+            border: '1px solid rgba(0, 0, 0, 0.08)',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            '&:hover': {
+              boxShadow: `
+                0 6px 12px -2px rgba(0, 0, 0, 0.15),
+                0 3px 6px -1px rgba(0, 0, 0, 0.1),
+                inset 0 2px 0 0 rgba(255, 255, 255, 0.95),
+                inset 0 -2px 0 0 rgba(0, 0, 0, 0.08)
+              `,
+            },
+          }}
+        >
+          <Typography 
+            variant="h6" 
+            sx={{ 
+              color: '#dc2626', 
+              fontWeight: 600, 
+              mb: 2,
+              fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+              fontSize: '1.375rem',
+            }}
+          >
             Photo Guidelines
           </Typography>
-          <Box component="ul" sx={{ m: 0, pl: 2, color: '#6b7280' }}>
-            <Typography component="li" variant="body2" sx={{ mb: 1 }}>
+          <Box component="ul" sx={{ m: 0, pl: 2.5, color: '#6b7280' }}>
+            <Typography 
+              component="li" 
+              variant="body2" 
+              sx={{ 
+                mb: 1.5,
+                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                fontSize: '1rem',
+              }}
+            >
               Use a clear, professional headshot
             </Typography>
-            <Typography component="li" variant="body2" sx={{ mb: 1 }}>
+            <Typography 
+              component="li" 
+              variant="body2" 
+              sx={{ 
+                mb: 1.5,
+                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                fontSize: '1rem',
+              }}
+            >
               Ensure good lighting and minimal background distractions
             </Typography>
-            <Typography component="li" variant="body2" sx={{ mb: 1 }}>
+            <Typography 
+              component="li" 
+              variant="body2" 
+              sx={{ 
+                mb: 1.5,
+                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                fontSize: '1rem',
+              }}
+            >
               Supported formats: JPG, PNG, GIF
             </Typography>
-            <Typography component="li" variant="body2" sx={{ mb: 1 }}>
+            <Typography 
+              component="li" 
+              variant="body2" 
+              sx={{ 
+                mb: 1.5,
+                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                fontSize: '1rem',
+              }}
+            >
               Maximum file size: 5MB
             </Typography>
-            <Typography component="li" variant="body2">
+            <Typography 
+              component="li" 
+              variant="body2"
+              sx={{
+                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                fontSize: '1rem',
+              }}
+            >
               Recommended dimensions: 400x400 pixels or larger
             </Typography>
           </Box>

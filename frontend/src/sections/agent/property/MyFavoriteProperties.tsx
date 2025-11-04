@@ -8,11 +8,13 @@ import {
   Stack,
   Card,
   CardContent,
+  Paper,
   Pagination,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { FavouritePropertyCard } from '../../../components';
+import Loader from '@/components/Loader';
 import axiosInstance from '../../../utils/axios';
 
 // ----------------------------------------------------------------------
@@ -23,12 +25,17 @@ const StyledContainer = styled(Box)(({ theme }) => ({
 }));
 
 const EmptyStateCard = styled(Card)(({ theme }) => ({
-  padding: theme.spacing(6),
+  padding: theme.spacing(8),
   textAlign: 'center',
-  backgroundColor: '#ffffff',
-  borderRadius: theme.spacing(2),
-  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
-  border: '2px dashed #e2e8f0',
+  background: 'linear-gradient(135deg, #ffffff 0%, #fafafa 100%)',
+  borderRadius: theme.spacing(3),
+  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+  border: '2px dashed rgba(220, 38, 38, 0.2)',
+  transition: 'all 0.3s ease',
+  '&:hover': {
+    borderColor: 'rgba(220, 38, 38, 0.4)',
+    boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
+  },
 }));
 
 const LoadingContainer = styled(Box)(({ theme }) => ({
@@ -45,11 +52,12 @@ const HeaderSection = styled(Box)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
-  marginBottom: theme.spacing(3),
-  padding: theme.spacing(2),
-  backgroundColor: '#ffffff',
-  borderRadius: theme.spacing(2),
-  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+  marginBottom: theme.spacing(4),
+  padding: theme.spacing(3, 4),
+  background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+  borderRadius: theme.spacing(3),
+  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+  border: '1px solid rgba(220, 38, 38, 0.1)',
 }));
 
 const PropertiesContainer = styled(Box)(({ theme }) => ({
@@ -109,7 +117,7 @@ const MyFavoriteProperties: React.FC<MyFavoritePropertiesProps> = ({
   const fetchFavoriteProperties = async (page = 1, limit = 20) => {
     try {
       setError(null);
-      const response = await axiosInstance.get('/api/agent/favorites/details', {
+      const response = await axiosInstance.get('/api/user/favorites/details', {
         params: { page, limit }
       });
 
@@ -153,7 +161,7 @@ const MyFavoriteProperties: React.FC<MyFavoritePropertiesProps> = ({
 
   const handleRemoveFavorite = async (propertyId: string) => {
     try {
-      await axiosInstance.delete(`/api/agent/favorites/${propertyId}`);
+      await axiosInstance.delete(`/api/user/favorites/${propertyId}`);
       
       // Remove from local state
       setFavoriteProperties(prev => 
@@ -182,10 +190,31 @@ const MyFavoriteProperties: React.FC<MyFavoritePropertiesProps> = ({
 
   const renderEmptyState = () => (
     <EmptyStateCard>
-      <Typography variant="h5" sx={{ mb: 2, fontWeight: 600, color: '#64748b' }}>
+      <Typography 
+        variant="h5" 
+        sx={{ 
+          mb: 2, 
+          fontWeight: 700, 
+          color: '#1e293b',
+          fontFamily: '"Montserrat", sans-serif',
+          fontSize: '1.75rem',
+          letterSpacing: '-0.015em',
+        }}
+      >
         No Favorite Properties Yet
       </Typography>
-      <Typography variant="body1" sx={{ mb: 3, color: '#64748b' }}>
+      <Typography 
+        variant="body1" 
+        sx={{ 
+          mb: 4, 
+          color: '#64748b',
+          fontFamily: '"Lato", sans-serif',
+          fontSize: '1.1rem',
+          lineHeight: 1.6,
+          fontWeight: 400,
+          letterSpacing: '0.01em',
+        }}
+      >
         Start exploring properties and add them to your favorites to see them here.
       </Typography>
       <Button
@@ -194,9 +223,20 @@ const MyFavoriteProperties: React.FC<MyFavoritePropertiesProps> = ({
         onClick={() => window.location.href = '/general/all-properties'}
         sx={{
           backgroundColor: '#dc2626',
+          fontFamily: '"Montserrat", sans-serif',
+          fontWeight: 600,
+          fontSize: '1rem',
+          padding: '12px 32px',
+          borderRadius: '12px',
+          textTransform: 'none',
+          letterSpacing: '0.02em',
+          boxShadow: '0 4px 14px rgba(220, 38, 38, 0.4)',
           '&:hover': {
             backgroundColor: '#b91c1c',
+            boxShadow: '0 6px 20px rgba(220, 38, 38, 0.5)',
+            transform: 'translateY(-2px)',
           },
+          transition: 'all 0.3s ease',
         }}
       >
         Browse Properties
@@ -205,18 +245,30 @@ const MyFavoriteProperties: React.FC<MyFavoritePropertiesProps> = ({
   );
 
   const renderLoadingState = () => (
-    <LoadingContainer>
-      <Stack alignItems="center" spacing={2}>
-        <CircularProgress size={60} sx={{ color: '#dc2626' }} />
-        <Typography variant="h6" color="text.secondary">
-          Loading your favorite properties...
-        </Typography>
-      </Stack>
-    </LoadingContainer>
+    <Paper 
+      sx={{ 
+        p: 4,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '400px'
+      }}
+    >
+      <Loader
+        fullscreen={false}
+        size="medium"
+      />
+    </Paper>
   );
 
   const renderErrorState = () => (
-    <Card sx={{ p: 3, backgroundColor: '#ffffff', borderRadius: 2 }}>
+    <Card sx={{ 
+      p: 3, 
+      background: 'linear-gradient(135deg, #ffffff 0%, #fafafa 100%)',
+      borderRadius: 3,
+      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+      border: '1px solid rgba(220, 38, 38, 0.1)',
+    }}>
       <Alert 
         severity="error" 
         action={
@@ -225,10 +277,24 @@ const MyFavoriteProperties: React.FC<MyFavoritePropertiesProps> = ({
             size="small" 
             onClick={handleRefresh}
             disabled={refreshing}
+            sx={{
+              fontFamily: '"Montserrat", sans-serif',
+              fontWeight: 600,
+              textTransform: 'none',
+              letterSpacing: '0.02em',
+            }}
           >
             Retry
           </Button>
         }
+        sx={{
+          fontFamily: '"Lato", sans-serif',
+          '& .MuiAlert-message': {
+            fontFamily: '"Lato", sans-serif',
+            fontWeight: 400,
+            letterSpacing: '0.01em',
+          },
+        }}
       >
         {error}
       </Alert>
@@ -252,11 +318,12 @@ const MyFavoriteProperties: React.FC<MyFavoritePropertiesProps> = ({
         <Box sx={{ 
           display: 'flex', 
           justifyContent: 'center', 
-          mt: 4,
-          backgroundColor: '#ffffff',
-          borderRadius: 2,
-          p: 2,
-          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+          mt: 5,
+          background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+          borderRadius: 3,
+          p: 3,
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+          border: '1px solid rgba(220, 38, 38, 0.1)',
         }}>
           <Pagination
             count={pagination.totalPages}
@@ -267,12 +334,19 @@ const MyFavoriteProperties: React.FC<MyFavoritePropertiesProps> = ({
             sx={{
               '& .MuiPaginationItem-root': {
                 color: '#64748b',
+                fontFamily: '"Lato", sans-serif',
+                fontWeight: 400,
+                fontSize: '1rem',
+                letterSpacing: '0.01em',
                 '&.Mui-selected': {
                   backgroundColor: '#dc2626',
                   color: '#ffffff',
+                  fontWeight: 600,
                   '&:hover': {
                     backgroundColor: '#b91c1c',
+                    transform: 'scale(1.1)',
                   },
+                  transition: 'all 0.2s ease',
                 },
                 '&:hover': {
                   backgroundColor: 'rgba(220, 38, 38, 0.08)',
@@ -289,10 +363,30 @@ const MyFavoriteProperties: React.FC<MyFavoritePropertiesProps> = ({
     <StyledContainer>
       <HeaderSection>
         <Box>
-          <Typography variant="h4" sx={{ fontWeight: 700, color: '#1e293b' }}>
+          <Typography 
+            variant="h4" 
+            sx={{ 
+              fontWeight: 700, 
+              color: '#1e293b',
+              fontFamily: '"Montserrat", sans-serif',
+              fontSize: { xs: '1.75rem', md: '2.25rem' },
+              letterSpacing: '-0.015em',
+              mb: 0.5,
+            }}
+          >
             My Favorite Properties
           </Typography>
-          <Typography variant="body1" sx={{ color: '#64748b', mt: 0.5 }}>
+          <Typography 
+            variant="body1" 
+            sx={{ 
+              color: '#64748b', 
+              mt: 0.5,
+              fontFamily: '"Lato", sans-serif',
+              fontSize: '1rem',
+              fontWeight: 400,
+              letterSpacing: '0.01em',
+            }}
+          >
             {pagination.totalDocs} {pagination.totalDocs === 1 ? 'property' : 'properties'} saved
           </Typography>
         </Box>

@@ -2,7 +2,7 @@ import React from 'react';
 import { Box } from '@mui/material';
 import { useRouter } from 'next/router';
 import HeaderCard from '../../../components/HeaderCard';
-import { MyFavoriteProperties } from '../../../sections/agent/property';
+import { MyFavoriteProperties } from '../../../sections/user/property';
 
 // ----------------------------------------------------------------------
 
@@ -23,7 +23,7 @@ const MyFavoriteListPage: React.FC = () => {
     <Box sx={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
         <HeaderCard
           title="My Favorite Properties"
-          breadcrumbs={['Dashboard', 'My Properties', 'My Favourite Properties']}
+          breadcrumbs={['Home', 'User Dashboard', 'My Favorites']}
         />
         
         <MyFavoriteProperties

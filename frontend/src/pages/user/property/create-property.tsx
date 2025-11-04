@@ -16,6 +16,11 @@ import {
   Chip,
   IconButton,
   Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
 } from '@mui/material';
 import {
   ArrowForward,
@@ -29,6 +34,7 @@ import {
   Build,
   PhotoLibrary,
   Description as DocumentIcon,
+  FileUpload,
 } from '@mui/icons-material';
 import { useRouter } from 'next/router';
 import { useForm, FormProvider } from 'react-hook-form';
@@ -46,6 +52,7 @@ import PropertyImagesForm from '../../../sections/user/property/PropertyImagesFo
 import PropertyDocumentsForm from '../../../sections/user/property/PropertyDocumentsForm';
 import HeaderCard from '../../../components/HeaderCard';
 import { enqueueSnackbar } from 'notistack';
+import { fetchAndConvertToJson } from '../../../utils/fetchAndConvertToJson';
 
 // Tab configuration
 const tabs = [
@@ -134,6 +141,11 @@ const CreatePropertyPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [propertyId, setPropertyId] = useState<string | null>(null);
+  const [importModalOpen, setImportModalOpen] = useState(false);
+  const [importLink, setImportLink] = useState('');
+  const [isImporting, setIsImporting] = useState(false);
+  const [importError, setImportError] = useState<string | null>(null);
+  const [importedData, setImportedData] = useState<any>(null);
   
   // State to store form data for each step
   const [stepData, setStepData] = useState<Record<number, any>>({});
@@ -219,14 +231,6 @@ const CreatePropertyPage: React.FC = () => {
   const handleStepSubmission = React.useCallback((step: number) => {
     setSubmittedSteps(prev => new Set(Array.from(prev).concat(step)));
     setCompletedSteps(prev => new Set(Array.from(prev).concat(step)));
-  }, []);
-
-  // Handle data changes from child components - use useCallback to prevent infinite loops
-  const handleStepDataChange = React.useCallback((step: number, data: any) => {
-    setStepData(prev => ({
-      ...prev,
-      [step]: data
-    }));
   }, []);
 
   // Save step data to backend - DISABLED FOR UI PREVIEW
@@ -327,7 +331,6 @@ const CreatePropertyPage: React.FC = () => {
           <GeneralDetailsForm 
             onStepSubmitted={handleStepSubmission}
             initialData={stepData[0]}
-            onDataChange={(data) => handleStepDataChange(0, data)}
           />
         );
       case 1:
@@ -335,7 +338,6 @@ const CreatePropertyPage: React.FC = () => {
           <BusinessDetailsForm 
             onStepSubmitted={handleStepSubmission}
             initialData={stepData[1]}
-            onDataChange={(data) => handleStepDataChange(1, data)}
           />
         );
       case 2:
@@ -343,7 +345,6 @@ const CreatePropertyPage: React.FC = () => {
           <PropertyDetailsForm 
             onStepSubmitted={handleStepSubmission}
             initialData={stepData[2]}
-            onDataChange={(data) => handleStepDataChange(2, data)}
           />
         );
       case 3:
@@ -381,6 +382,19 @@ const CreatePropertyPage: React.FC = () => {
       {/* Progress Stepper */}
       <Card sx={{ mb: 4 }}>
         <CardContent sx={{ p: 0 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 2, pb: 1 }}>
+            <Button
+              variant="outlined"
+              startIcon={<FileUpload />}
+              onClick={() => setImportModalOpen(true)}
+              sx={{
+                textTransform: 'none',
+                borderRadius: 2,
+              }}
+            >
+              Import Property
+            </Button>
+          </Box>
           <Box
             sx={{
               overflowX: 'auto',
@@ -586,6 +600,106 @@ const CreatePropertyPage: React.FC = () => {
           </Box>
         </CardContent>
       </Card>
+
+      {/* Import Property Modal */}
+      <Dialog
+        open={importModalOpen}
+        onClose={() => setImportModalOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <FileUpload />
+            <Typography variant="h6">Import Property</Typography>
+          </Box>
+        </DialogTitle>
+        <DialogContent>
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              Enter the property link to import property data
+            </Typography>
+            <TextField
+              fullWidth
+              label="Property Link"
+              placeholder="https://example.com/property/123"
+              value={importLink}
+              onChange={(e) => {
+                setImportLink(e.target.value);
+                setImportError(null);
+              }}
+              variant="outlined"
+              sx={{ mt: 1 }}
+              error={!!importError}
+              helperText={importError}
+            />
+            {isImporting && (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 2 }}>
+                <CircularProgress size={20} />
+                <Typography variant="body2" color="text.secondary">
+                  Fetching and converting data...
+                </Typography>
+              </Box>
+            )}
+            {importedData && !isImporting && (
+              <Box sx={{ mt: 2, p: 2, bgcolor: '#f5f5f5', borderRadius: 1 }}>
+                <Typography variant="body2" color="success.main" sx={{ mb: 1 }}>
+                  ✓ Data imported successfully!
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  Content Type: {importedData.metadata?.contentType || 'Unknown'}
+                </Typography>
+              </Box>
+            )}
+          </Box>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button 
+            onClick={() => {
+              setImportModalOpen(false);
+              setImportLink('');
+              setImportError(null);
+              setImportedData(null);
+            }} 
+            variant="outlined"
+            disabled={isImporting}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={async () => {
+              if (!importLink.trim()) return;
+              
+              setIsImporting(true);
+              setImportError(null);
+              setImportedData(null);
+              
+              try {
+                const result = await fetchAndConvertToJson(importLink.trim());
+                setImportedData(result);
+                enqueueSnackbar('Property data imported successfully!', { variant: 'success' });
+                console.log('Imported data:', result);
+                
+                // Here you can add logic to populate the form with the imported data
+                // For now, we just log it and show success
+                
+              } catch (error) {
+                const errorMessage = error instanceof Error ? error.message : 'Failed to import property data';
+                setImportError(errorMessage);
+                enqueueSnackbar(errorMessage, { variant: 'error' });
+                console.error('Import error:', error);
+              } finally {
+                setIsImporting(false);
+              }
+            }}
+            variant="contained"
+            disabled={!importLink.trim() || isImporting}
+            startIcon={isImporting ? <CircularProgress size={16} /> : <FileUpload />}
+          >
+            {isImporting ? 'Importing...' : 'Import'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

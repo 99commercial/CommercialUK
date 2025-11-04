@@ -12,125 +12,126 @@ import {
 import { Person as PersonIcon, Business as BusinessIcon } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import { Page } from '../../../components';
-import UserProfile from '../../../sections/agent/user-profile';
-import UserBusinessProfile from '../../../sections/agent/user-business-profile';
+import UserProfile from '../../../sections/user/user-profile';
+import UserBusinessProfile from '../../../sections/user/user-business-profile';
 import HeaderCard from '../../../components/HeaderCard';
 import axiosInstance from '../../../utils/axios';
+import Loader from '@/components/Loader';
 
-const StyledTabs = styled(Tabs)(({ theme }) => ({
-  '& .MuiTabs-indicator': {
-    display: 'none',
-  },
-  '& .MuiTabs-flexContainer': {
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    gap: '12px',
-    padding: '8px',
-    [theme.breakpoints.down('md')]: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: '8px',
-      padding: '12px 8px',
-    },
-  },
-  '& .MuiTab-root': {
-    textTransform: 'none',
-    fontWeight: 700,
-    fontSize: '0.95rem',
-    minHeight: 56,
-    minWidth: 'auto',
-    padding: '16px 24px',
-    marginBottom: '12px',
-    borderRadius: '0 16px 16px 0',
-    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-    position: 'relative',
-    overflow: 'hidden',
-    backdropFilter: 'blur(10px)',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
-    [theme.breakpoints.down('md')]: {
-      marginBottom: 0,
-      marginRight: '8px',
-      borderRadius: '12px 12px 0 0',
-      minHeight: 48,
-      padding: '12px 16px',
-      fontSize: '0.85rem',
-      flex: 1,
-      maxWidth: '200px',
-    },
-    '&::before': {
-      content: '""',
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      background: 'linear-gradient(135deg, rgba(220, 38, 38, 0.15) 0%, rgba(185, 28, 28, 0.08) 50%, rgba(220, 38, 38, 0.05) 100%)',
-      opacity: 0,
-      transition: 'opacity 0.4s ease',
-    },
-    '&::after': {
-      content: '""',
-      position: 'absolute',
-      top: '50%',
-      left: '50%',
-      width: 0,
-      height: 0,
-      background: 'radial-gradient(circle, rgba(220, 38, 38, 0.3) 0%, transparent 70%)',
-      borderRadius: '50%',
-      transform: 'translate(-50%, -50%)',
-      transition: 'all 0.6s ease',
-    },
-    '&.Mui-selected': {
-      color: '#dc2626',
-      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.8) 100%)',
-      borderLeft: '5px solid #dc2626',
-      boxShadow: '0 8px 25px rgba(220, 38, 38, 0.2), 0 0 0 1px rgba(220, 38, 38, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6)',
-      transform: 'translateX(6px) scale(1.02)',
-      '&::before': {
-        opacity: 1,
-      },
-      '&::after': {
-        width: '200px',
-        height: '200px',
-        animation: 'ripple 0.6s ease-out',
-      },
-      [theme.breakpoints.down('md')]: {
-        borderLeft: 'none',
-        borderBottom: '3px solid #dc2626',
-        transform: 'translateY(-2px) scale(1.02)',
-        boxShadow: '0 6px 20px rgba(220, 38, 38, 0.2), 0 0 0 1px rgba(220, 38, 38, 0.1)',
-      },
-    },
-    '&:hover': {
-      color: '#dc2626',
-      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(248, 250, 252, 0.6) 100%)',
-      transform: 'translateX(3px) scale(1.01)',
-      boxShadow: '0 6px 20px rgba(220, 38, 38, 0.15), 0 0 0 1px rgba(220, 38, 38, 0.05)',
-      '&::before': {
-        opacity: 0.7,
-      },
-      [theme.breakpoints.down('md')]: {
-        transform: 'translateY(-1px) scale(1.01)',
-        boxShadow: '0 4px 15px rgba(220, 38, 38, 0.15), 0 0 0 1px rgba(220, 38, 38, 0.05)',
-      },
-    },
-  },
-  '@keyframes pulse': {
-    '0%, 100%': { boxShadow: '0 4px 12px rgba(220, 38, 38, 0.4), 0 0 20px rgba(220, 38, 38, 0.2)' },
-    '50%': { boxShadow: '0 6px 16px rgba(220, 38, 38, 0.6), 0 0 30px rgba(220, 38, 38, 0.3)' },
-  },
-  '@keyframes ripple': {
-    '0%': { transform: 'translate(-50%, -50%) scale(0)', opacity: 1 },
-    '100%': { transform: 'translate(-50%, -50%) scale(1)', opacity: 0 },
-  },
-}));
+// const StyledTabs = styled(Tabs)(({ theme }) => ({
+//   '& .MuiTabs-indicator': {
+//     display: 'none',
+//   },
+//   '& .MuiTabs-flexContainer': {
+//     flexDirection: 'column',
+//     alignItems: 'flex-start',
+//     gap: '12px',
+//     padding: '8px',
+//     [theme.breakpoints.down('md')]: {
+//       flexDirection: 'row',
+//       alignItems: 'center',
+//       justifyContent: 'center',
+//       gap: '8px',
+//       padding: '12px 8px',
+//     },
+//   },
+//   '& .MuiTab-root': {
+//     textTransform: 'none',
+//     fontWeight: 700,
+//     fontSize: '0.95rem',
+//     minHeight: 56,
+//     minWidth: 'auto',
+//     padding: '16px 24px',
+//     marginBottom: '12px',
+//     borderRadius: '0 16px 16px 0',
+//     transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+//     position: 'relative',
+//     overflow: 'hidden',
+//     backdropFilter: 'blur(10px)',
+//     border: '1px solid rgba(255, 255, 255, 0.1)',
+//     [theme.breakpoints.down('md')]: {
+//       marginBottom: 0,
+//       marginRight: '8px',
+//       borderRadius: '12px 12px 0 0',
+//       minHeight: 48,
+//       padding: '12px 16px',
+//       fontSize: '0.85rem',
+//       flex: 1,
+//       maxWidth: '200px',
+//     },
+//     '&::before': {
+//       content: '""',
+//       position: 'absolute',
+//       top: 0,
+//       left: 0,
+//       right: 0,
+//       bottom: 0,
+//       background: 'linear-gradient(135deg, rgba(220, 38, 38, 0.15) 0%, rgba(185, 28, 28, 0.08) 50%, rgba(220, 38, 38, 0.05) 100%)',
+//       opacity: 0,
+//       transition: 'opacity 0.4s ease',
+//     },
+//     '&::after': {
+//       content: '""',
+//       position: 'absolute',
+//       top: '50%',
+//       left: '50%',
+//       width: 0,
+//       height: 0,
+//       background: 'radial-gradient(circle, rgba(220, 38, 38, 0.3) 0%, transparent 70%)',
+//       borderRadius: '50%',
+//       transform: 'translate(-50%, -50%)',
+//       transition: 'all 0.6s ease',
+//     },
+//     '&.Mui-selected': {
+//       color: '#dc2626',
+//       background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.8) 100%)',
+//       borderLeft: '5px solid #dc2626',
+//       boxShadow: '0 8px 25px rgba(220, 38, 38, 0.2), 0 0 0 1px rgba(220, 38, 38, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6)',
+//       transform: 'translateX(6px) scale(1.02)',
+//       '&::before': {
+//         opacity: 1,
+//       },
+//       '&::after': {
+//         width: '200px',
+//         height: '200px',
+//         animation: 'ripple 0.6s ease-out',
+//       },
+//       [theme.breakpoints.down('md')]: {
+//         borderLeft: 'none',
+//         borderBottom: '3px solid #dc2626',
+//         transform: 'translateY(-2px) scale(1.02)',
+//         boxShadow: '0 6px 20px rgba(220, 38, 38, 0.2), 0 0 0 1px rgba(220, 38, 38, 0.1)',
+//       },
+//     },
+//     '&:hover': {
+//       color: '#dc2626',
+//       background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(248, 250, 252, 0.6) 100%)',
+//       transform: 'translateX(3px) scale(1.01)',
+//       boxShadow: '0 6px 20px rgba(220, 38, 38, 0.15), 0 0 0 1px rgba(220, 38, 38, 0.05)',
+//       '&::before': {
+//         opacity: 0.7,
+//       },
+//       [theme.breakpoints.down('md')]: {
+//         transform: 'translateY(-1px) scale(1.01)',
+//         boxShadow: '0 4px 15px rgba(220, 38, 38, 0.15), 0 0 0 1px rgba(220, 38, 38, 0.05)',
+//       },
+//     },
+//   },
+//   '@keyframes pulse': {
+//     '0%, 100%': { boxShadow: '0 4px 12px rgba(220, 38, 38, 0.4), 0 0 20px rgba(220, 38, 38, 0.2)' },
+//     '50%': { boxShadow: '0 6px 16px rgba(220, 38, 38, 0.6), 0 0 30px rgba(220, 38, 38, 0.3)' },
+//   },
+//   '@keyframes ripple': {
+//     '0%': { transform: 'translate(-50%, -50%) scale(0)', opacity: 1 },
+//     '100%': { transform: 'translate(-50%, -50%) scale(1)', opacity: 0 },
+//   },
+// }));
 
-const StyledTab = styled(Tab)(({ theme }) => ({
-  '&.Mui-selected': {
-    color: '#dc2626',
-  },
-}));
+// const StyledTab = styled(Tab)(({ theme }) => ({
+//   '&.Mui-selected': {
+//     color: '#dc2626',
+//   },
+// }));
 
 const TabPanel = styled(Box)(({ theme }) => ({
   padding: 0,
@@ -201,6 +202,12 @@ const MyProfile: React.FC = () => {
             title="Profile"
             breadcrumbs={['Dashboard', 'User', userData ? `${userData.firstName} ${userData.lastName}` : 'Loading...']}
             userData={userData}
+            tabs={[
+              { label: 'User Profile', value: 0, icon: <PersonIcon /> },
+              { label: 'Business Profile', value: 1, icon: <BusinessIcon /> },
+            ]}
+            defaultTab={0}
+            onTabChange={(value: number) => handleTabChange(null, value)}
           />
 
         {/* Tabs */}
@@ -228,7 +235,7 @@ const MyProfile: React.FC = () => {
             flexDirection: { xs: 'column', md: 'row' }
           }}>
             {/* Tabs Container - Responsive */}
-            <Box sx={{ 
+            {/* <Box sx={{ 
               width: { xs: '100%', md: '240px' },
               background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.8) 50%, rgba(241, 245, 249, 0.9) 100%)',
               borderRight: { xs: 'none', md: '1px solid rgba(220, 38, 38, 0.08)' },
@@ -372,14 +379,15 @@ const MyProfile: React.FC = () => {
                   }}
                 />
               </StyledTabs>
-            </Box>
+            </Box> */}
 
             {/* Content Area */}
             <Box sx={{ 
               flex: 1, 
               p: { xs: 3, md: 5 },
-              background: 'linear-gradient(135deg, #ffffff 0%, #fafbfc 50%, #f8fafc 100%)',
+              // background: 'linear-gradient(135deg, #ffffff 0%, #fafbfc 50%, #f8fafc 100%)',
               position: 'relative',
+              minHeight: '600px',
               '&::before': {
                 content: '""',
                 position: 'absolute',
@@ -407,7 +415,22 @@ const MyProfile: React.FC = () => {
             }}>
               {/* Loading / Error States */}
               {loading && (
-                <Typography variant="body1">Loading profile...</Typography>
+                <Box sx={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  minHeight: '100%',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                }}>
+                  <Loader
+                    fullscreen={false}
+                    size="medium"
+                  />
+                </Box>
               )}
               {error && !loading && (
                 <Typography color="error" variant="body1">{error}</Typography>
