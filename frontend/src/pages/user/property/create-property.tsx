@@ -52,7 +52,7 @@ import PropertyImagesForm from '../../../sections/user/property/PropertyImagesFo
 import PropertyDocumentsForm from '../../../sections/user/property/PropertyDocumentsForm';
 import HeaderCard from '../../../components/HeaderCard';
 import { enqueueSnackbar } from 'notistack';
-import { fetchAndConvertToJson } from '../../../utils/fetchAndConvertToJson';
+import axiosInstance from '@/utils/axios';
 
 // Tab configuration
 const tabs = [
@@ -374,6 +374,32 @@ const CreatePropertyPage: React.FC = () => {
     }
   };
 
+  const handleImport = async () => {
+    if (!importLink.trim()) return;
+    
+    setIsImporting(true);
+    setImportError(null);
+    setImportedData(null);
+    
+    try {
+      const result = await axiosInstance.get('/api/feed/import-properties');
+      enqueueSnackbar('Property data imported successfully!', { variant: 'success' });
+      console.log('Imported data:', result);
+      
+      // Here you can add logic to populate the form with the imported data
+      // For now, we just log it and show success
+      
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to import property data';
+      enqueueSnackbar(errorMessage, { variant: 'error' });
+      console.error('Import error:', error);
+    } finally {
+      setIsImporting(false);
+    }
+  };
+
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+
   return (
     <Box>
       
@@ -382,7 +408,7 @@ const CreatePropertyPage: React.FC = () => {
       {/* Progress Stepper */}
       <Card sx={{ mb: 4 }}>
         <CardContent sx={{ p: 0 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 2, pb: 1 }}>
+          {user.email === 'vijay@99home.co.uk' && <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 2, pb: 1 }}>
             <Button
               variant="outlined"
               startIcon={<FileUpload />}
@@ -394,7 +420,7 @@ const CreatePropertyPage: React.FC = () => {
             >
               Import Property
             </Button>
-          </Box>
+          </Box>}
           <Box
             sx={{
               overflowX: 'auto',
@@ -641,16 +667,6 @@ const CreatePropertyPage: React.FC = () => {
                 </Typography>
               </Box>
             )}
-            {importedData && !isImporting && (
-              <Box sx={{ mt: 2, p: 2, bgcolor: '#f5f5f5', borderRadius: 1 }}>
-                <Typography variant="body2" color="success.main" sx={{ mb: 1 }}>
-                  ✓ Data imported successfully!
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  Content Type: {importedData.metadata?.contentType || 'Unknown'}
-                </Typography>
-              </Box>
-            )}
           </Box>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
@@ -667,31 +683,7 @@ const CreatePropertyPage: React.FC = () => {
             Cancel
           </Button>
           <Button
-            onClick={async () => {
-              if (!importLink.trim()) return;
-              
-              setIsImporting(true);
-              setImportError(null);
-              setImportedData(null);
-              
-              try {
-                const result = await fetchAndConvertToJson(importLink.trim());
-                setImportedData(result);
-                enqueueSnackbar('Property data imported successfully!', { variant: 'success' });
-                console.log('Imported data:', result);
-                
-                // Here you can add logic to populate the form with the imported data
-                // For now, we just log it and show success
-                
-              } catch (error) {
-                const errorMessage = error instanceof Error ? error.message : 'Failed to import property data';
-                setImportError(errorMessage);
-                enqueueSnackbar(errorMessage, { variant: 'error' });
-                console.error('Import error:', error);
-              } finally {
-                setIsImporting(false);
-              }
-            }}
+            onClick={handleImport}
             variant="contained"
             disabled={!importLink.trim() || isImporting}
             startIcon={isImporting ? <CircularProgress size={16} /> : <FileUpload />}

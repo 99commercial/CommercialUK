@@ -78,7 +78,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   letterSpacing: '0.01em',
   lineHeight: 1.6,
   '&.MuiTableCell-head': {
-    backgroundColor: alpha(theme.palette.primary.main, 0.08),
+    backgroundColor: theme.palette.background.paper,
     fontWeight: 600,
     fontSize: '0.8125rem',
     color: theme.palette.text.primary,
@@ -245,6 +245,7 @@ const PropertiesTable: React.FC = () => {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
+  const [totalProperties, setTotalProperties] = useState(0);
 
   // Fetch properties from API
   const fetchProperties = async () => {
@@ -267,7 +268,11 @@ const PropertiesTable: React.FC = () => {
       });
 
       if (response.data.success) {
-        setProperties(response.data.data.properties || []);
+        const propertiesData = response.data.data.properties || [];
+        const paginationData = response.data.data.pagination;
+
+        setProperties(propertiesData);
+        setTotalProperties(paginationData?.total_documents ?? propertiesData.length ?? 0);
       } else {
         throw new Error(response.data.message || 'Failed to fetch properties');
       }
@@ -441,7 +446,7 @@ const PropertiesTable: React.FC = () => {
                 {isLargeScreen && <StyledTableCell>Image</StyledTableCell>}
                 <StyledTableCell 
                   onClick={() => handleSort('building_name')}
-                  sx={{ cursor: 'pointer', userSelect: 'none', '&:hover': { backgroundColor: alpha(theme.palette.primary.main, 0.12) } }}
+                  sx={{ cursor: 'pointer', userSelect: 'none', '&:hover': { backgroundColor: theme.palette.action.hover } }}
                 >
                   <Box display="flex" alignItems="center" gap={1}>
                     Property Name
@@ -454,7 +459,7 @@ const PropertiesTable: React.FC = () => {
                 <StyledTableCell>Status</StyledTableCell>
                 <StyledTableCell 
                   onClick={() => handleSort('createdAt')}
-                  sx={{ cursor: 'pointer', userSelect: 'none', '&:hover': { backgroundColor: alpha(theme.palette.primary.main, 0.12) } }}
+                  sx={{ cursor: 'pointer', userSelect: 'none', '&:hover': { backgroundColor: theme.palette.action.hover } }}
                 >
                   <Box display="flex" alignItems="center" gap={1}>
                     Created Date
@@ -465,6 +470,7 @@ const PropertiesTable: React.FC = () => {
                 <StyledTableCell align="center">Delete</StyledTableCell>
               </TableRow>
             </TableHead>
+            
             <TableBody>
               {loading ? (
                 <StyledTableRow>
@@ -703,7 +709,7 @@ const PropertiesTable: React.FC = () => {
 
         <StyledTablePagination
           rowsPerPageOptions={[5, 10, 25]}
-          count={properties.length}
+          count={totalProperties}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

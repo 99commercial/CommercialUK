@@ -16,6 +16,11 @@ import {
   Chip,
   IconButton,
   Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  DialogActions,
 } from '@mui/material';
 import {
   ArrowForward,
@@ -29,6 +34,7 @@ import {
   Build,
   PhotoLibrary,
   Description as DocumentIcon,
+  FileUpload,
 } from '@mui/icons-material';
 import { useRouter } from 'next/router';
 import { useForm, FormProvider } from 'react-hook-form';
@@ -46,6 +52,7 @@ import PropertyImagesForm from '../../../sections/agent/property/PropertyImagesF
 import PropertyDocumentsForm from '../../../sections/agent/property/PropertyDocumentsForm';
 import HeaderCard from '../../../components/HeaderCard';
 import { enqueueSnackbar } from 'notistack';
+import axiosInstance from '@/utils/axios';
 
 // Tab configuration
 const tabs = [
@@ -159,6 +166,12 @@ const CreatePropertyPage: React.FC = () => {
       property_documents: [],
     },
   });
+
+  const [importLink, setImportLink] = useState('');
+  const [isImporting, setIsImporting] = useState(false);
+  const [importError, setImportError] = useState<string | null>(null);
+  const [importedData, setImportedData] = useState<any>(null);
+  const [importModalOpen, setImportModalOpen] = useState(false);
 
   // Update resolver when step changes
   React.useEffect(() => {
@@ -373,6 +386,32 @@ const CreatePropertyPage: React.FC = () => {
     }
   };
 
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+  const handleImport = async () => {
+    if (!importLink.trim()) return;
+    
+    setIsImporting(true);
+    setImportError(null);
+    setImportedData(null);
+    
+    try {
+      const result = await axiosInstance.get('/api/feed/import-properties');
+      enqueueSnackbar('Property data imported successfully!', { variant: 'success' });
+      console.log('Imported data:', result);
+      
+      // Here you can add logic to populate the form with the imported data
+      // For now, we just log it and show success
+      
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to import property data';
+      enqueueSnackbar(errorMessage, { variant: 'error' });
+      console.error('Import error:', error);
+    } finally {
+      setIsImporting(false);
+    }
+  };
+
   return (
     <Box>
       
@@ -381,6 +420,19 @@ const CreatePropertyPage: React.FC = () => {
       {/* Progress Stepper */}
       <Card sx={{ mb: 4 }}>
         <CardContent sx={{ p: 0 }}>
+          {user.email === 'vijay@99home.co.uk' && <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 2, pb: 1 }}>
+            <Button
+              variant="outlined"
+              startIcon={<FileUpload />}
+              onClick={() => setImportModalOpen(true)}
+              sx={{
+                textTransform: 'none',
+                borderRadius: 2,
+              }}
+            >
+              Import Property
+            </Button>
+          </Box>}
           <Box
             sx={{
               overflowX: 'auto',
@@ -586,6 +638,74 @@ const CreatePropertyPage: React.FC = () => {
           </Box>
         </CardContent>
       </Card>
+
+      {/* Import Property Modal */}
+      <Dialog
+        open={importModalOpen}
+        onClose={() => setImportModalOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <FileUpload />
+            <Typography variant="h6">Import Property</Typography>
+          </Box>
+        </DialogTitle>
+        <DialogContent>
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              Enter the property link to import property data
+            </Typography>
+            <TextField
+              fullWidth
+              label="Property Link"
+              placeholder="https://example.com/property/123"
+              value={importLink}
+              onChange={(e) => {
+                setImportLink(e.target.value);
+                setImportError(null);
+              }}
+              variant="outlined"
+              sx={{ mt: 1 }}
+              error={!!importError}
+              helperText={importError}
+            />
+            {isImporting && (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 2 }}>
+                <CircularProgress size={20} />
+                <Typography variant="body2" color="text.secondary">
+                  Fetching and converting data...
+                </Typography>
+              </Box>
+            )}
+          </Box>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button 
+            onClick={() => {
+              setImportModalOpen(false);
+              setImportLink('');
+              setImportError(null);
+              setImportedData(null);
+            }} 
+            variant="outlined"
+            disabled={isImporting}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleImport}
+            variant="contained"
+            disabled={!importLink.trim() || isImporting}
+            startIcon={isImporting ? <CircularProgress size={16} /> : <FileUpload />}
+          >
+            {isImporting ? 'Importing...' : 'Import'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+
     </Box>
   );
 };

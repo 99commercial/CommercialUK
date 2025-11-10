@@ -340,58 +340,70 @@ const Advertise: NextPage = () => {
                       </Stack>
                     </CardContent>
                   </Card>
-                </Box>
-
-                <Divider sx={{ my: 2 }} />
-
-                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr', md: 'repeat(2, 1fr)' }, gap: 3 }}>
-                  <Stack spacing={2}>
-                    <Stack direction="row" spacing={2} alignItems="center">
-                      <Campaign sx={{ color: 'error.main', fontSize: 32 }} />
-                      <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                        Company Promotion
-                      </Typography>
-                    </Stack>
-                    <Typography variant="body2" color="text.secondary">
-                      Showcase agents in peak marketplace positions for enhanced brand visibility.
-                    </Typography>
-                  </Stack>
                   
-                  <Stack spacing={2}>
-                    <Stack direction="row" spacing={2} alignItems="center">
-                      <TrendingUp sx={{ color: 'error.main', fontSize: 32 }} />
-                      <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                        Extra Marketing
-                      </Typography>
-                    </Stack>
-                    <Typography variant="body2" color="text.secondary">
-                      Newsletters, social advertising, regional highlighting to reach more prospects.
-                    </Typography>
-                  </Stack>
+                  <Card sx={{ width: '100%', border: '1px solid rgba(220,53,69,0.1)' }}>
+                    <CardContent>
+                      <Stack spacing={2}>
+                        <Stack direction="row" spacing={2} alignItems="center">
+                          <BrandingWatermark sx={{ color: 'error.main', fontSize: 32 }} />
+                          <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                          Company Promotion
+                          </Typography>
+                        </Stack>
+                        <Typography variant="body2" color="text.secondary">
+                        Showcase agents in peak marketplace positions for enhanced brand visibility.
+                        </Typography>
+                      </Stack>
+                    </CardContent>
+                  </Card>
                   
-                  <Stack spacing={2}>
-                    <Stack direction="row" spacing={2} alignItems="center">
-                      <HomeWork sx={{ color: 'error.main', fontSize: 32 }} />
-                      <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                        Commercial Only Focus
-                      </Typography>
-                    </Stack>
-                    <Typography variant="body2" color="text.secondary">
-                      Offices, retail space, industrial, warehouses, restaurants, coworking, and small commercial properties for sale.
-                    </Typography>
-                  </Stack>
+                  <Card sx={{ width: '100%', border: '1px solid rgba(220,53,69,0.1)' }}>
+                    <CardContent>
+                      <Stack spacing={2}>
+                        <Stack direction="row" spacing={2} alignItems="center">
+                          <Campaign sx={{ color: 'error.main', fontSize: 32 }} />
+                          <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                          Extra Marketing
+                          </Typography>
+                        </Stack>
+                        <Typography variant="body2" color="text.secondary">
+                        Newsletters, social advertising, regional highlighting to reach more prospects.
+                        </Typography>
+                      </Stack>
+                    </CardContent>
+                  </Card>
                   
-                  <Stack spacing={2}>
-                    <Stack direction="row" spacing={2} alignItems="center">
-                      <LocationOn sx={{ color: 'error.main', fontSize: 32 }} />
-                      <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                        Enhanced Location Mapping
-                      </Typography>
-                    </Stack>
-                    <Typography variant="body2" color="text.secondary">
-                      Detailed location insights and mapping for better property discovery.
-                    </Typography>
-                  </Stack>
+                  <Card sx={{ width: '100%', border: '1px solid rgba(220,53,69,0.1)' }}>
+                    <CardContent>
+                      <Stack spacing={2}>
+                        <Stack direction="row" spacing={2} alignItems="center">
+                          <Business sx={{ color: 'error.main', fontSize: 32 }} />
+                          <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                          Commercial Only Focus
+                          </Typography>
+                        </Stack>
+                        <Typography variant="body2" color="text.secondary">
+                        Offices, retail space, industrial, warehouses, restaurants, coworking, and small commercial properties for sale.
+                        </Typography>
+                      </Stack>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card sx={{ width: '100%', border: '1px solid rgba(220,53,69,0.1)' }}>
+                    <CardContent>
+                      <Stack spacing={2}>
+                        <Stack direction="row" spacing={2} alignItems="center">
+                          <Map sx={{ color: 'error.main', fontSize: 32 }} />
+                          <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                          Enhanced Location Mapping
+                          </Typography>
+                        </Stack>
+                        <Typography variant="body2" color="text.secondary">
+                        Detailed location insights and mapping for better property discovery.
+                        </Typography>
+                      </Stack>
+                    </CardContent>
+                  </Card>
                 </Box>
               </Stack>
             </Paper>

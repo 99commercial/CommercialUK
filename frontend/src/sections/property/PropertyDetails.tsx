@@ -63,131 +63,176 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
     return '';
   };
 
+  // Check if documents exist and have items
+  const hasDocuments = property.documents_id?.documents && property.documents_id.documents.length > 0;
+  
+  // Check if virtual tours exist and have items
+  const hasVirtualTours = property.virtual_tours_id?.virtual_tours && property.virtual_tours_id.virtual_tours.length > 0;
+  
+  // Check if descriptions exist and have any content
+  const hasDescriptions = property.descriptions_id && (
+    property.descriptions_id.general ||
+    property.descriptions_id.location ||
+    property.descriptions_id.accommodation ||
+    property.descriptions_id.terms ||
+    property.descriptions_id.specifications
+  );
+  
+  // Check if sale types exist and have items
+  const hasSaleTypes = property.sale_types_id?.sale_types && property.sale_types_id.sale_types.length > 0;
+  
+  // Check if location exists
+  const hasLocation = property.location_id;
+  
+  // Check if business details exist
+  const hasBusinessDetails = property.council_tax || property.planning || property.business_rates_id || property.epc;
+  
+  // Check if features exist and have any enabled features
+  const hasFeatures = property.features_id && (
+    Object.entries(property.features_id.features || {}).some(([key, value]) => value === 'Yes') ||
+    (property.features_id.additional_features && property.features_id.additional_features.some(feature => feature.feature_value === 'Yes'))
+  );
+
   return (
     <MainContent>
       {/* Property Details */}
-      <PropertyCard>
-        <CardContent>
-          <Typography variant="h5" sx={{ fontWeight: 600, mb: 3 }}>
-            Property Details
-          </Typography>
-          
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
-              <Box sx={{ flex: 1 }}>
-                <FeatureItem>
-                  <LocationOnIcon color="action" />
-                  <Box>
-                    <Typography variant="body2" color="text.secondary">
-                      Address
-                    </Typography>
-                    <Typography variant="body1">
-                      {property.general_details.address}
-                    </Typography>
-                    <Typography variant="body1">
-                      {property.general_details.town_city}, {property.general_details.postcode}
-                    </Typography>
-                  </Box>
-                </FeatureItem>
-              </Box>
-              
-              <Box sx={{ flex: 1 }}>
-                <FeatureItem>
-                  <SquareFootIcon color="action" />
-                  <Box>
-                    <Typography variant="body2" color="text.secondary">
-                      Size
-                    </Typography>
-                    <Typography variant="body1">
-                      {formatSize()}
-                    </Typography>
-                  </Box>
-                </FeatureItem>
-              </Box>
-            </Box>
+      {property.general_details && (
+        <PropertyCard>
+          <CardContent>
+            <Typography variant="h5" sx={{ fontWeight: 600, mb: 3 }}>
+              Property Details
+            </Typography>
             
-            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
-              <Box sx={{ flex: 1 }}>
-                <FeatureItem>
-                  <CalendarIcon color="action" />
-                  <Box>
-                    <Typography variant="body2" color="text.secondary">
-                      Year Built
-                    </Typography>
-                    <Typography variant="body1">
-                      {property.general_details.approximate_year_of_construction}
-                    </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+              <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
+                {property.general_details.address && (
+                  <Box sx={{ flex: 1 }}>
+                    <FeatureItem>
+                      <LocationOnIcon color="action" />
+                      <Box>
+                        <Typography variant="body2" color="text.secondary">
+                          Address
+                        </Typography>
+                        <Typography variant="body1">
+                          {property.general_details.address}
+                        </Typography>
+                        {(property.general_details.town_city || property.general_details.postcode) && (
+                          <Typography variant="body1">
+                            {property.general_details.town_city}{property.general_details.town_city && property.general_details.postcode ? ', ' : ''}{property.general_details.postcode}
+                          </Typography>
+                        )}
+                      </Box>
+                    </FeatureItem>
                   </Box>
-                </FeatureItem>
+                )}
+                
+                {formatSize() && (
+                  <Box sx={{ flex: 1 }}>
+                    <FeatureItem>
+                      <SquareFootIcon color="action" />
+                      <Box>
+                        <Typography variant="body2" color="text.secondary">
+                          Size
+                        </Typography>
+                        <Typography variant="body1">
+                          {formatSize()}
+                        </Typography>
+                      </Box>
+                    </FeatureItem>
+                  </Box>
+                )}
               </Box>
               
-              <Box sx={{ flex: 1 }}>
-                <FeatureItem>
-                  <BusinessIcon color="action" />
-                  <Box>
-                    <Typography variant="body2" color="text.secondary">
-                      Property Type
-                    </Typography>
-                    <Typography variant="body1">
-                      {property.general_details.property_type}
-                    </Typography>
+              <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
+                {property.general_details.approximate_year_of_construction && (
+                  <Box sx={{ flex: 1 }}>
+                    <FeatureItem>
+                      <CalendarIcon color="action" />
+                      <Box>
+                        <Typography variant="body2" color="text.secondary">
+                          Year Built
+                        </Typography>
+                        <Typography variant="body1">
+                          {property.general_details.approximate_year_of_construction}
+                        </Typography>
+                      </Box>
+                    </FeatureItem>
                   </Box>
-                </FeatureItem>
-              </Box>
-            </Box>
-            
-            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
-              <Box sx={{ flex: 1 }}>
-                <FeatureItem>
-                  <BusinessIcon color="action" />
-                  <Box>
-                    <Typography variant="body2" color="text.secondary">
-                      Property Status
-                    </Typography>
-                    <Typography variant="body1">
-                      {property.property_status}
-                    </Typography>
+                )}
+                
+                {property.general_details.property_type && (
+                  <Box sx={{ flex: 1 }}>
+                    <FeatureItem>
+                      <BusinessIcon color="action" />
+                      <Box>
+                        <Typography variant="body2" color="text.secondary">
+                          Property Type
+                        </Typography>
+                        <Typography variant="body1">
+                          {property.general_details.property_type}
+                        </Typography>
+                      </Box>
+                    </FeatureItem>
                   </Box>
-                </FeatureItem>
+                )}
               </Box>
               
-              {property.business_rates_id && (
-                <Box sx={{ flex: 1 }}>
-                  <FeatureItem>
-                    <BusinessIcon color="action" />
-                    <Box>
-                      <Typography variant="body2" color="text.secondary">
-                        Rateable Value
-                      </Typography>
-                      <Typography variant="body1" sx={{ fontWeight: 600, color: '#1976d2' }}>
-                        £{property.rateable_value?.toLocaleString()}
-                      </Typography>
-                    </Box>
-                  </FeatureItem>
-                </Box>
-              )}
+              <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
+                {property.property_status && (
+                  <Box sx={{ flex: 1 }}>
+                    <FeatureItem>
+                      <BusinessIcon color="action" />
+                      <Box>
+                        <Typography variant="body2" color="text.secondary">
+                          Property Status
+                        </Typography>
+                        <Typography variant="body1">
+                          {property.property_status}
+                        </Typography>
+                      </Box>
+                    </FeatureItem>
+                  </Box>
+                )}
+                
+                {property.business_rates_id && property.rateable_value && (
+                  <Box sx={{ flex: 1 }}>
+                    <FeatureItem>
+                      <BusinessIcon color="action" />
+                      <Box>
+                        <Typography variant="body2" color="text.secondary">
+                          Rateable Value
+                        </Typography>
+                        <Typography variant="body1" sx={{ fontWeight: 600, color: '#1976d2' }}>
+                          £{property.rateable_value.toLocaleString()}
+                        </Typography>
+                      </Box>
+                    </FeatureItem>
+                  </Box>
+                )}
+              </Box>
             </Box>
-          </Box>
-        </CardContent>
-      </PropertyCard>
+          </CardContent>
+        </PropertyCard>
+      )}
 
       {/* Documents and Virtual Tours */}
-      <PropertyCard>
-        <CardContent>
-          <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: '#333' }}>
-            Documents and Virtual Tours
-          </Typography>
-          {property.documents_id ? (
-            <Box sx={{ 
-              display: 'flex', 
-              flexDirection: 'column',
-              gap: 2,
-              width: '100%'
-            }}>
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
-                Documents
-              </Typography>
-              {property.documents_id.documents?.map((document) => (
+      {(hasDocuments || hasVirtualTours) && (
+        <PropertyCard>
+          <CardContent>
+            <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: '#333' }}>
+              Documents and Virtual Tours
+            </Typography>
+            {hasDocuments && (
+              <Box sx={{ 
+                display: 'flex', 
+                flexDirection: 'column',
+                gap: 2,
+                width: '100%'
+              }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
+                  Documents
+                </Typography>
+                {property.documents_id.documents.map((document) => (
                 <Box key={document._id} sx={{ 
                   p: { xs: 2, sm: 3 },
                   border: '1px solid #e0e0e0',
@@ -296,24 +341,20 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
                   </Box>
                 </Box>
               ))}
-            </Box>
-          ) : (
-            <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
-              Document information not available for this property.
-            </Typography>
-          )}
-          {property.virtual_tours_id ? (
-            <Box sx={{ 
-              display: 'flex', 
-              flexDirection: 'column',
-              gap: 2,
-              width: '100%',
-              mt: 3
-            }}>
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
-                Virtual Tours
-              </Typography>
-              {property.virtual_tours_id.virtual_tours?.map((virtualTour) => (
+              </Box>
+            )}
+            {hasVirtualTours && (
+              <Box sx={{ 
+                display: 'flex', 
+                flexDirection: 'column',
+                gap: 2,
+                width: '100%',
+                mt: hasDocuments ? 3 : 0
+              }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
+                  Virtual Tours
+                </Typography>
+                {property.virtual_tours_id.virtual_tours.map((virtualTour) => (
                 <Box key={virtualTour._id} sx={{ 
                   p: { xs: 2, sm: 3 },
                   border: '1px solid #e0e0e0',
@@ -436,23 +477,19 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
                   </Box>
                 </Box>
               ))}
-            </Box>
-          ) : (
-            <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2, mt: 3 }}>
-              Virtual tour information not available for this property.
-            </Typography>
-          )}
-        </CardContent>
-      </PropertyCard>
+              </Box>
+            )}
+          </CardContent>
+        </PropertyCard>
+      )}
 
       {/* Description */}
-      <PropertyCard>
-        <CardContent>
-          {property.descriptions_id ? (
-            <>
-              <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: '#333' }}>
-                Property Descriptions
-              </Typography>
+      {hasDescriptions && (
+        <PropertyCard>
+          <CardContent>
+            <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: '#333' }}>
+              Property Descriptions
+            </Typography>
               <Box sx={{ 
                 display: 'grid', 
                 gridTemplateColumns: { xs: '1fr', sm: '1fr', md: 'repeat(2, 1fr)' },
@@ -622,30 +659,24 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
                   </Box>
                 )}
               </Box>
-              {/*  */}
-            </>
-          ) : (
-            <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
-              Description information not available for this property.
-            </Typography>
-          )}
-        </CardContent>
-      </PropertyCard>
+          </CardContent>
+        </PropertyCard>
+      )}
 
       {/* Sale Types */}
-      <PropertyCard>
-        <CardContent>
-          <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: '#333' }}>
-            Sale Types & Pricing
-          </Typography>
-          {property.sale_types_id ? (
+      {hasSaleTypes && (
+        <PropertyCard>
+          <CardContent>
+            <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: '#333' }}>
+              Sale Types & Pricing
+            </Typography>
             <Box sx={{ 
               display: 'flex', 
               flexDirection: 'column',
               gap: 2,
               width: '100%'
             }}>
-              {property.sale_types_id.sale_types?.map((saleType, index) => (
+              {property.sale_types_id.sale_types.map((saleType, index) => (
                 <Box key={saleType._id || index} sx={{ 
                   p: 3,
                   border: '1px solid #e0e0e0',
@@ -685,21 +716,17 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
                 </Box>
               ))}
             </Box>
-          ) : (
-            <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
-              Sale type information not available for this property.
-            </Typography>
-          )}
-        </CardContent>
-      </PropertyCard>
+          </CardContent>
+        </PropertyCard>
+      )}
 
        {/* Location & Map */}
-       <PropertyCard>
-         <CardContent>
-           <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: '#333' }}>
-             Location & Map
-           </Typography>
-           {property.location_id ? (
+       {hasLocation && (
+         <PropertyCard>
+           <CardContent>
+             <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: '#333' }}>
+               Location & Map
+             </Typography>
              <Box sx={{ 
                display: 'flex', 
                flexDirection: 'column',
@@ -844,26 +871,23 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
                  </Box>
                </Box>
              </Box>
-           ) : (
-             <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
-               Location information not available for this property.
-             </Typography>
-           )}
-        </CardContent>
-      </PropertyCard>
+           </CardContent>
+         </PropertyCard>
+       )}
 
       {/* Business Details */}
-      <PropertyCard>
-        <CardContent>
-          <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: '#333' }}>
-            Business Details
-          </Typography>
-          <Box sx={{ 
-            display: 'flex', 
-            flexDirection: 'column',
-            gap: 3,
-            width: '100%'
-          }}>
+      {hasBusinessDetails && (
+        <PropertyCard>
+          <CardContent>
+            <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: '#333' }}>
+              Business Details
+            </Typography>
+            <Box sx={{ 
+              display: 'flex', 
+              flexDirection: 'column',
+              gap: 3,
+              width: '100%'
+            }}>
             {/* Council Tax */}
             {property.council_tax && (
               <Box sx={{ 
@@ -1073,31 +1097,25 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
                 </Box>
               </Box>
             )}
-
-            {/* Show message if no business details are available */}
-            {!property.council_tax && !property.planning && !property.business_rates_id && !property.epc && (
-              <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
-                Business details information not available for this property.
-              </Typography>
-            )}
           </Box>
         </CardContent>
       </PropertyCard>
+      )}
 
       {/* Features */}
-      <PropertyCard>
-        <CardContent>
-          <Typography variant="h5" sx={{ fontWeight: 600, mb: 3 }}>
-            Features & Amenities
-          </Typography>
-          {property.features_id ? (
+      {hasFeatures && (
+        <PropertyCard>
+          <CardContent>
+            <Typography variant="h5" sx={{ fontWeight: 600, mb: 3 }}>
+              Features & Amenities
+            </Typography>
             <Box sx={{ 
               display: 'flex', 
               flexWrap: 'wrap',
               gap: 1.5 
             }}>
               {/* Main Features */}
-              {Object.entries(property.features_id.features)
+              {Object.entries(property.features_id.features || {})
                 .filter(([key, value]) => value === 'Yes')
                 .map(([key, value]) => {
                 const featureName = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
@@ -1135,22 +1153,10 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
                   />
                 );
               })}
-              
-              {/* Show message if no features are available */}
-              {Object.entries(property.features_id.features).filter(([key, value]) => value === 'Yes').length === 0 && 
-               (!property.features_id.additional_features || property.features_id.additional_features.filter(feature => feature.feature_value === 'Yes').length === 0) && (
-                <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2, width: '100%' }}>
-                  No specific features listed for this property.
-                </Typography>
-              )}
             </Box>
-          ) : (
-            <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
-              Feature information not available for this property.
-            </Typography>
-          )}
-        </CardContent>
-      </PropertyCard>
+          </CardContent>
+        </PropertyCard>
+      )}
     </MainContent>
   );
 };
