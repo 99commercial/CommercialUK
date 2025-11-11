@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Head from 'next/head';
 import {
   Box,
   Container,
@@ -420,11 +421,32 @@ const PropertyDetailPage: React.FC = () => {
   }
 
   const images = property.images_id?.images || [];
-
+  const firstImageUrl =
+    images && images.length > 0
+      ? [...images].sort((a, b) => (a.order || 0) - (b.order || 0))[0]?.url
+      : '/placeholder-property.jpg';
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const pageUrl = origin ? `${origin}${typeof window !== 'undefined' ? window.location.pathname : ''}` : '';
+  const ogTitle = property.general_details.building_name || 'Property on 99Commercial';
+  const ogDescription =
+    property.descriptions_id?.general ||
+    `${property.general_details.property_sub_type} in ${property.general_details.town_city}`;
 
   return (
     <PageContainer>
-      {/* Title Header Section */}
+      <Head>
+        <title>{ogTitle}</title>
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={ogTitle} />
+        <meta property="og:description" content={ogDescription} />
+        <meta property="og:image" content={firstImageUrl} />
+        {pageUrl && <meta property="og:url" content={pageUrl} />}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={ogTitle} />
+        <meta name="twitter:description" content={ogDescription} />
+        <meta name="twitter:image" content={firstImageUrl} />
+      </Head>
+
       <PropertyHeader
         property={property}
         isFavorite={isFavorite}

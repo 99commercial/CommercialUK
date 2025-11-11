@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -10,6 +10,10 @@ import { styled } from '@mui/material/styles';
 import {
   FavoriteBorder as FavoriteBorderIcon,
   Share as ShareIcon,
+  WhatsApp as WhatsAppIcon,
+  LinkedIn as LinkedInIcon,
+  Instagram as InstagramIcon,
+  Twitter as TwitterIcon,
 } from '@mui/icons-material';
 import { Property } from '../../components/PropertyCard';
 
@@ -40,6 +44,17 @@ const PropertyHeader: React.FC<PropertyHeaderProps> = ({
   onFavoriteToggle,
   onShare,
 }) => {
+  const [shareOpen, setShareOpen] = useState(false);
+  const shareTitle =
+    property?.general_details?.building_name
+      ? `${property.general_details.building_name} on 99Commercial`
+      : 'Check this property on 99Commercial';
+  const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
+  const firstImageUrl =
+    property?.images_id?.images && property.images_id.images.length > 0
+      ? [...property.images_id.images].sort((a, b) => (a.order || 0) - (b.order || 0))[0]?.url
+      : '/placeholder-property.jpg';
+
   // Get status color
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -104,20 +119,169 @@ const PropertyHeader: React.FC<PropertyHeaderProps> = ({
         >
           <FavoriteBorderIcon />
         </IconButton>
-        <IconButton
-          onClick={onShare}
+        <Box
           sx={{
-            backgroundColor: '#f5f5f5',
-            color: '#666',
-            width: 48,
-            height: 48,
-            '&:hover': {
-              backgroundColor: '#e0e0e0',
-            },
+            position: 'relative',
+            display: 'inline-flex',
+            alignItems: 'center',
           }}
+          onMouseEnter={() => setShareOpen(true)}
+          onMouseLeave={() => setShareOpen(false)}
         >
-          <ShareIcon />
-        </IconButton>
+          {/* Hover menu with social icons */}
+          <Box
+            className="share-menu"
+            sx={{
+              position: 'absolute',
+              right: 56, // place to the left of the share button
+              top: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 1,
+              opacity: shareOpen ? 1 : 0,
+              transform: shareOpen ? 'translateX(0)' : 'translateX(8px)',
+              pointerEvents: shareOpen ? 'auto' : 'none',
+              transition: 'opacity 200ms ease, transform 200ms ease',
+            }}
+          >
+            {/* Clickable preview card */}
+            <Box
+              onClick={() => {
+                // Default behavior: trigger provided onShare handler or copy title
+                if (onShare) {
+                  onShare();
+                } else if (typeof navigator !== 'undefined' && navigator.clipboard) {
+                  navigator.clipboard.writeText(shareTitle);
+                }
+              }}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+                backgroundColor: '#ffffff',
+                border: '1px solid #e0e0e0',
+                borderRadius: 1,
+                padding: '6px 8px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                cursor: 'pointer',
+                width: 220,
+                '&:hover': { boxShadow: '0 4px 14px rgba(0,0,0,0.1)' },
+              }}
+            >
+              <Box
+                component="img"
+                src={firstImageUrl}
+                alt={shareTitle}
+                sx={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: 1,
+                  objectFit: 'cover',
+                  backgroundColor: '#f5f5f5',
+                  flexShrink: 0,
+                }}
+              />
+              <Typography
+                variant="body2"
+                sx={{
+                  fontWeight: 600,
+                  color: '#333',
+                  lineHeight: 1.2,
+                  display: '-webkit-box',
+                  overflow: 'hidden',
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: 'vertical',
+                }}
+              >
+                {property?.general_details?.building_name || 'Property'}
+              </Typography>
+            </Box>
+
+            {/* Social icons row */}
+            <Box sx={{ display: 'flex', gap: 1 }}>
+            <IconButton
+              component="a"
+              href={`https://wa.me/?text=${encodeURIComponent(`${firstImageUrl}\n\n${shareTitle}\n${shareUrl}`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                backgroundColor: '#25D3661A',
+                color: '#25D366',
+                width: 40,
+                height: 40,
+                '&:hover': { backgroundColor: '#25D36633' },
+              }}
+            >
+              <WhatsAppIcon fontSize="small" />
+            </IconButton>
+            <IconButton
+              onClick={() => {
+                if (typeof navigator !== 'undefined' && navigator.clipboard) {
+                  navigator.clipboard.writeText(shareTitle);
+                }
+                window.open('https://www.linkedin.com/feed/?shareActive=true', '_blank', 'noopener,noreferrer');
+              }}
+              sx={{
+                backgroundColor: '#0A66C21A',
+                color: '#0A66C2',
+                width: 40,
+                height: 40,
+                '&:hover': { backgroundColor: '#0A66C233' },
+              }}
+            >
+              <LinkedInIcon fontSize="small" />
+            </IconButton>
+            <IconButton
+              onClick={() => {
+                if (typeof navigator !== 'undefined' && navigator.clipboard) {
+                  navigator.clipboard.writeText(shareTitle);
+                }
+                window.open('https://www.instagram.com/', '_blank', 'noopener,noreferrer');
+              }}
+              sx={{
+                backgroundColor: '#E1306C1A',
+                color: '#E1306C',
+                width: 40,
+                height: 40,
+                '&:hover': { backgroundColor: '#E1306C33' },
+              }}
+            >
+              <InstagramIcon fontSize="small" />
+            </IconButton>
+            <IconButton
+              component="a"
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTitle)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                backgroundColor: '#1DA1F21A',
+                color: '#1DA1F2',
+                width: 40,
+                height: 40,
+                '&:hover': { backgroundColor: '#1DA1F233' },
+              }}
+            >
+              <TwitterIcon fontSize="small" />
+            </IconButton>
+            </Box>
+          </Box>
+
+          {/* Main share button */}
+          <IconButton
+            onClick={onShare}
+            sx={{
+              backgroundColor: '#f5f5f5',
+              color: '#666',
+              width: 48,
+              height: 48,
+              '&:hover': {
+                backgroundColor: '#e0e0e0',
+              },
+            }}
+          >
+            <ShareIcon />
+          </IconButton>
+        </Box>
       </Box>
 
       <Box sx={{ 
