@@ -49,7 +49,7 @@ const HeroSection = styled(Box)(({ theme }) => ({
 const FloatingElement = styled(Box)(({ theme }) => ({
   position: 'absolute',
   borderRadius: '50%',
-  background: 'linear-gradient(45deg, #dc2626, #991b1b)',
+  background: 'linear-gradient(45deg, #f2c514, #c9a010)',
   opacity: 0.1,
   animation: 'float 6s ease-in-out infinite',
   '&:nth-of-type(1)': {
@@ -174,7 +174,7 @@ const FeatureIcon = styled(Box)(({ theme }) => ({
   width: 50,
   height: 50,
   borderRadius: '50%',
-  background: 'linear-gradient(135deg, #dc2626 0%, #991b1b 100%)',
+  background: 'linear-gradient(135deg, #f2c514 0%, #c9a010 100%)',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',

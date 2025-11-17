@@ -1,12 +1,12 @@
 import { createTheme } from '@mui/material/styles';
 
-// Create a theme instance with red, white, and black color scheme.
+// Create a theme instance with yellow/gold, white, and black color scheme.
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#dc2626', // Red-600
-      light: '#fca5a5', // Red-300
-      dark: '#991b1b', // Red-800
+      main: '#f2c514', // Yellow/Gold
+      light: '#f9d85a', // Light Yellow/Gold
+      dark: '#c9a010', // Dark Yellow/Gold
       contrastText: '#ffffff',
     },
     secondary: {
@@ -24,7 +24,7 @@ const theme = createTheme({
       secondary: '#6b7280', // Gray-500
     },
     error: {
-      main: '#dc2626', // Red-600
+      main: '#f2c514', // Yellow/Gold
     },
   },
   typography: {
@@ -83,10 +83,10 @@ const theme = createTheme({
           '& .MuiOutlinedInput-root': {
             borderRadius: '8px',
             '&:hover .MuiOutlinedInput-notchedOutline': {
-              borderColor: '#dc2626',
+              borderColor: '#f2c514',
             },
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-              borderColor: '#dc2626',
+              borderColor: '#f2c514',
               borderWidth: 2,
             },
           },

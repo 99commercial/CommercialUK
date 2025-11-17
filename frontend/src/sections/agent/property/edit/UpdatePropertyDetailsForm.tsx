@@ -197,18 +197,25 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
   const validateForm = (): boolean => {
     const errors: Record<string, string> = {};
 
-    // Validate EPC score
-    if (formData.epc.score && (formData.epc.score < 0 || formData.epc.score > 100)) {
+    // Check if EPC fields should be validated (not Exempt or Not Required)
+    const shouldValidateEPC = formData.epc.rating && 
+      formData.epc.rating !== 'Exempt' && 
+      formData.epc.rating !== 'Not Required';
+
+    // Validate EPC score (only if rating is not Exempt or Not Required)
+    if (shouldValidateEPC && formData.epc.score && (formData.epc.score < 0 || formData.epc.score > 100)) {
       errors.epc_score = 'EPC score must be between 0 and 100';
     }
 
-    // Validate rateable value
-    if (formData.rateable_value && formData.rateable_value < 0) {
-      errors.rateable_value = 'Rateable value must be 0 or greater';
+    // Validate rateable value - required field
+    if (!formData.rateable_value || formData.rateable_value === 0) {
+      errors.rateable_value = 'Rateable value is required';
+    } else if (formData.rateable_value < 0) {
+      errors.rateable_value = 'Rateable value must be greater than 0';
     }
 
-    // Validate expiry date
-    if (formData.epc.expiry_date) {
+    // Validate expiry date (only if rating is not Exempt or Not Required)
+    if (shouldValidateEPC && formData.epc.expiry_date) {
       const expiryDate = new Date(formData.epc.expiry_date);
       const today = new Date();
       if (expiryDate < today) {
@@ -216,8 +223,11 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
       }
     }
 
-    // Validate decision date
-    if (formData.planning.decision_date) {
+    // Check if planning fields should be validated (not Unknown)
+    const shouldValidatePlanning = formData.planning.status && formData.planning.status !== 'Unknown';
+
+    // Validate decision date (only if status is not Unknown)
+    if (shouldValidatePlanning && formData.planning.decision_date) {
       const decisionDate = new Date(formData.planning.decision_date);
       const today = new Date();
       if (decisionDate > today) {
@@ -230,33 +240,63 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
   };
 
   const handleEPCChange = (field: string, value: any) => {
-    setFormData(prev => ({
-      ...prev,
-      epc: {
+    setFormData(prev => {
+      const newEpc = {
         ...prev.epc,
         [field]: value
+      };
+      
+      // If rating is "Exempt" or "Not Required", clear related fields
+      if (field === 'rating' && (value === 'Exempt' || value === 'Not Required')) {
+        newEpc.score = 0;
+        newEpc.certificate_number = '';
+        newEpc.expiry_date = '';
       }
-    }));
+      
+      return {
+        ...prev,
+        epc: newEpc
+      };
+    });
   };
 
   const handleCouncilTaxChange = (field: string, value: any) => {
-    setFormData(prev => ({
-      ...prev,
-      council_tax: {
+    setFormData(prev => {
+      const newCouncilTax = {
         ...prev.council_tax,
         [field]: value
+      };
+      
+      // If band is "Exempt" or "Not Applicable", clear authority field
+      if (field === 'band' && (value === 'Exempt' || value === 'Not Applicable')) {
+        newCouncilTax.authority = '';
       }
-    }));
+      
+      return {
+        ...prev,
+        council_tax: newCouncilTax
+      };
+    });
   };
 
   const handlePlanningChange = (field: string, value: any) => {
-    setFormData(prev => ({
-      ...prev,
-      planning: {
+    setFormData(prev => {
+      const newPlanning = {
         ...prev.planning,
         [field]: value
+      };
+      
+      // If status is "Unknown", clear related fields
+      if (field === 'status' && value === 'Unknown') {
+        newPlanning.application_number = '';
+        newPlanning.decision_date = '';
       }
-    }));
+      
+      return {
+        ...prev,
+        planning: newPlanning
+      };
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -313,7 +353,7 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
             <Typography variant="h6" gutterBottom>
               Energy Performance Certificate (EPC)
             </Typography>
-            <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
+            <Box sx={{ display: 'flex', gap: 2, width: '100%', flexWrap: 'wrap' }}>
               <FormControl sx={{ flex: 1, minWidth: 120 }}>
                 <InputLabel>EPC Rating</InputLabel>
                 <Select
@@ -329,34 +369,41 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
                 </Select>
               </FormControl>
 
-              <TextField
-                label="EPC Score"
-                type="number"
-                value={formData.epc.score || ''}
-                onChange={(e) => handleEPCChange('score', parseInt(e.target.value) || 0)}
-                error={!!fieldErrors.epc_score}
-                helperText={fieldErrors.epc_score}
-                inputProps={{ min: 0, max: 100 }}
-                sx={{ flex: 1, minWidth: 120 }}
-              />
+              {/* Only show EPC fields if rating is not "Exempt" or "Not Required" */}
+              {formData.epc.rating && 
+               formData.epc.rating !== 'Exempt' && 
+               formData.epc.rating !== 'Not Required' && (
+                <>
+                  <TextField
+                    label="EPC Score"
+                    type="number"
+                    value={formData.epc.score || ''}
+                    onChange={(e) => handleEPCChange('score', parseInt(e.target.value) || 0)}
+                    error={!!fieldErrors.epc_score}
+                    helperText={fieldErrors.epc_score}
+                    inputProps={{ min: 0, max: 100 }}
+                    sx={{ flex: 1, minWidth: 120 }}
+                  />
 
-              <TextField
-                label="Certificate Number"
-                value={formData.epc.certificate_number || ''}
-                onChange={(e) => handleEPCChange('certificate_number', e.target.value)}
-                sx={{ flex: 2, minWidth: 200 }}
-              />
+                  <TextField
+                    label="Certificate Number"
+                    value={formData.epc.certificate_number || ''}
+                    onChange={(e) => handleEPCChange('certificate_number', e.target.value)}
+                    sx={{ flex: 2, minWidth: 200 }}
+                  />
 
-              <TextField
-                label="Expiry Date"
-                type="date"
-                value={formData.epc.expiry_date || ''}
-                onChange={(e) => handleEPCChange('expiry_date', e.target.value)}
-                error={!!fieldErrors.epc_expiry}
-                helperText={fieldErrors.epc_expiry}
-                InputLabelProps={{ shrink: true }}
-                sx={{ flex: 1, minWidth: 150 }}
-              />
+                  <TextField
+                    label="Expiry Date"
+                    type="date"
+                    value={formData.epc.expiry_date || ''}
+                    onChange={(e) => handleEPCChange('expiry_date', e.target.value)}
+                    error={!!fieldErrors.epc_expiry}
+                    helperText={fieldErrors.epc_expiry}
+                    InputLabelProps={{ shrink: true }}
+                    sx={{ flex: 1, minWidth: 150 }}
+                  />
+                </>
+              )}
             </Box>
           </CardContent>
         </Card>
@@ -383,12 +430,17 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
                 </Select>
               </FormControl>
 
-              <TextField
-                label="Council Authority"
-                value={formData.council_tax.authority || ''}
-                onChange={(e) => handleCouncilTaxChange('authority', e.target.value)}
-                sx={{ flex: 2, minWidth: 200 }}
-              />
+              {/* Only show Council Authority if band is not "Exempt" or "Not Applicable" */}
+              {formData.council_tax.band && 
+               formData.council_tax.band !== 'Exempt' && 
+               formData.council_tax.band !== 'Not Applicable' && (
+                <TextField
+                  label="Council Authority"
+                  value={formData.council_tax.authority || ''}
+                  onChange={(e) => handleCouncilTaxChange('authority', e.target.value)}
+                  sx={{ flex: 2, minWidth: 200 }}
+                />
+              )}
             </Box>
           </CardContent>
         </Card>
@@ -402,8 +454,19 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
             <TextField
               label="Rateable Value (GBP)"
               type="number"
+              required
               value={formData.rateable_value || ''}
-              onChange={(e) => setFormData(prev => ({ ...prev, rateable_value: parseFloat(e.target.value) || 0 }))}
+              onChange={(e) => {
+                setFormData(prev => ({ ...prev, rateable_value: parseFloat(e.target.value) || 0 }));
+                // Clear error when user starts typing
+                if (fieldErrors.rateable_value) {
+                  setFieldErrors(prev => {
+                    const newErrors = { ...prev };
+                    delete newErrors.rateable_value;
+                    return newErrors;
+                  });
+                }
+              }}
               error={!!fieldErrors.rateable_value}
               helperText={fieldErrors.rateable_value}
               InputProps={{
@@ -421,7 +484,7 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
             <Typography variant="h6" gutterBottom>
               Planning Information
             </Typography>
-            <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
+            <Box sx={{ display: 'flex', gap: 2, width: '100%', flexWrap: 'wrap' }}>
               <FormControl sx={{ flex: 1, minWidth: 150 }}>
                 <InputLabel>Planning Status</InputLabel>
                 <Select
@@ -437,23 +500,28 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
                 </Select>
               </FormControl>
 
-              <TextField
-                label="Application Number"
-                value={formData.planning.application_number || ''}
-                onChange={(e) => handlePlanningChange('application_number', e.target.value)}
-                sx={{ flex: 2, minWidth: 200 }}
-              />
+              {/* Only show Planning fields if status is not "Unknown" */}
+              {formData.planning.status && formData.planning.status !== 'Unknown' && (
+                <>
+                  <TextField
+                    label="Application Number"
+                    value={formData.planning.application_number || ''}
+                    onChange={(e) => handlePlanningChange('application_number', e.target.value)}
+                    sx={{ flex: 2, minWidth: 200 }}
+                  />
 
-              <TextField
-                label="Decision Date"
-                type="date"
-                value={formData.planning.decision_date || ''}
-                onChange={(e) => handlePlanningChange('decision_date', e.target.value)}
-                error={!!fieldErrors.planning_decision}
-                helperText={fieldErrors.planning_decision}
-                InputLabelProps={{ shrink: true }}
-                sx={{ flex: 1, minWidth: 150 }}
-              />
+                  <TextField
+                    label="Decision Date"
+                    type="date"
+                    value={formData.planning.decision_date || ''}
+                    onChange={(e) => handlePlanningChange('decision_date', e.target.value)}
+                    error={!!fieldErrors.planning_decision}
+                    helperText={fieldErrors.planning_decision}
+                    InputLabelProps={{ shrink: true }}
+                    sx={{ flex: 1, minWidth: 150 }}
+                  />
+                </>
+              )}
             </Box>
           </CardContent>
         </Card>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Box,
   TextField,
@@ -19,7 +19,7 @@ import {
   Alert,
   CircularProgress,
 } from '@mui/material';
-import { Add, Delete, VideoLibrary, Link, Image, Schedule, Save } from '@mui/icons-material';
+import { Add, Delete, VideoLibrary, Link, Image, Save } from '@mui/icons-material';
 import { useFormContext } from 'react-hook-form';
 import axiosInstance from '../../../utils/axios';
 import { enqueueSnackbar } from 'notistack';
@@ -42,9 +42,6 @@ interface VirtualTour {
     link_type?: string;
     description?: string;
     thumbnail_url?: string;
-    duration?: number;
-    is_featured?: boolean;
-    display_order?: number;
     is_active?: boolean;
 }
 
@@ -54,9 +51,12 @@ interface VirtualToursFormData {
 
 interface VirtualToursFormProps {
   onStepSubmitted?: (step: number) => void;
+  propertyData?: any;
+  hasExistingData?: boolean;
+  fetchPropertyData?: () => void;
 }
 
-const VirtualToursForm: React.FC<VirtualToursFormProps> = ({ onStepSubmitted }) => {
+const VirtualToursForm: React.FC<VirtualToursFormProps> = ({ onStepSubmitted, propertyData, hasExistingData, fetchPropertyData }) => {
   const {
     formState: { errors },
   } = useFormContext<VirtualToursFormData>();
@@ -66,9 +66,56 @@ const VirtualToursForm: React.FC<VirtualToursFormProps> = ({ onStepSubmitted }) 
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [originalData, setOriginalData] = useState<VirtualToursFormData | null>(null);
+  const lastPropertyIdRef = React.useRef<string | null>(null);
+  const hasInitializedRef = React.useRef<boolean>(false);
   const [formData, setFormData] = useState<VirtualToursFormData>({
     virtual_tours: []
   });
+
+  // Initialize form data from propertyData.virtual_tours_id.virtual_tours
+  useEffect(() => {
+    const currentPropertyId = propertyData?._id || null;
+    
+    // virtual_tours_id is an object with _id and virtual_tours array inside
+    if (propertyData?.virtual_tours_id?._id) {
+      // Get the virtual_tours array from inside the virtual_tours_id object
+      const virtualToursArray = Array.isArray(propertyData.virtual_tours_id.virtual_tours) 
+        ? propertyData.virtual_tours_id.virtual_tours 
+        : [];
+      
+      // Only update if:
+      // 1. We haven't initialized yet OR the property ID has changed to a different property
+      const shouldInitialize = !hasInitializedRef.current || 
+        (currentPropertyId !== null && lastPropertyIdRef.current !== currentPropertyId);
+      
+      if (shouldInitialize) {
+        // Extract virtual_tours array from virtual_tours_id.virtual_tours
+        const virtualTours = virtualToursArray.map((tour: any) => ({
+          tour_name: tour.tour_name || '',
+          tour_url: tour.tour_url || '',
+          link_type: tour.link_type || '',
+          description: tour.description || '',
+          thumbnail_url: tour.thumbnail_url || '',
+          is_active: tour.is_active !== false,
+        }));
+        
+        const initializedData: VirtualToursFormData = {
+          virtual_tours: virtualTours
+        };
+        
+        setFormData(initializedData);
+        setOriginalData({ ...initializedData });
+        lastPropertyIdRef.current = currentPropertyId;
+        hasInitializedRef.current = true;
+      }
+    } else if (hasInitializedRef.current && currentPropertyId !== lastPropertyIdRef.current) {
+      // If property changed and new property has no virtual_tours_id, reset
+      setFormData({ virtual_tours: [] });
+      setOriginalData({ virtual_tours: [] });
+      lastPropertyIdRef.current = currentPropertyId;
+    }
+  }, [propertyData?.virtual_tours_id?._id, propertyData?.virtual_tours_id?.virtual_tours, propertyData?._id]);
 
   // Type-safe error access - checks both react-hook-form errors and backend field errors
   const getFieldError = (fieldPath: string) => {
@@ -82,13 +129,99 @@ const VirtualToursForm: React.FC<VirtualToursFormProps> = ({ onStepSubmitted }) 
     return fieldErrors[fieldPath] || '';
   };
 
-  // Get property ID from localStorage (stored from previous response)
+  // Get property ID from localStorage or propertyData
   const getPropertyId = () => {
+    if (propertyData?._id) {
+      return propertyData._id;
+    }
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('propertyId');
+      return localStorage.getItem('newpropertyId') || localStorage.getItem('propertyId');
     }
     return null;
   };
+
+  // Helper function to normalize values for comparison
+  const normalizeValue = (value: any): any => {
+    if (value === null || value === undefined || value === '') {
+      return '';
+    }
+    if (typeof value === 'string') {
+      const trimmed = value.trim();
+      if (trimmed === '') return '';
+      const num = Number(trimmed);
+      if (!isNaN(num) && trimmed !== '') {
+        return num;
+      }
+      return trimmed;
+    }
+    if (typeof value === 'number') {
+      return value;
+    }
+    if (typeof value === 'boolean') {
+      return value;
+    }
+    return value;
+  };
+
+  // Normalize virtual tour for comparison (remove _id and other metadata)
+  const normalizeVirtualTour = (tour: VirtualTour): VirtualTour => {
+    return {
+      tour_name: normalizeValue(tour.tour_name),
+      tour_url: normalizeValue(tour.tour_url),
+      link_type: normalizeValue(tour.link_type),
+      description: normalizeValue(tour.description),
+      thumbnail_url: normalizeValue(tour.thumbnail_url),
+      is_active: normalizeValue(tour.is_active),
+    };
+  };
+
+  // Check if form data has changed from original
+  const hasChanges = useMemo(() => {
+    if (!hasExistingData || !propertyData?.virtual_tours_id?._id || !originalData) {
+      return false;
+    }
+
+    // Get the virtual_tours array from inside the virtual_tours_id object
+    const originalToursArray = Array.isArray(propertyData.virtual_tours_id.virtual_tours) 
+      ? propertyData.virtual_tours_id.virtual_tours 
+      : [];
+    const currentTours = formData.virtual_tours;
+
+    // If lengths are different, there are changes
+    if (currentTours.length !== originalToursArray.length) {
+      return true;
+    }
+
+    // Compare each tour
+    for (let i = 0; i < currentTours.length; i++) {
+      const currentTour = normalizeVirtualTour(currentTours[i]);
+      const originalTour = normalizeVirtualTour(originalToursArray[i]);
+      
+      // Compare all fields
+      if (
+        currentTour.tour_name !== originalTour.tour_name ||
+        currentTour.tour_url !== originalTour.tour_url ||
+        currentTour.link_type !== originalTour.link_type ||
+        currentTour.description !== originalTour.description ||
+        currentTour.thumbnail_url !== originalTour.thumbnail_url ||
+        currentTour.is_active !== originalTour.is_active
+      ) {
+        return true;
+      }
+    }
+
+    return false;
+  }, [
+    formData.virtual_tours,
+    propertyData?.virtual_tours_id?.virtual_tours,
+    hasExistingData,
+    originalData
+  ]);
+
+  // Check if virtual tours data exists (virtual_tours_id object with _id)
+  const hasVirtualToursData = useMemo(() => {
+    return !!(propertyData?.virtual_tours_id?._id);
+  }, [propertyData?.virtual_tours_id?._id]);
 
   // Clear field error when user starts typing
   const clearFieldError = (fieldPath: string) => {
@@ -112,9 +245,6 @@ const VirtualToursForm: React.FC<VirtualToursFormProps> = ({ onStepSubmitted }) 
       link_type: '',
       description: '',
       thumbnail_url: '',
-      duration: 0,
-      is_featured: false,
-          display_order: prev.virtual_tours.length,
       is_active: true,
         }
       ]
@@ -152,8 +282,6 @@ const VirtualToursForm: React.FC<VirtualToursFormProps> = ({ onStepSubmitted }) 
 
     try {
       let response = await axiosInstance.put(`/api/agent/properties/${propertyId}/virtual-tours`, formData);
-      
-      console.log(response.data.data._id);
 
       localStorage.setItem('propertyId', response.data.data._id);
       
@@ -161,43 +289,125 @@ const VirtualToursForm: React.FC<VirtualToursFormProps> = ({ onStepSubmitted }) 
       
       setSaveSuccess(true);
       setIsSubmitted(true);
+      
+      // Update original data after successful save
+      setOriginalData({ ...formData });
+      
       setTimeout(() => setSaveSuccess(false), 3000); // Hide success message after 3 seconds
+
+      fetchPropertyData?.();
       
       // Notify parent component that step 4 has been successfully submitted
       if (onStepSubmitted) {
         onStepSubmitted(4);
       }
     } catch (error: any) {
-      console.error('Error saving virtual tours:', error);
-      
       // Handle field-specific validation errors
-      if (error.errors && Array.isArray(error.errors)) {
+      if (error.errors && Array.isArray(error.errors) && error.errors.length > 0) {
         const fieldErrorMap: Record<string, string> = {};
         
-        console.log('Processing validation errors:', error.errors);
-        
         error.errors.forEach((err: any) => {
-          console.log('Processing error:', err);
           if (err.path) {
-            // Convert backend path format to frontend format
-            // Backend: "virtual_tours[0].tour_name" -> Frontend: "virtual_tours.0.tour_name"
             let fieldPath = err.path.replace(/\[(\d+)\]/g, '.$1');
-            
-            console.log('Field path mapped:', fieldPath, 'from path:', err.path);
             fieldErrorMap[fieldPath] = err.msg;
           }
         });
         
-        console.log('Field error map created:', fieldErrorMap);
         setFieldErrors(fieldErrorMap);
         
-        // Show general error message
-        const errorMessage = error.message || 'Please fix the validation errors below.';
+        const errorMessage = 'Please fix the validation errors below.';
         setSaveError(errorMessage);
         enqueueSnackbar(errorMessage, { variant: 'error' });
       } else {
-        // Handle general errors
-        const errorMessage = error.message || 'Failed to save virtual tours. Please try again.';
+        const errorMessage = 'Failed to save virtual tours. Please try again.';
+        setSaveError(errorMessage);
+        enqueueSnackbar(errorMessage, { variant: 'error' });
+      }
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleUpdateVirtualTour = async () => {
+    // Get virtual_tours_id._id (the object's _id)
+    const virtualToursId = propertyData?.virtual_tours_id?._id;
+    
+    if (!virtualToursId) {
+      setSaveError('Virtual tours ID not found. Please save virtual tours first.');
+      return;
+    }
+
+    setIsSaving(true);
+    setSaveError(null);
+    setSaveSuccess(false);
+    setFieldErrors({});
+
+    try {
+      // Ensure all required fields are present and non-empty as backend validation requires
+      const virtualToursToSend = formData.virtual_tours.map(tour => {
+        // Ensure all required string fields are trimmed and non-empty
+        const tour_name = (tour.tour_name || '').trim();
+        const tour_url = (tour.tour_url || '').trim();
+        const link_type = (tour.link_type || '').trim();
+        const description = (tour.description || '').trim();
+        const thumbnail_url = (tour.thumbnail_url || '').trim();
+
+        return {
+          tour_name,
+          tour_url,
+          link_type,
+          description,
+          thumbnail_url,
+          is_active: tour.is_active !== undefined ? Boolean(tour.is_active) : true,
+        };
+      });
+
+      // Use PATCH endpoint for updating virtual tours
+      // Send only virtual_tours array, exactly like UpdateVirtualToursForm.tsx
+      const response = await axiosInstance.patch(
+        `/api/agent/property-virtual-tours/${virtualToursId}`, {
+          _id: virtualToursId,  
+          property_id: propertyData?._id,
+          virtual_tours: virtualToursToSend
+        }
+      );
+      
+      if (response.data.success) {
+        enqueueSnackbar(response.data.message || 'Virtual tours updated successfully!', { variant: 'success' });
+        
+        // Update original data after successful update
+        setOriginalData({ ...formData });
+        
+        setSaveSuccess(true);
+        setIsSubmitted(false); // Allow multiple updates
+        
+        // Refresh property data if callback is provided
+          fetchPropertyData();
+        
+        setTimeout(() => setSaveSuccess(false), 3000);
+      } else {
+        throw new Error(response.data.message || 'Failed to update virtual tours');
+      }
+      
+    } catch (error: any) {
+      // Handle field-specific validation errors
+      if (error.errors && Array.isArray(error.errors) && error.errors.length > 0) {
+        const fieldErrorMap: Record<string, string> = {};
+        
+        error.errors.forEach((err: any) => {
+          if (err.path) {
+            let fieldPath = err.path.replace(/\[(\d+)\]/g, '.$1');
+            fieldErrorMap[fieldPath] = err.msg;
+          }
+        });
+        
+        setFieldErrors(fieldErrorMap);
+        
+        const errorMessage = 'Please fix the validation errors below.';
+        setSaveError(errorMessage);
+        enqueueSnackbar(errorMessage, { variant: 'error' });
+      } else {
+        const errorMessage = 'Failed to update virtual tours. Please try again.';
         setSaveError(errorMessage);
         enqueueSnackbar(errorMessage, { variant: 'error' });
       }
@@ -336,92 +546,38 @@ const VirtualToursForm: React.FC<VirtualToursFormProps> = ({ onStepSubmitted }) 
                     />
                   </Box>
 
-                  {/* Thumbnail URL and Duration */}
-                  <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                    <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
-                      <TextField
-                        label="Thumbnail URL"
-                        fullWidth
-                        value={tour.thumbnail_url || ''}
-                        error={!!getFieldError(`virtual_tours.${index}.thumbnail_url`)}
-                        helperText={getFieldError(`virtual_tours.${index}.thumbnail_url`)}
-                        placeholder="https://example.com/thumbnail.jpg"
-                        InputProps={{
-                          startAdornment: <InputAdornment position="start"><Image /></InputAdornment>,
-                        }}
-                        onChange={(e) => {
-                          updateVirtualTour(index, 'thumbnail_url', e.target.value);
-                          clearFieldError(`virtual_tours.${index}.thumbnail_url`);
-                        }}
-                      />
-                    </Box>
-
-                    <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
-                      <TextField
-                        label="Duration (seconds)"
-                        type="number"
-                        fullWidth
-                        value={tour.duration || ''}
-                        error={!!getFieldError(`virtual_tours.${index}.duration`)}
-                        helperText={getFieldError(`virtual_tours.${index}.duration`)}
-                        placeholder="0"
-                        inputProps={{ min: 0 }}
-                        InputProps={{
-                          startAdornment: <InputAdornment position="start"><Schedule /></InputAdornment>,
-                        }}
-                        onChange={(e) => {
-                          updateVirtualTour(index, 'duration', parseInt(e.target.value) || 0);
-                          clearFieldError(`virtual_tours.${index}.duration`);
-                        }}
-                      />
-                    </Box>
+                  {/* Thumbnail URL */}
+                  <Box>
+                    <TextField
+                      label="Thumbnail URL"
+                      fullWidth
+                      value={tour.thumbnail_url || ''}
+                      error={!!getFieldError(`virtual_tours.${index}.thumbnail_url`)}
+                      helperText={getFieldError(`virtual_tours.${index}.thumbnail_url`)}
+                      placeholder="https://example.com/thumbnail.jpg"
+                      InputProps={{
+                        startAdornment: <InputAdornment position="start"><Image /></InputAdornment>,
+                      }}
+                      onChange={(e) => {
+                        updateVirtualTour(index, 'thumbnail_url', e.target.value);
+                        clearFieldError(`virtual_tours.${index}.thumbnail_url`);
+                      }}
+                    />
                   </Box>
 
-                  {/* Display Order and Switches */}
-                  <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                    <Box sx={{ flex: '1 1 200px', minWidth: '200px' }}>
-                      <TextField
-                        label="Display Order"
-                        type="number"
-                        fullWidth
-                        value={tour.display_order || ''}
-                        error={!!getFieldError(`virtual_tours.${index}.display_order`)}
-                        helperText={getFieldError(`virtual_tours.${index}.display_order`)}
-                        placeholder="0"
-                        inputProps={{ min: 0 }}
-                        onChange={(e) => {
-                          updateVirtualTour(index, 'display_order', parseInt(e.target.value) || 0);
-                          clearFieldError(`virtual_tours.${index}.display_order`);
-                        }}
-                      />
-                    </Box>
-
-                    <Box sx={{ flex: '1 1 200px', minWidth: '200px' }}>
-                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                        <FormControlLabel
-                          control={
-                            <Switch
-                              checked={tour.is_featured || false}
-                              onChange={(e) => {
-                                updateVirtualTour(index, 'is_featured', e.target.checked);
-                              }}
-                            />
-                          }
-                          label="Featured Tour"
+                  {/* Active Switch */}
+                  <Box>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={tour.is_active !== false}
+                          onChange={(e) => {
+                            updateVirtualTour(index, 'is_active', e.target.checked);
+                          }}
                         />
-                        <FormControlLabel
-                          control={
-                            <Switch
-                              checked={tour.is_active !== false}
-                              onChange={(e) => {
-                                updateVirtualTour(index, 'is_active', e.target.checked);
-                              }}
-                            />
-                          }
-                          label="Active"
-                        />
-                      </Box>
-                    </Box>
+                      }
+                      label="Active"
+                    />
                   </Box>
                 </Box>
               </CardContent>
@@ -488,23 +644,47 @@ const VirtualToursForm: React.FC<VirtualToursFormProps> = ({ onStepSubmitted }) 
           </Alert>
         )}
 
-        {/* Save Button */}
+        {/* Save/Update Buttons */}
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button
-            variant="contained"
-            startIcon={isSaving ? <CircularProgress size={20} /> : <Save />}
-            onClick={handleSave}
-            disabled={isSaving || isSubmitted}
-            sx={{ 
-              minWidth: 200,
-              backgroundColor: '#dc2626',
-              '&:hover': {
-                backgroundColor: '#b91c1c',
-              },
-            }}
-          >
-            {isSaving ? 'Saving...' : isSubmitted ? 'Virtual Tours Saved' : 'Save Virtual Tours'}
-          </Button>
+          {hasExistingData && hasVirtualToursData ? (
+            // Update Button - shown when virtual tours data exists
+            <Button
+              variant="contained"
+              startIcon={isSaving ? <CircularProgress size={20} /> : <Save />}
+              onClick={handleUpdateVirtualTour}
+              disabled={isSaving || !hasChanges}
+              sx={{ 
+                minWidth: 200,
+                backgroundColor: '#f2c514',
+                '&:hover': {
+                  backgroundColor: '#d4a912',
+                },
+                '&:disabled': {
+                  backgroundColor: '#e0e0e0',
+                  color: '#9e9e9e',
+                },
+              }}
+            >
+              {isSaving ? 'Updating...' : !hasChanges ? 'No Changes Made' : 'Update Virtual Tours'}
+            </Button>
+          ) : (
+            // Save Button - shown when creating new virtual tours
+            <Button
+              variant="contained"
+              startIcon={isSaving ? <CircularProgress size={20} /> : <Save />}
+              onClick={handleSave}
+              disabled={isSaving || isSubmitted}
+              sx={{ 
+                minWidth: 200,
+                backgroundColor: '#f2c514',
+                '&:hover': {
+                  backgroundColor: '#d4a912',
+                },
+              }}
+            >
+              {isSaving ? 'Saving...' : isSubmitted ? 'Virtual Tours Saved' : 'Save Virtual Tours'}
+            </Button>
+          )}
         </Box>
       </Box>
     </Box>

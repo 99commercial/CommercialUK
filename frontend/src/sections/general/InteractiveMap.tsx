@@ -104,13 +104,13 @@ const MapControls = styled(Box)(({ theme }) => ({
 }));
 
 const ControlButton = styled(IconButton)(({ theme }) => ({
-  backgroundColor: 'rgba(255, 0, 0, 0.1)',
-  color: '#ff0000',
+  backgroundColor: 'rgba(242, 197, 20, 0.1)',
+  color: '#f2c514',
   '&:hover': {
-    backgroundColor: 'rgba(255, 0, 0, 0.2)',
+    backgroundColor: 'rgba(242, 197, 20, 0.2)',
   },
   '&.active': {
-    backgroundColor: '#ff0000',
+    backgroundColor: '#f2c514',
     color: '#ffffff',
   },
 }));
@@ -588,11 +588,11 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
                     fullWidth
                     onClick={handlePropertyClick}
                     sx={{
-                      backgroundColor: '#ff0000',
+                      backgroundColor: '#f2c514',
                       color: '#ffffff',
                       fontWeight: 600,
                       '&:hover': {
-                        backgroundColor: '#cc0000',
+                        backgroundColor: '#c9a010',
                       },
                       textTransform: 'none',
                       fontSize: '0.875rem',

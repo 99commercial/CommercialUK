@@ -113,7 +113,7 @@ const PropertyHeader: React.FC<PropertyHeaderProps> = ({
             width: 48,
             height: 48,
             '&:hover': {
-              backgroundColor: isFavorite ? '#cc0000' : '#e0e0e0',
+              backgroundColor: isFavorite ? '#c9a010' : '#e0e0e0',
             },
           }}
         >

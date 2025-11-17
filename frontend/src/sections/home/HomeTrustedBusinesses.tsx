@@ -219,7 +219,7 @@ export default function HomeTrustedBusinesses() {
               component="h1"
               sx={{
                 fontWeight: 800,
-                color: '#FF0000',
+                color: '#f2c514',
                 mb: 2,
                 fontSize: { xs: '1.8rem', sm: '2.2rem', md: '2.5rem' },
                 letterSpacing: '0.05em',
@@ -354,7 +354,7 @@ export default function HomeTrustedBusinesses() {
               variant="contained"
               size="large"
               sx={{
-                background: 'linear-gradient(135deg, #d32f2f 0%, #c62828 100%)',
+                background: 'linear-gradient(135deg, #f2c514 0%,rgba(242, 198, 20, 0.8) 100%)',
                 color: 'white',
                 fontWeight: 700,
                 px: 4,
@@ -377,7 +377,7 @@ export default function HomeTrustedBusinesses() {
                   transition: 'left 0.5s',
                 },
                 '&:hover': {
-                  backgroundColor: '#c62828',
+                  backgroundColor: '#f2c514',
                   transform: 'translateY(-2px)',
                   boxShadow: '0 8px 32px rgba(211, 47, 47, 0.4)',
                   '&::before': {

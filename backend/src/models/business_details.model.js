@@ -18,9 +18,6 @@ const businessDetailsSchema = new Schema(
     company_registration_number: {
       type: String,
       trim: true,
-      required: function() {
-        return this.business_type === 'limited_company' || this.business_type === 'llp';
-      }
     },
 
     vat_number: {

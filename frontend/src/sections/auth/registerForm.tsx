@@ -133,7 +133,7 @@ const RegisterForm = () => {
             width: 50,
             height: 50,
             borderRadius: '50%',
-            background: 'linear-gradient(135deg, #dc2626 0%, #991b1b 100%)',
+            background: 'linear-gradient(135deg, #f2c514 0%, #c9a010 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -202,7 +202,7 @@ const RegisterForm = () => {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <Person sx={{ color: '#dc2626' }} />
+                  <Person sx={{ color: '#f2c514' }} />
                 </InputAdornment>
               ),
             }}
@@ -211,26 +211,26 @@ const RegisterForm = () => {
                 backgroundColor: 'rgba(31, 41, 55, 0.8)',
                 borderRadius: 2,
                 '& fieldset': {
-                  borderColor: fieldErrors.firstName ? '#dc2626' : 'rgba(220, 38, 38, 0.3)',
+                  borderColor: fieldErrors.firstName ? '#f2c514' : 'rgba(220, 38, 38, 0.3)',
                 },
                 '&:hover fieldset': {
-                  borderColor: fieldErrors.firstName ? '#dc2626' : 'rgba(220, 38, 38, 0.5)',
+                  borderColor: fieldErrors.firstName ? '#f2c514' : 'rgba(220, 38, 38, 0.5)',
                 },
                 '&.Mui-focused fieldset': {
-                  borderColor: fieldErrors.firstName ? '#dc2626' : '#dc2626',
+                  borderColor: fieldErrors.firstName ? '#f2c514' : '#f2c514',
                 },
               },
               '& .MuiInputLabel-root': {
-                color: fieldErrors.firstName ? '#dc2626' : 'rgba(255, 255, 255, 0.7)',
+                color: fieldErrors.firstName ? '#f2c514' : 'rgba(255, 255, 255, 0.7)',
                 '&.Mui-focused': {
-                  color: '#dc2626',
+                  color: '#f2c514',
                 },
               },
               '& .MuiInputBase-input': {
                 color: 'white',
               },
               '& .MuiFormHelperText-root': {
-                color: '#dc2626',
+                color: '#f2c514',
                 fontSize: '0.75rem',
                 marginTop: '4px',
               },
@@ -249,7 +249,7 @@ const RegisterForm = () => {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <Person sx={{ color: '#dc2626' }} />
+                  <Person sx={{ color: '#f2c514' }} />
                 </InputAdornment>
               ),
             }}
@@ -258,26 +258,26 @@ const RegisterForm = () => {
                 backgroundColor: 'rgba(31, 41, 55, 0.8)',
                 borderRadius: 2,
                 '& fieldset': {
-                  borderColor: fieldErrors.lastName ? '#dc2626' : 'rgba(220, 38, 38, 0.3)',
+                  borderColor: fieldErrors.lastName ? '#f2c514' : 'rgba(220, 38, 38, 0.3)',
                 },
                 '&:hover fieldset': {
-                  borderColor: fieldErrors.lastName ? '#dc2626' : 'rgba(220, 38, 38, 0.5)',
+                  borderColor: fieldErrors.lastName ? '#f2c514' : 'rgba(220, 38, 38, 0.5)',
                 },
                 '&.Mui-focused fieldset': {
-                  borderColor: fieldErrors.lastName ? '#dc2626' : '#dc2626',
+                  borderColor: fieldErrors.lastName ? '#f2c514' : '#f2c514',
                 },
               },
               '& .MuiInputLabel-root': {
-                color: fieldErrors.lastName ? '#dc2626' : 'rgba(255, 255, 255, 0.7)',
+                color: fieldErrors.lastName ? '#f2c514' : 'rgba(255, 255, 255, 0.7)',
                 '&.Mui-focused': {
-                  color: '#dc2626',
+                  color: '#f2c514',
                 },
               },
               '& .MuiInputBase-input': {
                 color: 'white',
               },
               '& .MuiFormHelperText-root': {
-                color: '#dc2626',
+                color: '#f2c514',
                 fontSize: '0.75rem',
                 marginTop: '4px',
               },
@@ -298,7 +298,7 @@ const RegisterForm = () => {
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <Email sx={{ color: '#dc2626' }} />
+                <Email sx={{ color: '#f2c514' }} />
               </InputAdornment>
             ),
           }}
@@ -308,26 +308,26 @@ const RegisterForm = () => {
               backgroundColor: 'rgba(31, 41, 55, 0.8)',
               borderRadius: 2,
               '& fieldset': {
-                borderColor: fieldErrors.email ? '#dc2626' : 'rgba(220, 38, 38, 0.3)',
+                borderColor: fieldErrors.email ? '#f2c514' : 'rgba(220, 38, 38, 0.3)',
               },
               '&:hover fieldset': {
-                borderColor: fieldErrors.email ? '#dc2626' : 'rgba(220, 38, 38, 0.5)',
+                borderColor: fieldErrors.email ? '#f2c514' : 'rgba(220, 38, 38, 0.5)',
               },
               '&.Mui-focused fieldset': {
-                borderColor: fieldErrors.email ? '#dc2626' : theme.palette.primary.main,
+                borderColor: fieldErrors.email ? '#f2c514' : theme.palette.primary.main,
               },
             },
             '& .MuiInputLabel-root': {
-              color: fieldErrors.email ? '#dc2626' : 'rgba(255, 255, 255, 0.7)',
+              color: fieldErrors.email ? '#f2c514' : 'rgba(255, 255, 255, 0.7)',
               '&.Mui-focused': {
-                color: fieldErrors.email ? '#dc2626' : theme.palette.primary.main,
+                color: fieldErrors.email ? '#f2c514' : theme.palette.primary.main,
               },
             },
             '& .MuiInputBase-input': {
               color: 'white',
             },
             '& .MuiFormHelperText-root': {
-              color: '#dc2626',
+              color: '#f2c514',
               fontSize: '0.75rem',
               marginTop: '4px',
             },
@@ -347,7 +347,7 @@ const RegisterForm = () => {
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <Phone sx={{ color: '#dc2626' }} />
+                <Phone sx={{ color: '#f2c514' }} />
               </InputAdornment>
             ),
           }}
@@ -357,26 +357,26 @@ const RegisterForm = () => {
               backgroundColor: 'rgba(31, 41, 55, 0.8)',
               borderRadius: 2,
               '& fieldset': {
-                borderColor: fieldErrors.phone ? '#dc2626' : 'rgba(220, 38, 38, 0.3)',
+                borderColor: fieldErrors.phone ? '#f2c514' : 'rgba(220, 38, 38, 0.3)',
               },
               '&:hover fieldset': {
-                borderColor: fieldErrors.phone ? '#dc2626' : 'rgba(220, 38, 38, 0.5)',
+                borderColor: fieldErrors.phone ? '#f2c514' : 'rgba(220, 38, 38, 0.5)',
               },
               '&.Mui-focused fieldset': {
-                borderColor: fieldErrors.phone ? '#dc2626' : theme.palette.primary.main,
+                borderColor: fieldErrors.phone ? '#f2c514' : theme.palette.primary.main,
               },
             },
             '& .MuiInputLabel-root': {
-              color: fieldErrors.phone ? '#dc2626' : 'rgba(255, 255, 255, 0.7)',
+              color: fieldErrors.phone ? '#f2c514' : 'rgba(255, 255, 255, 0.7)',
               '&.Mui-focused': {
-                color: fieldErrors.phone ? '#dc2626' : theme.palette.primary.main,
+                color: fieldErrors.phone ? '#f2c514' : theme.palette.primary.main,
               },
             },
             '& .MuiInputBase-input': {
               color: 'white',
             },
             '& .MuiFormHelperText-root': {
-              color: '#dc2626',
+              color: '#f2c514',
               fontSize: '0.75rem',
               marginTop: '4px',
             },
@@ -393,7 +393,7 @@ const RegisterForm = () => {
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <Business sx={{ color: '#dc2626' }} />
+                <Business sx={{ color: '#f2c514' }} />
               </InputAdornment>
             ),
           }}
@@ -433,19 +433,19 @@ const RegisterForm = () => {
               backgroundColor: 'rgba(31, 41, 55, 0.8)',
               borderRadius: 2,
               '& fieldset': {
-                borderColor: fieldErrors.role ? '#dc2626' : 'rgba(220, 38, 38, 0.3)',
+                borderColor: fieldErrors.role ? '#f2c514' : 'rgba(220, 38, 38, 0.3)',
               },
               '&:hover fieldset': {
-                borderColor: fieldErrors.role ? '#dc2626' : 'rgba(220, 38, 38, 0.5)',
+                borderColor: fieldErrors.role ? '#f2c514' : 'rgba(220, 38, 38, 0.5)',
               },
               '&.Mui-focused fieldset': {
-                borderColor: fieldErrors.role ? '#dc2626' : theme.palette.primary.main,
+                borderColor: fieldErrors.role ? '#f2c514' : theme.palette.primary.main,
               },
             },
             '& .MuiInputLabel-root': {
-              color: fieldErrors.role ? '#dc2626' : 'rgba(255, 255, 255, 0.7)',
+              color: fieldErrors.role ? '#f2c514' : 'rgba(255, 255, 255, 0.7)',
               '&.Mui-focused': {
-                color: fieldErrors.role ? '#dc2626' : theme.palette.primary.main,
+                color: fieldErrors.role ? '#f2c514' : theme.palette.primary.main,
               },
             },
             '& .MuiSelect-select': {
@@ -454,7 +454,7 @@ const RegisterForm = () => {
               alignItems: 'center',
             },
             '& .MuiFormHelperText-root': {
-              color: '#dc2626',
+              color: '#f2c514',
               fontSize: '0.75rem',
               marginTop: '4px',
             },
@@ -468,7 +468,7 @@ const RegisterForm = () => {
             label="Role"
             startAdornment={
               <InputAdornment position="start">
-                <AssignmentInd sx={{ color: '#dc2626', mr: 1 }} />
+                <AssignmentInd sx={{ color: '#f2c514', mr: 1 }} />
               </InputAdornment>
             }
           >
@@ -476,7 +476,7 @@ const RegisterForm = () => {
             <MenuItem value="agent">Agent</MenuItem>
           </Select>
           {fieldErrors.role && (
-            <Typography variant="caption" sx={{ color: '#dc2626', fontSize: '0.75rem', mt: '4px' }}>
+            <Typography variant="caption" sx={{ color: '#f2c514', fontSize: '0.75rem', mt: '4px' }}>
               {fieldErrors.role}
             </Typography>
           )}
@@ -495,7 +495,7 @@ const RegisterForm = () => {
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <Lock sx={{ color: '#dc2626' }} />
+                <Lock sx={{ color: '#f2c514' }} />
               </InputAdornment>
             ),
             endAdornment: (
@@ -516,26 +516,26 @@ const RegisterForm = () => {
               backgroundColor: 'rgba(31, 41, 55, 0.8)',
               borderRadius: 2,
               '& fieldset': {
-                borderColor: fieldErrors.password ? '#dc2626' : 'rgba(220, 38, 38, 0.3)',
+                borderColor: fieldErrors.password ? '#f2c514' : 'rgba(220, 38, 38, 0.3)',
               },
               '&:hover fieldset': {
-                borderColor: fieldErrors.password ? '#dc2626' : 'rgba(220, 38, 38, 0.5)',
+                borderColor: fieldErrors.password ? '#f2c514' : 'rgba(220, 38, 38, 0.5)',
               },
               '&.Mui-focused fieldset': {
-                borderColor: fieldErrors.password ? '#dc2626' : theme.palette.primary.main,
+                borderColor: fieldErrors.password ? '#f2c514' : theme.palette.primary.main,
               },
             },
             '& .MuiInputLabel-root': {
-              color: fieldErrors.password ? '#dc2626' : 'rgba(255, 255, 255, 0.7)',
+              color: fieldErrors.password ? '#f2c514' : 'rgba(255, 255, 255, 0.7)',
               '&.Mui-focused': {
-                color: fieldErrors.password ? '#dc2626' : theme.palette.primary.main,
+                color: fieldErrors.password ? '#f2c514' : theme.palette.primary.main,
               },
             },
             '& .MuiInputBase-input': {
               color: 'white',
             },
             '& .MuiFormHelperText-root': {
-              color: '#dc2626',
+              color: '#f2c514',
               fontSize: '0.75rem',
               marginTop: '4px',
             },
@@ -555,7 +555,7 @@ const RegisterForm = () => {
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <Lock sx={{ color: '#dc2626' }} />
+                <Lock sx={{ color: '#f2c514' }} />
               </InputAdornment>
             ),
             endAdornment: (
@@ -576,26 +576,26 @@ const RegisterForm = () => {
               backgroundColor: 'rgba(31, 41, 55, 0.8)',
               borderRadius: 2,
               '& fieldset': {
-                borderColor: fieldErrors.confirmPassword ? '#dc2626' : 'rgba(220, 38, 38, 0.3)',
+                borderColor: fieldErrors.confirmPassword ? '#f2c514' : 'rgba(220, 38, 38, 0.3)',
               },
               '&:hover fieldset': {
-                borderColor: fieldErrors.confirmPassword ? '#dc2626' : 'rgba(220, 38, 38, 0.5)',
+                borderColor: fieldErrors.confirmPassword ? '#f2c514' : 'rgba(220, 38, 38, 0.5)',
               },
               '&.Mui-focused fieldset': {
-                borderColor: fieldErrors.confirmPassword ? '#dc2626' : theme.palette.primary.main,
+                borderColor: fieldErrors.confirmPassword ? '#f2c514' : theme.palette.primary.main,
               },
             },
             '& .MuiInputLabel-root': {
-              color: fieldErrors.confirmPassword ? '#dc2626' : 'rgba(255, 255, 255, 0.7)',
+              color: fieldErrors.confirmPassword ? '#f2c514' : 'rgba(255, 255, 255, 0.7)',
               '&.Mui-focused': {
-                color: fieldErrors.confirmPassword ? '#dc2626' : theme.palette.primary.main,
+                color: fieldErrors.confirmPassword ? '#f2c514' : theme.palette.primary.main,
               },
             },
             '& .MuiInputBase-input': {
               color: 'white',
             },
             '& .MuiFormHelperText-root': {
-              color: '#dc2626',
+              color: '#f2c514',
               fontSize: '0.75rem',
               marginTop: '4px',
             },
@@ -614,10 +614,10 @@ const RegisterForm = () => {
             fontWeight: 600,
             textTransform: 'none',
             borderRadius: 2,
-            background: 'linear-gradient(135deg, #dc2626 0%, #991b1b 100%)',
+            background: 'linear-gradient(135deg, #f2c514 0%, #c9a010 100%)',
             boxShadow: '0 8px 24px rgba(220, 38, 38, 0.4)',
             '&:hover': {
-              background: 'linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%)',
+              background: 'linear-gradient(135deg, #d4a912 0%, #7f1d1d 100%)',
               boxShadow: '0 12px 32px rgba(220, 38, 38, 0.6)',
               transform: 'translateY(-2px)',
             },
@@ -647,7 +647,7 @@ const RegisterForm = () => {
           <Link
             href="/auth/login"
             sx={{
-              color: '#dc2626',
+              color: '#f2c514',
               textDecoration: 'none',
               fontWeight: 600,
               '&:hover': {

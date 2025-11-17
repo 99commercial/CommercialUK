@@ -23,13 +23,13 @@ const AboutUs: NextPage = () => {
           content="CommercialUK offers quick, efficient, and cost-effective property listing services. From management aids to coverage across the whole of the UK, we help clients throughout the UK."
         />
       }
-      sx={{ color: 'error.main' }}
+      sx={{ color: '#f2c514' }}
     >
       {/* Hero */}
       <Box
         sx={{
           position: 'relative',
-          color: 'error.main',
+          color: '#f2c514',
           py: { xs: 8, md: 14 },
           background:
             'linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url(https://www.shutterstock.com/image-photo/why-choose-us-businessman-holding-600nw-1431803342.jpg) center/cover no-repeat',
@@ -52,7 +52,7 @@ const AboutUs: NextPage = () => {
         <Stack direction={{ xs: 'column', md: 'row' }} spacing={6} alignItems="center">
           <Box sx={{ width: { xs: '100%', md: '50%' } }}>
             <Stack spacing={2}>
-              <Typography variant="overline" color="error" sx={{ fontWeight: 700 }}>
+              <Typography variant="overline" sx={{ fontWeight: 700, color: '#f2c514' }}>
                 About
               </Typography>
               <Typography variant="h4" sx={{ fontWeight: 800, color: 'text.primary' }}>
@@ -100,7 +100,7 @@ const AboutUs: NextPage = () => {
       <Box  sx={{ py: { xs: 8, md: 12 }, bgcolor: 'background.default' , maxWidth: '100%' }}>
         <Container maxWidth="lg">
           <Stack spacing={2} sx={{ mb: 4 }}>
-            <Typography variant="overline" color="error" sx={{ fontWeight: 700 }}>
+            <Typography variant="overline" sx={{ fontWeight: 700, color: '#f2c514' }}>
               Why CommercialUK?
             </Typography>
             <Typography variant="h4" sx={{ fontWeight: 800, color: 'text.primary' }}>
@@ -125,39 +125,39 @@ const AboutUs: NextPage = () => {
           >
             {[
               {
-                icon: <ApartmentIcon color="error" />,
+                icon: <ApartmentIcon sx={{ color: '#f2c514' }} />,
                 title: 'Thousands of UK properties',
                 desc: 'For sale and to let across the UK',
               },
               {
-                icon: <VerifiedIcon color="error" />,
+                icon: <VerifiedIcon sx={{ color: '#f2c514' }} />,
                 title: 'Trusted by top professionals',
                 desc: 'Recommended by landlords, developers, and agents',
               },
               {
-                icon: <PriceCheckIcon color="error" />,
+                icon: <PriceCheckIcon sx={{ color: '#f2c514' }} />,
                 title: 'Competitive subscriptions',
                 desc: 'Best value for money across packages',
               },
               {
-                icon: <SupportAgentIcon color="error" />,
+                icon: <SupportAgentIcon sx={{ color: '#f2c514' }} />,
                 title: 'Customer‑centric support',
                 desc: 'Responsive and personalized assistance',
               },
               {
-                icon: <TrendingUpIcon color="error" />,
+                icon: <TrendingUpIcon sx={{ color: '#f2c514' }} />,
                 title: 'Exceptional visibility',
                 desc: 'Powered by SEO and digital marketing',
               },
               {
-                icon: <SpeedIcon color="error" />,
+                icon: <SpeedIcon sx={{ color: '#f2c514' }} />,
                 title: 'Rapid, easy uploads',
                 desc: 'Spick‑and‑span management solutions',
               },
             ].map((item, idx) => (
-              <Paper key={idx} variant="outlined" sx={{ p: 3, height: '100%', borderRadius: 2 }}>
+              <Paper key={idx} variant="outlined" sx={{ p: 3, height: '100%', borderRadius: 2, borderLeft: '4px solid #f2c514' }}>
                 <Stack direction="row" spacing={2} alignItems="flex-start">
-                  <Box sx={{ p: 1.25, borderRadius: 1.5, bgcolor: 'action.hover' }}>{item.icon}</Box>
+                  <Box sx={{ p: 1.25, borderRadius: 1.5, bgcolor: 'rgba(242, 197, 20, 0.1)' }}>{item.icon}</Box>
                   <Stack spacing={0.5}>
                     <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
                       {item.title}
@@ -177,10 +177,10 @@ const AboutUs: NextPage = () => {
       {/* Footer note */}
       <Container maxWidth="md" sx={{ py: 6, maxWidth: '100%' }}>
         <Stack direction="row" spacing={1} alignItems="center" justifyContent="center">
-          <PublicIcon color="error" />
+          <PublicIcon sx={{ color: '#f2c514' }} />
           <Typography variant="body2" color="text.secondary" align="center">
             For media inquiries or partnerships, email{' '}
-            <MUILink href="mailto:sales@commercialuk.com"  color="error.main">info@commercialuk.com</MUILink>.
+            <MUILink href="mailto:sales@commercialuk.com" sx={{ color: '#f2c514', fontWeight: 600, '&:hover': { textDecoration: 'underline' } }}>info@commercialuk.com</MUILink>.
           </Typography>
         </Stack>
       </Container>

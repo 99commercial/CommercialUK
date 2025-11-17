@@ -49,7 +49,7 @@ const HeroSection = styled(Box)(({ theme }) => ({
 const FloatingElement = styled(Box)(({ theme }) => ({
   position: 'absolute',
   borderRadius: '50%',
-  background: 'linear-gradient(45deg, #dc2626, #991b1b)',
+  background: 'linear-gradient(45deg, #f2c514, #c9a010)',
   opacity: 0.1,
   animation: 'float 6s ease-in-out infinite',
   '&:nth-of-type(1)': {
@@ -174,7 +174,7 @@ const FeatureIcon = styled(Box)(({ theme }) => ({
   width: 50,
   height: 50,
   borderRadius: '50%',
-  background: 'linear-gradient(135deg, #dc2626 0%, #991b1b 100%)',
+  background: 'linear-gradient(135deg, #f2c514 0%, #c9a010 100%)',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -310,7 +310,7 @@ export default function LoginPage() {
               <Box sx={{ flex: 1, width: { xs: '100%', md: '50%' } }}>
                 <Fade in timeout={1000}>
                   <Box>
-                    <Typography
+                    {/* <Typography
                       variant="h2"
                       component="h1"
                       sx={{
@@ -324,7 +324,14 @@ export default function LoginPage() {
                       }}
                     >
                       CommercialUK
-                    </Typography>
+                    </Typography> */}
+                    <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
+                      <img
+                        src="/images/CommercialUKWhite2.png"
+                        alt="CommercialUK"
+                        style={{ width: 200, objectFit: 'contain' }}
+                      />
+                    </Box>
                     <Typography
                       variant="h5"
                       sx={{

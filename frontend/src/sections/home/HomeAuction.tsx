@@ -51,7 +51,7 @@ const AuctionCard = styled(Card)(({ theme }) => ({
 }));
 
 const LiveAuctionButton = styled(Button)(({ theme }) => ({
-  background: 'linear-gradient(45deg, #d32f2f 30%, #ff5722 90%)',
+  background: 'linear-gradient(45deg, #fc6c85 30%,rgba(252, 108, 132, 0.8) 90%)',
   color: 'white',
   borderRadius: theme.spacing(2),
   px: 4,
@@ -62,7 +62,7 @@ const LiveAuctionButton = styled(Button)(({ theme }) => ({
   boxShadow: '0 8px 20px rgba(211, 47, 47, 0.3)',
   transition: 'all 0.3s ease',
   '&:hover': {
-    background: 'linear-gradient(45deg, #b71c1c 30%, #e64a19 90%)',
+    background: 'linear-gradient(45deg, #fc6c85 30%,rgba(252, 108, 132, 0.8) 90%)',
     transform: 'translateY(-2px)',
     boxShadow: '0 12px 30px rgba(211, 47, 47, 0.4)',
   },
@@ -120,7 +120,7 @@ export default function HomeAuction() {
                   <Chip
                     label="Live Auction"
                     sx={{
-                      background: 'linear-gradient(45deg, #d32f2f 30%, #ff5722 90%)',
+                      background: 'linear-gradient(45deg, #f2c514 30%,rgba(242, 198, 20, 0.8) 90%)',
                       color: 'white',
                       fontWeight: 700,
                       fontSize: { xs: '0.75rem', md: '0.875rem' },
@@ -175,14 +175,14 @@ export default function HomeAuction() {
                   endIcon={<ArrowForwardIcon />}
                   fullWidth
                   sx={{
-                    borderColor: '#d32f2f',
-                    color: '#d32f2f',
+                    borderColor: '#f2c514',
+                    color: '#f2c514',
                     fontWeight: 600,
                     py: 1.5,
                     borderRadius: 2,
                     fontSize: { xs: '0.875rem', md: '1rem' },
                     '&:hover': {
-                      borderColor: '#b71c1c',
+                      borderColor: '#f2c514',
                       backgroundColor: 'rgba(211, 47, 47, 0.04)',
                       transform: 'translateY(-1px)',
                     },
@@ -205,7 +205,7 @@ export default function HomeAuction() {
                   mb: { xs: 2, md: 3 },
                   color: '#1a1a1a',
                   lineHeight: 1.2,
-                  background: 'linear-gradient(45deg, #1a1a1a 30%, #d32f2f 90%)',
+                  background: 'linear-gradient(45deg, #1a1a1a 30%, #f2c514 90%)',
                   backgroundClip: 'text',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
@@ -262,14 +262,14 @@ From start-ups to multinational corporations, CommercialUK is the market of choi
                   variant="outlined"
                   fullWidth={isMobile}
                   sx={{
-                    borderColor: '#d32f2f',
-                    color: '#d32f2f',
+                    borderColor: '#f2c514',
+                    color: '#f2c514',
                     fontWeight: 600,
                     py: { xs: 1.5, md: 2 },
                     borderRadius: 2,
                     fontSize: { xs: '0.875rem', md: '1rem' },
                     '&:hover': {
-                      borderColor: '#b71c1c',
+                      borderColor: '#f2c514',
                       backgroundColor: 'rgba(211, 47, 47, 0.04)',
                       transform: 'translateY(-1px)',
                     },

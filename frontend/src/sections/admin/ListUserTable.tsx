@@ -440,7 +440,7 @@ const ListUserTable: React.FC<ListUserTableProps> = ({ users }) => {
                           : user.user_status === 'pending'
                           ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'
                           : user.user_status === 'suspended'
-                          ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'
+                          ? 'linear-gradient(135deg, #f2c514 0%, #f2c514 100%)'
                           : 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)',
                         boxShadow: '0 1px 4px rgba(0,0,0,0.1)',
                         border: '1px solid rgba(255,255,255,0.2)'
@@ -550,7 +550,7 @@ const ListUserTable: React.FC<ListUserTableProps> = ({ users }) => {
         }}
       >
         <DialogTitle sx={{ 
-          background: 'linear-gradient(135deg, #dc2626 0%, #ef4444 100%)',
+          background: 'linear-gradient(135deg, #f2c514 0%, #f2c514 100%)',
           color: 'white',
           display: 'flex',
           alignItems: 'center',
@@ -655,7 +655,7 @@ const ListUserTable: React.FC<ListUserTableProps> = ({ users }) => {
                           : selectedUser.user_status === 'pending'
                           ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'
                           : selectedUser.user_status === 'suspended'
-                          ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'
+                          ? 'linear-gradient(135deg, #f2c514 0%, #f2c514 100%)'
                           : 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)',
                         boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
                         border: '1px solid rgba(255,255,255,0.2)',
@@ -758,7 +758,7 @@ const ListUserTable: React.FC<ListUserTableProps> = ({ users }) => {
                   <Typography 
                     variant="h6" 
                     sx={{ 
-                      color: '#dc2626',
+                      color: '#f2c514',
                       fontWeight: 700,
                       fontSize: { xs: '1rem', sm: '1.2rem' },
                       mb: { xs: 2, sm: 3 },
@@ -810,9 +810,9 @@ const ListUserTable: React.FC<ListUserTableProps> = ({ users }) => {
                         disabled={statusLoading || !newStatus}
                         sx={{
                           flex: 1,
-                          background: 'linear-gradient(135deg, #dc2626 0%, #ef4444 100%)',
+                          background: 'linear-gradient(135deg, #f2c514 0%, #f2c514 100%)',
                           '&:hover': {
-                            background: 'linear-gradient(135deg, #b91c1c 0%, #dc2626 100%)',
+                            background: 'linear-gradient(135deg, #d4a912 0%, #f2c514 100%)',
                           },
                         }}
                         startIcon={statusLoading ? <CircularProgress size={20} /> : null}
@@ -841,7 +841,7 @@ const ListUserTable: React.FC<ListUserTableProps> = ({ users }) => {
                   <Typography 
                     variant="h6" 
                     sx={{ 
-                      color: '#dc2626',
+                      color: '#f2c514',
                       fontWeight: 700,
                       fontSize: { xs: '1rem', sm: '1.2rem' },
                       mb: { xs: 2, sm: 3 },
@@ -941,7 +941,7 @@ const ListUserTable: React.FC<ListUserTableProps> = ({ users }) => {
                   <Typography 
                     variant="h6" 
                     sx={{ 
-                      color: '#dc2626',
+                      color: '#f2c514',
                       fontWeight: 700,
                       fontSize: { xs: '1rem', sm: '1.2rem' },
                       mb: { xs: 2, sm: 3 },
@@ -1042,7 +1042,7 @@ const ListUserTable: React.FC<ListUserTableProps> = ({ users }) => {
                   <Typography 
                     variant="h6" 
                     sx={{ 
-                      color: '#dc2626',
+                      color: '#f2c514',
                       fontWeight: 700,
                       fontSize: { xs: '1rem', sm: '1.2rem' },
                       mb: { xs: 2, sm: 3 },
@@ -1166,7 +1166,7 @@ const ListUserTable: React.FC<ListUserTableProps> = ({ users }) => {
             variant="contained"
             fullWidth={useMediaQuery(theme.breakpoints.down('sm'))}
             sx={{
-              background: 'linear-gradient(135deg, #dc2626 0%, #ef4444 100%)',
+              background: 'linear-gradient(135deg, #f2c514 0%, #f2c514 100%)',
               color: 'white',
               fontWeight: 600,
               fontSize: { xs: '0.9rem', sm: '1rem' },
@@ -1177,7 +1177,7 @@ const ListUserTable: React.FC<ListUserTableProps> = ({ users }) => {
               fontFamily: '"Inter", "Roboto", sans-serif',
               boxShadow: '0 4px 12px rgba(220,38,38,0.3)',
               '&:hover': {
-                background: 'linear-gradient(135deg, #b91c1c 0%, #dc2626 100%)',
+                background: 'linear-gradient(135deg, #d4a912 0%, #f2c514 100%)',
                 boxShadow: '0 6px 16px rgba(220,38,38,0.4)',
               }
             }}

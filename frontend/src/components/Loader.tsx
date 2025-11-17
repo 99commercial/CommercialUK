@@ -62,12 +62,12 @@ const ProgressBarContainer = styled(Box)<{ size?: 'small' | 'medium' | 'large' }
   };
 });
 
-// Active progress bar (animated) - Dark red color
+// Active progress bar (animated) - Dark yellow/gold color
 const ProgressBarActive = styled(Box)(({ theme }) => ({
   position: 'absolute',
   top: 0,
   height: '100%',
-  backgroundColor: '#991b1b', // Dark red color (red-800)
+  backgroundColor: '#c9a010', // Dark yellow/gold color
   animation: `${progress} 2s ease-in-out infinite`,
   borderRadius: '0px', // Flat, squared ends
 }));

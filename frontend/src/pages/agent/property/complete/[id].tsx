@@ -55,7 +55,7 @@ const tabs = [
     label: 'General Details',
     icon: <Home />,
     description: 'Basic property information',
-    color: '#dc2626',
+    color: '#f2c514',
   },
   {
     id: 'business',

@@ -507,9 +507,9 @@ const CompeleteVirtualToursForm: React.FC<VirtualToursFormProps> = ({ propertyId
             disabled={isSaving || isSubmitted}
             sx={{ 
               minWidth: 200,
-              backgroundColor: '#dc2626',
+              backgroundColor: '#f2c514',
               '&:hover': {
-                backgroundColor: '#b91c1c',
+                backgroundColor: '#d4a912',
               },
             }}
           >

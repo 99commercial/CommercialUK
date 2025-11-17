@@ -45,7 +45,7 @@ const SectionHeader = styled(Box)(({ theme }) => ({
   gap: theme.spacing(1.5),
   marginBottom: 0,
   padding: theme.spacing(2.5, 3),
-  background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
+  background: 'linear-gradient(135deg, #f2c514 0%, #d4a912 100%)',
   borderRadius: '16px 16px 0 0',
   color: 'white',
   boxShadow: '0 4px 12px rgba(220, 38, 38, 0.2)',
@@ -155,7 +155,7 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
     transform: 'translate(18px, 20px) scale(1)',
     transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
     '&.Mui-focused': {
-      color: '#dc2626',
+      color: '#f2c514',
       fontWeight: 600,
       fontSize: '1rem',
     },
@@ -374,7 +374,7 @@ const PersonalDetailsEdit: React.FC<PersonalDetailsEditProps> = ({
                 gap: 1.5,
                 mb: 0.5,
               }}>
-                <PersonIcon sx={{ color: '#dc2626', fontSize: '1.75rem' }} />
+                <PersonIcon sx={{ color: '#f2c514', fontSize: '1.75rem' }} />
                 <SectionTitle sx={{ color: '#1f2937' }}>
                   Basic Information
                 </SectionTitle>
@@ -395,7 +395,7 @@ const PersonalDetailsEdit: React.FC<PersonalDetailsEditProps> = ({
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <PersonIcon sx={{ color: '#dc2626' }} />
+                      <PersonIcon sx={{ color: '#f2c514' }} />
                     </InputAdornment>
                   ),
                 }}
@@ -413,7 +413,7 @@ const PersonalDetailsEdit: React.FC<PersonalDetailsEditProps> = ({
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <PersonIcon sx={{ color: '#dc2626' }} />
+                      <PersonIcon sx={{ color: '#f2c514' }} />
                     </InputAdornment>
                   ),
                 }}
@@ -432,7 +432,7 @@ const PersonalDetailsEdit: React.FC<PersonalDetailsEditProps> = ({
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <PhoneIcon sx={{ color: '#dc2626' }} />
+                      <PhoneIcon sx={{ color: '#f2c514' }} />
                     </InputAdornment>
                   ),
                 }}
@@ -452,7 +452,7 @@ const PersonalDetailsEdit: React.FC<PersonalDetailsEditProps> = ({
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <CakeIcon sx={{ color: '#dc2626' }} />
+                      <CakeIcon sx={{ color: '#f2c514' }} />
                     </InputAdornment>
                   ),
                 }}
@@ -496,7 +496,7 @@ const PersonalDetailsEdit: React.FC<PersonalDetailsEditProps> = ({
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start" sx={{ alignSelf: 'flex-start', mt: 1 }}>
-                      <LocationIcon sx={{ color: '#dc2626' }} />
+                      <LocationIcon sx={{ color: '#f2c514' }} />
                     </InputAdornment>
                   ),
                 }}
@@ -533,12 +533,12 @@ const PersonalDetailsEdit: React.FC<PersonalDetailsEditProps> = ({
               disabled={loading || !isDirty}
               startIcon={loading ? <CircularProgress size={22} color="inherit" /> : <SaveIcon sx={{ fontSize: '1.5rem' }} />}
               sx={{
-                backgroundColor: '#dc2626',
+                backgroundColor: '#f2c514',
                 '&:hover': {
-                  backgroundColor: '#b91c1c',
+                  backgroundColor: '#d4a912',
                 },
                 '&:disabled': {
-                  backgroundColor: '#fca5a5',
+                  backgroundColor: '#f9d85a',
                   boxShadow: 'none',
                   transform: 'none',
                 },

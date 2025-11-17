@@ -45,7 +45,7 @@ const BusinessHeader = styled(Box)(({ theme }) => ({
   justifyContent: 'space-between',
   padding: theme.spacing(5),
   background: `
-    linear-gradient(135deg, #dc2626 0%, #b91c1c 50%, #991b1b 100%),
+    linear-gradient(135deg, #f2c514 0%, #d4a912 50%, #c9a010 100%),
     radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
     radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.08) 0%, transparent 50%),
     repeating-linear-gradient(
@@ -148,7 +148,7 @@ const ServiceChip = styled(Chip)<{ active?: boolean }>(({ theme, active }) => ({
   fontSize: '0.875rem',
   padding: theme.spacing(0.5, 1.5),
   height: 32,
-  background: active ? '#dc2626' : '#f3f4f6',
+  background: active ? '#f2c514' : '#f3f4f6',
   color: active ? 'white' : '#6b7280',
   border: active ? 'none' : '1px solid #d1d5db',
 }));
@@ -159,7 +159,7 @@ const StatusChip = styled(Chip)<{ status: 'open' | 'closed' | 'active' | 'inacti
   fontSize: '0.75rem',
   padding: theme.spacing(0.25, 1),
   height: 24,
-  background: status === 'open' || status === 'active' ? '#10b981' : '#ef4444',
+  background: status === 'open' || status === 'active' ? '#10b981' : '#f2c514',
   color: 'white',
   border: 'none',
 }));
@@ -173,7 +173,7 @@ const InfoField = styled(Box)(({ theme }) => ({
   transition: 'all 0.3s ease',
   '&:hover': {
     background: '#f3f4f6',
-    borderColor: '#dc2626',
+    borderColor: '#f2c514',
     transform: 'translateY(-2px)',
     boxShadow: '0 4px 12px rgba(220, 38, 38, 0.1)',
   },
@@ -203,7 +203,7 @@ const FieldValue = styled(Typography)(({ theme }) => ({
 const SectionTitle = styled(Typography)(({ theme }) => ({
   fontSize: '1.5rem',
   fontWeight: 700,
-  color: '#dc2626',
+  color: '#f2c514',
   marginBottom: theme.spacing(3),
   fontFamily: '"Poppins", sans-serif',
   display: 'flex',
@@ -214,7 +214,7 @@ const SectionTitle = styled(Typography)(({ theme }) => ({
     content: '""',
     flex: 1,
     height: '2px',
-    background: 'linear-gradient(90deg, #dc2626, transparent)',
+    background: 'linear-gradient(90deg, #f2c514, transparent)',
     marginLeft: theme.spacing(2),
   },
 }));
@@ -442,7 +442,7 @@ const UserBusinessProfile: React.FC<UserBusinessProfileProps> = ({
                       target="_blank" 
                       rel="noopener noreferrer" 
                       style={{ 
-                        color: '#dc2626', 
+                        color: '#f2c514', 
                         textDecoration: 'none',
                         fontWeight: 600,
                         fontFamily: '"Inter", sans-serif',
@@ -462,7 +462,7 @@ const UserBusinessProfile: React.FC<UserBusinessProfileProps> = ({
               borderColor: '#e5e7eb',
               borderWidth: 1,
               '&::before, &::after': {
-                borderColor: '#dc2626',
+                borderColor: '#f2c514',
                 opacity: 0.3,
               },
             }} 
@@ -532,7 +532,7 @@ const UserBusinessProfile: React.FC<UserBusinessProfileProps> = ({
               borderColor: '#e5e7eb',
               borderWidth: 1,
               '&::before, &::after': {
-                borderColor: '#dc2626',
+                borderColor: '#f2c514',
                 opacity: 0.3,
               },
             }} 
@@ -562,7 +562,7 @@ const UserBusinessProfile: React.FC<UserBusinessProfileProps> = ({
               borderColor: '#e5e7eb',
               borderWidth: 1,
               '&::before, &::after': {
-                borderColor: '#dc2626',
+                borderColor: '#f2c514',
                 opacity: 0.3,
               },
             }} 

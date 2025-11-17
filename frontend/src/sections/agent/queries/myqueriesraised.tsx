@@ -124,10 +124,10 @@ const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
       borderRadius: '4px',
     },
     '&::-webkit-scrollbar-thumb': {
-      background: '#dc2626',
+      background: '#f2c514',
       borderRadius: '4px',
       '&:hover': {
-        background: '#b91c1c',
+        background: '#d4a912',
       },
     },
   },
@@ -168,7 +168,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:hover': {
     backgroundColor: 'rgba(220, 38, 38, 0.05)',
     transform: 'translateX(4px)',
-    boxShadow: 'inset 4px 0 0 #dc2626',
+    boxShadow: 'inset 4px 0 0 #f2c514',
   },
   '&:last-child td': {
     borderBottom: 'none',
@@ -294,7 +294,7 @@ const MyQueriesRaised: React.FC<MyQueriesRaisedProps> = ({
           <Typography 
             variant="h6" 
             sx={{ 
-              color: '#dc2626',
+              color: '#f2c514',
               fontWeight: 700,
               fontSize: '1.25rem',
               fontFamily: '"Montserrat", sans-serif',
@@ -306,7 +306,7 @@ const MyQueriesRaised: React.FC<MyQueriesRaisedProps> = ({
           <Typography 
             variant="body1"
             sx={{ 
-              color: '#991b1b',
+              color: '#c9a010',
               fontWeight: 400,
               fontSize: '1rem',
               fontFamily: '"Lato", sans-serif',
@@ -479,7 +479,7 @@ const MyQueriesRaised: React.FC<MyQueriesRaisedProps> = ({
               >
                 <StyledTableCell>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <PersonIcon sx={{ fontSize: '1.2rem', color: '#dc2626', opacity: 0.7 }} />
+                    <PersonIcon sx={{ fontSize: '1.2rem', color: '#f2c514', opacity: 0.7 }} />
                     <Typography sx={{ fontFamily: '"Lato", sans-serif', fontWeight: 500 }}>
                       {query.title} {query.first_name} {query.last_name}
                     </Typography>
@@ -513,7 +513,7 @@ const MyQueriesRaised: React.FC<MyQueriesRaisedProps> = ({
                 <StyledTableCell>
                   <Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
-                      <HomeIcon sx={{ fontSize: { xs: '0.9rem', sm: '1rem' }, color: '#dc2626', opacity: 0.7, flexShrink: 0 }} />
+                      <HomeIcon sx={{ fontSize: { xs: '0.9rem', sm: '1rem' }, color: '#f2c514', opacity: 0.7, flexShrink: 0 }} />
                       <Typography 
                         variant="body2" 
                         sx={{ 

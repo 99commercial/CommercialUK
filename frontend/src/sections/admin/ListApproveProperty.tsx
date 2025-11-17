@@ -466,7 +466,7 @@ const ListApproveProperty: React.FC<ListApprovePropertyProps> = ({ properties })
       >
         <DialogTitle
           sx={{
-            background: 'red',
+            background: '#f2c514',
             color: 'white',
             fontSize: { xs: '1.2rem', sm: '1.5rem' },
             fontWeight: 700,
@@ -555,7 +555,7 @@ const ListApproveProperty: React.FC<ListApprovePropertyProps> = ({ properties })
                   <Box sx={{ overflow: 'hidden', wordBreak: 'break-word' }}>
                     <Typography 
                       variant="h6" 
-                      color="#dc2626" 
+                      color="#f2c514" 
                       sx={{ fontWeight: 700, mb: 1, fontSize: { xs: '0.95rem', sm: '1.1rem' } }}
                     >
                       Property Type
@@ -567,7 +567,7 @@ const ListApproveProperty: React.FC<ListApprovePropertyProps> = ({ properties })
                   <Box sx={{ overflow: 'hidden', wordBreak: 'break-word' }}>
                     <Typography 
                       variant="h6" 
-                      color="#dc2626" 
+                      color="#f2c514" 
                       sx={{ fontWeight: 700, mb: 1, fontSize: { xs: '0.95rem', sm: '1.1rem' } }}
                     >
                       Sub Type
@@ -579,7 +579,7 @@ const ListApproveProperty: React.FC<ListApprovePropertyProps> = ({ properties })
                   <Box sx={{ overflow: 'hidden', wordBreak: 'break-word' }}>
                     <Typography 
                       variant="h6" 
-                      color="#dc2626" 
+                      color="#f2c514" 
                       sx={{ fontWeight: 700, mb: 1, fontSize: { xs: '0.95rem', sm: '1.1rem' } }}
                     >
                       Size
@@ -591,7 +591,7 @@ const ListApproveProperty: React.FC<ListApprovePropertyProps> = ({ properties })
                   <Box sx={{ overflow: 'hidden', wordBreak: 'break-word' }}>
                     <Typography 
                       variant="h6" 
-                      color="#dc2626" 
+                      color="#f2c514" 
                       sx={{ fontWeight: 700, mb: 1, fontSize: { xs: '0.95rem', sm: '1.1rem' } }}
                     >
                       Year Built
@@ -603,7 +603,7 @@ const ListApproveProperty: React.FC<ListApprovePropertyProps> = ({ properties })
                   <Box sx={{ overflow: 'hidden', wordBreak: 'break-word' }}>
                     <Typography 
                       variant="h6" 
-                      color="#dc2626" 
+                      color="#f2c514" 
                       sx={{ fontWeight: 700, mb: 1, fontSize: { xs: '0.95rem', sm: '1.1rem' } }}
                     >
                       Sale Status
@@ -615,7 +615,7 @@ const ListApproveProperty: React.FC<ListApprovePropertyProps> = ({ properties })
                   <Box sx={{ overflow: 'hidden', wordBreak: 'break-word' }}>
                     <Typography 
                       variant="h6" 
-                      color="#dc2626" 
+                      color="#f2c514" 
                       sx={{ fontWeight: 700, mb: 1, fontSize: { xs: '0.95rem', sm: '1.1rem' } }}
                     >
                       Country/Region
@@ -627,7 +627,7 @@ const ListApproveProperty: React.FC<ListApprovePropertyProps> = ({ properties })
                   <Box sx={{ overflow: 'hidden', wordBreak: 'break-word' }}>
                     <Typography 
                       variant="h6" 
-                      color="#dc2626" 
+                      color="#f2c514" 
                       sx={{ fontWeight: 700, mb: 1, fontSize: { xs: '0.95rem', sm: '1.1rem' } }}
                     >
                       Max Eaves Height
@@ -639,7 +639,7 @@ const ListApproveProperty: React.FC<ListApprovePropertyProps> = ({ properties })
                   <Box sx={{ overflow: 'hidden', wordBreak: 'break-word' }}>
                     <Typography 
                       variant="h6" 
-                      color="#dc2626" 
+                      color="#f2c514" 
                       sx={{ fontWeight: 700, mb: 1, fontSize: { xs: '0.95rem', sm: '1.1rem' } }}
                     >
                       Expansion Capacity
@@ -664,7 +664,7 @@ const ListApproveProperty: React.FC<ListApprovePropertyProps> = ({ properties })
                 >
                   <Typography 
                     variant="h6" 
-                    color="#dc2626" 
+                    color="#f2c514" 
                     gutterBottom 
                     sx={{ fontWeight: 700, mb: 2, fontSize: { xs: '0.95rem', sm: '1.1rem' } }}
                   >
@@ -700,7 +700,7 @@ const ListApproveProperty: React.FC<ListApprovePropertyProps> = ({ properties })
                 >
                   <Typography 
                     variant="h6" 
-                    color="#dc2626" 
+                    color="#f2c514" 
                     gutterBottom 
                     sx={{ fontWeight: 700, mb: 2, fontSize: { xs: '0.95rem', sm: '1.1rem' } }}
                   >

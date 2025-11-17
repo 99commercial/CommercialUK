@@ -45,6 +45,7 @@ const AgentLayout: React.FC<AgentLayoutProps> = ({ children }) => {
       localStorage.removeItem('user');
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
+      localStorage.removeItem('newpropertyId');
       
       // Force a small delay to ensure localStorage is cleared
       await new Promise(resolve => setTimeout(resolve, 100));
@@ -131,12 +132,12 @@ const AgentLayout: React.FC<AgentLayoutProps> = ({ children }) => {
               onClick={handleLogout}
               disabled={isLoggingOut}
               sx={{
-                color: '#dc2626',
-                borderColor: '#dc2626',
+                color: '#f2c514',
+                borderColor: '#f2c514',
                 minWidth: '100px',
                 '&:hover': {
                   backgroundColor: '#fef2f2',
-                  borderColor: '#dc2626',
+                  borderColor: '#f2c514',
                 },
                 '&:disabled': {
                   color: '#9ca3af',

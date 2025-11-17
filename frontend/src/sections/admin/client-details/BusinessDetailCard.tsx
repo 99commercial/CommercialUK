@@ -31,7 +31,7 @@ const BusinessHeader = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   gap: theme.spacing(3),
   padding: theme.spacing(4),
-  background: '#dc2626',
+  background: '#f2c514',
   color: 'white',
   borderRadius: '12px 12px 0 0',
 }));
@@ -75,7 +75,7 @@ const ServiceChip = styled(Chip)<{ active?: boolean }>(({ theme, active }) => ({
   fontSize: '0.875rem',
   padding: theme.spacing(0.5, 1.5),
   height: 32,
-  background: active ? '#dc2626' : '#f3f4f6',
+  background: active ? '#f2c514' : '#f3f4f6',
   color: active ? 'white' : '#6b7280',
   border: active ? 'none' : '1px solid #d1d5db',
 }));
@@ -86,7 +86,7 @@ const StatusChip = styled(Chip)<{ status: 'open' | 'closed' | 'active' | 'inacti
   fontSize: '0.75rem',
   padding: theme.spacing(0.25, 1),
   height: 24,
-  background: status === 'open' || status === 'active' ? '#10b981' : '#ef4444',
+  background: status === 'open' || status === 'active' ? '#10b981' : '#f2c514',
   color: 'white',
   border: 'none',
 }));
@@ -188,7 +188,7 @@ const BusinessDetailCard: React.FC<BusinessDetailCardProps> = ({
           {/* Business Details Section */}
           <Typography variant="h6" sx={{ 
             fontWeight: 700, 
-            color: '#dc2626',
+            color: '#f2c514',
             mb: 3,
           }}>
             Business Details
@@ -261,7 +261,7 @@ const BusinessDetailCard: React.FC<BusinessDetailCardProps> = ({
                       target="_blank" 
                       rel="noopener noreferrer" 
                       style={{ 
-                        color: '#dc2626', 
+                        color: '#f2c514', 
                         textDecoration: 'underline',
                       }}
                     >
@@ -278,7 +278,7 @@ const BusinessDetailCard: React.FC<BusinessDetailCardProps> = ({
           {/* Business Address Section */}
           <Typography variant="h6" sx={{ 
             fontWeight: 700, 
-            color: '#dc2626',
+            color: '#f2c514',
             mb: 3,
           }}>
             Business Address
@@ -326,7 +326,7 @@ const BusinessDetailCard: React.FC<BusinessDetailCardProps> = ({
           {/* Services Section */}
           <Typography variant="h6" sx={{ 
             fontWeight: 700, 
-            color: '#dc2626',
+            color: '#f2c514',
             mb: 3,
           }}>
             Services Offered
@@ -349,7 +349,7 @@ const BusinessDetailCard: React.FC<BusinessDetailCardProps> = ({
           {/* Business Hours Section */}
           <Typography variant="h6" sx={{ 
             fontWeight: 700, 
-            color: '#dc2626',
+            color: '#f2c514',
             mb: 3,
           }}>
             Business Hours

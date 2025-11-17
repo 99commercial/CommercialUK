@@ -175,7 +175,7 @@ const UserPropertiesTable: React.FC<UserPropertiesTableProps> = ({ userId }) => 
       case 'Let':
         return '#6b7280';
       case 'Withdrawn':
-        return '#ef4444';
+        return '#f2c514';
       default:
         return '#6b7280';
     }
@@ -313,7 +313,7 @@ const UserPropertiesTable: React.FC<UserPropertiesTableProps> = ({ userId }) => 
                           startIcon={<ViewIcon />}
                           sx={{
                             textTransform: 'none',
-                            color: '#dc2626',
+                            color: '#f2c514',
                             '&:hover': {
                               backgroundColor: 'rgba(220, 38, 38, 0.1)',
                             },

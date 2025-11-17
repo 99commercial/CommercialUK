@@ -81,7 +81,6 @@ const propertySchema = new Schema(
       },
       max_eaves_height: {
         type: Number,
-        required: true,
         min: 0,
         max: 1000,
       },
@@ -99,17 +98,15 @@ const propertySchema = new Schema(
       },
       invoice_details: {
         type: String,
-        required: true,
         trim: true,
-        unique: true,
         maxlength: 500,
+        default: null,
       },
       property_notes: {
         type: String,
-        required: true,
         trim: true,
-        unique: true,
         maxlength: 2000,
+        default: "",
       },
       approximate_year_of_construction: {
         type: Number,
@@ -119,7 +116,6 @@ const propertySchema = new Schema(
       },
       expansion_capacity_percent: {
         type: Number,
-        required: true,
         min: 0,
         max: 100,
       },
@@ -302,6 +298,15 @@ propertySchema.index({ is_active: 1 });
 propertySchema.index({ is_featured: 1 });
 propertySchema.index({ created_at: -1 });
 
+// Note: invoice_details does NOT have a unique index
+// If you need uniqueness for non-empty values only, uncomment the line below:
+// propertySchema.index({ 'general_details.invoice_details': 1 }, { unique: true, sparse: true });
+
+// Note: property_notes should have a sparse unique index if uniqueness is needed
+// This allows multiple null values while ensuring uniqueness for non-null values
+// If you need uniqueness for property_notes, uncomment the line below:
+// propertySchema.index({ 'general_details.property_notes': 1 }, { unique: true, sparse: true });
+
 // Indexes for sub-schema references
 propertySchema.index({ business_rates_id: 1 });
 propertySchema.index({ descriptions_id: 1 });
@@ -388,6 +393,17 @@ propertySchema.pre('save', function(next) {
     const timestamp = Date.now();
     this.slug = `${buildingName.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${postcode.toLowerCase().replace(/\s/g, '')}-${timestamp}`;
   }
+  
+  // Convert empty invoice_details to null to avoid unique index conflicts
+  if (this.general_details?.invoice_details === '') {
+    this.general_details.invoice_details = null;
+  }
+  
+  // Convert empty property_notes to null to avoid unique index conflicts
+  if (this.general_details?.property_notes === '') {
+    this.general_details.property_notes = null;
+  }
+  
   next();
 });
 

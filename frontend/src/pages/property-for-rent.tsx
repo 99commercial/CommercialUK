@@ -67,7 +67,7 @@ const PropertyForRent: NextPage = () => {
         sx={{
           position: 'relative',
           py: { xs: 8, md: 14 },
-          background: 'linear-gradient(135deg, rgba(220,53,69,0.85) 0%, rgba(220,53,69,0.75) 100%), url(https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&auto=format&fit=crop) center/cover no-repeat',
+          background: 'linear-gradient(135deg, rgba(242, 197, 20,0.85) 0%, rgba(242, 197, 20,0.75) 100%), url(https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&auto=format&fit=crop) center/cover no-repeat',
           color: 'common.white',
         }}
       >
@@ -162,9 +162,9 @@ const PropertyForRent: NextPage = () => {
                     sx={{
                       py: 1.75,
                       fontWeight: 700,
-                      background: 'linear-gradient(135deg, rgba(220,53,69,1) 0%, rgba(244,67,54,1) 100%)',
+                      background: 'linear-gradient(135deg, rgba(242, 197, 20,1) 0%, rgba(242, 197, 20,1) 100%)',
                       '&:hover': {
-                        background: 'linear-gradient(135deg, rgba(244,67,54,1) 0%, rgba(220,53,69,1) 100%)',
+                        background: 'linear-gradient(135deg, rgba(242, 197, 20,1) 0%, rgba(242, 197, 20,1) 100%)',
                       }
                     }}
                   >
@@ -195,13 +195,13 @@ const PropertyForRent: NextPage = () => {
                 width: '100%',
                 borderRadius: 4, 
                 background: 'linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(255,250,250,0.98) 100%)',
-                borderLeft: (t) => `6px solid ${t.palette.error.light}`,
-                boxShadow: '0 4px 20px rgba(220,53,69,0.08)'
+                borderLeft: (t) => `6px solid #f9d85a`,
+                boxShadow: '0 4px 20px rgba(242, 197, 20,0.08)'
               }}
             >
               <Stack spacing={3}>
                 <Stack direction="row" spacing={2} alignItems="center">
-                  <BusinessCenterIcon sx={{ fontSize: 40, color: 'error.main' }} />
+                  <BusinessCenterIcon sx={{ fontSize: 40, color: '#f2c514' }} />
                   <Typography 
                     variant="h3" 
                     sx={{ 
@@ -222,8 +222,8 @@ const PropertyForRent: NextPage = () => {
                 <Typography variant="body1" sx={{ fontSize: '1.1rem', lineHeight: 1.8, color: 'text.secondary' }}>
                   With great transport links, affordable rents beyond city centre hotspots, and access to skilled talent, the UK offers diverse opportunities for every industry. At CommercialUK, we bring all these listings together on one reliable rental site, where you can compare, shortlist, and secure your next business premises.
                 </Typography>
-                <Box sx={{ mt: 2, p: 3, borderRadius: 2, bgcolor: 'rgba(220,53,69,0.05)' }}>
-                  <Typography variant="h6" sx={{ fontWeight: 700, color: 'error.main', mb: 1 }}>
+                <Box sx={{ mt: 2, p: 3, borderRadius: 2, bgcolor: 'rgba(242, 197, 20,0.05)' }}>
+                  <Typography variant="h6" sx={{ fontWeight: 700, color: '#f2c514', mb: 1 }}>
                     CommercialUK – Your one-stop commercial estate agent UK
                   </Typography>
                   <Typography variant="body1" sx={{ fontSize: '1.1rem', lineHeight: 1.8, color: 'text.secondary' }}>
@@ -240,13 +240,13 @@ const PropertyForRent: NextPage = () => {
                 p: { xs: 4, md: 6 }, 
                 borderRadius: 4,
                 background: 'linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(255,250,250,0.98) 100%)',
-                borderLeft: (t) => `6px solid ${t.palette.error.light}`,
-                boxShadow: '0 4px 20px rgba(220,53,69,0.08)'
+                borderLeft: (t) => `6px solid #f9d85a`,
+                boxShadow: '0 4px 20px rgba(242, 197, 20,0.08)'
               }}
             >
               <Stack spacing={3}>
                 <Stack direction="row" spacing={2} alignItems="center">
-                  <TrendingUpIcon sx={{ fontSize: 40, color: 'error.main' }} />
+                  <TrendingUpIcon sx={{ fontSize: 40, color: '#f2c514' }} />
                   <Typography 
                     variant="h3" 
                     sx={{ 

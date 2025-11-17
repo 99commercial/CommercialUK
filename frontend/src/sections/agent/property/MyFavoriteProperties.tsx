@@ -222,7 +222,7 @@ const MyFavoriteProperties: React.FC<MyFavoritePropertiesProps> = ({
         color="primary"
         onClick={() => window.location.href = '/general/all-properties'}
         sx={{
-          backgroundColor: '#dc2626',
+          backgroundColor: '#f2c514',
           fontFamily: '"Montserrat", sans-serif',
           fontWeight: 600,
           fontSize: '1rem',
@@ -232,7 +232,7 @@ const MyFavoriteProperties: React.FC<MyFavoritePropertiesProps> = ({
           letterSpacing: '0.02em',
           boxShadow: '0 4px 14px rgba(220, 38, 38, 0.4)',
           '&:hover': {
-            backgroundColor: '#b91c1c',
+            backgroundColor: '#d4a912',
             boxShadow: '0 6px 20px rgba(220, 38, 38, 0.5)',
             transform: 'translateY(-2px)',
           },
@@ -339,11 +339,11 @@ const MyFavoriteProperties: React.FC<MyFavoritePropertiesProps> = ({
                 fontSize: '1rem',
                 letterSpacing: '0.01em',
                 '&.Mui-selected': {
-                  backgroundColor: '#dc2626',
+                  backgroundColor: '#f2c514',
                   color: '#ffffff',
                   fontWeight: 600,
                   '&:hover': {
-                    backgroundColor: '#b91c1c',
+                    backgroundColor: '#d4a912',
                     transform: 'scale(1.1)',
                   },
                   transition: 'all 0.2s ease',

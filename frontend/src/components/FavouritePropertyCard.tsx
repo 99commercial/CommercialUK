@@ -94,7 +94,7 @@ const NavigationButton = styled(IconButton)(({ theme }) => ({
   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
   '&:hover': {
     backgroundColor: '#ffffff',
-    color: '#dc2626',
+    color: '#f2c514',
     opacity: 1,
     transform: 'translateY(-50%) scale(1.1)',
     boxShadow: '0 6px 20px rgba(0, 0, 0, 0.25)',
@@ -118,7 +118,7 @@ const FavoriteButton = styled(IconButton)(({ theme }) => ({
   right: theme.spacing(2),
   zIndex: 5,
   backgroundColor: 'rgba(255, 255, 255, 0.95)',
-  color: '#dc2626',
+  color: '#f2c514',
   width: '44px',
   height: '44px',
   borderRadius: '50%',
@@ -126,7 +126,7 @@ const FavoriteButton = styled(IconButton)(({ theme }) => ({
   backdropFilter: 'blur(10px)',
   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
   '&:hover': {
-    backgroundColor: '#dc2626',
+    backgroundColor: '#f2c514',
     color: '#ffffff',
     transform: 'scale(1.15) rotate(5deg)',
     boxShadow: '0 6px 20px rgba(220, 38, 38, 0.4)',
@@ -373,7 +373,7 @@ const FavouritePropertyCardComponent: React.FC<FavouritePropertyCardProps> = ({
           fullWidth
           onClick={handleViewDetails}
           sx={{
-            background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
+            background: 'linear-gradient(135deg, #f2c514 0%, #d4a912 100%)',
             color: '#ffffff',
             fontFamily: '"Montserrat", sans-serif',
             fontWeight: 600,
@@ -385,7 +385,7 @@ const FavouritePropertyCardComponent: React.FC<FavouritePropertyCardProps> = ({
             boxShadow: '0 4px 14px rgba(220, 38, 38, 0.4)',
             transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
             '&:hover': {
-              background: 'linear-gradient(135deg, #b91c1c 0%, #991b1b 100%)',
+              background: 'linear-gradient(135deg, #d4a912 0%, #c9a010 100%)',
               boxShadow: '0 6px 20px rgba(220, 38, 38, 0.5)',
               transform: 'translateY(-2px)',
             },

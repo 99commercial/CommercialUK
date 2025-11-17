@@ -360,7 +360,7 @@ const PropertiesTable: React.FC = () => {
     if (property.property_status === 'Active') {
       router.push(`/user/property/edit/${property._id}`);
     } else {
-      router.push(`/user/property/complete/${property._id}`);
+      router.push(`/user/property/create-property`);
     }
   };
 

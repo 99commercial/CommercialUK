@@ -61,7 +61,7 @@ const tabs = [
     label: 'General Details',
     icon: <Home />,
     description: 'Basic property information',
-    color: '#dc2626',
+    color: '#f2c514',
   },
   {
     id: 'business',
@@ -141,6 +141,8 @@ const CreatePropertyPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [propertyId, setPropertyId] = useState<string | null>(null);
+  const [isLoadingProperty, setIsLoadingProperty] = useState(false);
+  const [propertyData, setPropertyData] = useState<any>(null);
   
   // State to store form data for each step
   const [stepData, setStepData] = useState<Record<number, any>>({});
@@ -172,6 +174,165 @@ const CreatePropertyPage: React.FC = () => {
   const [importError, setImportError] = useState<string | null>(null);
   const [importedData, setImportedData] = useState<any>(null);
   const [importModalOpen, setImportModalOpen] = useState(false);
+
+  // Fetch property data from localStorage on mount
+
+    const fetchPropertyData = async () => {
+      try {
+        // Get newPropertyId from localStorage
+        const storedPropertyId = typeof window !== 'undefined' 
+          ? localStorage.getItem('newpropertyId') 
+          : null;
+
+        if (storedPropertyId) {
+          setIsLoadingProperty(true);
+          setPropertyId(storedPropertyId);
+
+          // Fetch property data from API
+          const response = await axiosInstance.get(`/api/agent/properties/${storedPropertyId}`);
+          const data = response.data.data;
+          setPropertyData(data);
+
+          // Determine which steps have data and mark them as completed
+          const stepsWithData = new Set<number>();
+          
+          // Step 0: General Details
+          if (data.general_details) {
+            stepsWithData.add(0);
+            setStepData(prev => ({ ...prev, 0: data.general_details }));
+          }
+
+          // Step 1: Business Details
+          if (data.business_rates_id || data.descriptions_id || (data.sale_types_id?.sale_types && Array.isArray(data.sale_types_id.sale_types) && data.sale_types_id.sale_types.length > 0)) {
+            stepsWithData.add(1);
+            setStepData(prev => ({
+              ...prev,
+              1: {
+                business_rates: data.business_rates_id,
+                descriptions: data.descriptions_id,
+                sale_types: (data.sale_types_id?.sale_types && Array.isArray(data.sale_types_id.sale_types))
+                  ? data.sale_types_id.sale_types.map((st: any) => ({
+                      sale_type: st.sale_type || '',
+                      price_currency: st.price_currency || 'GBP',
+                      price_value: st.price_value || '',
+                      price_unit: st.price_unit || '',
+                    }))
+                  : [],
+              }
+            }));
+          }
+
+          // Step 2: Property Details
+          if (data.epc || data.council_tax || data.rateable_value || data.planning) {
+            stepsWithData.add(2);
+            setStepData(prev => ({
+              ...prev,
+              2: {
+                epc: data.epc,
+                council_tax: data.council_tax,
+                rateable_value: data.rateable_value,
+                planning: data.planning,
+              }
+            }));
+          }
+
+          // Step 3: Location
+          if (data.location_id) {
+            stepsWithData.add(3);
+            setStepData(prev => ({
+              ...prev,
+              3: {
+                coordinates: data.location_id.coordinates,
+                address_details: data.location_id,
+              }
+            }));
+            // Set form values for location
+            if (data.location_id.coordinates) {
+              methods.setValue('coordinates', data.location_id.coordinates);
+            }
+            if (data.location_id) {
+              methods.setValue('address_details', data.location_id);
+            }
+          }
+
+          // Step 4: Virtual Tours
+          // virtual_tours_id is an object with _id and virtual_tours array inside
+          if (data.virtual_tours_id?._id) {
+            // Get the virtual_tours array from inside the virtual_tours_id object
+            const virtualToursArray = Array.isArray(data.virtual_tours_id.virtual_tours) 
+              ? data.virtual_tours_id.virtual_tours 
+              : [];
+            
+            // Mark as completed if virtual_tours_id object exists (even if virtual_tours array is empty)
+            stepsWithData.add(4);
+            setStepData(prev => ({
+              ...prev,
+              4: { virtual_tours: virtualToursArray }
+            }));
+            methods.setValue('virtual_tours', virtualToursArray);
+          }
+
+          // Step 5: Features
+          if (data.features_id) {
+            stepsWithData.add(5);
+            setStepData(prev => ({
+              ...prev,
+              5: {
+                features: data.features_id,
+                additional_features: data.features_id.additional_features || [],
+                feature_notes: data.features_id.feature_notes || '',
+              }
+            }));
+            methods.setValue('features', data.features_id);
+            methods.setValue('additional_features', data.features_id.additional_features || []);
+            methods.setValue('feature_notes', data.features_id.feature_notes || '');
+          }
+
+          // Step 6: Images
+          if (data.images_id && data.images_id.images && data.images_id.images.length > 0) {
+            stepsWithData.add(6);
+            setStepData(prev => ({
+              ...prev,
+              6: { property_images: data.images_id.images }
+            }));
+            methods.setValue('property_images', data.images_id.images);
+          }
+
+          // Step 7: Documents
+          if (data.documents_id && data.documents_id.documents && data.documents_id.documents.length > 0) {
+            stepsWithData.add(7);
+            setStepData(prev => ({
+              ...prev,
+              7: { property_documents: data.documents_id.documents }
+            }));
+            methods.setValue('property_documents', data.documents_id.documents);
+          }
+
+          // Mark all steps with data as completed and submitted
+          setCompletedSteps(stepsWithData);
+          setSubmittedSteps(stepsWithData);
+
+          // Set active step to the first incomplete step, or the last completed step if all are complete
+          const allSteps = Array.from({ length: tabs.length }, (_, i) => i);
+          const firstIncompleteStep = allSteps.find(step => !stepsWithData.has(step));
+          if (firstIncompleteStep !== undefined) {
+            setActiveStep(firstIncompleteStep);
+          } else {
+            // All steps are complete, go to the last step
+            setActiveStep(tabs.length - 1);
+          }
+        }
+      } catch (error: any) {
+        console.error('Error fetching property data:', error);
+        enqueueSnackbar('Failed to load property data', { variant: 'error' });
+      } finally {
+        setIsLoadingProperty(false);
+      }
+    };
+
+  useEffect(() => {
+    fetchPropertyData();
+  }, []);
 
   // Update resolver when step changes
   React.useEffect(() => {
@@ -222,8 +383,18 @@ const CreatePropertyPage: React.FC = () => {
 
   // Handle step click
   const handleStepClick = async (step: number) => {
-    // Only allow navigation to completed steps or the next step
-    if (completedSteps.has(step) || step === activeStep + 1) {
+    // Allow navigation to:
+    // 1. Any completed step (to go back)
+    // 2. The current step (already there)
+    // 3. Any step up to and including the next step after the last completed step (to move forward)
+    const lastCompletedStep = Math.max(...Array.from(completedSteps), -1);
+    const maxAllowedStep = lastCompletedStep + 1;
+    
+    // Allow navigation if:
+    // - Step is completed (can go back)
+    // - Step is the current active step (can stay/refresh)
+    // - Step is within allowed range (can move forward up to next step)
+    if (completedSteps.has(step) || step === activeStep || step <= maxAllowedStep) {
       setActiveStep(step);
     }
   };
@@ -320,7 +491,7 @@ const CreatePropertyPage: React.FC = () => {
       // Show success message instead of redirecting
       enqueueSnackbar('Property created successfully!', { variant: 'success' });
       localStorage.removeItem('propertyId');
-      router.push('/agent/property/properties');
+      router.push('/agent/property/my-properties');
       
       // Optional: redirect to property list
       // router.push('/agent/properties');
@@ -332,8 +503,37 @@ const CreatePropertyPage: React.FC = () => {
     }
   };
 
+  // Helper function to check if data exists for a step
+  const hasDataForStep = (step: number): boolean => {
+    if (!propertyData) return false;
+    
+    switch (step) {
+      case 0:
+        return !!propertyData.general_details;
+      case 1:
+        return !!(propertyData.business_rates_id || propertyData.descriptions_id || (propertyData.sale_types_id && propertyData.sale_types_id.length > 0));
+      case 2:
+        return !!(propertyData.epc || propertyData.council_tax || propertyData.rateable_value || propertyData.planning);
+      case 3:
+        return !!propertyData.location_id;
+      case 4:
+        // virtual_tours_id is an object with _id and virtual_tours array inside
+        return !!(propertyData.virtual_tours_id?._id);
+      case 5:
+        return !!propertyData.features_id;
+      case 6:
+        return !!(propertyData.images_id && propertyData.images_id.images && propertyData.images_id.images.length > 0);
+      case 7:
+        return !!(propertyData.documents_id && propertyData.documents_id.documents && propertyData.documents_id.documents.length > 0);
+      default:
+        return false;
+    }
+  };
+
   // Render form for current step
   const renderStepContent = () => {
+    const hasExistingData = hasDataForStep(activeStep);
+    
     switch (activeStep) {
       case 0:
         return (
@@ -341,6 +541,9 @@ const CreatePropertyPage: React.FC = () => {
             onStepSubmitted={handleStepSubmission}
             initialData={stepData[0]}
             onDataChange={(data) => handleStepDataChange(0, data)}
+            propertyData={propertyData}
+            hasExistingData={hasExistingData}
+            fetchPropertyData={fetchPropertyData}
           />
         );
       case 1:
@@ -349,6 +552,9 @@ const CreatePropertyPage: React.FC = () => {
             onStepSubmitted={handleStepSubmission}
             initialData={stepData[1]}
             onDataChange={(data) => handleStepDataChange(1, data)}
+            propertyData={propertyData}
+            hasExistingData={hasExistingData}
+            fetchPropertyData={fetchPropertyData}
           />
         );
       case 2:
@@ -357,58 +563,55 @@ const CreatePropertyPage: React.FC = () => {
             onStepSubmitted={handleStepSubmission}
             initialData={stepData[2]}
             onDataChange={(data) => handleStepDataChange(2, data)}
+            propertyData={propertyData}
+            hasExistingData={hasExistingData}
+            fetchPropertyData={fetchPropertyData}
           />
         );
       case 3:
         return (
           <LocationDetailsForm
             onStepSubmitted={handleStepSubmission}
+            propertyData={propertyData}
+            hasExistingData={hasExistingData}
+            fetchPropertyData={fetchPropertyData}
           />
         );
       case 4:
         return (
           <VirtualToursForm
             onStepSubmitted={handleStepSubmission}
+            propertyData={propertyData}
+            hasExistingData={hasExistingData}
+            fetchPropertyData={fetchPropertyData}
           />
         );
       case 5:
         return (
           <PropertyFeaturesForm
             onStepSubmitted={handleStepSubmission}
+            propertyData={propertyData}
+            hasExistingData={hasExistingData}
+            fetchPropertyData={fetchPropertyData}
           />
         );
       case 6:
-        return <PropertyImagesForm onStepSubmitted={handleStepSubmission} />;
+        return (
+          <PropertyImagesForm 
+            onStepSubmitted={handleStepSubmission}
+            propertyData={propertyData}
+            fetchPropertyData={fetchPropertyData}
+            hasExistingData={hasExistingData}
+          />
+        );
       case 7:
-        return <PropertyDocumentsForm onStepSubmitted={handleStepSubmission} />;
+        return (
+          <PropertyDocumentsForm 
+            onStepSubmitted={handleStepSubmission}
+          />
+        );
       default:
         return null;
-    }
-  };
-
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
-
-  const handleImport = async () => {
-    if (!importLink.trim()) return;
-    
-    setIsImporting(true);
-    setImportError(null);
-    setImportedData(null);
-    
-    try {
-      const result = await axiosInstance.get('/api/feed/import-properties');
-      enqueueSnackbar('Property data imported successfully!', { variant: 'success' });
-      console.log('Imported data:', result);
-      
-      // Here you can add logic to populate the form with the imported data
-      // For now, we just log it and show success
-      
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to import property data';
-      enqueueSnackbar(errorMessage, { variant: 'error' });
-      console.error('Import error:', error);
-    } finally {
-      setIsImporting(false);
     }
   };
 
@@ -420,19 +623,6 @@ const CreatePropertyPage: React.FC = () => {
       {/* Progress Stepper */}
       <Card sx={{ mb: 4 }}>
         <CardContent sx={{ p: 0 }}>
-          {user.email === 'vijay@99home.co.uk' && <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 2, pb: 1 }}>
-            <Button
-              variant="outlined"
-              startIcon={<FileUpload />}
-              onClick={() => setImportModalOpen(true)}
-              sx={{
-                textTransform: 'none',
-                borderRadius: 2,
-              }}
-            >
-              Import Property
-            </Button>
-          </Box>}
           <Box
             sx={{
               overflowX: 'auto',
@@ -462,45 +652,62 @@ const CreatePropertyPage: React.FC = () => {
                 py: 3,
               }}
             >
-              {tabs.map((tab, index) => (
-                <Step key={tab.id} completed={completedSteps.has(index)}>
-                  <StepLabel
-                    // onClick={() => handleStepClick(index)}
-                    sx={{
-                      cursor: completedSteps.has(index) || index === activeStep + 1 ? 'pointer' : 'default',
-                      minWidth: 120,
-                      '& .MuiStepLabel-label': {
-                        fontSize: '0.875rem',
-                      },
-                      '&:hover': {
+              {tabs.map((tab, index) => {
+                const isCompleted = completedSteps.has(index);
+                const lastCompletedStep = Math.max(...Array.from(completedSteps), -1);
+                const maxAllowedStep = lastCompletedStep + 1;
+                // Allow clicking on: completed steps, current step, or any step up to next step after last completed
+                const isClickable = isCompleted || index === activeStep || index <= maxAllowedStep;
+                
+                return (
+                  <Step key={tab.id} completed={isCompleted}>
+                    <StepLabel
+                      onClick={() => handleStepClick(index)}
+                      sx={{
+                        cursor: isClickable ? 'pointer' : 'not-allowed',
+                        minWidth: 120,
+                        opacity: isClickable ? 1 : 0.6,
                         '& .MuiStepLabel-label': {
-                          color: completedSteps.has(index) || index === activeStep + 1 ? 'primary.main' : 'text.secondary',
+                          fontSize: '0.875rem',
                         },
-                      },
-                    }}
-                    StepIconComponent={({ active, completed }) => (
-                      <Box
-                        sx={{
-                          width: 40,
-                          height: 40,
-                          borderRadius: '50%',
-                          backgroundColor: completed ? tab.color : active ? tab.color : '#e5e7eb',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          color: 'white',
-                          cursor: completedSteps.has(index) || index === activeStep + 1 ? 'pointer' : 'default',
-                          transition: 'all 0.2s ease-in-out',
-                          '&:hover': {
-                            transform: completedSteps.has(index) || index === activeStep + 1 ? 'scale(1.1)' : 'scale(1)',
-                            boxShadow: completedSteps.has(index) || index === activeStep + 1 ? '0 4px 12px rgba(0,0,0,0.15)' : 'none',
+                        '&:hover': {
+                          opacity: isClickable ? 1 : 0.6,
+                          '& .MuiStepLabel-label': {
+                            color: isClickable ? 'primary.main' : 'text.secondary',
                           },
-                        }}
-                      >
-                        {completed ? <CheckCircle /> : tab.icon}
-                      </Box>
-                    )}
-                  >
+                        },
+                      }}
+                      StepIconComponent={({ active, completed }) => (
+                        <Box
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (isClickable) {
+                              handleStepClick(index);
+                            }
+                          }}
+                          sx={{
+                            width: 40,
+                            height: 40,
+                            borderRadius: '50%',
+                            backgroundColor: completed ? tab.color : active ? tab.color : '#e5e7eb',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: 'white',
+                            cursor: isClickable ? 'pointer' : 'not-allowed',
+                            transition: 'all 0.2s ease-in-out',
+                            opacity: isClickable ? 1 : 0.6,
+                            '&:hover': {
+                              transform: isClickable ? 'scale(1.1)' : 'scale(1)',
+                              boxShadow: isClickable ? '0 4px 12px rgba(0,0,0,0.15)' : 'none',
+                              opacity: isClickable ? 1 : 0.6,
+                            },
+                          }}
+                        >
+                          {completed ? <CheckCircle /> : tab.icon}
+                        </Box>
+                      )}
+                    >
                     <Box>
                       <Typography variant="body2" fontWeight={activeStep === index ? 600 : 400}>
                         {tab.label}
@@ -511,7 +718,8 @@ const CreatePropertyPage: React.FC = () => {
                     </Box>
                   </StepLabel>
                 </Step>
-              ))}
+                );
+              })}
             </Stepper>
           </Box>
         </CardContent>
@@ -524,10 +732,23 @@ const CreatePropertyPage: React.FC = () => {
         </Alert>
       )}
 
+      {/* Loading State */}
+      {isLoadingProperty && (
+        <Card sx={{ mb: 4 }}>
+          <CardContent sx={{ textAlign: 'center', py: 4 }}>
+            <CircularProgress />
+            <Typography variant="body1" sx={{ mt: 2 }}>
+              Loading property data...
+            </Typography>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Form Content */}
-      <FormProvider {...methods}>
-        <Card>
-          <CardContent>
+      {!isLoadingProperty && (
+        <FormProvider {...methods}>
+          <Card>
+            <CardContent>
             {/* Step Header */}
             <Box sx={{ mb: 3 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -598,114 +819,49 @@ const CreatePropertyPage: React.FC = () => {
           </CardContent>
         </Card>
       </FormProvider>
+      )}
 
       {/* Progress Summary */}
-      <Card sx={{ mt: 3 }}>
-        <CardContent>
-          <Typography variant="h6" gutterBottom>
-            Progress Summary
-          </Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-            {tabs.map((tab, index) => (
-              <Box sx={{ flex: '1 1 250px', minWidth: '250px', maxWidth: '300px' }} key={tab.id}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    border: completedSteps.has(index) ? `2px solid ${tab.color}` : '1px solid #e5e7eb',
-                    borderRadius: 2,
-                    backgroundColor: completedSteps.has(index) ? `${tab.color}10` : 'transparent',
-                  }}
-                >
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                    {completedSteps.has(index) ? (
-                      <CheckCircle sx={{ color: tab.color, mr: 1 }} />
-                    ) : (
-                      <Box sx={{ color: tab.color, mr: 1 }}>{tab.icon}</Box>
-                    )}
-                    <Typography variant="body2" fontWeight={500}>
-                      {tab.label}
-                    </Typography>
-                  </Box>
-                  <Chip
-                    label={completedSteps.has(index) ? 'Completed' : 'Pending'}
-                    size="small"
-                    color={completedSteps.has(index) ? 'success' : 'default'}
-                    variant={completedSteps.has(index) ? 'filled' : 'outlined'}
-                  />
-                </Paper>
-              </Box>
-            ))}
-          </Box>
-        </CardContent>
-      </Card>
-
-      {/* Import Property Modal */}
-      <Dialog
-        open={importModalOpen}
-        onClose={() => setImportModalOpen(false)}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <FileUpload />
-            <Typography variant="h6">Import Property</Typography>
-          </Box>
-        </DialogTitle>
-        <DialogContent>
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              Enter the property link to import property data
+      {!isLoadingProperty && (
+        <Card sx={{ mt: 3 }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              Progress Summary
             </Typography>
-            <TextField
-              fullWidth
-              label="Property Link"
-              placeholder="https://example.com/property/123"
-              value={importLink}
-              onChange={(e) => {
-                setImportLink(e.target.value);
-                setImportError(null);
-              }}
-              variant="outlined"
-              sx={{ mt: 1 }}
-              error={!!importError}
-              helperText={importError}
-            />
-            {isImporting && (
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 2 }}>
-                <CircularProgress size={20} />
-                <Typography variant="body2" color="text.secondary">
-                  Fetching and converting data...
-                </Typography>
-              </Box>
-            )}
-          </Box>
-        </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button 
-            onClick={() => {
-              setImportModalOpen(false);
-              setImportLink('');
-              setImportError(null);
-              setImportedData(null);
-            }} 
-            variant="outlined"
-            disabled={isImporting}
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleImport}
-            variant="contained"
-            disabled={!importLink.trim() || isImporting}
-            startIcon={isImporting ? <CircularProgress size={16} /> : <FileUpload />}
-          >
-            {isImporting ? 'Importing...' : 'Import'}
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+              {tabs.map((tab, index) => (
+                <Box sx={{ flex: '1 1 250px', minWidth: '250px', maxWidth: '300px' }} key={tab.id}>
+                  <Paper
+                    sx={{
+                      p: 2,
+                      border: completedSteps.has(index) ? `2px solid ${tab.color}` : '1px solid #e5e7eb',
+                      borderRadius: 2,
+                      backgroundColor: completedSteps.has(index) ? `${tab.color}10` : 'transparent',
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                      {completedSteps.has(index) ? (
+                        <CheckCircle sx={{ color: tab.color, mr: 1 }} />
+                      ) : (
+                        <Box sx={{ color: tab.color, mr: 1 }}>{tab.icon}</Box>
+                      )}
+                      <Typography variant="body2" fontWeight={500}>
+                        {tab.label}
+                      </Typography>
+                    </Box>
+                    <Chip
+                      label={completedSteps.has(index) ? 'Completed' : 'Pending'}
+                      size="small"
+                      color={completedSteps.has(index) ? 'success' : 'default'}
+                      variant={completedSteps.has(index) ? 'filled' : 'outlined'}
+                    />
+                  </Paper>
+                </Box>
+              ))}
+            </Box>
+          </CardContent>
+        </Card>
+      )}
     </Box>
   );
 };

@@ -575,7 +575,7 @@ export default function HomeHero() {
             <Button
               variant="contained"
               sx={{
-                backgroundColor: '#e74c3c',
+                backgroundColor: '#f2c514',
                 color: 'white',
                 borderRadius: 2,
                 height: 56,
@@ -596,7 +596,7 @@ export default function HomeHero() {
                   minWidth: '100%',
                 },
                 '&:hover': {
-                  backgroundColor: '#c0392b',
+                  backgroundColor: '#f2c514',
                 },
               }}
             >

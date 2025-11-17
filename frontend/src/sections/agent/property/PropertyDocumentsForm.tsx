@@ -273,8 +273,10 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({ onStepSub
         
         // Update propertyId in localStorage
         if (response.data.data && response.data.data._id) {
-          localStorage.setItem('propertyId', response.data.data.property_id);
+          localStorage.removeItem('propertyId');
         }
+
+        localStorage.removeItem('newpropertyId');
         
         // Show success message
         enqueueSnackbar('Documents uploaded successfully!', { variant: 'success' });

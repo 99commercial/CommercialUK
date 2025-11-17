@@ -471,7 +471,7 @@ const ListPropertiesTable: React.FC<ListPropertiesTableProps> = ({ properties })
       >
         <DialogTitle
           sx={{
-            background: 'red',
+            background: '#f2c514',
             color: 'white',
             fontSize: { xs: '1.2rem', sm: '1.5rem' },
             fontWeight: 700,
@@ -560,7 +560,7 @@ const ListPropertiesTable: React.FC<ListPropertiesTableProps> = ({ properties })
                   <Box sx={{ overflow: 'hidden', wordBreak: 'break-word' }}>
                     <Typography 
                       variant="h6" 
-                      color="#dc2626" 
+                      color="#f2c514" 
                       sx={{ fontWeight: 700, mb: 1, fontSize: { xs: '0.95rem', sm: '1.1rem' } }}
                     >
                       Property Type
@@ -572,7 +572,7 @@ const ListPropertiesTable: React.FC<ListPropertiesTableProps> = ({ properties })
                   <Box sx={{ overflow: 'hidden', wordBreak: 'break-word' }}>
                     <Typography 
                       variant="h6" 
-                      color="#dc2626" 
+                      color="#f2c514" 
                       sx={{ fontWeight: 700, mb: 1, fontSize: { xs: '0.95rem', sm: '1.1rem' } }}
                     >
                       Sub Type
@@ -584,7 +584,7 @@ const ListPropertiesTable: React.FC<ListPropertiesTableProps> = ({ properties })
                   <Box sx={{ overflow: 'hidden', wordBreak: 'break-word' }}>
                     <Typography 
                       variant="h6" 
-                      color="#dc2626" 
+                      color="#f2c514" 
                       sx={{ fontWeight: 700, mb: 1, fontSize: { xs: '0.95rem', sm: '1.1rem' } }}
                     >
                       Size
@@ -596,7 +596,7 @@ const ListPropertiesTable: React.FC<ListPropertiesTableProps> = ({ properties })
                   <Box sx={{ overflow: 'hidden', wordBreak: 'break-word' }}>
                     <Typography 
                       variant="h6" 
-                      color="#dc2626" 
+                      color="#f2c514" 
                       sx={{ fontWeight: 700, mb: 1, fontSize: { xs: '0.95rem', sm: '1.1rem' } }}
                     >
                       Year Built
@@ -608,7 +608,7 @@ const ListPropertiesTable: React.FC<ListPropertiesTableProps> = ({ properties })
                   <Box sx={{ overflow: 'hidden', wordBreak: 'break-word' }}>
                     <Typography 
                       variant="h6" 
-                      color="#dc2626" 
+                      color="#f2c514" 
                       sx={{ fontWeight: 700, mb: 1, fontSize: { xs: '0.95rem', sm: '1.1rem' } }}
                     >
                       Sale Status
@@ -620,7 +620,7 @@ const ListPropertiesTable: React.FC<ListPropertiesTableProps> = ({ properties })
                   <Box sx={{ overflow: 'hidden', wordBreak: 'break-word' }}>
                     <Typography 
                       variant="h6" 
-                      color="#dc2626" 
+                      color="#f2c514" 
                       sx={{ fontWeight: 700, mb: 1, fontSize: { xs: '0.95rem', sm: '1.1rem' } }}
                     >
                       Country/Region
@@ -632,7 +632,7 @@ const ListPropertiesTable: React.FC<ListPropertiesTableProps> = ({ properties })
                   <Box sx={{ overflow: 'hidden', wordBreak: 'break-word' }}>
                     <Typography 
                       variant="h6" 
-                      color="#dc2626" 
+                      color="#f2c514" 
                       sx={{ fontWeight: 700, mb: 1, fontSize: { xs: '0.95rem', sm: '1.1rem' } }}
                     >
                       Max Eaves Height
@@ -644,7 +644,7 @@ const ListPropertiesTable: React.FC<ListPropertiesTableProps> = ({ properties })
                   <Box sx={{ overflow: 'hidden', wordBreak: 'break-word' }}>
                     <Typography 
                       variant="h6" 
-                      color="#dc2626" 
+                      color="#f2c514" 
                       sx={{ fontWeight: 700, mb: 1, fontSize: { xs: '0.95rem', sm: '1.1rem' } }}
                     >
                       Expansion Capacity
@@ -669,7 +669,7 @@ const ListPropertiesTable: React.FC<ListPropertiesTableProps> = ({ properties })
                 >
                   <Typography 
                     variant="h6" 
-                    color="#dc2626" 
+                    color="#f2c514" 
                     gutterBottom 
                     sx={{ fontWeight: 700, mb: 2, fontSize: { xs: '0.95rem', sm: '1.1rem' } }}
                   >
@@ -705,7 +705,7 @@ const ListPropertiesTable: React.FC<ListPropertiesTableProps> = ({ properties })
                 >
                   <Typography 
                     variant="h6" 
-                    color="#dc2626" 
+                    color="#f2c514" 
                     gutterBottom 
                     sx={{ fontWeight: 700, mb: 2, fontSize: { xs: '0.95rem', sm: '1.1rem' } }}
                   >

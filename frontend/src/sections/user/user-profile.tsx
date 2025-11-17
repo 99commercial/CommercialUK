@@ -51,7 +51,7 @@ const ProfileBanner = styled(Box)(({ theme }) => ({
   justifyContent: 'space-between',
   padding: theme.spacing(5),
   background: `
-    linear-gradient(135deg, #dc2626 0%, #b91c1c 50%, #991b1b 100%),
+    linear-gradient(135deg, #f2c514 0%, #d4a912 50%, #c9a010 100%),
     radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
     radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.08) 0%, transparent 50%),
     repeating-linear-gradient(
@@ -117,7 +117,7 @@ const InfoField = styled(Box)(({ theme }) => ({
   transition: 'all 0.3s ease',
   '&:hover': {
     background: '#f3f4f6',
-    borderColor: '#dc2626',
+    borderColor: '#f2c514',
     transform: 'translateY(-2px)',
     boxShadow: '0 4px 12px rgba(220, 38, 38, 0.1)',
   },
@@ -147,7 +147,7 @@ const FieldValue = styled(Typography)(({ theme }) => ({
 const SectionTitle = styled(Typography)(({ theme }) => ({
   fontSize: '1.5rem',
   fontWeight: 700,
-  color: '#dc2626',
+  color: '#f2c514',
   marginBottom: theme.spacing(3),
   fontFamily: '"Poppins", sans-serif',
   display: 'flex',
@@ -158,7 +158,7 @@ const SectionTitle = styled(Typography)(({ theme }) => ({
     content: '""',
     flex: 1,
     height: '2px',
-    background: 'linear-gradient(90deg, #dc2626, transparent)',
+    background: 'linear-gradient(90deg, #f2c514, transparent)',
     marginLeft: theme.spacing(2),
   },
 }));
@@ -282,7 +282,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData }) => {
               borderRadius: 12,
               background: 'linear-gradient(135deg, #fef3f2 0%, #fee2e2 100%)',
               border: '1px solid #fecaca',
-              borderLeft: '4px solid #dc2626',
+              borderLeft: '4px solid #f2c514',
             }}>
               <Typography 
                 sx={{ 
@@ -379,7 +379,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData }) => {
                       icon={<CheckCircleIcon sx={{ fontSize: 16 }} />}
                       label={userData.is_active ? 'Active' : 'Inactive'}
                       sx={{
-                        backgroundColor: userData.is_active ? '#10b981' : '#ef4444',
+                        backgroundColor: userData.is_active ? '#10b981' : '#f2c514',
                         color: 'white',
                         fontWeight: 600,
                         borderRadius: 2,
@@ -414,7 +414,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData }) => {
               borderColor: '#e5e7eb',
               borderWidth: 1,
               '&::before, &::after': {
-                borderColor: '#dc2626',
+                borderColor: '#f2c514',
                 opacity: 0.3,
               },
             }} 

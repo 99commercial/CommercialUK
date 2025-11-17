@@ -365,7 +365,8 @@ const PropertiesTable: React.FC = () => {
     if (property.property_status === 'Active') {
       router.push(`/agent/property/edit/${property._id}`);
     } else {
-      router.push(`/agent/property/complete/${property._id}`);
+      localStorage.setItem('newpropertyId', property._id);
+      router.push(`/agent/property/create-property`);
     }
   };
 

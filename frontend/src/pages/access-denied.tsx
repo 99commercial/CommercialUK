@@ -39,7 +39,7 @@ const StyledContainer = styled(Container)(({ theme }) => ({
 const ErrorCode = styled(Typography)(({ theme }) => ({
   fontSize: '8rem',
   fontWeight: 700,
-  color: '#ff0000',
+  color: '#f2c514',
   lineHeight: 1,
   marginBottom: theme.spacing(2),
   position: 'relative',
@@ -93,13 +93,13 @@ const IconContainer = styled(Box)(({ theme }) => ({
 
 const LockIcon = styled(Lock)(({ theme }) => ({
   fontSize: '4rem',
-  color: '#ff0000',
+  color: '#f2c514',
   animation: `${float} 3s ease-in-out infinite`,
 }));
 
 const SecurityIcon = styled(Security)(({ theme }) => ({
   fontSize: '2rem',
-  color: '#ff3333',
+  color: '#f2c514',
   marginLeft: theme.spacing(2),
   animation: `${rotate} 4s linear infinite`,
 }));
@@ -115,7 +115,7 @@ const FloatingElements = styled(Box)(({ theme }) => ({
     content: '""',
     position: 'absolute',
     borderRadius: '50%',
-    background: 'rgba(255, 0, 0, 0.05)',
+    background: 'rgba(242, 197, 20, 0.05)',
     animation: `${float} 6s ease-in-out infinite`,
   },
   '&::before': {
@@ -171,9 +171,9 @@ export default function AccessDenied() {
               <StyledButton
                 variant="contained"
                 sx={{
-                  backgroundColor: '#ff0000',
+                  backgroundColor: '#f2c514',
                   '&:hover': {
-                    backgroundColor: '#cc0000',
+                    backgroundColor: '#c9a010',
                   },
                 }}
                 startIcon={<Home />}
@@ -184,12 +184,12 @@ export default function AccessDenied() {
               <StyledButton
                 variant="outlined"
                 sx={{
-                  color: '#ff3333',
-                  borderColor: '#ff3333',
+                  color: '#f2c514',
+                  borderColor: '#f2c514',
                   '&:hover': {
-                    borderColor: '#ff0000',
-                    color: '#ff0000',
-                    backgroundColor: 'rgba(255, 51, 51, 0.1)',
+                    borderColor: '#f2c514',
+                    color: '#f2c514',
+                    backgroundColor: 'rgba(242, 197, 20, 0.1)',
                   },
                 }}
                 startIcon={<ArrowBack />}

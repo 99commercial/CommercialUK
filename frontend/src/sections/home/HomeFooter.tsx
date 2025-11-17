@@ -138,16 +138,11 @@ export default function HomeFooter() {
         <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 4 }}>
           <Box sx={{ flex: "1 1 300px", minWidth: "300px" }}>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              <Typography
-                variant="h5"
-                sx={{
-                  fontWeight: 700,
-                  color: '#d32f2f',
-                  mr: 1,
-                }}
-              >
-                CommercialUK
-              </Typography>
+              <img
+                src="/images/CommercialUKWhite2.png"
+                alt="CommercialUK"
+                style={{ width: 200, objectFit: 'contain' }}
+              />
             </Box>
           </Box>
 

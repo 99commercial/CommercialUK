@@ -57,29 +57,86 @@ interface PropertyDetailsFormProps {
   onStepSubmitted?: (step: number) => void;
   initialData?: any;
   onDataChange?: (data: any) => void;
+  propertyData?: any;
+  hasExistingData?: boolean;
+  fetchPropertyData?: () => void;
 }
 
-const PropertyDetailsForm: React.FC<PropertyDetailsFormProps> = ({ onStepSubmitted, initialData, onDataChange }) => {
+const PropertyDetailsForm: React.FC<PropertyDetailsFormProps> = ({ 
+  onStepSubmitted, 
+  initialData, 
+  onDataChange, 
+  propertyData,
+  hasExistingData = false,
+  fetchPropertyData
+}) => {
   const { register, watch, setValue, formState: { errors } } = useFormContext();
   const [isSaving, setIsSaving] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [originalData, setOriginalData] = useState<any>(null);
+  const lastPropertyIdRef = React.useRef<string | null>(null);
+  const hasInitializedRef = React.useRef<boolean>(false);
 
+  // Debug: Track fieldErrors changes
+  useEffect(() => {
+    console.log('fieldErrors state changed:', fieldErrors);
+    console.log('fieldErrors keys:', Object.keys(fieldErrors));
+    Object.keys(fieldErrors).forEach(key => {
+      console.log(`  ${key}: "${fieldErrors[key]}"`);
+    });
+  }, [fieldErrors]);
+
+  // Watch specific nested fields to ensure changes are detected
+  const epcRating = watch('epc.rating');
+  const epcScore = watch('epc.score');
+  const epcCertificateNumber = watch('epc.certificate_number');
+  const epcExpiryDate = watch('epc.expiry_date');
+  const councilTaxBand = watch('council_tax.band');
+  const councilTaxAuthority = watch('council_tax.authority');
+  const rateableValue = watch('rateable_value');
+  const planningStatus = watch('planning.status');
+  const planningApplicationNumber = watch('planning.application_number');
+  const planningDecisionDate = watch('planning.decision_date');
+  
   const watchedValues = watch();
 
-  // Handle initial data
+  // Initialize form data from propertyData or initialData
   useEffect(() => {
-    if (initialData) {
+    const currentPropertyId = propertyData?._id || null;
+    
+    // Priority: propertyData > initialData
+    const dataToUse = initialData || (propertyData ? {
+      epc: propertyData.epc || {},
+      council_tax: propertyData.council_tax || {},
+      rateable_value: propertyData.rateable_value || 0,
+      planning: propertyData.planning || {},
+    } : null);
+    
+    // Only update if:
+    // 1. We have data to use AND
+    // 2. (We haven't initialized yet OR the property ID has changed to a different property)
+    const shouldInitialize = dataToUse && (
+      !hasInitializedRef.current || 
+      (currentPropertyId !== null && lastPropertyIdRef.current !== currentPropertyId)
+    );
+    
+    if (shouldInitialize) {
       // Set form values using setValue from react-hook-form
-      Object.keys(initialData).forEach(key => {
-        if (initialData[key] !== undefined) {
-          setValue(key, initialData[key]);
+      Object.keys(dataToUse).forEach(key => {
+        if (dataToUse[key] !== undefined) {
+          setValue(key, dataToUse[key]);
         }
       });
+      
+      // Store original data for comparison
+      setOriginalData({ ...dataToUse });
+      lastPropertyIdRef.current = currentPropertyId;
+      hasInitializedRef.current = true;
     }
-  }, [initialData, setValue]);
+  }, [initialData, propertyData?._id, setValue]);
 
   // Stable callback for data changes
   const handleDataChange = useCallback((data: any) => {
@@ -106,16 +163,131 @@ const PropertyDetailsForm: React.FC<PropertyDetailsFormProps> = ({ onStepSubmitt
     }
     
     // Then check backend field errors
-    return fieldErrors[fieldPath] || '';
+    const backendError = fieldErrors[fieldPath];
+    return backendError || '';
   };
 
-  // Get property ID from localStorage (stored from previous response)
+  // Get property ID from localStorage or propertyData
   const getPropertyId = () => {
+    if (propertyData?._id) {
+      return propertyData._id;
+    }
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('propertyId');
+      return localStorage.getItem('newpropertyId') || localStorage.getItem('propertyId');
     }
     return null;
   };
+
+  // Helper function to normalize values for comparison
+  const normalizeValue = (value: any): any => {
+    if (value === null || value === undefined || value === '') {
+      return '';
+    }
+    if (typeof value === 'string') {
+      const trimmed = value.trim();
+      if (trimmed === '') return '';
+      const num = Number(trimmed);
+      if (!isNaN(num) && trimmed !== '') {
+        return num;
+      }
+      return trimmed;
+    }
+    if (typeof value === 'number') {
+      return value;
+    }
+    return value;
+  };
+
+  // Check if form data has changed from original
+  const hasChanges = React.useMemo(() => {
+    if (!hasExistingData || !propertyData || !originalData) {
+      return false;
+    }
+
+    // Compare EPC fields individually
+    const currentEpc = {
+      rating: epcRating || '',
+      score: epcScore || 0,
+      certificate_number: epcCertificateNumber || '',
+      expiry_date: epcExpiryDate || '',
+    };
+    const originalEpc = {
+      rating: propertyData.epc?.rating || '',
+      score: propertyData.epc?.score || 0,
+      certificate_number: propertyData.epc?.certificate_number || '',
+      expiry_date: propertyData.epc?.expiry_date || '',
+    };
+    const epcChanged = 
+      normalizeValue(currentEpc.rating) !== normalizeValue(originalEpc.rating) ||
+      normalizeValue(currentEpc.score) !== normalizeValue(originalEpc.score) ||
+      normalizeValue(currentEpc.certificate_number) !== normalizeValue(originalEpc.certificate_number) ||
+      normalizeValue(currentEpc.expiry_date) !== normalizeValue(originalEpc.expiry_date);
+
+    // Compare Council Tax fields individually
+    const currentCouncilTax = {
+      band: councilTaxBand || '',
+      authority: councilTaxAuthority || '',
+    };
+    const originalCouncilTax = {
+      band: propertyData.council_tax?.band || '',
+      authority: propertyData.council_tax?.authority || '',
+    };
+    const councilTaxChanged = 
+      normalizeValue(currentCouncilTax.band) !== normalizeValue(originalCouncilTax.band) ||
+      normalizeValue(currentCouncilTax.authority) !== normalizeValue(originalCouncilTax.authority);
+
+    // Compare rateable value
+    const currentRateableValue = normalizeValue(rateableValue);
+    const originalRateableValue = normalizeValue(propertyData.rateable_value);
+    const rateableValueChanged = currentRateableValue !== originalRateableValue;
+
+    // Compare Planning fields individually
+    const currentPlanning = {
+      status: planningStatus || '',
+      application_number: planningApplicationNumber || '',
+      decision_date: planningDecisionDate || '',
+    };
+    const originalPlanning = {
+      status: propertyData.planning?.status || '',
+      application_number: propertyData.planning?.application_number || '',
+      decision_date: propertyData.planning?.decision_date || '',
+    };
+    const planningChanged = 
+      normalizeValue(currentPlanning.status) !== normalizeValue(originalPlanning.status) ||
+      normalizeValue(currentPlanning.application_number) !== normalizeValue(originalPlanning.application_number) ||
+      normalizeValue(currentPlanning.decision_date) !== normalizeValue(originalPlanning.decision_date);
+
+    return epcChanged || councilTaxChanged || rateableValueChanged || planningChanged;
+  }, [
+    epcRating,
+    epcScore,
+    epcCertificateNumber,
+    epcExpiryDate,
+    councilTaxBand,
+    councilTaxAuthority,
+    rateableValue,
+    planningStatus,
+    planningApplicationNumber,
+    planningDecisionDate,
+    propertyData?.epc?.rating,
+    propertyData?.epc?.score,
+    propertyData?.epc?.certificate_number,
+    propertyData?.epc?.expiry_date,
+    propertyData?.council_tax?.band,
+    propertyData?.council_tax?.authority,
+    propertyData?.rateable_value,
+    propertyData?.planning?.status,
+    propertyData?.planning?.application_number,
+    propertyData?.planning?.decision_date,
+    hasExistingData,
+    originalData
+  ]);
+
+  // Check if all required fields exist in propertyData
+  const hasAllPropertyDetails = React.useMemo(() => {
+    if (!propertyData) return false;
+    return !!(propertyData.epc && propertyData.council_tax && propertyData.rateable_value !== undefined && propertyData.planning);
+  }, [propertyData]);
 
   // Clear field error when user starts typing
   const clearFieldError = (fieldPath: string) => {
@@ -150,14 +322,26 @@ const PropertyDetailsForm: React.FC<PropertyDetailsFormProps> = ({ onStepSubmitt
       };
 
       let response = await axiosInstance.put(`/api/agent/properties/${propertyId}/property-details`, formData);
-      
-      console.log(response.data.data._id);
+
+      console.log(response.data , 'shardul is smart');
       
       enqueueSnackbar(response.data.message, { variant: 'success' });
       
       setSaveSuccess(true);
       setIsSubmitted(true);
+      
+      // Update original data after successful save
+      setOriginalData({
+        epc: watchedValues.epc,
+        council_tax: watchedValues.council_tax,
+        rateable_value: watchedValues.rateable_value,
+        planning: watchedValues.planning,
+      });
+      
       setTimeout(() => setSaveSuccess(false), 3000); // Hide success message after 3 seconds
+
+
+      fetchPropertyData?.();
       
       // Notify parent component that step 2 has been successfully submitted
       if (onStepSubmitted) {
@@ -167,34 +351,106 @@ const PropertyDetailsForm: React.FC<PropertyDetailsFormProps> = ({ onStepSubmitt
       console.error('Error saving property details:', error);
       
       // Handle field-specific validation errors
-      if (error.errors && Array.isArray(error.errors)) {
+      const errorData = error.errors;
+      
+      if (errorData && Array.isArray(errorData) && errorData.length > 0) {
         const fieldErrorMap: Record<string, string> = {};
-        
-        console.log('Processing validation errors:', error.errors);
-        
-        error.errors.forEach((err: any) => {
-          console.log('Processing error:', err);
-          if (err.path) {
-            // Convert backend path format to frontend format
-            // Backend: "epc.rating" -> Frontend: "epc.rating"
-            // Backend: "council_tax[0].band" -> Frontend: "council_tax.0.band"
-            let fieldPath = err.path.replace(/\[(\d+)\]/g, '.$1');
-            
-            console.log('Field path mapped:', fieldPath, 'from path:', err.path);
+        errorData.forEach((err: any, index: number) => {
+
+          if (err.path && err.msg) {
+            let fieldPath = String(err.path).replace(/\[(\d+)\]/g, '.$1');
             fieldErrorMap[fieldPath] = err.msg;
           }
         });
         
-        console.log('Field error map created:', fieldErrorMap);
+        // Set field errors - this will trigger re-render
         setFieldErrors(fieldErrorMap);
         
         // Show general error message
-        const errorMessage = error.message || 'Please fix the validation errors below.';
+        const errorMessage = 'Please fix the validation errors below.';
         setSaveError(errorMessage);
         enqueueSnackbar(errorMessage, { variant: 'error' });
       } else {
+        console.log('No errors array or empty array');
         // Handle general errors
-        const errorMessage = error.message || 'Failed to save property details. Please try again.';
+        const errorMessage = errorData?.message || error.message || 'Failed to save property details. Please try again.';
+        setSaveError(errorMessage);
+        enqueueSnackbar(errorMessage, { variant: 'error' });
+        setFieldErrors({});
+      }
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleFormUpdate = async () => {
+    const propertyId = getPropertyId();
+    
+    if (!propertyId) {
+      setSaveError('Property ID not found. Please complete the previous steps first.');
+      return;
+    }
+
+    setIsSaving(true);
+    setSaveError(null);
+    setSaveSuccess(false);
+    setFieldErrors({});
+
+    try {
+      const formData = {
+        epc: watchedValues.epc,
+        council_tax: watchedValues.council_tax,
+        rateable_value: watchedValues.rateable_value,
+        planning: watchedValues.planning,
+      };
+
+      // Use PATCH endpoint for updating property details
+      const response = await axiosInstance.patch(
+        `/api/agent/properties/${propertyId}/general-details`,
+        formData
+      );
+      
+      enqueueSnackbar(response.data.message || 'Property details updated successfully!', { variant: 'success' });
+      
+      // Update original data after successful update
+      setOriginalData({
+        epc: watchedValues.epc,
+        council_tax: watchedValues.council_tax,
+        rateable_value: watchedValues.rateable_value,
+        planning: watchedValues.planning,
+      });
+      
+      setSaveSuccess(true);
+      setIsSubmitted(false); // Allow multiple updates
+      
+      // Refresh property data if callback is provided
+      if (fetchPropertyData) {
+        fetchPropertyData();
+      }
+      
+      setTimeout(() => setSaveSuccess(false), 3000);
+      
+    } catch (error: any) {
+      console.error('Error updating property details:', error);
+      
+      // Handle field-specific validation errors
+      if (error.response?.data?.errors && Array.isArray(error.response.data.errors)) {
+        const fieldErrorMap: Record<string, string> = {};
+        
+        error.response.data.errors.forEach((err: any) => {
+          if (err.path) {
+            let fieldPath = err.path.replace(/\[(\d+)\]/g, '.$1');
+            fieldErrorMap[fieldPath] = err.msg;
+          }
+        });
+        
+        setFieldErrors(fieldErrorMap);
+        
+        const errorMessage = error.response?.data?.message || error.message || 'Please fix the validation errors below.';
+        setSaveError(errorMessage);
+        enqueueSnackbar(errorMessage, { variant: 'error' });
+      } else {
+        const errorMessage = error.response?.data?.message || error.message || 'Failed to update property details. Please try again.';
         setSaveError(errorMessage);
         enqueueSnackbar(errorMessage, { variant: 'error' });
       }
@@ -250,56 +506,66 @@ const PropertyDetailsForm: React.FC<PropertyDetailsFormProps> = ({ onStepSubmitt
                     </FormControl>
                   </Box>
 
-                  <Box sx={{ flex: '1 1 200px', minWidth: '200px' }}>
-                    <TextField
-                      {...register('epc.score', { valueAsNumber: true })}
-                      label="EPC Score"
-                      type="number"
-                      fullWidth
-                      error={!!getFieldError('epc.score')}
-                      helperText={getFieldError('epc.score')}
-                      placeholder="0-100"
-                      inputProps={{ min: 0, max: 100 }}
-                      onChange={(e) => {
-                        register('epc.score', { valueAsNumber: true }).onChange(e);
-                        clearFieldError('epc.score');
-                      }}
-                    />
-                  </Box>
+                  {watchedValues.epc?.rating && 
+                   watchedValues.epc?.rating !== 'Exempt' && 
+                   watchedValues.epc?.rating !== 'Not Required' && (
+                    <>
+                      <Box sx={{ flex: '1 1 200px', minWidth: '200px' }}>
+                        <TextField
+                          {...register('epc.score', { valueAsNumber: true })}
+                          label="EPC Score"
+                          type="number"
+                          fullWidth
+                          error={!!getFieldError('epc.score')}
+                          helperText={getFieldError('epc.score')}
+                          placeholder="0-100"
+                          inputProps={{ min: 0, max: 100 }}
+                          onChange={(e) => {
+                            register('epc.score', { valueAsNumber: true }).onChange(e);
+                            clearFieldError('epc.score');
+                          }}
+                        />
+                      </Box>
 
-                  <Box sx={{ flex: '1 1 200px', minWidth: '200px' }}>
-                    <TextField
-                      {...register('epc.certificate_number')}
-                      label="Certificate Number"
-                      fullWidth
-                      error={!!getFieldError('epc.certificate_number')}
-                      helperText={getFieldError('epc.certificate_number')}
-                      placeholder="Enter certificate number"
-                      onChange={(e) => {
-                        register('epc.certificate_number').onChange(e);
-                        clearFieldError('epc.certificate_number');
-                      }}
-                    />
-                  </Box>
+                      <Box sx={{ flex: '1 1 200px', minWidth: '200px' }}>
+                        <TextField
+                          {...register('epc.certificate_number')}
+                          label="Certificate Number"
+                          fullWidth
+                          error={!!getFieldError('epc.certificate_number')}
+                          helperText={getFieldError('epc.certificate_number')}
+                          placeholder="Enter certificate number"
+                          onChange={(e) => {
+                            register('epc.certificate_number').onChange(e);
+                            clearFieldError('epc.certificate_number');
+                          }}
+                        />
+                      </Box>
+                    </>
+                  )}
                 </Box>
 
-                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                  <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
-                    <TextField
-                      {...register('epc.expiry_date')}
-                      label="Expiry Date"
-                      type="date"
-                      fullWidth
-                      InputLabelProps={{ shrink: true }}
-                      error={!!getFieldError('epc.expiry_date')}
-                      helperText={getFieldError('epc.expiry_date')}
-                      onChange={(e) => {
-                        register('epc.expiry_date').onChange(e);
-                        clearFieldError('epc.expiry_date');
-                      }}
-                    />
+                {watchedValues.epc?.rating && 
+                 watchedValues.epc?.rating !== 'Exempt' && 
+                 watchedValues.epc?.rating !== 'Not Required' && (
+                  <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                    <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
+                      <TextField
+                        {...register('epc.expiry_date')}
+                        label="Expiry Date"
+                        type="date"
+                        fullWidth
+                        InputLabelProps={{ shrink: true }}
+                        error={!!getFieldError('epc.expiry_date')}
+                        helperText={getFieldError('epc.expiry_date')}
+                        onChange={(e) => {
+                          register('epc.expiry_date').onChange(e);
+                          clearFieldError('epc.expiry_date');
+                        }}
+                      />
+                    </Box>
                   </Box>
-                </Box>
+                )}
               </Box>
             </CardContent>
           </Card>
@@ -341,20 +607,24 @@ const PropertyDetailsForm: React.FC<PropertyDetailsFormProps> = ({ onStepSubmitt
                   </FormControl>
                 </Box>
 
-                <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
-                  <TextField
-                    {...register('council_tax.authority')}
-                    label="Council Authority"
-                    fullWidth
-                    error={!!getFieldError('council_tax.authority')}
-                    helperText={getFieldError('council_tax.authority')}
-                    placeholder="Enter council authority name"
-                    onChange={(e) => {
-                      register('council_tax.authority').onChange(e);
-                      clearFieldError('council_tax.authority');
-                    }}
-                  />
-                </Box>
+                {watchedValues.council_tax?.band && 
+                 watchedValues.council_tax?.band !== 'Exempt' && 
+                 watchedValues.council_tax?.band !== 'Not Applicable' && (
+                  <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
+                    <TextField
+                      {...register('council_tax.authority')}
+                      label="Council Authority"
+                      fullWidth
+                      error={!!getFieldError('council_tax.authority')}
+                      helperText={getFieldError('council_tax.authority')}
+                      placeholder="Enter council authority name"
+                      onChange={(e) => {
+                        register('council_tax.authority').onChange(e);
+                        clearFieldError('council_tax.authority');
+                      }}
+                    />
+                  </Box>
+                )}
               </Box>
             </CardContent>
           </Card>
@@ -431,36 +701,41 @@ const PropertyDetailsForm: React.FC<PropertyDetailsFormProps> = ({ onStepSubmitt
                   </FormControl>
                 </Box>
 
-                <Box sx={{ flex: '1 1 200px', minWidth: '200px' }}>
-                  <TextField
-                    {...register('planning.application_number')}
-                    label="Application Number"
-                    fullWidth
-                    error={!!getFieldError('planning.application_number')}
-                    helperText={getFieldError('planning.application_number')}
-                    placeholder="Enter planning application number"
-                    onChange={(e) => {
-                      register('planning.application_number').onChange(e);
-                      clearFieldError('planning.application_number');
-                    }}
-                  />
-                </Box>
+                {watchedValues.planning?.status && 
+                 watchedValues.planning?.status !== 'Unknown' && (
+                  <>
+                    <Box sx={{ flex: '1 1 200px', minWidth: '200px' }}>
+                      <TextField
+                        {...register('planning.application_number')}
+                        label="Application Number"
+                        fullWidth
+                        error={!!getFieldError('planning.application_number')}
+                        helperText={getFieldError('planning.application_number')}
+                        placeholder="Enter planning application number"
+                        onChange={(e) => {
+                          register('planning.application_number').onChange(e);
+                          clearFieldError('planning.application_number');
+                        }}
+                      />
+                    </Box>
 
-                <Box sx={{ flex: '1 1 200px', minWidth: '200px' }}>
-                  <TextField
-                    {...register('planning.decision_date')}
-                    label="Decision Date"
-                    type="date"
-                    fullWidth
-                    InputLabelProps={{ shrink: true }}
-                    error={!!getFieldError('planning.decision_date')}
-                    helperText={getFieldError('planning.decision_date')}
-                    onChange={(e) => {
-                      register('planning.decision_date').onChange(e);
-                      clearFieldError('planning.decision_date');
-                    }}
-                  />
-                </Box>
+                    <Box sx={{ flex: '1 1 200px', minWidth: '200px' }}>
+                      <TextField
+                        {...register('planning.decision_date')}
+                        label="Decision Date"
+                        type="date"
+                        fullWidth
+                        InputLabelProps={{ shrink: true }}
+                        error={!!getFieldError('planning.decision_date')}
+                        helperText={getFieldError('planning.decision_date')}
+                        onChange={(e) => {
+                          register('planning.decision_date').onChange(e);
+                          clearFieldError('planning.decision_date');
+                        }}
+                      />
+                    </Box>
+                  </>
+                )}
               </Box>
             </CardContent>
           </Card>
@@ -483,23 +758,47 @@ const PropertyDetailsForm: React.FC<PropertyDetailsFormProps> = ({ onStepSubmitt
           </Alert>
         )}
 
-        {/* Save Button */}
+        {/* Save/Update Buttons */}
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button
-            variant="contained"
-            startIcon={isSaving ? <CircularProgress size={20} /> : <Save />}
-            onClick={handleSave}
-            disabled={isSaving || isSubmitted}
-            sx={{ 
-              minWidth: 200,
-              backgroundColor: '#dc2626',
-              '&:hover': {
-                backgroundColor: '#b91c1c',
-              },
-            }}
-          >
-            {isSaving ? 'Saving...' : isSubmitted ? 'Property Details Saved' : 'Save Property Details'}
-          </Button>
+          {hasExistingData && hasAllPropertyDetails ? (
+            // Update Button - shown when propertyData exists and all details are present
+            <Button
+              variant="contained"
+              startIcon={isSaving ? <CircularProgress size={20} /> : <Save />}
+              onClick={handleFormUpdate}
+              disabled={isSaving || !hasChanges}
+              sx={{ 
+                minWidth: 200,
+                backgroundColor: '#f2c514',
+                '&:hover': {
+                  backgroundColor: '#d4a912',
+                },
+                '&:disabled': {
+                  backgroundColor: '#e0e0e0',
+                  color: '#9e9e9e',
+                },
+              }}
+            >
+              {isSaving ? 'Updating...' : !hasChanges ? 'No Changes Made' : 'Update Property Details'}
+            </Button>
+          ) : (
+            // Save Button - shown when creating new property details
+            <Button
+              variant="contained"
+              startIcon={isSaving ? <CircularProgress size={20} /> : <Save />}
+              onClick={handleSave}
+              disabled={isSaving || isSubmitted}
+              sx={{ 
+                minWidth: 200,
+                backgroundColor: '#f2c514',
+                '&:hover': {
+                  backgroundColor: '#d4a912',
+                },
+              }}
+            >
+              {isSaving ? 'Saving...' : isSubmitted ? 'Property Details Saved' : 'Save Property Details'}
+            </Button>
+          )}
         </Box>
       </Box>
     </Box>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import {
   Box,
   TextField,
@@ -50,9 +50,12 @@ interface PropertyFeaturesFormData {
 
 interface PropertyFeaturesFormProps {
   onStepSubmitted?: (step: number) => void;
+  propertyData: any;
+  hasExistingData: boolean;
+  fetchPropertyData: () => void;
 }
 
-const PropertyFeaturesForm: React.FC<PropertyFeaturesFormProps> = ({ onStepSubmitted }) => {
+const PropertyFeaturesForm: React.FC<PropertyFeaturesFormProps> = ({ onStepSubmitted, propertyData, hasExistingData, fetchPropertyData }) => {
   const {
     formState: { errors },
   } = useFormContext<PropertyFeaturesFormData>();
@@ -67,6 +70,54 @@ const PropertyFeaturesForm: React.FC<PropertyFeaturesFormProps> = ({ onStepSubmi
     additional_features: [],
     feature_notes: '',
   });
+  const [originalData, setOriginalData] = useState<PropertyFeaturesFormData | null>(null);
+  const lastPropertyIdRef = useRef<string | null>(null);
+  const hasInitializedRef = useRef<boolean>(false);
+
+  // Initialize form data from propertyData.features_id
+  useEffect(() => {
+    const currentPropertyId = propertyData?._id || null;
+    
+    if (propertyData?.features_id?._id) {
+      const shouldInitialize = !hasInitializedRef.current || 
+        (currentPropertyId !== null && lastPropertyIdRef.current !== currentPropertyId);
+      
+      if (shouldInitialize) {
+        const featuresData = propertyData.features_id;
+        
+        // Initialize main features
+        const features: { [key: string]: string } = {};
+        if (featuresData.features) {
+          mainFeatures.forEach(feature => {
+            features[feature.key] = featuresData.features[feature.key] || '';
+          });
+        }
+        
+        // Initialize additional features (remove _id and other metadata)
+        const additional_features = (featuresData.additional_features || []).map((af: any) => ({
+          feature_name: af.feature_name || '',
+          feature_value: af.feature_value || 'Unknown',
+          description: af.description || '',
+        }));
+        
+        const initializedData: PropertyFeaturesFormData = {
+          features,
+          additional_features,
+          feature_notes: featuresData.feature_notes || '',
+        };
+        
+        setFormData(initializedData);
+        setOriginalData({ ...initializedData });
+        lastPropertyIdRef.current = currentPropertyId;
+        hasInitializedRef.current = true;
+      }
+    } else if (hasInitializedRef.current && currentPropertyId !== lastPropertyIdRef.current) {
+      // If property changed and new property has no features_id, reset
+      setFormData({ features: {}, additional_features: [], feature_notes: '' });
+      setOriginalData({ features: {}, additional_features: [], feature_notes: '' });
+      lastPropertyIdRef.current = currentPropertyId;
+    }
+  }, [propertyData?.features_id?._id, propertyData?._id]);
 
   // Type-safe error access - checks both react-hook-form errors and backend field errors
   const getFieldError = (fieldPath: string) => {
@@ -80,13 +131,86 @@ const PropertyFeaturesForm: React.FC<PropertyFeaturesFormProps> = ({ onStepSubmi
     return fieldErrors[fieldPath] || '';
   };
 
-  // Get property ID from localStorage (stored from previous response)
+  // Get property ID from localStorage or propertyData
   const getPropertyId = () => {
+    if (propertyData?._id) {
+      return propertyData._id;
+    }
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('propertyId');
+      return localStorage.getItem('newpropertyId') || localStorage.getItem('propertyId');
     }
     return null;
   };
+
+  // Helper function to normalize values for comparison
+  const normalizeValue = (value: any): any => {
+    if (value === null || value === undefined || value === '') {
+      return '';
+    }
+    if (typeof value === 'string') {
+      return value.trim();
+    }
+    return value;
+  };
+
+  // Check if form data has changed from original
+  const hasChanges = useMemo(() => {
+    if (!hasExistingData || !propertyData?.features_id?._id || !originalData) {
+      return false;
+    }
+
+    // Compare features object
+    const currentFeatures = formData.features || {};
+    const originalFeatures = originalData.features || {};
+    
+    for (const featureKey of mainFeatures.map(f => f.key)) {
+      const currentValue = normalizeValue(currentFeatures[featureKey]);
+      const originalValue = normalizeValue(originalFeatures[featureKey]);
+      if (currentValue !== originalValue) {
+        return true;
+      }
+    }
+
+    // Compare additional_features
+    const currentAdditional = formData.additional_features || [];
+    const originalAdditional = originalData.additional_features || [];
+    
+    if (currentAdditional.length !== originalAdditional.length) {
+      return true;
+    }
+
+    for (let i = 0; i < currentAdditional.length; i++) {
+      const current = currentAdditional[i];
+      const original = originalAdditional[i];
+      
+      if (
+        normalizeValue(current.feature_name) !== normalizeValue(original.feature_name) ||
+        normalizeValue(current.feature_value) !== normalizeValue(original.feature_value) ||
+        normalizeValue(current.description) !== normalizeValue(original.description)
+      ) {
+        return true;
+      }
+    }
+
+    // Compare feature_notes
+    if (normalizeValue(formData.feature_notes) !== normalizeValue(originalData.feature_notes)) {
+      return true;
+    }
+
+    return false;
+  }, [
+    formData.features,
+    formData.additional_features,
+    formData.feature_notes,
+    propertyData?.features_id?._id,
+    hasExistingData,
+    originalData
+  ]);
+
+  // Check if features data exists
+  const hasFeaturesData = useMemo(() => {
+    return !!(propertyData?.features_id?._id);
+  }, [propertyData?.features_id?._id]);
 
   // Clear field error when user starts typing
   const clearFieldError = (fieldPath: string) => {
@@ -155,52 +279,107 @@ const PropertyFeaturesForm: React.FC<PropertyFeaturesFormProps> = ({ onStepSubmi
     try {
       let response = await axiosInstance.put(`/api/agent/properties/${propertyId}/features`, formData);
       
-      console.log(response.data.data._id);
-      
       localStorage.setItem('propertyId', response.data.data._id);
       
       enqueueSnackbar(response.data.message, { variant: 'success' });
       
       setSaveSuccess(true);
       setIsSubmitted(true);
+      
+      // Update original data after successful save
+      setOriginalData({ ...formData });
+      
       setTimeout(() => setSaveSuccess(false), 3000); // Hide success message after 3 seconds
+
+      fetchPropertyData?.();
       
       // Notify parent component that step 5 has been successfully submitted
       if (onStepSubmitted) {
         onStepSubmitted(5);
       }
     } catch (error: any) {
-      console.error('Error saving property features:', error);
-      
       // Handle field-specific validation errors
-      if (error.errors && Array.isArray(error.errors)) {
+      if (error.errors && Array.isArray(error.errors) && error.errors.length > 0) {
         const fieldErrorMap: Record<string, string> = {};
         
-        console.log('Processing validation errors:', error.errors);
-        
         error.errors.forEach((err: any) => {
-          console.log('Processing error:', err);
           if (err.path) {
-            // Convert backend path format to frontend format
-            // Backend: "features.air_conditioning" -> Frontend: "features.air_conditioning"
-            // Backend: "additional_features[0].feature_name" -> Frontend: "additional_features.0.feature_name"
             let fieldPath = err.path.replace(/\[(\d+)\]/g, '.$1');
-            
-            console.log('Field path mapped:', fieldPath, 'from path:', err.path);
             fieldErrorMap[fieldPath] = err.msg;
           }
         });
         
-        console.log('Field error map created:', fieldErrorMap);
         setFieldErrors(fieldErrorMap);
         
-        // Show general error message
-        const errorMessage = error.message || 'Please fix the validation errors below.';
+        const errorMessage = 'Please fix the validation errors below.';
         setSaveError(errorMessage);
         enqueueSnackbar(errorMessage, { variant: 'error' });
       } else {
-        // Handle general errors
-        const errorMessage = error.message || 'Failed to save property features. Please try again.';
+        const errorMessage = 'Failed to save property features. Please try again.';
+        setSaveError(errorMessage);
+        enqueueSnackbar(errorMessage, { variant: 'error' });
+      }
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleUpdateFeatures = async () => {
+    const featuresId = propertyData?.features_id?._id;
+    
+    if (!featuresId) {
+      setSaveError('Features ID not found. Please save features first.');
+      return;
+    }
+
+    setIsSaving(true);
+    setSaveError(null);
+    setSaveSuccess(false);
+    setFieldErrors({});
+
+    try {
+      const response = await axiosInstance.patch(
+        `/api/agent/property-features/${featuresId}`,
+        formData
+      );
+      
+      if (response.data.success) {
+        enqueueSnackbar(response.data.message || 'Property features updated successfully!', { variant: 'success' });
+        
+        // Update original data after successful update
+        setOriginalData({ ...formData });
+        
+        setSaveSuccess(true);
+        setIsSubmitted(false); // Allow multiple updates
+        
+        // Refresh property data if callback is provided
+
+          fetchPropertyData();
+        
+        setTimeout(() => setSaveSuccess(false), 3000);
+      } else {
+        throw new Error(response.data.message || 'Failed to update property features');
+      }
+      
+    } catch (error: any) {
+      // Handle field-specific validation errors
+      if (error.errors && Array.isArray(error.errors) && error.errors.length > 0) {
+        const fieldErrorMap: Record<string, string> = {};
+        
+        error.errors.forEach((err: any) => {
+          if (err.path) {
+            let fieldPath = err.path.replace(/\[(\d+)\]/g, '.$1');
+            fieldErrorMap[fieldPath] = err.msg;
+          }
+        });
+        
+        setFieldErrors(fieldErrorMap);
+        
+        const errorMessage = 'Please fix the validation errors below.';
+        setSaveError(errorMessage);
+        enqueueSnackbar(errorMessage, { variant: 'error' });
+      } else {
+        const errorMessage = 'Failed to update property features. Please try again.';
         setSaveError(errorMessage);
         enqueueSnackbar(errorMessage, { variant: 'error' });
       }
@@ -524,23 +703,41 @@ const PropertyFeaturesForm: React.FC<PropertyFeaturesFormProps> = ({ onStepSubmi
           </Alert>
         )}
 
-        {/* Save Button */}
+        {/* Save/Update Button */}
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button
-            variant="contained"
-            startIcon={isSaving ? <CircularProgress size={20} /> : <Save />}
-            onClick={handleSave}
-            disabled={isSaving || isSubmitted}
-            sx={{ 
-              minWidth: 200,
-              backgroundColor: '#dc2626',
-              '&:hover': {
-                backgroundColor: '#b91c1c',
-              },
-            }}
-          >
-            {isSaving ? 'Saving...' : isSubmitted ? 'Property Features Saved' : 'Save Property Features'}
-          </Button>
+          {hasExistingData && hasFeaturesData ? (
+            <Button
+              variant="contained"
+              startIcon={isSaving ? <CircularProgress size={20} /> : <Save />}
+              onClick={handleUpdateFeatures}
+              disabled={isSaving || !hasChanges}
+              sx={{ 
+                minWidth: 200,
+                backgroundColor: hasChanges ? '#ea580c' : '#9ca3af',
+                '&:hover': {
+                  backgroundColor: hasChanges ? '#c2410c' : '#9ca3af',
+                },
+              }}
+            >
+              {isSaving ? 'Updating...' : hasChanges ? 'Update Property Features' : 'No Changes Made'}
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              startIcon={isSaving ? <CircularProgress size={20} /> : <Save />}
+              onClick={handleSave}
+              disabled={isSaving || isSubmitted}
+              sx={{ 
+                minWidth: 200,
+                backgroundColor: '#f2c514',
+                '&:hover': {
+                  backgroundColor: '#d4a912',
+                },
+              }}
+            >
+              {isSaving ? 'Saving...' : isSubmitted ? 'Property Features Saved' : 'Save Property Features'}
+            </Button>
+          )}
         </Box>
       </Box>
     </Box>

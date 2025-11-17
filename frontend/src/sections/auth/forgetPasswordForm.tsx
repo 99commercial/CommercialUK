@@ -150,10 +150,10 @@ export default function ForgetPasswordForm({ onSendResetEmail }: ForgetPasswordF
               startIcon={<ArrowBack />}
               onClick={() => router.push('/auth/login')}
               sx={{
-                color: '#dc2626',
-                borderColor: '#dc2626',
+                color: '#f2c514',
+                borderColor: '#f2c514',
                 '&:hover': {
-                  borderColor: '#991b1b',
+                  borderColor: '#c9a010',
                   backgroundColor: 'rgba(220, 38, 38, 0.1)',
                 },
               }}
@@ -193,7 +193,7 @@ export default function ForgetPasswordForm({ onSendResetEmail }: ForgetPasswordF
               width: { xs: 50, sm: 60 },
               height: { xs: 50, sm: 60 },
               borderRadius: '50%',
-              backgroundColor: '#dc2626',
+              backgroundColor: '#f2c514',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -245,7 +245,7 @@ export default function ForgetPasswordForm({ onSendResetEmail }: ForgetPasswordF
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <Email sx={{ color: '#dc2626', fontSize: { xs: 18, sm: 24 } }} />
+                  <Email sx={{ color: '#f2c514', fontSize: { xs: 18, sm: 24 } }} />
                 </InputAdornment>
               ),
             }}
@@ -258,10 +258,10 @@ export default function ForgetPasswordForm({ onSendResetEmail }: ForgetPasswordF
                   borderColor: 'rgba(220, 38, 38, 0.3)',
                 },
                 '&:hover fieldset': {
-                  borderColor: '#dc2626',
+                  borderColor: '#f2c514',
                 },
                 '&.Mui-focused fieldset': {
-                  borderColor: '#dc2626',
+                  borderColor: '#f2c514',
                 },
               },
               '& .MuiInputLabel-root': {
@@ -285,7 +285,7 @@ export default function ForgetPasswordForm({ onSendResetEmail }: ForgetPasswordF
             sx={{
               py: { xs: 1, sm: 1.5 },
               mb: { xs: 1, sm: 2 },
-              backgroundColor: '#dc2626',
+              backgroundColor: '#f2c514',
               color: 'white',
               fontWeight: 600,
               textTransform: 'uppercase',
@@ -293,7 +293,7 @@ export default function ForgetPasswordForm({ onSendResetEmail }: ForgetPasswordF
               fontSize: { xs: '0.75rem', sm: '0.875rem' },
               boxShadow: '0 4px 14px 0 rgba(220, 38, 38, 0.4)',
               '&:hover': {
-                backgroundColor: '#991b1b',
+                backgroundColor: '#c9a010',
                 boxShadow: '0 6px 20px 0 rgba(220, 38, 38, 0.6)',
                 transform: 'translateY(-1px)',
               },

@@ -586,11 +586,12 @@ const SideBar: React.FC<SideBarProps> = ({ open, onToggle, onClose }) => {
       {/* Header with Logo and Toggle */}
       <LogoContainer onClick={() => router.push('/')}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-          <LogoIcon />
           {open && (
-            <LogoText>
-              CommercialUK™
-            </LogoText>
+                          <img
+                          src="/images/CommercialUK2.png"
+                          alt="CommercialUK"
+                          style={{ width: 180, objectFit: 'contain' }}
+                        />
           )}
         </Box>
         {isMobile && (

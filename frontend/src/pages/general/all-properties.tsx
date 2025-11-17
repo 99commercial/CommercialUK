@@ -19,7 +19,7 @@ import InteractiveMap from '../../sections/general/InteractiveMap';
 const PageContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2, 0),
   background: `
-    linear-gradient(45deg, #cc0000 0%, #ff0000 25%, #cc0000 50%, #ff0000 75%, #cc0000 100%),
+    linear-gradient(45deg, #c9a010 0%, #f2c514 25%, #c9a010 50%, #f2c514 75%, #c9a010 100%),
     radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
     radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
     radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.05) 0%, transparent 50%)

@@ -83,7 +83,7 @@ const SectionHeader = styled(Box)(({ theme }) => ({
   gap: theme.spacing(1.5),
   marginBottom: theme.spacing(3),
   padding: theme.spacing(3),
-  background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
+  background: 'linear-gradient(135deg, #f2c514 0%, #d4a912 100%)',
   borderRadius: '8px 8px 0 0',
   color: 'white',
   '& .MuiSvgIcon-root': {
@@ -112,10 +112,10 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
       borderWidth: 1.5,
     },
     '&:hover fieldset': {
-      borderColor: '#dc2626',
+      borderColor: '#f2c514',
     },
     '&.Mui-focused fieldset': {
-      borderColor: '#dc2626',
+      borderColor: '#f2c514',
       borderWidth: 2,
     },
   },
@@ -126,7 +126,7 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
     fontWeight: 500,
     letterSpacing: '0.02em',
     '&.Mui-focused': {
-      color: '#dc2626',
+      color: '#f2c514',
       fontWeight: 600,
     },
   },
@@ -144,12 +144,12 @@ const CardFieldContainer = styled(Box)(({ theme }) => ({
   border: '2px solid #e5e7eb',
   transition: 'all 0.3s ease',
   '&:hover': {
-    borderColor: '#dc2626',
+    borderColor: '#f2c514',
     backgroundColor: '#fef2f2',
     boxShadow: '0 4px 12px rgba(220, 38, 38, 0.1)',
   },
   '&:focus-within': {
-    borderColor: '#dc2626',
+    borderColor: '#f2c514',
     backgroundColor: '#fef2f2',
     boxShadow: '0 4px 16px rgba(220, 38, 38, 0.15)',
   },
@@ -159,7 +159,7 @@ const GradientBorderField = styled(Box)(({ theme }) => ({
   position: 'relative',
   padding: '2px',
   borderRadius: 12,
-  background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
+  background: 'linear-gradient(135deg, #f2c514 0%, #d4a912 100%)',
   '& .field-content': {
     backgroundColor: '#ffffff',
     borderRadius: 10,
@@ -177,11 +177,11 @@ const IconFieldWrapper = styled(Box)(({ theme }) => ({
   border: '1.5px solid #e5e7eb',
   transition: 'all 0.3s ease',
   '&:hover': {
-    borderColor: '#dc2626',
+    borderColor: '#f2c514',
     boxShadow: '0 2px 8px rgba(220, 38, 38, 0.1)',
   },
   '&:focus-within': {
-    borderColor: '#dc2626',
+    borderColor: '#f2c514',
     borderWidth: '2px',
     boxShadow: '0 4px 12px rgba(220, 38, 38, 0.15)',
   },
@@ -193,7 +193,7 @@ const IconFieldWrapper = styled(Box)(({ theme }) => ({
     height: 40,
     borderRadius: 8,
     backgroundColor: '#fee2e2',
-    color: '#dc2626',
+    color: '#f2c514',
   },
 }));
 
@@ -477,7 +477,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
         <Box component="form" onSubmit={handleSubmit}>
           {/* Basic Business Information */}
           <SectionAccordion defaultExpanded>
-            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#dc2626' }} />}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#f2c514' }} />}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                 <Box sx={{ 
                   display: 'flex', 
@@ -487,11 +487,11 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   height: 48,
                   borderRadius: 2,
                   backgroundColor: '#fee2e2',
-                  color: '#dc2626',
+                  color: '#f2c514',
                 }}>
                   <BusinessIcon sx={{ fontSize: '1.75rem' }} />
                 </Box>
-                <Typography variant="h6" sx={{ color: '#dc2626', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
+                <Typography variant="h6" sx={{ color: '#f2c514', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
                   Basic Business Information
                 </Typography>
               </Box>
@@ -537,11 +537,11 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                 <Grid size={{ xs: 12, md: 6 }}>
                   <CardFieldContainer>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-                      <CorporateIcon sx={{ color: '#dc2626', fontSize: '1.25rem' }} />
+                      <CorporateIcon sx={{ color: '#f2c514', fontSize: '1.25rem' }} />
                       <Typography variant="body2" sx={{ fontWeight: 600, color: '#374151', fontFamily: '"Inter", sans-serif' }}>
                         Business Type
                       </Typography>
-                      <Typography component="span" sx={{ color: '#dc2626', ml: 'auto' }}>*</Typography>
+                      <Typography component="span" sx={{ color: '#f2c514', ml: 'auto' }}>*</Typography>
                     </Box>
                     <FormControl fullWidth required>
                       <Select
@@ -576,7 +576,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                 <Grid size={{ xs: 12, md: 6 }}>
                   <CardFieldContainer>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-                      <BadgeIcon sx={{ color: '#dc2626', fontSize: '1.25rem' }} />
+                      <BadgeIcon sx={{ color: '#f2c514', fontSize: '1.25rem' }} />
                       <Typography variant="body2" sx={{ fontWeight: 600, color: '#374151', fontFamily: '"Inter", sans-serif' }}>
                         Company Registration Number
                       </Typography>
@@ -634,7 +634,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   <GradientBorderField>
                     <Box className="field-content">
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                        <CalendarIcon sx={{ color: '#dc2626', fontSize: '1.5rem' }} />
+                        <CalendarIcon sx={{ color: '#f2c514', fontSize: '1.5rem' }} />
                         <StyledTextField
                           fullWidth
                           name="years_in_business"
@@ -670,7 +670,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
 
           {/* UK Real Estate Specific Fields */}
           <SectionAccordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#dc2626' }} />}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#f2c514' }} />}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                 <Box sx={{ 
                   display: 'flex', 
@@ -680,11 +680,11 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   height: 48,
                   borderRadius: 2,
                   backgroundColor: '#fee2e2',
-                  color: '#dc2626',
+                  color: '#f2c514',
                 }}>
                   <SecurityIcon sx={{ fontSize: '1.75rem' }} />
                 </Box>
-                <Typography variant="h6" sx={{ color: '#dc2626', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
+                <Typography variant="h6" sx={{ color: '#f2c514', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
                   UK Real Estate Compliance
                 </Typography>
               </Box>
@@ -725,7 +725,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                 <Grid size={{ xs: 12, md: 6 }}>
                   <CardFieldContainer>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-                      <AccountBalanceIcon sx={{ color: '#dc2626', fontSize: '1.25rem' }} />
+                      <AccountBalanceIcon sx={{ color: '#f2c514', fontSize: '1.25rem' }} />
                       <Typography variant="body2" sx={{ fontWeight: 600, color: '#374151', fontFamily: '"Inter", sans-serif' }}>
                         Property Ombudsman Membership
                       </Typography>
@@ -750,7 +750,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   <GradientBorderField>
                     <Box className="field-content">
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
-                        <GavelIcon sx={{ color: '#dc2626', fontSize: '1.25rem' }} />
+                        <GavelIcon sx={{ color: '#f2c514', fontSize: '1.25rem' }} />
                         <Typography variant="body2" sx={{ fontWeight: 600, color: '#374151', fontFamily: '"Inter", sans-serif' }}>
                           Redress Scheme
                         </Typography>
@@ -822,7 +822,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
 
           {/* Business Address */}
           <SectionAccordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#dc2626' }} />}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#f2c514' }} />}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                 <Box sx={{ 
                   display: 'flex', 
@@ -832,11 +832,11 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   height: 48,
                   borderRadius: 2,
                   backgroundColor: '#fee2e2',
-                  color: '#dc2626',
+                  color: '#f2c514',
                 }}>
                   <LocationIcon sx={{ fontSize: '1.75rem' }} />
                 </Box>
-                <Typography variant="h6" sx={{ color: '#dc2626', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
+                <Typography variant="h6" sx={{ color: '#f2c514', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
                   Business Address
                 </Typography>
               </Box>
@@ -847,7 +847,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   <GradientBorderField>
                     <Box className="field-content">
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                        <PlaceIcon sx={{ color: '#dc2626', fontSize: '1.5rem' }} />
+                        <PlaceIcon sx={{ color: '#f2c514', fontSize: '1.5rem' }} />
                         <StyledTextField
                           fullWidth
                           name="business_address.street"
@@ -880,11 +880,11 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                 <Grid size={{ xs: 12, md: 6 }}>
                   <CardFieldContainer>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-                      <HomeIcon sx={{ color: '#dc2626', fontSize: '1.25rem' }} />
+                      <HomeIcon sx={{ color: '#f2c514', fontSize: '1.25rem' }} />
                       <Typography variant="body2" sx={{ fontWeight: 600, color: '#374151', fontFamily: '"Inter", sans-serif' }}>
                         City
                       </Typography>
-                      <Typography component="span" sx={{ color: '#dc2626', ml: 'auto' }}>*</Typography>
+                      <Typography component="span" sx={{ color: '#f2c514', ml: 'auto' }}>*</Typography>
                     </Box>
                     <StyledTextField
                       fullWidth
@@ -938,7 +938,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   <GradientBorderField>
                     <Box className="field-content">
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                        <LocationIcon sx={{ color: '#dc2626', fontSize: '1.5rem' }} />
+                        <LocationIcon sx={{ color: '#f2c514', fontSize: '1.5rem' }} />
                         <StyledTextField
                           fullWidth
                           name="business_address.postcode"
@@ -972,7 +972,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                 <Grid size={{ xs: 12, md: 6 }}>
                   <CardFieldContainer>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-                      <PublicIcon sx={{ color: '#dc2626', fontSize: '1.25rem' }} />
+                      <PublicIcon sx={{ color: '#f2c514', fontSize: '1.25rem' }} />
                       <Typography variant="body2" sx={{ fontWeight: 600, color: '#374151', fontFamily: '"Inter", sans-serif' }}>
                         Country
                       </Typography>
@@ -999,7 +999,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
 
           {/* Contact Information */}
           <SectionAccordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#dc2626' }} />}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#f2c514' }} />}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                 <Box sx={{ 
                   display: 'flex', 
@@ -1009,11 +1009,11 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   height: 48,
                   borderRadius: 2,
                   backgroundColor: '#fee2e2',
-                  color: '#dc2626',
+                  color: '#f2c514',
                 }}>
                   <PhoneIcon sx={{ fontSize: '1.75rem' }} />
                 </Box>
-                <Typography variant="h6" sx={{ color: '#dc2626', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
+                <Typography variant="h6" sx={{ color: '#f2c514', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
                   Contact Information
                 </Typography>
               </Box>
@@ -1057,7 +1057,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   <GradientBorderField>
                     <Box className="field-content">
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                        <EmailIcon sx={{ color: '#dc2626', fontSize: '1.5rem' }} />
+                        <EmailIcon sx={{ color: '#f2c514', fontSize: '1.5rem' }} />
                         <StyledTextField
                           fullWidth
                           name="business_email"
@@ -1091,7 +1091,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                 <Grid size={12}>
                   <CardFieldContainer>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-                      <WebsiteIcon sx={{ color: '#dc2626', fontSize: '1.25rem' }} />
+                      <WebsiteIcon sx={{ color: '#f2c514', fontSize: '1.25rem' }} />
                       <Typography variant="body2" sx={{ fontWeight: 600, color: '#374151', fontFamily: '"Inter", sans-serif' }}>
                         Website
                       </Typography>
@@ -1118,7 +1118,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
 
           {/* Services and Specializations */}
           <SectionAccordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#dc2626' }} />}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#f2c514' }} />}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                 <Box sx={{ 
                   display: 'flex', 
@@ -1128,11 +1128,11 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   height: 48,
                   borderRadius: 2,
                   backgroundColor: '#fee2e2',
-                  color: '#dc2626',
+                  color: '#f2c514',
                 }}>
                   <WorkIcon sx={{ fontSize: '1.75rem' }} />
                 </Box>
-                <Typography variant="h6" sx={{ color: '#dc2626', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
+                <Typography variant="h6" sx={{ color: '#f2c514', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
                   Services & Specializations
                 </Typography>
               </Box>
@@ -1143,7 +1143,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   <GradientBorderField>
                     <Box className="field-content">
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1.5 }}>
-                        <WorkIcon sx={{ color: '#dc2626', fontSize: '1.5rem' }} />
+                        <WorkIcon sx={{ color: '#f2c514', fontSize: '1.5rem' }} />
                         <Typography variant="body2" sx={{ fontWeight: 600, color: '#374151', fontFamily: '"Inter", sans-serif' }}>
                           Services Offered
                         </Typography>
@@ -1172,7 +1172,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                                     fontFamily: '"Inter", sans-serif',
                                     fontWeight: 500,
                                     backgroundColor: '#fee2e2',
-                                    color: '#dc2626',
+                                    color: '#f2c514',
                                   }}
                                 />
                               ))}
@@ -1193,7 +1193,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                 <Grid size={12}>
                   <CardFieldContainer>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-                      <StarIcon sx={{ color: '#dc2626', fontSize: '1.25rem' }} />
+                      <StarIcon sx={{ color: '#f2c514', fontSize: '1.25rem' }} />
                       <Typography variant="body2" sx={{ fontWeight: 600, color: '#374151', fontFamily: '"Inter", sans-serif' }}>
                         Specializations
                       </Typography>
@@ -1222,7 +1222,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                                   fontFamily: '"Inter", sans-serif',
                                   fontWeight: 500,
                                   backgroundColor: '#fee2e2',
-                                  color: '#dc2626',
+                                  color: '#f2c514',
                                 }}
                               />
                             ))}
@@ -1278,7 +1278,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
 
           {/* Business Hours */}
           <SectionAccordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#dc2626' }} />}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#f2c514' }} />}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                 <Box sx={{ 
                   display: 'flex', 
@@ -1288,11 +1288,11 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   height: 48,
                   borderRadius: 2,
                   backgroundColor: '#fee2e2',
-                  color: '#dc2626',
+                  color: '#f2c514',
                 }}>
                   <ScheduleIcon sx={{ fontSize: '1.75rem' }} />
                 </Box>
-                <Typography variant="h6" sx={{ color: '#dc2626', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
+                <Typography variant="h6" sx={{ color: '#f2c514', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
                   Business Hours
                 </Typography>
               </Box>
@@ -1305,7 +1305,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                       <GradientBorderField>
                         <Box className="field-content">
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
-                            <AccessTimeIcon sx={{ color: '#dc2626', fontSize: '1.25rem' }} />
+                            <AccessTimeIcon sx={{ color: '#f2c514', fontSize: '1.25rem' }} />
                             <Typography variant="subtitle1" sx={{ fontWeight: 600, textTransform: 'capitalize', fontFamily: '"Inter", sans-serif', color: '#1f2937' }}>
                               {day}
                             </Typography>
@@ -1317,10 +1317,10 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                                 onChange={(e) => handleBusinessHoursChange(day, 'closed', e.target.checked)}
                                 sx={{
                                   '& .MuiSwitch-switchBase.Mui-checked': {
-                                    color: '#dc2626',
+                                    color: '#f2c514',
                                   },
                                   '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                                    backgroundColor: '#dc2626',
+                                    backgroundColor: '#f2c514',
                                   },
                                 }}
                               />
@@ -1366,7 +1366,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                     ) : (
                       <CardFieldContainer>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
-                          <AccessTimeIcon sx={{ color: '#dc2626', fontSize: '1.25rem' }} />
+                          <AccessTimeIcon sx={{ color: '#f2c514', fontSize: '1.25rem' }} />
                           <Typography variant="subtitle1" sx={{ fontWeight: 600, textTransform: 'capitalize', fontFamily: '"Inter", sans-serif', color: '#1f2937' }}>
                             {day}
                           </Typography>
@@ -1378,10 +1378,10 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                               onChange={(e) => handleBusinessHoursChange(day, 'closed', e.target.checked)}
                               sx={{
                                 '& .MuiSwitch-switchBase.Mui-checked': {
-                                  color: '#dc2626',
+                                  color: '#f2c514',
                                 },
                                 '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                                  backgroundColor: '#dc2626',
+                                  backgroundColor: '#f2c514',
                                 },
                               }}
                             />
@@ -1402,8 +1402,8 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                                 '& .MuiOutlinedInput-root': {
                                   backgroundColor: 'transparent',
                                   '& fieldset': { border: 'none', borderBottom: '1.5px solid #e5e7eb' },
-                                  '&:hover fieldset': { borderBottom: '1.5px solid #dc2626' },
-                                  '&.Mui-focused fieldset': { borderBottom: '2px solid #dc2626' },
+                                  '&:hover fieldset': { borderBottom: '1.5px solid #f2c514' },
+                                  '&.Mui-focused fieldset': { borderBottom: '2px solid #f2c514' },
                                 },
                                 '& .MuiInputBase-input': {
                                   fontFamily: '"Inter", sans-serif',
@@ -1423,8 +1423,8 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                                 '& .MuiOutlinedInput-root': {
                                   backgroundColor: 'transparent',
                                   '& fieldset': { border: 'none', borderBottom: '1.5px solid #e5e7eb' },
-                                  '&:hover fieldset': { borderBottom: '1.5px solid #dc2626' },
-                                  '&.Mui-focused fieldset': { borderBottom: '2px solid #dc2626' },
+                                  '&:hover fieldset': { borderBottom: '1.5px solid #f2c514' },
+                                  '&.Mui-focused fieldset': { borderBottom: '2px solid #f2c514' },
                                 },
                                 '& .MuiInputBase-input': {
                                   fontFamily: '"Inter", sans-serif',
@@ -1444,7 +1444,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
 
           {/* Professional Information */}
           <SectionAccordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#dc2626' }} />}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#f2c514' }} />}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                 <Box sx={{ 
                   display: 'flex', 
@@ -1454,11 +1454,11 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   height: 48,
                   borderRadius: 2,
                   backgroundColor: '#fee2e2',
-                  color: '#dc2626',
+                  color: '#f2c514',
                 }}>
                   <SchoolIcon sx={{ fontSize: '1.75rem' }} />
                 </Box>
-                <Typography variant="h6" sx={{ color: '#dc2626', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
+                <Typography variant="h6" sx={{ color: '#f2c514', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
                   Professional Information
                 </Typography>
               </Box>
@@ -1468,7 +1468,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                 <Grid size={12}>
                   <CardFieldContainer>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-                      <DescriptionIcon sx={{ color: '#dc2626', fontSize: '1.25rem' }} />
+                      <DescriptionIcon sx={{ color: '#f2c514', fontSize: '1.25rem' }} />
                       <Typography variant="body2" sx={{ fontWeight: 600, color: '#374151', fontFamily: '"Inter", sans-serif' }}>
                         Business Description
                       </Typography>
@@ -1535,7 +1535,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
 
           {/* Insurance Details */}
           <SectionAccordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#dc2626' }} />}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#f2c514' }} />}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                 <Box sx={{ 
                   display: 'flex', 
@@ -1545,11 +1545,11 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   height: 48,
                   borderRadius: 2,
                   backgroundColor: '#fee2e2',
-                  color: '#dc2626',
+                  color: '#f2c514',
                 }}>
                   <ShieldIcon sx={{ fontSize: '1.75rem' }} />
                 </Box>
-                <Typography variant="h6" sx={{ color: '#dc2626', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
+                <Typography variant="h6" sx={{ color: '#f2c514', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
                   Insurance Details
                 </Typography>
               </Box>
@@ -1590,7 +1590,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                 <Grid size={{ xs: 12, md: 6 }}>
                   <CardFieldContainer>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-                      <AssignmentIcon sx={{ color: '#dc2626', fontSize: '1.25rem' }} />
+                      <AssignmentIcon sx={{ color: '#f2c514', fontSize: '1.25rem' }} />
                       <Typography variant="body2" sx={{ fontWeight: 600, color: '#374151', fontFamily: '"Inter", sans-serif' }}>
                         Policy Number
                       </Typography>
@@ -1615,7 +1615,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   <GradientBorderField>
                     <Box className="field-content">
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                        <EventIcon sx={{ color: '#dc2626', fontSize: '1.5rem' }} />
+                        <EventIcon sx={{ color: '#f2c514', fontSize: '1.5rem' }} />
                         <StyledTextField
                           fullWidth
                           name="professional_indemnity_insurance.expiry_date"
@@ -1698,7 +1698,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
               disabled={loading || !hasChanges}
               startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <SaveIcon sx={{ fontSize: '1.25rem' }} />}
               sx={{
-                backgroundColor: '#dc2626',
+                backgroundColor: '#f2c514',
                 fontFamily: '"Inter", sans-serif',
                 fontSize: '1rem',
                 fontWeight: 600,
@@ -1706,12 +1706,12 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                 padding: '12px 32px',
                 boxShadow: '0 4px 12px rgba(220, 38, 38, 0.3)',
                 '&:hover': {
-                  backgroundColor: '#b91c1c',
+                  backgroundColor: '#d4a912',
                   boxShadow: '0 6px 16px rgba(220, 38, 38, 0.4)',
                   transform: 'translateY(-1px)',
                 },
                 '&:disabled': {
-                  backgroundColor: '#fca5a5',
+                  backgroundColor: '#f9d85a',
                   boxShadow: 'none',
                 },
                 transition: 'all 0.3s ease',

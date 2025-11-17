@@ -183,15 +183,43 @@ const UpdateBusinessDetailsForm: React.FC<UpdateBusinessDetailsFormProps> = ({
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
 
-    // Validate business rates
-    if (formData.business_rates.rateable_value_gbp && 
-        (isNaN(Number(formData.business_rates.rateable_value_gbp)) || Number(formData.business_rates.rateable_value_gbp) < 0)) {
+    // Validate required fields - rateable_value_gbp
+    if (!formData.business_rates.rateable_value_gbp || 
+        formData.business_rates.rateable_value_gbp === '' ||
+        formData.business_rates.rateable_value_gbp === 0) {
+      newErrors.rateable_value_gbp = 'Rateable value is required';
+    } else if (isNaN(Number(formData.business_rates.rateable_value_gbp)) || Number(formData.business_rates.rateable_value_gbp) < 0) {
       newErrors.rateable_value_gbp = 'Rateable value must be a valid positive number';
     }
 
-    if (formData.business_rates.rates_payable_gbp && 
-        (isNaN(Number(formData.business_rates.rates_payable_gbp)) || Number(formData.business_rates.rates_payable_gbp) < 0)) {
+    // Validate required fields - rates_payable_gbp
+    if (!formData.business_rates.rates_payable_gbp || 
+        formData.business_rates.rates_payable_gbp === '' ||
+        formData.business_rates.rates_payable_gbp === 0) {
+      newErrors.rates_payable_gbp = 'Rates payable is required';
+    } else if (isNaN(Number(formData.business_rates.rates_payable_gbp)) || Number(formData.business_rates.rates_payable_gbp) < 0) {
       newErrors.rates_payable_gbp = 'Rates payable must be a valid positive number';
+    }
+
+    // Validate required fields - descriptions
+    if (!formData.descriptions.general || formData.descriptions.general.trim() === '') {
+      newErrors.general = 'General description is required';
+    }
+
+    if (!formData.descriptions.location || formData.descriptions.location.trim() === '') {
+      newErrors.location = 'Location description is required';
+    }
+
+    if (!formData.descriptions.accommodation || formData.descriptions.accommodation.trim() === '') {
+      newErrors.accommodation = 'Accommodation description is required';
+    }
+
+    if (!formData.descriptions.terms || formData.descriptions.terms.trim() === '') {
+      newErrors.terms = 'Terms description is required';
+    }
+
+    if (!formData.descriptions.specifications || formData.descriptions.specifications.trim() === '') {
+      newErrors.specifications = 'Specifications description is required';
     }
 
     // Validate sale types
@@ -214,6 +242,14 @@ const UpdateBusinessDetailsForm: React.FC<UpdateBusinessDetailsFormProps> = ({
         [field]: value
       }
     }));
+    // Clear error for this field when user starts typing
+    if (errors[field]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
   };
 
   const handleDescriptionsChange = (field: string, value: string) => {
@@ -224,6 +260,14 @@ const UpdateBusinessDetailsForm: React.FC<UpdateBusinessDetailsFormProps> = ({
         [field]: value
       }
     }));
+    // Clear error for this field when user starts typing
+    if (errors[field]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
   };
 
   const handleSaleTypeChange = (index: number, field: string, value: string) => {
@@ -233,6 +277,21 @@ const UpdateBusinessDetailsForm: React.FC<UpdateBusinessDetailsFormProps> = ({
         i === index ? { ...item, [field]: value } : item
       )
     }));
+    // Clear errors for this sale type field when user starts typing
+    const errorKeys = [
+      `sale_type_${index}_${field}`,
+      `sale_type_${index}_price`, // For price_value field
+      `sale_type_${index}_price_value` // Alternative naming
+    ];
+    setErrors(prev => {
+      const newErrors = { ...prev };
+      errorKeys.forEach(key => {
+        if (newErrors[key]) {
+          delete newErrors[key];
+        }
+      });
+      return newErrors;
+    });
   };
 
   const addSaleType = () => {
@@ -254,6 +313,81 @@ const UpdateBusinessDetailsForm: React.FC<UpdateBusinessDetailsFormProps> = ({
     }));
   };
 
+  // Parse backend errors and map them to form fields
+  const parseBackendErrors = (error: any, section: 'business_rates' | 'descriptions' | 'sale_types'): Record<string, string> => {
+    const fieldErrors: Record<string, string> = {};
+    
+    if (!error?.response?.data) {
+      return fieldErrors;
+    }
+
+    const errorData = error.response.data;
+    
+    // Handle different error response formats
+    // Format 1: { errors: { field: "message" } }
+    if (errorData.errors && typeof errorData.errors === 'object') {
+      Object.keys(errorData.errors).forEach((field) => {
+        const errorMessage = Array.isArray(errorData.errors[field]) 
+          ? errorData.errors[field][0] 
+          : errorData.errors[field];
+        
+        if (section === 'business_rates') {
+          // Map business rates fields
+          if (field === 'rateable_value_gbp' || field === 'rates_payable_gbp') {
+            fieldErrors[field] = errorMessage;
+          }
+        } else if (section === 'descriptions') {
+          // Map description fields
+          if (['general', 'location', 'accommodation', 'terms', 'specifications'].includes(field)) {
+            fieldErrors[field] = errorMessage;
+          }
+        } else if (section === 'sale_types') {
+          // Handle sale_types array errors
+          // Format: { errors: { "sale_types.0.price_value": "message" } }
+          const match = field.match(/sale_types\.(\d+)\.(\w+)/);
+          if (match) {
+            const index = parseInt(match[1]);
+            const fieldName = match[2];
+            if (fieldName === 'price_value') {
+              // Support both naming conventions
+              fieldErrors[`sale_type_${index}_price`] = errorMessage;
+              fieldErrors[`sale_type_${index}_price_value`] = errorMessage;
+            } else {
+              fieldErrors[`sale_type_${index}_${fieldName}`] = errorMessage;
+            }
+          } else if (field === 'sale_types') {
+            // Handle general sale_types error
+            fieldErrors['sale_types'] = errorMessage;
+          }
+        }
+      });
+    }
+    
+    // Format 2: Direct field errors in response
+    if (section === 'business_rates') {
+      if (errorData.rateable_value_gbp) {
+        fieldErrors.rateable_value_gbp = Array.isArray(errorData.rateable_value_gbp) 
+          ? errorData.rateable_value_gbp[0] 
+          : errorData.rateable_value_gbp;
+      }
+      if (errorData.rates_payable_gbp) {
+        fieldErrors.rates_payable_gbp = Array.isArray(errorData.rates_payable_gbp) 
+          ? errorData.rates_payable_gbp[0] 
+          : errorData.rates_payable_gbp;
+      }
+    } else if (section === 'descriptions') {
+      ['general', 'location', 'accommodation', 'terms', 'specifications'].forEach((field) => {
+        if (errorData[field]) {
+          fieldErrors[field] = Array.isArray(errorData[field]) 
+            ? errorData[field][0] 
+            : errorData[field];
+        }
+      });
+    }
+    
+    return fieldErrors;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -268,65 +402,101 @@ const UpdateBusinessDetailsForm: React.FC<UpdateBusinessDetailsFormProps> = ({
 
     setIsSubmitting(true);
     setSubmitError(null);
+    setErrors({}); // Clear previous errors
 
     try {
       const changedSections = getChangedSections();
-      const promises = [];
+      const requests: Array<{ promise: Promise<any>; section: 'business_rates' | 'descriptions' | 'sale_types' }> = [];
 
       // Update business rates only if it has changes and ID exists
       if (changedSections.businessRates && initialData?.business_rates_id?._id) {
-        promises.push(
-          axiosInstance.patch(`/api/agent/business-rates/${initialData.business_rates_id._id}`, formData.business_rates)
-        );
+        requests.push({
+          promise: axiosInstance.patch(`/api/agent/business-rates/${initialData.business_rates_id._id}`, formData.business_rates),
+          section: 'business_rates'
+        });
       }
 
       // Update descriptions only if it has changes and ID exists
       if (changedSections.descriptions && initialData?.descriptions_id?._id) {
-        promises.push(
-          axiosInstance.patch(`/api/agent/descriptions/${initialData.descriptions_id._id}`, formData.descriptions)
-        );
+        requests.push({
+          promise: axiosInstance.patch(`/api/agent/descriptions/${initialData.descriptions_id._id}`, formData.descriptions),
+          section: 'descriptions'
+        });
       }
 
       // Update sale types only if it has changes and ID exists
       if (changedSections.saleTypes && initialData?.sale_types_id?._id) {
-        promises.push(
-          axiosInstance.patch(`/api/agent/sale-types/${initialData.sale_types_id._id}`, { sale_types: formData.sale_types })
-        );
+        requests.push({
+          promise: axiosInstance.patch(`/api/agent/sale-types/${initialData.sale_types_id._id}`, { sale_types: formData.sale_types }),
+          section: 'sale_types'
+        });
       }
 
       // If no changes, show message and return
-      if (promises.length === 0) {
+      if (requests.length === 0) {
         enqueueSnackbar('No changes detected to update', { variant: 'info' });
+        setIsSubmitting(false);
         return;
       }
 
-      // Execute only the necessary updates in parallel
-      const responses = await Promise.all(promises);
+      // Execute all requests and handle errors individually
+      const results = await Promise.allSettled(requests.map(req => req.promise));
       
-      // Check if all updates were successful
-      const allSuccessful = responses.every(response => response.data.success);
-      
-      if (allSuccessful) {
-        setIsSubmitted(true);
-        setSubmitSuccess(true);
-        setHasChanges(false); // Reset changes flag after successful update
-        
-        const updatedSections = [];
-        if (changedSections.businessRates) updatedSections.push('Business Rates');
-        if (changedSections.descriptions) updatedSections.push('Descriptions');
-        if (changedSections.saleTypes) updatedSections.push('Sale Types');
-        
-        enqueueSnackbar(`Business Details updated successfully!`, { variant: 'success' });
+      const allErrors: Record<string, string> = {};
+      let hasErrors = false;
+      let generalError: string | null = null;
 
-        if (fetchProperty) {
-          fetchProperty();
+      results.forEach((result, index) => {
+        if (result.status === 'rejected') {
+          hasErrors = true;
+          const section = requests[index].section;
+          const parsedErrors = parseBackendErrors(result.reason, section);
+          Object.assign(allErrors, parsedErrors);
+          
+          // If no field-specific errors were found, use general error message
+          if (Object.keys(parsedErrors).length === 0) {
+            const errorMessage = result.reason?.response?.data?.message 
+              || result.reason?.message 
+              || `Failed to update ${section.replace('_', ' ')}`;
+            generalError = generalError || errorMessage;
+          }
+        }
+      });
+
+      if (hasErrors) {
+        // Set field-specific errors
+        if (Object.keys(allErrors).length > 0) {
+          setErrors(allErrors);
         }
         
-        if (onStepSubmitted) {
-          onStepSubmitted(1);
+        // Set general error if no field-specific errors
+        if (generalError && Object.keys(allErrors).length === 0) {
+          setSubmitError(generalError);
         }
-      } else {
-        throw new Error('Some updates failed');
+        
+        enqueueSnackbar(
+          Object.keys(allErrors).length > 0 
+            ? 'Please check the form for errors' 
+            : generalError || 'Failed to update business details',
+          { variant: 'error' }
+        );
+        return;
+      }
+
+      // All updates successful
+      setIsSubmitted(true);
+      setSubmitSuccess(true);
+      setHasChanges(false); // Reset changes flag after successful update
+      setErrors({}); // Clear any errors
+      
+      enqueueSnackbar(`Business Details updated successfully!`, { variant: 'success' });
+
+      if (fetchProperty) {
+        fetchProperty();
+      }
+      
+      if (onStepSubmitted) {
+        onStepSubmitted(1);
       }
     } catch (error: any) {
       console.error('Error updating business details:', error);
@@ -356,6 +526,7 @@ const UpdateBusinessDetailsForm: React.FC<UpdateBusinessDetailsFormProps> = ({
             <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
               <TextField
                 label="Rateable Value (GBP)"
+                required
                 value={formData.business_rates.rateable_value_gbp || ''}
                 onChange={(e) => handleBusinessRatesChange('rateable_value_gbp', e.target.value)}
                 error={!!errors.rateable_value_gbp}
@@ -367,6 +538,7 @@ const UpdateBusinessDetailsForm: React.FC<UpdateBusinessDetailsFormProps> = ({
               />
               <TextField
                 label="Rates Payable (GBP)"
+                required
                 value={formData.business_rates.rates_payable_gbp || ''}
                 onChange={(e) => handleBusinessRatesChange('rates_payable_gbp', e.target.value)}
                 error={!!errors.rates_payable_gbp}
@@ -389,40 +561,55 @@ const UpdateBusinessDetailsForm: React.FC<UpdateBusinessDetailsFormProps> = ({
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               <TextField
                 label="General Description"
+                required
                 value={formData.descriptions.general || ''}
                 onChange={(e) => handleDescriptionsChange('general', e.target.value)}
+                error={!!errors.general}
+                helperText={errors.general}
                 multiline
                 rows={3}
                 placeholder="General description of the property"
               />
               <TextField
                 label="Location Description"
+                required
                 value={formData.descriptions.location || ''}
                 onChange={(e) => handleDescriptionsChange('location', e.target.value)}
+                error={!!errors.location}
+                helperText={errors.location}
                 multiline
                 rows={3}
                 placeholder="Description of the location and surroundings"
               />
               <TextField
                 label="Accommodation Description"
+                required
                 value={formData.descriptions.accommodation || ''}
                 onChange={(e) => handleDescriptionsChange('accommodation', e.target.value)}
+                error={!!errors.accommodation}
+                helperText={errors.accommodation}
                 multiline
                 rows={3}
                 placeholder="Description of accommodation and facilities"
               />
               <TextField
                 label="Terms Description"
+                required
                 value={formData.descriptions.terms || ''}
                 onChange={(e) => handleDescriptionsChange('terms', e.target.value)}
+                error={!!errors.terms}
+                helperText={errors.terms}
                 multiline
                 rows={3}
                 placeholder="Terms and conditions"
               />
               <TextField
                 label="Specifications Description"
+                required
                 value={formData.descriptions.specifications || ''}
                 onChange={(e) => handleDescriptionsChange('specifications', e.target.value)}
+                error={!!errors.specifications}
+                helperText={errors.specifications}
                 multiline
                 rows={3}
                 placeholder="Technical specifications and details"
@@ -451,7 +638,7 @@ const UpdateBusinessDetailsForm: React.FC<UpdateBusinessDetailsFormProps> = ({
             {(formData.sale_types || []).map((saleType, index) => (
               <Card key={index} sx={{ mb: 2, p: 2, backgroundColor: '#f8f9fa' }}>
                 <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', width: '100%' }}>
-                  <FormControl sx={{ flex: 1, minWidth: 120 }}>
+                  <FormControl sx={{ flex: 1, minWidth: 120 }} error={!!errors[`sale_type_${index}_sale_type`]}>
                     <InputLabel>Sale Type</InputLabel>
                     <Select
                       value={saleType.sale_type || ''}
@@ -464,9 +651,12 @@ const UpdateBusinessDetailsForm: React.FC<UpdateBusinessDetailsFormProps> = ({
                         </MenuItem>
                       ))}
                     </Select>
+                    {errors[`sale_type_${index}_sale_type`] && (
+                      <FormHelperText>{errors[`sale_type_${index}_sale_type`]}</FormHelperText>
+                    )}
                   </FormControl>
 
-                  <FormControl sx={{ flex: 0.8, minWidth: 100 }}>
+                  <FormControl sx={{ flex: 0.8, minWidth: 100 }} error={!!errors[`sale_type_${index}_price_currency`]}>
                     <InputLabel>Currency</InputLabel>
                     <Select
                       value={saleType.price_currency || 'GBP'}
@@ -477,18 +667,21 @@ const UpdateBusinessDetailsForm: React.FC<UpdateBusinessDetailsFormProps> = ({
                       <MenuItem value="USD">USD</MenuItem>
                       <MenuItem value="EUR">EUR</MenuItem>
                     </Select>
+                    {errors[`sale_type_${index}_price_currency`] && (
+                      <FormHelperText>{errors[`sale_type_${index}_price_currency`]}</FormHelperText>
+                    )}
                   </FormControl>
 
                   <TextField
                     label="Price"
                     value={saleType.price_value || ''}
                     onChange={(e) => handleSaleTypeChange(index, 'price_value', e.target.value)}
-                    error={!!errors[`sale_type_${index}_price`]}
-                    helperText={errors[`sale_type_${index}_price`]}
+                    error={!!errors[`sale_type_${index}_price`] || !!errors[`sale_type_${index}_price_value`]}
+                    helperText={errors[`sale_type_${index}_price`] || errors[`sale_type_${index}_price_value`]}
                     sx={{ flex: 1, minWidth: 120 }}
                   />
 
-                  <FormControl sx={{ flex: 1, minWidth: 120 }}>
+                  <FormControl sx={{ flex: 1, minWidth: 120 }} error={!!errors[`sale_type_${index}_price_unit`]}>
                     <InputLabel>Unit</InputLabel>
                     <Select
                       value={saleType.price_unit || 'per sq ft'}
@@ -501,6 +694,9 @@ const UpdateBusinessDetailsForm: React.FC<UpdateBusinessDetailsFormProps> = ({
                         </MenuItem>
                       ))}
                     </Select>
+                    {errors[`sale_type_${index}_price_unit`] && (
+                      <FormHelperText>{errors[`sale_type_${index}_price_unit`]}</FormHelperText>
+                    )}
                   </FormControl>
 
                   <IconButton

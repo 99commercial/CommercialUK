@@ -42,27 +42,23 @@ const propertyLocationSchema = new Schema(
       },
       route: {
         type: String,
-        required: true,
         trim: true,
         maxlength: 200,
       },
       locality: {
         type: String,
-        required: true,
         trim: true,
         maxlength: 100,
         description: 'City or town',
       },
       administrative_area_level_1: {
         type: String,
-        required: true,
         trim: true,
         maxlength: 100,
         description: 'State or region (e.g., England, Scotland)',
       },
       administrative_area_level_2: {
         type: String,
-        required: true,
         trim: true,
         maxlength: 100,
         description: 'County or district',
@@ -104,21 +100,20 @@ const propertyLocationSchema = new Schema(
     geocoding_info: {
       place_id: {
         type: String,
-        required: true,
         trim: true,
         description: 'Google Places API place ID',
+        default: '',
       },
       geocoding_service: {
         type: String,
-        required: true,
         enum: ['Google', 'OpenStreetMap', 'Bing', 'Manual'],
         default: 'Google',
       },
       geocoding_accuracy: {
         type: String,
-        required: true,
         enum: ['ROOFTOP', 'RANGE_INTERPOLATED', 'GEOMETRIC_CENTER', 'APPROXIMATE'],
         description: 'Accuracy level of geocoding result',
+        default: 'APPROXIMATE',
       },
       geocoded_at: {
         type: Date,
@@ -132,7 +127,6 @@ const propertyLocationSchema = new Schema(
     },
     verification_notes: {
       type: String,
-      required: true,
       trim: true,
       maxlength: 500,
       description: 'Notes about location verification or adjustments made',

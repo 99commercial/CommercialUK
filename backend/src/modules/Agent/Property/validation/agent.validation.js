@@ -65,12 +65,6 @@ export const createPropertyValidator = [
     .isLength({ min: 2, max: 100 })
     .withMessage('Property sub-type must be between 2 and 100 characters'),
   
-  body('general_details.max_eaves_height')
-    .isNumeric()
-    .withMessage('Max eaves height must be a number')
-    .isFloat({ min: 0, max: 1000 })
-    .withMessage('Max eaves height must be between 0 and 1000'),
-  
   body('general_details.size_minimum')
     .isNumeric()
     .withMessage('Minimum size must be a number')
@@ -90,27 +84,9 @@ export const createPropertyValidator = [
       return true;
     }),
   
-  body('general_details.invoice_details')
-    .trim()
-    .notEmpty()
-    .withMessage('Invoice details are required')
-    .isLength({ min: 10, max: 500 })
-    .withMessage('Invoice details must be between 10 and 500 characters'),
-  
-  body('general_details.property_notes')
-    .trim()
-    .notEmpty()
-    .withMessage('Property notes are required')
-    .isLength({ min: 10, max: 2000 })
-    .withMessage('Property notes must be between 10 and 2000 characters'),
-  
   body('general_details.approximate_year_of_construction')
     .isInt({ min: 1800, max: new Date().getFullYear() + 5 })
     .withMessage('Year of construction must be between 1800 and current year + 5'),
-  
-  body('general_details.expansion_capacity_percent')
-    .isInt({ min: 0, max: 100 })
-    .withMessage('Expansion capacity must be between 0 and 100 percent'),
   
 ];
 
@@ -133,34 +109,12 @@ export const updatePropertyDetailsValidator = [
     .optional()
     .isIn(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'Exempt', 'Not Required'])
     .withMessage('Invalid EPC rating'),
-  
-  body('epc.score')
-    .optional()
-    .isInt({ min: 0, max: 100 })
-    .withMessage('EPC score must be between 0 and 100'),
-  
-  body('epc.certificate_number')
-    .optional()
-    .trim()
-    .isLength({ max: 50 })
-    .withMessage('Certificate number must not exceed 50 characters'),
-  
-  body('epc.expiry_date')
-    .optional()
-    .isISO8601()
-    .withMessage('Expiry date must be a valid date'),
 
   // Council Tax validation
   body('council_tax.band')
     .optional()
     .isIn(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'Exempt', 'Not Applicable'])
     .withMessage('Invalid council tax band'),
-  
-  body('council_tax.authority')
-    .optional()
-    .trim()
-    .isLength({ max: 100 })
-    .withMessage('Council authority must not exceed 100 characters'),
 
   // Rateable Value validation
   body('rateable_value')
@@ -175,17 +129,6 @@ export const updatePropertyDetailsValidator = [
     .optional()
     .isIn(['Full Planning', 'Outline Planning', 'No Planning Required', 'Unknown'])
     .withMessage('Invalid planning status'),
-  
-  body('planning.application_number')
-    .optional()
-    .trim()
-    .isLength({ max: 50 })
-    .withMessage('Application number must not exceed 50 characters'),
-  
-  body('planning.decision_date')
-    .optional()
-    .isISO8601()
-    .withMessage('Decision date must be a valid date'),
 ];
 
 // Update Business Details Validator
@@ -252,7 +195,14 @@ export const updateBusinessDetailsValidator = [
   body('sale_types')
     .optional()
     .isArray()
-    .withMessage('Sale types must be an array'),
+    .withMessage('Sale types must be an array')
+    .custom((value) => {
+      if (value && value.length !== 1) {
+        throw new Error('Exactly one sale type is required');
+      }
+      return true;
+    })
+    .withMessage('Exactly one sale type is required'),
   
   body('sale_types.*.sale_type')
     .optional()
@@ -419,37 +369,43 @@ export const updatePropertyLocationValidator = [
     .withMessage('Formatted address must be between 10 and 500 characters'),
   
   body('address_details.street_number')
-    .optional()
     .trim()
+    .notEmpty()
+    .withMessage('Street number is required')
     .isLength({ max: 20 })
     .withMessage('Street number must not exceed 20 characters'),
   
   body('address_details.route')
-    .optional()
+    .notEmpty()
+    .withMessage('Route is required')
     .trim()
     .isLength({ max: 200 })
     .withMessage('Route must not exceed 200 characters'),
   
   body('address_details.locality')
-    .optional()
+    .notEmpty()
+    .withMessage('Locality is required')
     .trim()
     .isLength({ max: 100 })
     .withMessage('Locality must not exceed 100 characters'),
   
   body('address_details.administrative_area_level_1')
-    .optional()
+    .notEmpty()
+    .withMessage('Administrative area level 1 is required')
     .trim()
     .isLength({ max: 100 })
     .withMessage('Administrative area level 1 must not exceed 100 characters'),
   
   body('address_details.administrative_area_level_2')
-    .optional()
+    .notEmpty()
+    .withMessage('Administrative area level 2 is required')
     .trim()
     .isLength({ max: 100 })
     .withMessage('Administrative area level 2 must not exceed 100 characters'),
   
   body('address_details.country')
-    .optional()
+    .notEmpty()
+    .withMessage('Country is required')
     .trim()
     .isLength({ max: 100 })
     .withMessage('Country must not exceed 100 characters'),
@@ -458,56 +414,6 @@ export const updatePropertyLocationValidator = [
     .optional()
     .matches(/^[A-Z]{1,2}[0-9][A-Z0-9]? [0-9][A-Z]{2}$/i)
     .withMessage('Please enter a valid UK postcode'),
-
-  // Map settings validation
-  body('map_settings.disable_map_display')
-    .optional()
-    .isBoolean()
-    .withMessage('Disable map display must be boolean'),
-  
-  body('map_settings.map_zoom_level')
-    .optional()
-    .isInt({ min: 1, max: 20 })
-    .withMessage('Map zoom level must be between 1 and 20'),
-  
-  body('map_settings.map_type')
-    .optional()
-    .isIn(['roadmap', 'satellite', 'hybrid', 'terrain'])
-    .withMessage('Invalid map type'),
-
-  // Geocoding info validation
-  body('geocoding_info.place_id')
-    .optional()
-    .trim()
-    .isLength({ max: 100 })
-    .withMessage('Place ID must not exceed 100 characters'),
-  
-  body('geocoding_info.geocoding_service')
-    .optional()
-    .isIn(['Google', 'OpenStreetMap', 'Bing', 'Manual'])
-    .withMessage('Invalid geocoding service'),
-  
-  body('geocoding_info.geocoding_accuracy')
-    .optional()
-    .isIn(['ROOFTOP', 'RANGE_INTERPOLATED', 'GEOMETRIC_CENTER', 'APPROXIMATE'])
-    .withMessage('Invalid geocoding accuracy'),
-  
-  body('geocoding_info.geocoded_at')
-    .optional()
-    .isISO8601()
-    .withMessage('Geocoded at must be a valid date'),
-
-  // Location verification validation
-  body('location_verified')
-    .optional()
-    .isBoolean()
-    .withMessage('Location verified must be boolean'),
-  
-  body('verification_notes')
-    .optional()
-    .trim()
-    .isLength({ max: 500 })
-    .withMessage('Verification notes must not exceed 500 characters'),
 ];
 
 // Update Property Virtual Tours Validator
@@ -523,60 +429,6 @@ export const updatePropertyVirtualToursValidator = [
       return true;
     })
     .withMessage('Property ID must be a valid MongoDB ObjectId'),
-
-  body('virtual_tours')
-    .isArray({ min: 1 })
-    .withMessage('At least one virtual tour is required'),
-  
-  body('virtual_tours.*.tour_name')
-    .trim()
-    .notEmpty()
-    .withMessage('Tour name is required')
-    .isLength({ min: 2, max: 200 })
-    .withMessage('Tour name must be between 2 and 200 characters'),
-  
-  body('virtual_tours.*.tour_url')
-    .isURL({ protocols: ['http', 'https'] })
-    .withMessage('Tour URL must be a valid HTTP/HTTPS URL'),
-  
-  body('virtual_tours.*.link_type')
-    .isIn([
-      'Virtual Tour', 'Video Tour', '3D Flythrough', '360° Photos',
-      'Drone Footage', 'Walkthrough Video', 'Interactive Map',
-      'Floor Plan Interactive', 'Other'
-    ])
-    .withMessage('Invalid link type'),
-  
-  body('virtual_tours.*.description')
-    .optional()
-    .trim()
-    .isLength({ max: 500 })
-    .withMessage('Description must not exceed 500 characters'),
-  
-  body('virtual_tours.*.thumbnail_url')
-    .optional()
-    .isURL({ protocols: ['http', 'https'] })
-    .withMessage('Thumbnail URL must be a valid HTTP/HTTPS URL'),
-  
-  body('virtual_tours.*.duration')
-    .optional()
-    .isInt({ min: 0 })
-    .withMessage('Duration must be a positive integer'),
-  
-  body('virtual_tours.*.is_featured')
-    .optional()
-    .isBoolean()
-    .withMessage('Is featured must be boolean'),
-  
-  body('virtual_tours.*.display_order')
-    .optional()
-    .isInt({ min: 0 })
-    .withMessage('Display order must be a non-negative integer'),
-  
-  body('virtual_tours.*.is_active')
-    .optional()
-    .isBoolean()
-    .withMessage('Is active must be boolean'),
 ];
 
 // Update Property Features Validator

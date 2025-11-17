@@ -143,8 +143,6 @@ class AccountService {
    */
   async createBusinessDetails(userId, businessData) {
     try {
-      console.log('Creating business details for user:', userId);
-      console.log('Business data received:', businessData);
 
       // Check if user exists
       const user = await this.User.findById(userId);
@@ -164,12 +162,12 @@ class AccountService {
       if (!businessData.business_type) {
         throw new Error('Business type is required');
       }
-      if (!businessData.estate_agent_license) {
-        throw new Error('Estate agent license is required');
-      }
-      if (!businessData.redress_scheme) {
-        throw new Error('Redress scheme is required');
-      }
+      // if (!businessData.estate_agent_license) {
+      //   throw new Error('Estate agent license is required');
+      // }
+      // if (!businessData.redress_scheme) {
+      //   throw new Error('Redress scheme is required');
+      // }
       if (!businessData.business_address || !businessData.business_address.street) {
         throw new Error('Business address street is required');
       }

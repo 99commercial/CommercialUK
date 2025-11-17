@@ -526,9 +526,9 @@ const UpdateGeneralDetailsForm: React.FC<UpdateGeneralDetailsFormProps> = ({
             disabled={isSubmitting || !hasChanges}
             sx={{
               minWidth: 200,
-              backgroundColor: hasChanges ? '#dc2626' : '#9ca3af',
+              backgroundColor: hasChanges ? '#f2c514' : '#9ca3af',
               '&:hover': {
-                backgroundColor: hasChanges ? '#b91c1c' : '#9ca3af',
+                backgroundColor: hasChanges ? '#d4a912' : '#9ca3af',
               },
             }}
           >

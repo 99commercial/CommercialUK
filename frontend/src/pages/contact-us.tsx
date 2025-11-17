@@ -28,7 +28,7 @@ const ContactUs: NextPage = () => {
             py: { xs: 10, md: 16 },
             color: 'common.white',
             background:
-              'linear-gradient(135deg, rgba(220,53,69,0.85) 0%, rgba(220,53,69,0.75) 100%), url(https://static.vecteezy.com/system/resources/previews/042/237/066/non_2x/flat-illustration-group-business-team-meeting-and-creative-agency-workspace-vector.jpg) center/cover no-repeat',
+              'linear-gradient(135deg, rgba(242, 197, 20,0.85) 0%, rgba(242, 197, 20,0.75) 100%), url(https://static.vecteezy.com/system/resources/previews/042/237/066/non_2x/flat-illustration-group-business-team-meeting-and-creative-agency-workspace-vector.jpg) center/cover no-repeat',
             borderRadius: 2,
             mb: 6
           }}
@@ -78,7 +78,7 @@ const ContactUs: NextPage = () => {
                   Talk to our CommercialUK property marketing experts and find out about bespoke advertising
                   solutions that enable you to connect with buyers, tenants, and investors in the UK.
                 </Typography>
-                <Button variant="contained" color="error">
+                <Button variant="contained" sx={{ backgroundColor: '#f2c514', '&:hover': { backgroundColor: '#c9a010' } }}>
                   Connect with us
                 </Button>
               </Box>
@@ -110,7 +110,7 @@ const ContactUs: NextPage = () => {
                   We’re here to help you every step of the way. Our dedicated support team can assist with
                   listings, payments, account access, and more — so you can focus on what matters most.
                 </Typography>
-                <Button variant="contained" color="error">
+                <Button variant="contained" sx={{ backgroundColor: '#f2c514', '&:hover': { backgroundColor: '#c9a010' } }}>
                   Get Help
                 </Button>
               </Box>

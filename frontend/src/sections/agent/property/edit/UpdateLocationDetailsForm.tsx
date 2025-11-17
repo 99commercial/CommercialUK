@@ -207,19 +207,63 @@ const UpdateLocationDetailsForm: React.FC<UpdateLocationDetailsFormProps> = ({
   const validateForm = (): boolean => {
     const errors: Record<string, string> = {};
 
-    // Validate coordinates
-    if (formData.coordinates.latitude && 
-        (formData.coordinates.latitude < -90 || formData.coordinates.latitude > 90)) {
+    // Validate required fields - latitude
+    if (!formData.coordinates.latitude || formData.coordinates.latitude === 0) {
+      errors.latitude = 'Latitude is required';
+    } else if (formData.coordinates.latitude < -90 || formData.coordinates.latitude > 90) {
       errors.latitude = 'Latitude must be between -90 and 90';
     }
 
-    if (formData.coordinates.longitude && 
-        (formData.coordinates.longitude < -180 || formData.coordinates.longitude > 180)) {
+    // Validate required fields - longitude
+    if (!formData.coordinates.longitude || formData.coordinates.longitude === 0) {
+      errors.longitude = 'Longitude is required';
+    } else if (formData.coordinates.longitude < -180 || formData.coordinates.longitude > 180) {
       errors.longitude = 'Longitude must be between -180 and 180';
     }
 
-    // Validate zoom level
-    if (formData.map_settings.map_zoom_level !== null && formData.map_settings.map_zoom_level !== undefined && 
+    // Validate required fields - postal_code
+    if (!formData.address_details.postal_code || formData.address_details.postal_code.trim() === '') {
+      errors.postal_code = 'Postal code is required';
+    }
+
+    // Validate required fields - formatted_address
+    if (!formData.address_details.formatted_address || formData.address_details.formatted_address.trim() === '') {
+      errors.formatted_address = 'Formatted address is required';
+    }
+
+    // Validate required fields - country
+    if (!formData.address_details.country || formData.address_details.country.trim() === '') {
+      errors.country = 'Country is required';
+    }
+
+    // Validate required fields - route
+    if (!formData.address_details.route || formData.address_details.route.trim() === '') {
+      errors.route = 'Route is required';
+    }
+
+    // Validate required fields - locality
+    if (!formData.address_details.locality || formData.address_details.locality.trim() === '') {
+      errors.locality = 'Locality is required';
+    }
+
+    // Validate required fields - administrative_area_level_1
+    if (!formData.address_details.administrative_area_level_1 || formData.address_details.administrative_area_level_1.trim() === '') {
+      errors.administrative_area_level_1 = 'Administrative area level 1 is required';
+    }
+
+    // Validate required fields - administrative_area_level_2
+    if (!formData.address_details.administrative_area_level_2 || formData.address_details.administrative_area_level_2.trim() === '') {
+      errors.administrative_area_level_2 = 'Administrative area level 2 is required';
+    }
+
+    // Validate required fields - street_number
+    if (!formData.address_details.street_number || formData.address_details.street_number.trim() === '') {
+      errors.street_number = 'Street number is required';
+    }
+
+    // Validate zoom level (only if map display is not disabled)
+    if (!formData.map_settings.disable_map_display && 
+        formData.map_settings.map_zoom_level !== null && formData.map_settings.map_zoom_level !== undefined && 
         (formData.map_settings.map_zoom_level < 0 || formData.map_settings.map_zoom_level > 20)) {
       errors.zoom_level = 'Zoom level must be between 0 and 20';
     }
@@ -236,6 +280,14 @@ const UpdateLocationDetailsForm: React.FC<UpdateLocationDetailsFormProps> = ({
         [field]: value
       }
     }));
+    // Clear error when user starts typing
+    if (fieldErrors[field]) {
+      setFieldErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
   };
 
   const handleAddressChange = (field: string, value: any) => {
@@ -246,6 +298,14 @@ const UpdateLocationDetailsForm: React.FC<UpdateLocationDetailsFormProps> = ({
         [field]: value
       }
     }));
+    // Clear error when user starts typing
+    if (fieldErrors[field]) {
+      setFieldErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
   };
 
   const handleGeocodingInfoChange = (field: string, value: any) => {
@@ -259,13 +319,23 @@ const UpdateLocationDetailsForm: React.FC<UpdateLocationDetailsFormProps> = ({
   };
 
   const handleMapSettingsChange = (field: string, value: any) => {
-    setFormData(prev => ({
-      ...prev,
-      map_settings: {
+    setFormData(prev => {
+      const newMapSettings = {
         ...prev.map_settings,
         [field]: value
+      };
+      
+      // If disable_map_display is enabled, clear map_type and map_zoom_level
+      if (field === 'disable_map_display' && value === true) {
+        newMapSettings.map_type = '';
+        newMapSettings.map_zoom_level = 1;
       }
-    }));
+      
+      return {
+        ...prev,
+        map_settings: newMapSettings
+      };
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -312,7 +382,7 @@ const handleGeocode = async () => {
   const postcode = formData.address_details?.postal_code?.trim();
   if (!postcode) {
     setFieldErrors({
-      'address_details.postal_code': 'Please enter a valid postal code before geocoding.',
+      postal_code: 'Please enter a valid postal code before geocoding.',
     });
     enqueueSnackbar("Please enter a valid postal code before geocoding.", { variant: 'error' });
     return;
@@ -384,10 +454,11 @@ const handleGeocode = async () => {
                 <TextField
                   label="Postal Code"
                   fullWidth
+                  required
                   value={formData.address_details.postal_code || ''}
                   onChange={(e) => handleAddressChange('postal_code', e.target.value)}
-                  error={!!fieldErrors['address_details.postal_code']}
-                  helperText={fieldErrors['address_details.postal_code']}
+                  error={!!fieldErrors.postal_code || !!fieldErrors['address_details.postal_code']}
+                  helperText={fieldErrors.postal_code || fieldErrors['address_details.postal_code']}
                 />
               </Box>
 
@@ -396,6 +467,7 @@ const handleGeocode = async () => {
                   label="Latitude"
                   type="number"
                   fullWidth
+                  required
                   value={formData.coordinates.latitude || ''}
                   onChange={(e) => handleCoordinatesChange('latitude', parseFloat(e.target.value) || 0)}
                   error={!!fieldErrors.latitude}
@@ -409,6 +481,7 @@ const handleGeocode = async () => {
                   label="Longitude"
                   type="number"
                   fullWidth
+                  required
                   value={formData.coordinates.longitude || ''}
                   onChange={(e) => handleCoordinatesChange('longitude', parseFloat(e.target.value) || 0)}
                   error={!!fieldErrors.longitude}
@@ -465,20 +538,29 @@ const handleGeocode = async () => {
               <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: '3fr 5fr 4fr' }, gap: 2 }}>
                   <TextField
                     label="Street Number"
+                    required
                     value={formData.address_details.street_number || ''}
                     onChange={(e) => handleAddressChange('street_number', e.target.value)}
+                    error={!!fieldErrors.street_number}
+                    helperText={fieldErrors.street_number}
                     fullWidth
                   />
                   <TextField
                     label="Route"
+                    required
                     value={formData.address_details.route || ''}
                     onChange={(e) => handleAddressChange('route', e.target.value)}
+                    error={!!fieldErrors.route}
+                    helperText={fieldErrors.route}
                     fullWidth
                   />
                   <TextField
                     label="Locality"
+                    required
                     value={formData.address_details.locality || ''}
                     onChange={(e) => handleAddressChange('locality', e.target.value)}
+                    error={!!fieldErrors.locality}
+                    helperText={fieldErrors.locality}
                     fullWidth
                   />
               </Box>
@@ -486,14 +568,20 @@ const handleGeocode = async () => {
               <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' }, gap: 2 }}>
                   <TextField
                     label="Administrative Area Level 1"
+                    required
                     value={formData.address_details.administrative_area_level_1 || ''}
                     onChange={(e) => handleAddressChange('administrative_area_level_1', e.target.value)}
+                    error={!!fieldErrors.administrative_area_level_1}
+                    helperText={fieldErrors.administrative_area_level_1}
                     fullWidth
                   />
                   <TextField
                     label="Administrative Area Level 2"
+                    required
                     value={formData.address_details.administrative_area_level_2 || ''}
                     onChange={(e) => handleAddressChange('administrative_area_level_2', e.target.value)}
+                    error={!!fieldErrors.administrative_area_level_2}
+                    helperText={fieldErrors.administrative_area_level_2}
                     fullWidth
                   />
               </Box>
@@ -501,16 +589,22 @@ const handleGeocode = async () => {
               <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr' }, gap: 2 }}>
                   <TextField
                     label="Country"
+                    required
                     value={formData.address_details.country || ''}
                     onChange={(e) => handleAddressChange('country', e.target.value)}
+                    error={!!fieldErrors.country}
+                    helperText={fieldErrors.country}
                     fullWidth
                   />
               </Box>
 
               <TextField
                 label="Formatted Address"
+                required
                 value={formData.address_details.formatted_address || ''}
                 onChange={(e) => handleAddressChange('formatted_address', e.target.value)}
+                error={!!fieldErrors.formatted_address}
+                helperText={fieldErrors.formatted_address}
                 fullWidth
                 multiline
                 rows={2}
@@ -535,46 +629,51 @@ const handleGeocode = async () => {
               <Map color="primary" />
               Map Settings
             </Typography>
-            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 2, width: '100%', alignItems: 'center' }}>
-              <Box>
-                <FormControl fullWidth>
-                  <InputLabel>Map Type</InputLabel>
-                  <Select
-                    value={formData.map_settings.map_type || 'roadmap'}
-                    onChange={(e) => handleMapSettingsChange('map_type', e.target.value)}
-                    label="Map Type"
-                  >
-                    {mapTypes.map((type) => (
-                      <MenuItem key={type} value={type}>
-                        {type}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Box>
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: formData.map_settings.disable_map_display ? '1fr' : 'repeat(2, 1fr)', md: formData.map_settings.disable_map_display ? '1fr' : 'repeat(3, 1fr)' }, gap: 2, width: '100%', alignItems: 'center' }}>
+              {/* Only show Map Type and Zoom Level if map display is not disabled */}
+              {!formData.map_settings.disable_map_display && (
+                <>
+                  <Box>
+                    <FormControl fullWidth>
+                      <InputLabel>Map Type</InputLabel>
+                      <Select
+                        value={formData.map_settings.map_type || 'roadmap'}
+                        onChange={(e) => handleMapSettingsChange('map_type', e.target.value)}
+                        label="Map Type"
+                      >
+                        {mapTypes.map((type) => (
+                          <MenuItem key={type} value={type}>
+                            {type}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Box>
 
-              <Box>
-                <TextField
-                  label="Zoom Level"
-                  type="number"
-                  fullWidth
-                  value={formData.map_settings.map_zoom_level || ''}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    if (value === '') {
-                      handleMapSettingsChange('map_zoom_level', '');
-                    } else {
-                      const numValue = parseInt(value);
-                      if (!isNaN(numValue) && numValue >= 0 && numValue <= 20) {
-                        handleMapSettingsChange('map_zoom_level', numValue);
-                      }
-                    }
-                  }}
-                  error={!!fieldErrors.zoom_level}
-                  helperText={fieldErrors.zoom_level}
-                  inputProps={{ min: 0, max: 20 }}
-                />
-              </Box>
+                  <Box>
+                    <TextField
+                      label="Zoom Level"
+                      type="number"
+                      fullWidth
+                      value={formData.map_settings.map_zoom_level || ''}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (value === '') {
+                          handleMapSettingsChange('map_zoom_level', '');
+                        } else {
+                          const numValue = parseInt(value);
+                          if (!isNaN(numValue) && numValue >= 0 && numValue <= 20) {
+                            handleMapSettingsChange('map_zoom_level', numValue);
+                          }
+                        }
+                      }}
+                      error={!!fieldErrors.zoom_level}
+                      helperText={fieldErrors.zoom_level}
+                      inputProps={{ min: 0, max: 20 }}
+                    />
+                  </Box>
+                </>
+              )}
 
               <Box>
                 <FormControlLabel
@@ -602,21 +701,32 @@ const handleGeocode = async () => {
                 control={
                   <Switch
                     checked={formData.location_verified || false}
-                    onChange={(e) => setFormData(prev => ({ ...prev, location_verified: e.target.checked }))}
+                    onChange={(e) => {
+                      const isVerified = e.target.checked;
+                      setFormData(prev => ({
+                        ...prev,
+                        location_verified: isVerified,
+                        // Clear verification_notes if location is not verified
+                        verification_notes: isVerified ? prev.verification_notes : ''
+                      }));
+                    }}
                   />
                 }
                 label="Location Verified"
               />
               
-              <TextField
-                label="Verification Notes"
-                value={formData.verification_notes || ''}
-                onChange={(e) => setFormData(prev => ({ ...prev, verification_notes: e.target.value }))}
-                fullWidth
-                multiline
-                rows={3}
-                placeholder="Additional notes about location verification"
-              />
+              {/* Only show Verification Notes if location is verified */}
+              {formData.location_verified && (
+                <TextField
+                  label="Verification Notes"
+                  value={formData.verification_notes || ''}
+                  onChange={(e) => setFormData(prev => ({ ...prev, verification_notes: e.target.value }))}
+                  fullWidth
+                  multiline
+                  rows={3}
+                  placeholder="Additional notes about location verification"
+                />
+              )}
             </Box>
           </CardContent>
         </Card>

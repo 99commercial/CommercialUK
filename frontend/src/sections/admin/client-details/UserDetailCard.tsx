@@ -42,7 +42,7 @@ const ProfileBanner = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'space-between',
   padding: theme.spacing(4),
-  background: '#dc2626',
+  background: '#f2c514',
   color: 'white',
   borderRadius: '12px 12px 0 0',
   position: 'relative',
@@ -86,7 +86,7 @@ const UserDetailCard: React.FC<UserDetailCardProps> = ({ userData }) => {
       case 'pending':
         return '#f59e0b';
       case 'suspended':
-        return '#ef4444';
+        return '#f2c514';
       case 'inactive':
         return '#6b7280';
       default:
@@ -136,7 +136,7 @@ const UserDetailCard: React.FC<UserDetailCardProps> = ({ userData }) => {
                 width: 20,
                 height: 20,
                 borderRadius: '50%',
-                backgroundColor: userData?.is_active ? '#10b981' : '#ef4444',
+                backgroundColor: userData?.is_active ? '#10b981' : '#f2c514',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -168,7 +168,7 @@ const UserDetailCard: React.FC<UserDetailCardProps> = ({ userData }) => {
           {/* Personal Details Section */}
           <Typography variant="h6" sx={{ 
             fontWeight: 700, 
-            color: '#dc2626',
+            color: '#f2c514',
             mb: 3,
           }}>
             Personal Details
@@ -249,7 +249,7 @@ const UserDetailCard: React.FC<UserDetailCardProps> = ({ userData }) => {
           {/* Account Information Section */}
           <Typography variant="h6" sx={{ 
             fontWeight: 700, 
-            color: '#dc2626',
+            color: '#f2c514',
             mb: 3,
           }}>
             Account Information

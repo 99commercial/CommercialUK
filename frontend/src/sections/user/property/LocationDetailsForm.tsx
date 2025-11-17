@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Box,
   TextField,
@@ -76,9 +76,12 @@ interface LocationDetailsFormData {
 
 interface LocationDetailsFormProps {
   onStepSubmitted?: (step: number) => void;
+  propertyData?: any;
+  hasExistingData?: boolean;
+  fetchPropertyData?: () => void;
 }
 
-const LocationDetailsForm: React.FC<LocationDetailsFormProps> = ({ onStepSubmitted }) => {
+const LocationDetailsForm: React.FC<LocationDetailsFormProps> = ({ onStepSubmitted, propertyData, hasExistingData, fetchPropertyData }) => {
   const {
     formState: { errors },
     setValue,
@@ -90,6 +93,9 @@ const LocationDetailsForm: React.FC<LocationDetailsFormProps> = ({ onStepSubmitt
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [originalData, setOriginalData] = useState<LocationDetailsFormData | null>(null);
+  const lastPropertyIdRef = React.useRef<string | null>(null);
+  const hasInitializedRef = React.useRef<boolean>(false);
   const [formData, setFormData] = useState<LocationDetailsFormData>({
     coordinates: {
       latitude: undefined,
@@ -119,6 +125,57 @@ const LocationDetailsForm: React.FC<LocationDetailsFormProps> = ({ onStepSubmitt
     location_verified: false,
     verification_notes: '',
   });
+
+  // Initialize form data from propertyData.location_id
+  useEffect(() => {
+    const currentPropertyId = propertyData?._id || null;
+    
+    if (propertyData?.location_id) {
+      const locationData = propertyData.location_id;
+      
+      // Only update if:
+      // 1. We haven't initialized yet OR the property ID has changed to a different property
+      const shouldInitialize = !hasInitializedRef.current || 
+        (currentPropertyId !== null && lastPropertyIdRef.current !== currentPropertyId);
+      
+      if (shouldInitialize) {
+        const initializedData: LocationDetailsFormData = {
+          coordinates: locationData.coordinates || {
+            latitude: undefined,
+            longitude: undefined,
+          },
+          address_details: locationData.address_details || {
+            formatted_address: '',
+            street_number: '',
+            route: '',
+            locality: '',
+            administrative_area_level_1: '',
+            administrative_area_level_2: '',
+            country: '',
+            postal_code: '',
+          },
+          map_settings: locationData.map_settings || {
+            disable_map_display: false,
+            map_zoom_level: undefined,
+            map_type: '',
+          },
+          geocoding_info: locationData.geocoding_info || {
+            place_id: '',
+            geocoding_service: '',
+            geocoding_accuracy: '',
+            geocoded_at: '',
+          },
+          location_verified: locationData.location_verified || false,
+          verification_notes: locationData.verification_notes || '',
+        };
+        
+        setFormData(initializedData);
+        setOriginalData({ ...initializedData });
+        lastPropertyIdRef.current = currentPropertyId;
+        hasInitializedRef.current = true;
+      }
+    }
+  }, [propertyData?.location_id, propertyData?._id]);
   
   // Type-safe error access - checks both react-hook-form errors and backend field errors
   const getFieldError = (fieldPath: string) => {
@@ -132,13 +189,103 @@ const LocationDetailsForm: React.FC<LocationDetailsFormProps> = ({ onStepSubmitt
     return fieldErrors[fieldPath] || '';
   };
 
-  // Get property ID from localStorage (stored from previous response)
+  // Get property ID from localStorage or propertyData
   const getPropertyId = () => {
+    if (propertyData?._id) {
+      return propertyData._id;
+    }
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('propertyId');
+      return localStorage.getItem('newpropertyId') || localStorage.getItem('propertyId');
     }
     return null;
   };
+
+  // Helper function to normalize values for comparison
+  const normalizeValue = (value: any): any => {
+    if (value === null || value === undefined || value === '') {
+      return '';
+    }
+    if (typeof value === 'string') {
+      const trimmed = value.trim();
+      if (trimmed === '') return '';
+      const num = Number(trimmed);
+      if (!isNaN(num) && trimmed !== '') {
+        return num;
+      }
+      return trimmed;
+    }
+    if (typeof value === 'number') {
+      return value;
+    }
+    if (typeof value === 'boolean') {
+      return value;
+    }
+    return value;
+  };
+
+  // Check if form data has changed from original
+  const hasChanges = useMemo(() => {
+    if (!hasExistingData || !propertyData?.location_id || !originalData) {
+      return false;
+    }
+
+    const locationData = propertyData.location_id;
+
+    // Compare coordinates
+    const currentLat = normalizeValue(formData.coordinates?.latitude);
+    const originalLat = normalizeValue(locationData.coordinates?.latitude);
+    const currentLng = normalizeValue(formData.coordinates?.longitude);
+    const originalLng = normalizeValue(locationData.coordinates?.longitude);
+    const coordinatesChanged = currentLat !== originalLat || currentLng !== originalLng;
+
+    // Compare address_details
+    const addressFields = [
+      'formatted_address',
+      'street_number',
+      'route',
+      'locality',
+      'administrative_area_level_1',
+      'administrative_area_level_2',
+      'country',
+      'postal_code',
+    ];
+    const addressChanged = addressFields.some(field => {
+      const current = normalizeValue(formData.address_details?.[field as keyof typeof formData.address_details]);
+      const original = normalizeValue(locationData.address_details?.[field as keyof typeof locationData.address_details]);
+      return current !== original;
+    });
+
+    // Compare map_settings
+    const mapSettingsChanged = 
+      normalizeValue(formData.map_settings?.disable_map_display) !== normalizeValue(locationData.map_settings?.disable_map_display) ||
+      normalizeValue(formData.map_settings?.map_zoom_level) !== normalizeValue(locationData.map_settings?.map_zoom_level) ||
+      normalizeValue(formData.map_settings?.map_type) !== normalizeValue(locationData.map_settings?.map_type);
+
+    // Compare geocoding_info
+    const geocodingFields = ['place_id', 'geocoding_service', 'geocoding_accuracy', 'geocoded_at'];
+    const geocodingChanged = geocodingFields.some(field => {
+      const current = normalizeValue(formData.geocoding_info?.[field as keyof typeof formData.geocoding_info]);
+      const original = normalizeValue(locationData.geocoding_info?.[field as keyof typeof locationData.geocoding_info]);
+      return current !== original;
+    });
+
+    // Compare location_verified and verification_notes
+    const verificationChanged = 
+      normalizeValue(formData.location_verified) !== normalizeValue(locationData.location_verified) ||
+      normalizeValue(formData.verification_notes) !== normalizeValue(locationData.verification_notes);
+
+    return coordinatesChanged || addressChanged || mapSettingsChanged || geocodingChanged || verificationChanged;
+  }, [
+    formData,
+    propertyData?.location_id,
+    hasExistingData,
+    originalData
+  ]);
+
+  // Check if location data exists
+  const hasLocationData = useMemo(() => {
+    return !!(propertyData?.location_id?._id);
+  }, [propertyData?.location_id?._id]);
 
   // Clear field error when user starts typing
   const clearFieldError = (fieldPath: string) => {
@@ -151,54 +298,165 @@ const LocationDetailsForm: React.FC<LocationDetailsFormProps> = ({ onStepSubmitt
     }
   };
 
-// Real geocoding function using postcode
-const handleGeocode = async () => {
-  const postcode = formData.address_details?.postal_code?.trim();
-  if (!postcode) {
-    setFieldErrors({
-      'address_details.postal_code': 'Please enter a valid postal code before geocoding.',
-    });
-    enqueueSnackbar("Please enter a valid postal code before geocoding.", { variant: 'error' });
-    return;
-  }
-
-  setIsGeocoding(true);
-  try {
-    // Call OpenStreetMap's Nominatim API
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?postalcode=${encodeURIComponent(
-        postcode
-      )}&format=json&addressdetails=1&limit=1`
-    );
-    const data = await response.json();
-
-    if (data && data.length > 0) {
-      const location = data[0];
-
-      setFormData((prev) => ({
-        ...prev,
-        coordinates: {
-          ...prev.coordinates,
-          latitude: parseFloat(location.lat),
-          longitude: parseFloat(location.lon),
-        },
-      }));
-    } else {
-      alert("No results found for the given postal code.");
+  // Real geocoding function using postcode
+  const handleGeocode = async () => {
+    const postcode = formData.address_details?.postal_code?.trim();
+    if (!postcode) {
+      setFieldErrors({
+        'address_details.postal_code': 'Please enter a valid postal code before geocoding.',
+      });
+      enqueueSnackbar("Please enter a valid postal code before geocoding.", { variant: 'error' });
+      return;
     }
-  } catch (error) {
-    console.error("Geocoding failed:", error);
-    alert("Failed to fetch location data. Please try again.");
-  } finally {
-    setIsGeocoding(false);
-  }
-};
+
+    setIsGeocoding(true);
+    try {
+      // Call OpenStreetMap's Nominatim API
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?postalcode=${encodeURIComponent(
+          postcode
+        )}&format=json&addressdetails=1&limit=1`
+      );
+      const data = await response.json();
+
+      if (data && data.length > 0) {
+        const location = data[0];
+
+        setFormData((prev) => ({
+          ...prev,
+          coordinates: {
+            ...prev.coordinates,
+            latitude: parseFloat(location.lat),
+            longitude: parseFloat(location.lon),
+          },
+        }));
+      } else {
+        alert("No results found for the given postal code.");
+      }
+    } catch (error) {
+      console.error("Geocoding failed:", error);
+      alert("Failed to fetch location data. Please try again.");
+    } finally {
+      setIsGeocoding(false);
+    }
+  };
+
+  // Helper function to clean data before sending
+  const cleanLocationData = (data: LocationDetailsFormData) => {
+    const cleanedData = JSON.parse(JSON.stringify(data)); // Deep clone
+    
+    // Clean map_settings
+    if (cleanedData.map_settings) {
+      // Remove empty strings from map_settings.map_type
+      if (cleanedData.map_settings.map_type === '' || cleanedData.map_settings.map_type === undefined) {
+        delete cleanedData.map_settings.map_type;
+      }
+      
+      // If map is disabled, don't send map_zoom_level and map_type
+      if (cleanedData.map_settings.disable_map_display) {
+        delete cleanedData.map_settings.map_zoom_level;
+        delete cleanedData.map_settings.map_type;
+      }
+    }
+    
+    // Clean geocoding_info enum fields
+    if (cleanedData.geocoding_info) {
+      if (cleanedData.geocoding_info.geocoding_service === '' || cleanedData.geocoding_info.geocoding_service === undefined) {
+        delete cleanedData.geocoding_info.geocoding_service;
+      }
+      
+      if (cleanedData.geocoding_info.geocoding_accuracy === '' || cleanedData.geocoding_info.geocoding_accuracy === undefined) {
+        delete cleanedData.geocoding_info.geocoding_accuracy;
+      }
+      
+      // Remove empty strings from optional fields
+      if (cleanedData.geocoding_info.place_id === '') {
+        delete cleanedData.geocoding_info.place_id;
+      }
+      
+      if (cleanedData.geocoding_info.geocoded_at === '') {
+        delete cleanedData.geocoding_info.geocoded_at;
+      }
+    }
+    
+    // Remove verification_notes if empty
+    if (cleanedData.verification_notes === '') {
+      delete cleanedData.verification_notes;
+    }
+    
+    return cleanedData;
+  };
 
   const handleSave = async () => {
-    const propertyId = getPropertyId();
+      const propertyId = getPropertyId();
+      
+      if (!propertyId) {
+        setSaveError('Property ID not found. Please complete the previous steps first.');
+        return;
+      }
+
+      setIsSaving(true);
+      setSaveError(null);
+      setSaveSuccess(false);
+      setFieldErrors({});
+
+      try {
+        const cleanedData = cleanLocationData(formData);
+        
+        let response = await axiosInstance.put(`/api/user/properties/${propertyId}/location`, cleanedData);
+        
+        console.log(response.data.data._id);
+        
+        enqueueSnackbar(response.data.message, { variant: 'success' });
+        
+        setSaveSuccess(true);
+        setIsSubmitted(true);
+        
+        // Update original data after successful save
+        setOriginalData({ ...formData });
+        
+        setTimeout(() => setSaveSuccess(false), 3000); // Hide success message after 3 seconds
+        
+        // Notify parent component that step 3 has been successfully submitted
+
+        fetchPropertyData?.();
+        if (onStepSubmitted) {
+          onStepSubmitted(3);
+        }
+      } catch (error: any) {
+        console.error('Error saving location details:', error);
+        
+        // Handle field-specific validation errors
+        if (error.errors && Array.isArray(error.errors) && error.errors.length > 0) {
+          const fieldErrorMap: Record<string, string> = {};
+          
+          error.errors.forEach((err: any) => {
+            if (err.path) {
+              let fieldPath = err.path.replace(/\[(\d+)\]/g, '.$1');
+              fieldErrorMap[fieldPath] = err.msg;
+            }
+          });
+          
+          setFieldErrors(fieldErrorMap);
+          
+          const errorMessage =  'Please fix the validation errors below.';
+          setSaveError(errorMessage);
+          enqueueSnackbar(errorMessage, { variant: 'error' });
+        } else {
+          const errorMessage = error.response?.data?.message || error.message || 'Failed to save location details. Please try again.';
+          setSaveError(errorMessage);
+          enqueueSnackbar(errorMessage, { variant: 'error' });
+        }
+      } finally {
+        setIsSaving(false);
+      }
+  };
+
+  const handleUpdateLocation = async () => {
+    const locationId = propertyData?.location_id?._id;
     
-    if (!propertyId) {
-      setSaveError('Property ID not found. Please complete the previous steps first.');
+    if (!locationId) {
+      setSaveError('Location ID not found. Please save location details first.');
       return;
     }
 
@@ -208,52 +466,52 @@ const handleGeocode = async () => {
     setFieldErrors({});
 
     try {
-      let response = await axiosInstance.put(`/api/user/properties/${propertyId}/location`, formData);
+      const cleanedData = cleanLocationData(formData);
       
-      console.log(response.data.data._id);
+      // Use PATCH endpoint for updating location
+      const response = await axiosInstance.patch(
+        `/api/user/property-location/${locationId}`,
+        cleanedData
+      );
       
-      enqueueSnackbar(response.data.message, { variant: 'success' });
+      enqueueSnackbar(response.data.message || 'Location details updated successfully!', { variant: 'success' });
+      
+      // Update original data after successful update
+      setOriginalData({ ...formData });
       
       setSaveSuccess(true);
-      setIsSubmitted(true);
-      setTimeout(() => setSaveSuccess(false), 3000); // Hide success message after 3 seconds
+      setIsSubmitted(false); // Allow multiple updates
       
-      // Notify parent component that step 3 has been successfully submitted
-      if (onStepSubmitted) {
-        onStepSubmitted(3);
+      // Refresh property data if callback is provided
+      if (fetchPropertyData) {
+        fetchPropertyData();
       }
+      
+      setTimeout(() => setSaveSuccess(false), 3000);
+
+      fetchPropertyData();
+      
     } catch (error: any) {
-      console.error('Error saving location details:', error);
+      console.error('Error updating location details:', error);
       
       // Handle field-specific validation errors
-      if (error.errors && Array.isArray(error.errors)) {
+      if (error.response?.data?.errors && Array.isArray(error.response.data.errors)) {
         const fieldErrorMap: Record<string, string> = {};
         
-        console.log('Processing validation errors:', error.errors);
-        
-        error.errors.forEach((err: any) => {
-          console.log('Processing error:', err);
+        error.response.data.errors.forEach((err: any) => {
           if (err.path) {
-            // Convert backend path format to frontend format
-            // Backend: "coordinates.latitude" -> Frontend: "coordinates.latitude"
-            // Backend: "address_details[0].street_number" -> Frontend: "address_details.0.street_number"
             let fieldPath = err.path.replace(/\[(\d+)\]/g, '.$1');
-            
-            console.log('Field path mapped:', fieldPath, 'from path:', err.path);
             fieldErrorMap[fieldPath] = err.msg;
           }
         });
         
-        console.log('Field error map created:', fieldErrorMap);
         setFieldErrors(fieldErrorMap);
         
-        // Show general error message
-        const errorMessage = error.message || 'Please fix the validation errors below.';
+        const errorMessage = error.response?.data?.message || error.message || 'Please fix the validation errors below.';
         setSaveError(errorMessage);
         enqueueSnackbar(errorMessage, { variant: 'error' });
       } else {
-        // Handle general errors
-        const errorMessage = error.message || 'Failed to save location details. Please try again.';
+        const errorMessage = error.response?.data?.message || error.message || 'Failed to update location details. Please try again.';
         setSaveError(errorMessage);
         enqueueSnackbar(errorMessage, { variant: 'error' });
       }
@@ -323,6 +581,7 @@ const handleGeocode = async () => {
                     label="Latitude"
                     type="number"
                     fullWidth
+                    required
                     value={formData.coordinates?.latitude || ''}
                     error={!!getFieldError('coordinates.latitude')}
                     helperText={getFieldError('coordinates.latitude')}
@@ -346,6 +605,7 @@ const handleGeocode = async () => {
                     label="Longitude"
                     type="number"
                     fullWidth
+                    required
                     value={formData.coordinates?.longitude || ''}
                     error={!!getFieldError('coordinates.longitude')}
                     helperText={getFieldError('coordinates.longitude')}
@@ -386,6 +646,7 @@ const handleGeocode = async () => {
                     fullWidth
                     multiline
                     rows={2}
+                    required
                     value={formData.address_details?.formatted_address || ''}
                     error={!!getFieldError('address_details.formatted_address')}
                     helperText={getFieldError('address_details.formatted_address')}
@@ -408,6 +669,7 @@ const handleGeocode = async () => {
                     <TextField
                       label="Street Number"
                       fullWidth
+                      required
                       value={formData.address_details?.street_number || ''}
                       error={!!getFieldError('address_details.street_number')}
                       helperText={getFieldError('address_details.street_number')}
@@ -429,6 +691,7 @@ const handleGeocode = async () => {
                     <TextField
                       label="Route/Street Name"
                       fullWidth
+                      required
                       value={formData.address_details?.route || ''}
                       error={!!getFieldError('address_details.route')}
                       helperText={getFieldError('address_details.route')}
@@ -452,6 +715,7 @@ const handleGeocode = async () => {
                     <TextField
                       label="Locality"
                       fullWidth
+                      required
                       value={formData.address_details?.locality || ''}
                       error={!!getFieldError('address_details.locality')}
                       helperText={getFieldError('address_details.locality')}
@@ -473,6 +737,7 @@ const handleGeocode = async () => {
                     <TextField
                       label="Administrative Area Level 1"
                       fullWidth
+                      required
                       value={formData.address_details?.administrative_area_level_1 || ''}
                       error={!!getFieldError('address_details.administrative_area_level_1')}
                       helperText={getFieldError('address_details.administrative_area_level_1')}
@@ -496,6 +761,7 @@ const handleGeocode = async () => {
                     <TextField
                       label="Administrative Area Level 2"
                       fullWidth
+                      required
                       value={formData.address_details?.administrative_area_level_2 || ''}
                       error={!!getFieldError('address_details.administrative_area_level_2')}
                       helperText={getFieldError('address_details.administrative_area_level_2')}
@@ -517,6 +783,7 @@ const handleGeocode = async () => {
                     <TextField
                       label="Country"
                       fullWidth
+                      required
                       value={formData.address_details?.country || ''}
                       error={!!getFieldError('address_details.country')}
                       helperText={getFieldError('address_details.country')}
@@ -571,61 +838,60 @@ const handleGeocode = async () => {
                       label="Disable Map Display"
                     />
                   </Box>
-
-                  <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
-                    <TextField
-                      label="Map Zoom Level"
-                      type="number"
-                      fullWidth
-                      value={formData.map_settings?.map_zoom_level || ''}
-                      error={!!getFieldError('map_settings.map_zoom_level')}
-                      helperText={getFieldError('map_settings.map_zoom_level')}
-                      placeholder="1-20"
-                      inputProps={{ min: 1, max: 20 }}
-                      onChange={(e) => {
-                        setFormData(prev => ({
-                          ...prev,
-                          map_settings: {
-                            ...prev.map_settings,
-                            map_zoom_level: parseInt(e.target.value) || undefined
-                          }
-                        }));
-                        clearFieldError('map_settings.map_zoom_level');
-                      }}
-                    />
-                  </Box>
                 </Box>
 
-                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                  <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
-                    <FormControl fullWidth error={!!getFieldError('map_settings.map_type')}>
-                      <InputLabel>Map Type</InputLabel>
-                      <Select
-                        value={formData.map_settings?.map_type || ''}
-                        onChange={(e) => {
-                          setFormData(prev => ({
-                            ...prev,
-                            map_settings: {
-                              ...prev.map_settings,
-                              map_type: e.target.value
-                            }
-                          }));
-                          clearFieldError('map_settings.map_type');
-                        }}
-                        label="Map Type"
-                      >
-                        {mapTypes.map((type) => (
-                          <MenuItem key={type} value={type}>
-                            {type.charAt(0).toUpperCase() + type.slice(1)}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                      {getFieldError('map_settings.map_type') && (
-                        <FormHelperText>{getFieldError('map_settings.map_type')}</FormHelperText>
-                      )}
-                    </FormControl>
-                  </Box>
-                </Box>
+                {!formData.map_settings?.disable_map_display && (
+                  <>
+                    <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                      <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
+                        <TextField
+                          label="Map Zoom Level"
+                          type="number"
+                          fullWidth
+                          value={formData.map_settings?.map_zoom_level || ''}
+                          placeholder="1-20"
+                          inputProps={{ min: 1, max: 20 }}
+                          onChange={(e) => {
+                            setFormData(prev => ({
+                              ...prev,
+                              map_settings: {
+                                ...prev.map_settings,
+                                map_zoom_level: parseInt(e.target.value) || undefined
+                              }
+                            }));
+                          }}
+                        />
+                      </Box>
+                    </Box>
+
+                    <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                      <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
+                        <FormControl fullWidth>
+                          <InputLabel>Map Type</InputLabel>
+                          <Select
+                            value={formData.map_settings?.map_type || ''}
+                            onChange={(e) => {
+                              setFormData(prev => ({
+                                ...prev,
+                                map_settings: {
+                                  ...prev.map_settings,
+                                  map_type: e.target.value
+                                }
+                              }));
+                            }}
+                            label="Map Type"
+                          >
+                            {mapTypes.map((type) => (
+                              <MenuItem key={type} value={type}>
+                                {type.charAt(0).toUpperCase() + type.slice(1)}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Box>
+                    </Box>
+                  </>
+                )}
               </Box>
             </CardContent>
           </Card>
@@ -649,8 +915,6 @@ const handleGeocode = async () => {
                       label="Place ID"
                       fullWidth
                       value={formData.geocoding_info?.place_id || ''}
-                      error={!!getFieldError('geocoding_info.place_id')}
-                      helperText={getFieldError('geocoding_info.place_id')}
                       placeholder="Enter place ID from geocoding service"
                       onChange={(e) => {
                         setFormData(prev => ({
@@ -660,13 +924,12 @@ const handleGeocode = async () => {
                             place_id: e.target.value
                           }
                         }));
-                        clearFieldError('geocoding_info.place_id');
                       }}
                     />
                   </Box>
 
                   <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
-                    <FormControl fullWidth error={!!getFieldError('geocoding_info.geocoding_service')}>
+                    <FormControl fullWidth>
                       <InputLabel>Geocoding Service</InputLabel>
                       <Select
                         value={formData.geocoding_info?.geocoding_service || ''}
@@ -678,7 +941,6 @@ const handleGeocode = async () => {
                               geocoding_service: e.target.value
                             }
                           }));
-                          clearFieldError('geocoding_info.geocoding_service');
                         }}
                         label="Geocoding Service"
                       >
@@ -688,16 +950,13 @@ const handleGeocode = async () => {
                           </MenuItem>
                         ))}
                       </Select>
-                      {getFieldError('geocoding_info.geocoding_service') && (
-                        <FormHelperText>{getFieldError('geocoding_info.geocoding_service')}</FormHelperText>
-                      )}
                     </FormControl>
                   </Box>
                 </Box>
 
                 <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
                   <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
-                    <FormControl fullWidth error={!!getFieldError('geocoding_info.geocoding_accuracy')}>
+                    <FormControl fullWidth>
                       <InputLabel>Geocoding Accuracy</InputLabel>
                       <Select
                         value={formData.geocoding_info?.geocoding_accuracy || ''}
@@ -709,7 +968,6 @@ const handleGeocode = async () => {
                               geocoding_accuracy: e.target.value
                             }
                           }));
-                          clearFieldError('geocoding_info.geocoding_accuracy');
                         }}
                         label="Geocoding Accuracy"
                       >
@@ -719,9 +977,6 @@ const handleGeocode = async () => {
                           </MenuItem>
                         ))}
                       </Select>
-                      {getFieldError('geocoding_info.geocoding_accuracy') && (
-                        <FormHelperText>{getFieldError('geocoding_info.geocoding_accuracy')}</FormHelperText>
-                      )}
                     </FormControl>
                   </Box>
 
@@ -732,8 +987,6 @@ const handleGeocode = async () => {
                       fullWidth
                       InputLabelProps={{ shrink: true }}
                       value={formData.geocoding_info?.geocoded_at || ''}
-                      error={!!getFieldError('geocoding_info.geocoded_at')}
-                      helperText={getFieldError('geocoding_info.geocoded_at')}
                       onChange={(e) => {
                         setFormData(prev => ({
                           ...prev,
@@ -742,7 +995,6 @@ const handleGeocode = async () => {
                             geocoded_at: e.target.value
                           }
                         }));
-                        clearFieldError('geocoding_info.geocoded_at');
                       }}
                     />
                   </Box>
@@ -767,25 +1019,24 @@ const handleGeocode = async () => {
                   </Box>
                 </Box>
 
-                <Box>
-                  <TextField
-                    label="Verification Notes"
-                    fullWidth
-                    multiline
-                    rows={2}
-                    value={formData.verification_notes || ''}
-                    error={!!getFieldError('verification_notes')}
-                    helperText={getFieldError('verification_notes')}
-                    placeholder="Enter any notes about location verification"
-                    onChange={(e) => {
-                      setFormData(prev => ({
-                        ...prev,
-                        verification_notes: e.target.value
-                      }));
-                      clearFieldError('verification_notes');
-                    }}
-                  />
-                </Box>
+                {formData.location_verified && (
+                  <Box>
+                    <TextField
+                      label="Verification Notes"
+                      fullWidth
+                      multiline
+                      rows={2}
+                      value={formData.verification_notes || ''}
+                      placeholder="Enter any notes about location verification"
+                      onChange={(e) => {
+                        setFormData(prev => ({
+                          ...prev,
+                          verification_notes: e.target.value
+                        }));
+                      }}
+                    />
+                  </Box>
+                )}
               </Box>
             </CardContent>
           </Card>
@@ -808,23 +1059,47 @@ const handleGeocode = async () => {
           </Alert>
         )}
 
-        {/* Save Button */}
+        {/* Save/Update Buttons */}
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button
-            variant="contained"
-            startIcon={isSaving ? <CircularProgress size={20} /> : <Save />}
-            onClick={handleSave}
-            disabled={isSaving || isSubmitted}
-            sx={{ 
-              minWidth: 200,
-              backgroundColor: '#dc2626',
-              '&:hover': {
-                backgroundColor: '#b91c1c',
-              },
-            }}
-          >
-            {isSaving ? 'Saving...' : isSubmitted ? 'Location Details Saved' : 'Save Location Details'}
-          </Button>
+          {hasExistingData && hasLocationData ? (
+            // Update Button - shown when location data exists
+            <Button
+              variant="contained"
+              startIcon={isSaving ? <CircularProgress size={20} /> : <Save />}
+              onClick={handleUpdateLocation}
+              disabled={isSaving || !hasChanges}
+              sx={{ 
+                minWidth: 200,
+                backgroundColor: '#f2c514',
+                '&:hover': {
+                  backgroundColor: '#d4a912',
+                },
+                '&:disabled': {
+                  backgroundColor: '#e0e0e0',
+                  color: '#9e9e9e',
+                },
+              }}
+            >
+              {isSaving ? 'Updating...' : !hasChanges ? 'No Changes Made' : 'Update Location Details'}
+            </Button>
+          ) : (
+            // Save Button - shown when creating new location details
+            <Button
+              variant="contained"
+              startIcon={isSaving ? <CircularProgress size={20} /> : <Save />}
+              onClick={handleSave}
+              disabled={isSaving || isSubmitted}
+              sx={{ 
+                minWidth: 200,
+                backgroundColor: '#f2c514',
+                '&:hover': {
+                  backgroundColor: '#d4a912',
+                },
+              }}
+            >
+              {isSaving ? 'Saving...' : isSubmitted ? 'Location Details Saved' : 'Save Location Details'}
+            </Button>
+          )}
         </Box>
       </Box>
     </Box>

@@ -63,9 +63,12 @@ interface BusinessDetailsFormProps {
   onStepSubmitted?: (step: number) => void;
   initialData?: any;
   onDataChange?: (data: any) => void;
+  propertyData?: any;
+  hasExistingData?: boolean;
+  fetchPropertyData?: () => void;
 }
 
-const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitted, initialData, onDataChange }) => {
+const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitted, initialData, onDataChange, propertyData, hasExistingData = false, fetchPropertyData }) => {
   // Independent state management
   const [formData, setFormData] = useState<BusinessDetailsFormData>({
     business_rates: {
@@ -88,13 +91,51 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  
+  // Store original data for comparison
+  const [originalData, setOriginalData] = useState<BusinessDetailsFormData | null>(null);
+  const lastPropertyIdRef = React.useRef<string | null>(null);
+  const hasInitializedRef = React.useRef<boolean>(false);
 
-  // Handle initial data
+  // Initialize form data only when property changes or on first mount
   useEffect(() => {
-    if (initialData) {
-      setFormData(initialData);
+    const currentPropertyId = propertyData?._id || null;
+    
+    // Priority: propertyData business details > initialData
+    const dataToUse = initialData || (propertyData ? {
+      business_rates: propertyData.business_rates_id || {},
+      descriptions: propertyData.descriptions_id || {},
+      sale_types: (propertyData.sale_types_id?.sale_types && Array.isArray(propertyData.sale_types_id.sale_types)) 
+        ? propertyData.sale_types_id.sale_types.map((st: any) => ({
+            sale_type: st.sale_type || '',
+            price_currency: st.price_currency || 'GBP',
+            price_value: st.price_value || '',
+            price_unit: st.price_unit || '',
+          }))
+        : [],
+    } : null);
+    
+    // Ensure sale_types is always an array
+    if (dataToUse && !Array.isArray(dataToUse.sale_types)) {
+      dataToUse.sale_types = [];
     }
-  }, [initialData]);
+    
+    // Only update if:
+    // 1. We have data to use AND
+    // 2. (We haven't initialized yet OR the property ID has changed to a different property)
+    const shouldInitialize = dataToUse && (
+      !hasInitializedRef.current || 
+      (currentPropertyId !== null && lastPropertyIdRef.current !== currentPropertyId)
+    );
+    
+    if (shouldInitialize) {
+      setFormData(dataToUse);
+      // Store original data for comparison
+      setOriginalData({ ...dataToUse });
+      lastPropertyIdRef.current = currentPropertyId;
+      hasInitializedRef.current = true;
+    }
+  }, [initialData, propertyData?._id]);
 
   // Stable callback for data changes
   const handleDataChange = useCallback((data: any) => {
@@ -114,29 +155,33 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
 
   const handleInputChange = (field: string, value: string | number) => {
     setFormData(prev => {
-      const newData = { ...prev };
-      
       // Handle nested field updates using dot notation
       if (field.includes('.')) {
         const parts = field.split('.');
+        const newData = { ...prev };
+        
+        // Create a deep copy of nested objects to ensure React detects the change
         let current: any = newData;
         
-        // Navigate to the parent object
+        // Navigate to the parent object, creating new objects along the way
         for (let i = 0; i < parts.length - 1; i++) {
-          if (!current[parts[i]]) {
-            current[parts[i]] = {};
-          }
-          current = current[parts[i]];
+          const key = parts[i];
+          // Create a new copy of the nested object
+          current[key] = current[key] ? { ...current[key] } : {};
+          current = current[key];
         }
         
         // Set the final value
         current[parts[parts.length - 1]] = value;
+        
+        return newData;
       } else {
         // Handle top-level field updates
-        (newData as any)[field] = value;
+        return {
+          ...prev,
+          [field]: value
+        };
       }
-      
-      return newData;
     });
     
     // Clear field error when user starts typing
@@ -165,7 +210,7 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
   const handleSaleTypeChange = (index: number, field: string, value: string | number) => {
     setFormData(prev => ({
       ...prev,
-      sale_types: prev.sale_types.map((saleType, i) => 
+      sale_types: (Array.isArray(prev.sale_types) ? prev.sale_types : []).map((saleType, i) => 
         i === index ? { ...saleType, [field]: value } : saleType
       )
     }));
@@ -211,10 +256,15 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
 
   // Add sale type
   const addSaleType = () => {
+    const saleTypes = Array.isArray(formData.sale_types) ? formData.sale_types : [];
+    if (saleTypes.length >= 1) {
+      enqueueSnackbar('Only one sale type is allowed.', { variant: 'error' });
+      return;
+    }
     setFormData(prev => ({
       ...prev,
       sale_types: [
-        ...prev.sale_types,
+        ...(Array.isArray(prev.sale_types) ? prev.sale_types : []),
         {
           sale_type: '',
           price_currency: 'GBP',
@@ -229,7 +279,7 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
   const removeSaleType = (index: number) => {
     setFormData(prev => ({
       ...prev,
-      sale_types: prev.sale_types.filter((_, i) => i !== index),
+      sale_types: (Array.isArray(prev.sale_types) ? prev.sale_types : []).filter((_, i) => i !== index),
     }));
   };
 
@@ -239,10 +289,61 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
     setSubmitError(null);
     setErrors({});
 
+    // Validate all required fields
+    const validationErrors: Record<string, string> = {};
+
+    // Validate business rates
+    if (!formData.business_rates?.rateable_value_gbp || formData.business_rates.rateable_value_gbp === '' || (typeof formData.business_rates.rateable_value_gbp === 'string' && formData.business_rates.rateable_value_gbp.trim() === '')) {
+      validationErrors['business_rates.rateable_value_gbp'] = 'Rateable value is required';
+    }
+
+    if (!formData.business_rates?.rates_payable_gbp || formData.business_rates.rates_payable_gbp === '' || (typeof formData.business_rates.rates_payable_gbp === 'string' && formData.business_rates.rates_payable_gbp.trim() === '')) {
+      validationErrors['business_rates.rates_payable_gbp'] = 'Rates payable is required';
+    }
+
+    // Validate descriptions
+    if (!formData.descriptions?.general || formData.descriptions.general.trim() === '') {
+      validationErrors['descriptions.general'] = 'General description is required';
+    }
+
+    if (!formData.descriptions?.location || formData.descriptions.location.trim() === '') {
+      validationErrors['descriptions.location'] = 'Location description is required';
+    }
+
+    if (!formData.descriptions?.accommodation || formData.descriptions.accommodation.trim() === '') {
+      validationErrors['descriptions.accommodation'] = 'Accommodation description is required';
+    }
+
+    if (!formData.descriptions?.terms || formData.descriptions.terms.trim() === '') {
+      validationErrors['descriptions.terms'] = 'Terms description is required';
+    }
+
+    if (!formData.descriptions?.specifications || formData.descriptions.specifications.trim() === '') {
+      validationErrors['descriptions.specifications'] = 'Specifications description is required';
+    }
+
+    // If there are validation errors, set them and return
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    // Validate that exactly one sale type is added
+    const saleTypes = Array.isArray(formData.sale_types) ? formData.sale_types : [];
+    if (!saleTypes || saleTypes.length === 0) {
+      enqueueSnackbar('Please add exactly one sale type before submitting.', { variant: 'error' });
+      return;
+    }
+    
+    if (saleTypes.length > 1) {
+      enqueueSnackbar('Only one sale type is allowed. Please remove extra sale types.', { variant: 'error' });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      const propertyId = localStorage.getItem('propertyId');
+      const propertyId = localStorage.getItem('newpropertyId');
       if (!propertyId) {
         throw new Error('Property ID not found. Please create a property first.');
       }
@@ -257,8 +358,12 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
       localStorage.setItem('propertyId', response.data.data._id);
 
       if (response.status === 200) {
+        // Update original data to current form data after successful create
+        setOriginalData({ ...formData });
+        
         setSubmitSuccess(true);
         setIsSubmitted(true);
+        fetchPropertyData?.();
         enqueueSnackbar(response.data.message, { variant: 'success' });
         
         // Notify parent component that step 1 has been successfully submitted
@@ -300,6 +405,308 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
       }
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  // Update business rates
+  const updateBusinessRates = async () => {
+    const businessRatesId = propertyData?.business_rates_id?._id;
+    
+    if (!businessRatesId) {
+      throw new Error('Business rates ID not found.');
+    }
+
+    const response = await axiosInstance.patch(
+      `/api/agent/business-rates/${businessRatesId}`,
+      formData.business_rates
+    );
+
+    fetchPropertyData?.();
+
+    return response.data.message || 'Business rates updated successfully!';
+  };
+
+  // Update descriptions
+  const updateDescriptions = async () => {
+    const descriptionsId = propertyData?.descriptions_id?._id;
+    
+    if (!descriptionsId) {
+      throw new Error('Descriptions ID not found.');
+    }
+
+    const response = await axiosInstance.patch(
+      `/api/agent/descriptions/${descriptionsId}`,
+      formData.descriptions
+    );
+
+    fetchPropertyData?.();
+
+    return response.data.message || 'Descriptions updated successfully!';
+  };
+
+  // Update sale types
+  const updateSaleTypes = async () => {
+    // Validate that exactly one sale type is added
+    const saleTypes = Array.isArray(formData.sale_types) ? formData.sale_types : [];
+    if (!saleTypes || saleTypes.length === 0) {
+      throw new Error('Please add exactly one sale type before submitting.');
+    }
+    
+    if (saleTypes.length > 1) {
+      throw new Error('Only one sale type is allowed. Please remove extra sale types.');
+    }
+
+    const saleTypesId = propertyData?.sale_types_id?._id;
+    
+    if (!saleTypesId) {
+      throw new Error('Sale types ID not found.');
+    }
+
+    const response = await axiosInstance.patch(
+      `/api/agent/sale-types/${saleTypesId}`,
+      { sale_types: saleTypes }
+
+    );
+
+    fetchPropertyData?.();
+
+    return response.data.message || 'Sale types updated successfully!';
+  };
+
+  // Handle form update - calls appropriate update functions based on what changed
+  const handleFormUpdate = async () => {
+    // Clear previous errors
+    setSubmitError(null);
+    setErrors({});
+
+    setIsSubmitting(true);
+
+    try {
+      const updatePromises: Promise<string>[] = [];
+      const updateMessages: string[] = [];
+
+      // Update business rates if changed
+      if (hasBusinessRatesChanges) {
+        updatePromises.push(updateBusinessRates());
+        updateMessages.push('business rates');
+      }
+
+      // Update descriptions if changed
+      if (hasDescriptionsChanges) {
+        updatePromises.push(updateDescriptions());
+        updateMessages.push('descriptions');
+      }
+
+      // Update sale types if changed
+      if (hasSaleTypesChanges) {
+        updatePromises.push(updateSaleTypes());
+        updateMessages.push('sale types');
+      }
+
+      // Execute all updates in parallel
+      const messages = await Promise.all(updatePromises);
+
+      // Show success message
+      const successMessage = `${updateMessages.join(', ')} updated successfully!`;
+      enqueueSnackbar(successMessage, { variant: 'success' });
+      
+      // Update original data to current form data after successful update
+      setOriginalData({ ...formData });
+      
+      setSubmitSuccess(true);
+      setIsSubmitted(false);
+      
+      // Notify parent component that step 1 has been successfully submitted
+      if (onStepSubmitted) {
+        onStepSubmitted(1);
+      }
+
+    } catch (error: any) {
+      console.error('Error updating business details:', error);
+      
+      // Handle validation errors
+      if (error.response?.data?.errors && Array.isArray(error.response.data.errors)) {
+        const fieldErrors: Record<string, string> = {};
+        error.response.data.errors.forEach((err: any) => {
+          if (err.path && err.msg) {
+            const normalizedPath = err.path.replace(/\[(\d+)\]/g, '.$1');
+            fieldErrors[normalizedPath] = err.msg;
+          }
+        });
+        setErrors(fieldErrors);
+        setSubmitError(null);
+      } else {
+        // Handle general error
+        const errorMessage = error.response?.data?.message || error.message || 'Failed to update business details. Please try again.';
+        setSubmitError(errorMessage);
+        enqueueSnackbar(errorMessage, { variant: 'error' });
+        setErrors({});
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Helper function to normalize values for comparison
+  const normalizeValue = (value: any): any => {
+    // Handle null, undefined, and empty strings - treat them all as empty
+    if (value === null || value === undefined || value === '') {
+      return '';
+    }
+    // Convert numeric strings to numbers for comparison (but keep as string if it's not a valid number)
+    if (typeof value === 'string') {
+      const trimmed = value.trim();
+      if (trimmed === '') return '';
+      const num = Number(trimmed);
+      if (!isNaN(num) && trimmed !== '') {
+        return num;
+      }
+      return trimmed;
+    }
+    // Convert numbers to numbers (in case propertyData has numbers)
+    if (typeof value === 'number') {
+      return value;
+    }
+    return value;
+  };
+
+  // Helper function to normalize object for comparison
+  const normalizeObject = (obj: any): any => {
+    if (!obj || typeof obj !== 'object') return {};
+    const normalized: any = {};
+    Object.keys(obj).forEach(key => {
+      normalized[key] = normalizeValue(obj[key]);
+    });
+    return normalized;
+  };
+
+  // Helper function to normalize sale types array for comparison
+  const normalizeSaleTypesArray = (saleTypes: any[]): any[] => {
+    if (!Array.isArray(saleTypes)) return [];
+    return saleTypes
+      .map(st => ({
+        sale_type: normalizeValue(st.sale_type),
+        price_currency: normalizeValue(st.price_currency) || 'GBP',
+        price_value: normalizeValue(st.price_value),
+        price_unit: normalizeValue(st.price_unit),
+      }))
+      .filter(st => st.sale_type !== undefined) // Remove empty entries
+      .sort((a, b) => {
+        // Sort by sale_type for consistent comparison
+        const aType = String(a.sale_type || '');
+        const bType = String(b.sale_type || '');
+        return aType.localeCompare(bType);
+      });
+  };
+
+  // Helper to extract only form fields from propertyData (exclude metadata)
+  const extractBusinessRatesFields = (data: any) => {
+    if (!data) return {};
+    return {
+      rateable_value_gbp: data.rateable_value_gbp,
+      rates_payable_gbp: data.rates_payable_gbp,
+    };
+  };
+
+  const extractDescriptionsFields = (data: any) => {
+    if (!data) return {};
+    return {
+      general: data.general,
+      location: data.location,
+      accommodation: data.accommodation,
+      terms: data.terms,
+      specifications: data.specifications,
+    };
+  };
+
+  // Check which specific sections have changed
+  const hasBusinessRatesChanges = React.useMemo(() => {
+    if (!hasExistingData || !propertyData?.business_rates_id) {
+      return false;
+    }
+    const currentData = formData.business_rates || {};
+    const originalData = extractBusinessRatesFields(propertyData.business_rates_id);
+    
+    // Compare each field individually
+    const currentRateable = normalizeValue(currentData.rateable_value_gbp);
+    const originalRateable = normalizeValue(originalData.rateable_value_gbp);
+    const currentRatesPayable = normalizeValue(currentData.rates_payable_gbp);
+    const originalRatesPayable = normalizeValue(originalData.rates_payable_gbp);
+    
+    const rateableChanged = currentRateable !== originalRateable;
+    const ratesPayableChanged = currentRatesPayable !== originalRatesPayable;
+    
+    return rateableChanged || ratesPayableChanged;
+  }, [
+    formData.business_rates?.rateable_value_gbp,
+    formData.business_rates?.rates_payable_gbp,
+    propertyData?.business_rates_id?.rateable_value_gbp,
+    propertyData?.business_rates_id?.rates_payable_gbp,
+    hasExistingData
+  ]);
+
+  const hasDescriptionsChanges = React.useMemo(() => {
+    if (!hasExistingData || !propertyData?.descriptions_id) {
+      return false;
+    }
+    const currentData = formData.descriptions || {};
+    const originalData = extractDescriptionsFields(propertyData.descriptions_id);
+    
+    // Compare each field individually
+    const generalChanged = normalizeValue(currentData.general) !== normalizeValue(originalData.general);
+    const locationChanged = normalizeValue(currentData.location) !== normalizeValue(originalData.location);
+    const accommodationChanged = normalizeValue(currentData.accommodation) !== normalizeValue(originalData.accommodation);
+    const termsChanged = normalizeValue(currentData.terms) !== normalizeValue(originalData.terms);
+    const specificationsChanged = normalizeValue(currentData.specifications) !== normalizeValue(originalData.specifications);
+    
+    return generalChanged || locationChanged || accommodationChanged || termsChanged || specificationsChanged;
+  }, [
+    formData.descriptions?.general,
+    formData.descriptions?.location,
+    formData.descriptions?.accommodation,
+    formData.descriptions?.terms,
+    formData.descriptions?.specifications,
+    propertyData?.descriptions_id?.general,
+    propertyData?.descriptions_id?.location,
+    propertyData?.descriptions_id?.accommodation,
+    propertyData?.descriptions_id?.terms,
+    propertyData?.descriptions_id?.specifications,
+    hasExistingData
+  ]);
+
+  const hasSaleTypesChanges = React.useMemo(() => {
+    if (!hasExistingData || !propertyData?.sale_types_id?.sale_types) {
+      return false;
+    }
+    const current = normalizeSaleTypesArray(Array.isArray(formData.sale_types) ? formData.sale_types : []);
+    const original = normalizeSaleTypesArray(Array.isArray(propertyData.sale_types_id.sale_types) ? propertyData.sale_types_id.sale_types : []);
+    const changed = JSON.stringify(current) !== JSON.stringify(original);
+    return changed;
+  }, [formData.sale_types, propertyData?.sale_types_id?.sale_types, hasExistingData]);
+
+  // Check if any field has changed
+  const hasChanges = React.useMemo(() => {
+    return hasBusinessRatesChanges || hasDescriptionsChanges || hasSaleTypesChanges;
+  }, [hasBusinessRatesChanges, hasDescriptionsChanges, hasSaleTypesChanges]);
+
+  // Reset success message when form data changes after a successful update
+  useEffect(() => {
+    if (submitSuccess && hasChanges) {
+      setSubmitSuccess(false);
+    }
+  }, [formData, submitSuccess, hasChanges]);
+
+  // Determine which handler to use based on whether we're updating or creating
+  const handleSubmitWrapper = () => {
+    // Check if we have any existing data (business_rates, descriptions, or sale_types)
+    const hasBusinessRates = propertyData?.business_rates_id?._id;
+    const hasDescriptions = propertyData?.descriptions_id?._id;
+    const hasSaleTypes = propertyData?.sale_types_id && Array.isArray(propertyData.sale_types_id) && propertyData.sale_types_id.length > 0;
+    
+    if (hasExistingData && (hasBusinessRates || hasDescriptions || hasSaleTypes)) {
+      handleFormUpdate();
+    } else {
+      handleSubmit();
     }
   };
 
@@ -468,16 +875,17 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
               onClick={addSaleType}
               variant="outlined"
               size="small"
+              disabled={(Array.isArray(formData.sale_types) ? formData.sale_types : []).length >= 1}
             >
               Add Sale Type
             </Button>
           </Box>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            Add different sale types and pricing options for this property.
+            Add one sale type and pricing option for this property.
           </Typography>
         </Box>
 
-        {formData.sale_types.map((saleType, index) => (
+        {(Array.isArray(formData.sale_types) ? formData.sale_types : []).map((saleType, index) => (
           <Box key={index}>
             <Card variant="outlined">
               <CardContent>
@@ -569,7 +977,7 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
           </Box>
         ))}
 
-        {formData.sale_types.length === 0 && (
+        {(Array.isArray(formData.sale_types) ? formData.sale_types : []).length === 0 && (
           <Box>
             <Card variant="outlined" sx={{ textAlign: 'center', py: 4 }}>
               <CardContent>
@@ -605,23 +1013,59 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
           </Alert>
         )}
 
-        {/* Submit Button */}
+        {/* Submit Buttons */}
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button
-            variant="contained"
-            startIcon={isSubmitting ? <CircularProgress size={20} /> : <Save />}
-            onClick={handleSubmit}
-            disabled={isSubmitting || isSubmitted}
-            sx={{
-              minWidth: 200,
-              backgroundColor: '#dc2626',
-              '&:hover': {
-                backgroundColor: '#b91c1c',
-              },
-            }}
-          >
-            {isSubmitting ? 'Saving...' : isSubmitted ? 'Business Details Saved' : 'Save Business Details'}
-          </Button>
+          {hasExistingData && propertyData ? (
+            // Update Button - shown when propertyData exists
+            <Button
+              variant="contained"
+              startIcon={isSubmitting ? <CircularProgress size={20} /> : <Save />}
+              onClick={handleFormUpdate}
+              disabled={isSubmitting || !hasChanges}
+              sx={{
+                minWidth: 200,
+                backgroundColor: '#f2c514',
+                '&:hover': {
+                  backgroundColor: '#d4a912',
+                },
+                '&:disabled': {
+                  backgroundColor: '#e0e0e0',
+                  color: '#9e9e9e',
+                },
+              }}
+            >
+              {isSubmitting 
+                ? 'Updating...' 
+                : (hasChanges ? 'Update Business Details' : 'No Changes Made')
+              }
+            </Button>
+          ) : (
+            // Save Button - shown when no propertyData exists
+            <Button
+              variant="contained"
+              startIcon={isSubmitting ? <CircularProgress size={20} /> : <Save />}
+              onClick={handleSubmit}
+              disabled={isSubmitting || isSubmitted}
+              sx={{
+                minWidth: 200,
+                backgroundColor: '#f2c514',
+                '&:hover': {
+                  backgroundColor: '#d4a912',
+                },
+                '&:disabled': {
+                  backgroundColor: '#e0e0e0',
+                  color: '#9e9e9e',
+                },
+              }}
+            >
+              {isSubmitting 
+                ? 'Saving...' 
+                : isSubmitted 
+                  ? 'Business Details Saved'
+                  : 'Save Business Details'
+              }
+            </Button>
+          )}
         </Box>
       </Box>
     </Box>

@@ -40,7 +40,7 @@ const SectionHeader = styled(Box)(({ theme }) => ({
   gap: theme.spacing(1.5),
   marginBottom: 0,
   padding: theme.spacing(2.5, 3),
-  background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
+  background: 'linear-gradient(135deg, #f2c514 0%, #d4a912 100%)',
   borderRadius: '16px 16px 0 0',
   color: 'white',
   boxShadow: '0 4px 12px rgba(220, 38, 38, 0.2)',
@@ -48,7 +48,7 @@ const SectionHeader = styled(Box)(({ theme }) => ({
 
 interface UploadAreaProps { isDragOver: boolean }
 const UploadArea = styled(Box, { shouldForwardProp: (prop) => prop !== 'isDragOver' })<UploadAreaProps>(({ theme, isDragOver }) => ({
-  border: `2px dashed ${isDragOver ? '#dc2626' : '#d1d5db'}`,
+  border: `2px dashed ${isDragOver ? '#f2c514' : '#d1d5db'}`,
   borderRadius: 14,
   padding: theme.spacing(4),
   textAlign: 'center',
@@ -69,7 +69,7 @@ const UploadArea = styled(Box, { shouldForwardProp: (prop) => prop !== 'isDragOv
     inset 0 -1px 0 0 rgba(0, 0, 0, 0.05)
   `,
   '&:hover': {
-    borderColor: '#dc2626',
+    borderColor: '#f2c514',
     backgroundColor: 'rgba(220, 38, 38, 0.05)',
     transform: 'translateY(-2px)',
     boxShadow: `
@@ -298,7 +298,7 @@ const PhotoUpdate: React.FC<PhotoUpdateProps> = ({
             <Typography 
               variant="h6" 
               sx={{ 
-                color: '#dc2626', 
+                color: '#f2c514', 
                 fontWeight: 600, 
                 mb: 1,
                 fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
@@ -313,7 +313,7 @@ const PhotoUpdate: React.FC<PhotoUpdateProps> = ({
                 sx={{
                   width: { xs: 140, md: 180 },
                   height: { xs: 140, md: 180 },
-                  border: '5px solid #dc2626',
+                  border: '5px solid #f2c514',
                   boxShadow: `
                     0 10px 30px rgba(220, 38, 38, 0.35),
                     0 4px 12px rgba(220, 38, 38, 0.25),
@@ -328,14 +328,14 @@ const PhotoUpdate: React.FC<PhotoUpdateProps> = ({
                   position: 'absolute',
                   top: -8,
                   right: -8,
-                  backgroundColor: '#ef4444',
+                  backgroundColor: '#f2c514',
                   color: 'white',
                   width: 40,
                   height: 40,
                   boxShadow: '0 4px 12px rgba(239, 68, 68, 0.4)',
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   '&:hover': {
-                    backgroundColor: '#dc2626',
+                    backgroundColor: '#f2c514',
                     transform: 'scale(1.1)',
                     boxShadow: '0 6px 16px rgba(220, 38, 38, 0.5)',
                   },
@@ -367,7 +367,7 @@ const PhotoUpdate: React.FC<PhotoUpdateProps> = ({
             onDragLeave={handleDragLeave}
             onClick={handleBrowseClick}
           >
-            <CloudUploadIcon sx={{ fontSize: 64, color: '#dc2626', mb: 2 }} />
+            <CloudUploadIcon sx={{ fontSize: 64, color: '#f2c514', mb: 2 }} />
             <Typography 
               variant="h6" 
               sx={{ 
@@ -395,7 +395,7 @@ const PhotoUpdate: React.FC<PhotoUpdateProps> = ({
               variant="contained"
               startIcon={<PhotoCameraIcon sx={{ fontSize: '1.5rem' }} />}
               sx={(theme) => ({
-                backgroundColor: '#dc2626',
+                backgroundColor: '#f2c514',
                 fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
                 fontSize: '1.125rem',
                 fontWeight: 600,
@@ -404,7 +404,7 @@ const PhotoUpdate: React.FC<PhotoUpdateProps> = ({
                 boxShadow: '0 6px 16px rgba(220, 38, 38, 0.25), 0 2px 4px rgba(220, 38, 38, 0.1)',
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 '&:hover': {
-                  backgroundColor: '#b91c1c',
+                  backgroundColor: '#d4a912',
                   transform: 'translateY(-2px)',
                   boxShadow: '0 10px 24px rgba(220, 38, 38, 0.35), 0 4px 8px rgba(220, 38, 38, 0.15)',
                 },
@@ -450,11 +450,11 @@ const PhotoUpdate: React.FC<PhotoUpdateProps> = ({
               onClick={handleRemove}
               startIcon={<DeleteIcon sx={{ fontSize: '1.5rem' }} />}
               sx={{
-                borderColor: '#ef4444',
-                color: '#ef4444',
+                borderColor: '#f2c514',
+                color: '#f2c514',
                 borderWidth: '2px',
                 '&:hover': {
-                  borderColor: '#dc2626',
+                  borderColor: '#f2c514',
                   backgroundColor: 'rgba(239, 68, 68, 0.04)',
                   borderWidth: '2px',
                 },
@@ -469,12 +469,12 @@ const PhotoUpdate: React.FC<PhotoUpdateProps> = ({
               disabled={loading || !selectedFile}
               startIcon={loading ? <CircularProgress size={22} color="inherit" /> : <CheckCircleIcon sx={{ fontSize: '1.5rem' }} />}
               sx={{
-                backgroundColor: '#dc2626',
+                backgroundColor: '#f2c514',
                 '&:hover': {
-                  backgroundColor: '#b91c1c',
+                  backgroundColor: '#d4a912',
                 },
                 '&:disabled': {
-                  backgroundColor: '#fca5a5',
+                  backgroundColor: '#f9d85a',
                   boxShadow: 'none',
                   transform: 'none',
                 },
@@ -514,7 +514,7 @@ const PhotoUpdate: React.FC<PhotoUpdateProps> = ({
           <Typography 
             variant="h6" 
             sx={{ 
-              color: '#dc2626', 
+              color: '#f2c514', 
               fontWeight: 600, 
               mb: 2,
               fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',

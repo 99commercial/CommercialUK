@@ -1314,6 +1314,9 @@ class AgentService {
    * @returns {Promise<Object>} Updated virtual tours object
    */
   async updatePropertyVirtualToursById(virtualToursId, virtualToursData) {
+
+    console.log(virtualToursData);
+
     try {
       const virtualTours = await this.PropertyVirtualTours.findById(virtualToursId);
       if (!virtualTours) {

@@ -42,7 +42,7 @@ const SectionHeader = styled(Box)(({ theme }) => ({
   gap: theme.spacing(1.5),
   marginBottom: 0,
   padding: theme.spacing(2.5, 3),
-  background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
+  background: 'linear-gradient(135deg, #f2c514 0%, #d4a912 100%)',
   borderRadius: '16px 16px 0 0',
   color: 'white',
   boxShadow: '0 4px 12px rgba(220, 38, 38, 0.2)',
@@ -122,7 +122,7 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
     transform: 'translate(18px, 20px) scale(1)',
     transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
     '&.Mui-focused': {
-      color: '#dc2626',
+      color: '#f2c514',
       fontWeight: 600,
       fontSize: '1rem',
     },
@@ -184,7 +184,7 @@ const PasswordStrengthIndicator = styled(Box)(({ strength }: { strength: number 
     display: 'block',
     width: `${strength}%`,
     height: '100%',
-    backgroundColor: strength < 30 ? '#ef4444' : strength < 70 ? '#f59e0b' : '#10b981',
+    backgroundColor: strength < 30 ? '#f2c514' : strength < 70 ? '#f59e0b' : '#10b981',
     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
     boxShadow: `
       0 2px 4px rgba(0, 0, 0, 0.2),
@@ -298,7 +298,7 @@ const PasswordUpdate: React.FC<PasswordUpdateProps> = ({
   };
 
   const getPasswordStrengthColor = (strength: number): string => {
-    if (strength < 30) return '#ef4444';
+    if (strength < 30) return '#f2c514';
     if (strength < 70) return '#f59e0b';
     return '#10b981';
   };
@@ -459,7 +459,7 @@ const PasswordUpdate: React.FC<PasswordUpdateProps> = ({
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <LockIcon sx={{ color: '#dc2626', fontSize: '1.5rem' }} />
+                  <LockIcon sx={{ color: '#f2c514', fontSize: '1.5rem' }} />
                 </InputAdornment>
               ),
               endAdornment: (
@@ -495,7 +495,7 @@ const PasswordUpdate: React.FC<PasswordUpdateProps> = ({
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <LockIcon sx={{ color: '#dc2626', fontSize: '1.5rem' }} />
+                  <LockIcon sx={{ color: '#f2c514', fontSize: '1.5rem' }} />
                 </InputAdornment>
               ),
               endAdornment: (
@@ -562,7 +562,7 @@ const PasswordUpdate: React.FC<PasswordUpdateProps> = ({
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <LockIcon sx={{ color: '#dc2626', fontSize: '1.5rem' }} />
+                  <LockIcon sx={{ color: '#f2c514', fontSize: '1.5rem' }} />
                 </InputAdornment>
               ),
               endAdornment: (
@@ -588,7 +588,7 @@ const PasswordUpdate: React.FC<PasswordUpdateProps> = ({
             <Typography 
               variant="h6" 
               sx={{ 
-                color: '#dc2626', 
+                color: '#f2c514', 
                 fontWeight: 600, 
                 mb: 2,
                 fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
@@ -671,12 +671,12 @@ const PasswordUpdate: React.FC<PasswordUpdateProps> = ({
               disabled={loading}
               startIcon={loading ? <CircularProgress size={22} color="inherit" /> : <CheckCircleIcon sx={{ fontSize: '1.5rem' }} />}
               sx={{
-                backgroundColor: '#dc2626',
+                backgroundColor: '#f2c514',
                 '&:hover': {
-                  backgroundColor: '#b91c1c',
+                  backgroundColor: '#d4a912',
                 },
                 '&:disabled': {
-                  backgroundColor: '#fca5a5',
+                  backgroundColor: '#f9d85a',
                   boxShadow: 'none',
                   transform: 'none',
                 },

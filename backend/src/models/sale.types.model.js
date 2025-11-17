@@ -8,22 +8,46 @@ const saleTypeSchema = new Schema({
     type: String,
     required: true,
     enum: ['Freehold', 'Leasehold', 'To Let', 'For Sale', 'Under Offer', 'Sold', 'Let'],
+    validate: {
+      validator: function(value) {
+        return value != null && value.trim().length > 0;
+      },
+      message: 'Sale type cannot be empty'
+    }
   },
   price_currency: {
     type: String,
     required: true,
     enum: ['GBP'],
     default: 'GBP',
+    validate: {
+      validator: function(value) {
+        return value != null && value.trim().length > 0;
+      },
+      message: 'Price currency cannot be empty'
+    }
   },
   price_value: {
     type: Number,
     required: true,
     min: 0,
+    validate: {
+      validator: function(value) {
+        return value != null && value !== '' && value >= 0;
+      },
+      message: 'Price value cannot be empty and must be a valid number'
+    }
   },
   price_unit: {
     type: String,
     required: true,
     enum: ['per sq ft', 'per annum', 'per month', 'per unit', 'total'],
+    validate: {
+      validator: function(value) {
+        return value != null && value.trim().length > 0;
+      },
+      message: 'Price unit cannot be empty'
+    }
   },
 });
 
@@ -34,7 +58,28 @@ const saleTypesSchema = new Schema({
     required: true,
     unique: true,
   },
-  sale_types: [saleTypeSchema],
+  sale_types: {
+    type: [saleTypeSchema],
+    required: true,
+    validate: {
+      validator: function(value) {
+        // Ensure at least one sale type exists
+        if (!Array.isArray(value) || value.length === 0) {
+          return false;
+        }
+        // Ensure all sale types have valid non-empty values
+        return value.every(saleType => 
+          saleType != null && 
+          typeof saleType === 'object' &&
+          saleType.sale_type != null && saleType.sale_type.trim().length > 0 &&
+          saleType.price_currency != null && saleType.price_currency.trim().length > 0 &&
+          saleType.price_value != null && saleType.price_value !== '' && saleType.price_value >= 0 &&
+          saleType.price_unit != null && saleType.price_unit.trim().length > 0
+        );
+      },
+      message: 'At least one sale type is required. All sale types must have valid non-empty values for sale_type, price_currency, price_value, and price_unit.'
+    }
+  },
   // Soft delete
   deleted_at: {
     type: Date,

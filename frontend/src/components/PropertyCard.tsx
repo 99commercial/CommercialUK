@@ -760,14 +760,14 @@ const PropertyCardComponent: React.FC<PropertyCardProps> = ({
               fontWeight: 600,
               fontSize: { lg: '1.1rem', md: '1rem', sm: '0.95rem' },
               textDecoration: 'none',
-              color: '#ff0000',
+              color: '#f2c514',
               width: '100%',
               textAlign: 'left',
               padding: '8px 0',
               display: 'block',
               '&:hover': {
                 textDecoration: 'underline',
-                color: '#cc0000',
+                color: '#c9a010',
               },
             }}
           >

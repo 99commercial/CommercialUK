@@ -83,9 +83,9 @@ import Loader from '@/components/Loader';
 //       transition: 'all 0.6s ease',
 //     },
 //     '&.Mui-selected': {
-//       color: '#dc2626',
+//       color: '#f2c514',
 //       background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.8) 100%)',
-//       borderLeft: '5px solid #dc2626',
+//       borderLeft: '5px solid #f2c514',
 //       boxShadow: '0 8px 25px rgba(220, 38, 38, 0.2), 0 0 0 1px rgba(220, 38, 38, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6)',
 //       transform: 'translateX(6px) scale(1.02)',
 //       '&::before': {
@@ -98,13 +98,13 @@ import Loader from '@/components/Loader';
 //       },
 //       [theme.breakpoints.down('md')]: {
 //         borderLeft: 'none',
-//         borderBottom: '3px solid #dc2626',
+//         borderBottom: '3px solid #f2c514',
 //         transform: 'translateY(-2px) scale(1.02)',
 //         boxShadow: '0 6px 20px rgba(220, 38, 38, 0.2), 0 0 0 1px rgba(220, 38, 38, 0.1)',
 //       },
 //     },
 //     '&:hover': {
-//       color: '#dc2626',
+//       color: '#f2c514',
 //       background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(248, 250, 252, 0.6) 100%)',
 //       transform: 'translateX(3px) scale(1.01)',
 //       boxShadow: '0 6px 20px rgba(220, 38, 38, 0.15), 0 0 0 1px rgba(220, 38, 38, 0.05)',
@@ -129,7 +129,7 @@ import Loader from '@/components/Loader';
 
 // const StyledTab = styled(Tab)(({ theme }) => ({
 //   '&.Mui-selected': {
-//     color: '#dc2626',
+//     color: '#f2c514',
 //   },
 // }));
 
@@ -281,7 +281,7 @@ const MyProfile: React.FC = () => {
                     fontSize: { xs: '1.2rem', md: '1.6rem' },
                     transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
                     filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.15))',
-                    background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
+                    background: 'linear-gradient(135deg, #f2c514 0%, #d4a912 100%)',
                     backgroundClip: 'text',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
@@ -332,7 +332,7 @@ const MyProfile: React.FC = () => {
                     fontSize: { xs: '1.2rem', md: '1.6rem' },
                     transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
                     filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.15))',
-                    background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
+                    background: 'linear-gradient(135deg, #f2c514 0%, #d4a912 100%)',
                     backgroundClip: 'text',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
@@ -395,7 +395,7 @@ const MyProfile: React.FC = () => {
                 left: 0,
                 right: 0,
                 height: '6px',
-                background: 'linear-gradient(90deg, #dc2626 0%, #b91c1c 30%, #dc2626 70%, #b91c1c 100%)',
+                background: 'linear-gradient(90deg, #f2c514 0%, #d4a912 30%, #f2c514 70%, #d4a912 100%)',
                 opacity: 0.15,
                 borderRadius: '0 0 3px 3px',
                 display: { xs: 'none', md: 'block' },
@@ -484,7 +484,7 @@ const MyProfile: React.FC = () => {
                       }}>
                         <Typography
                           variant="h6"
-                          sx={{ fontWeight: 700, color: '#dc2626', textAlign: 'center' }}
+                          sx={{ fontWeight: 700, color: '#f2c514', textAlign: 'center' }}
                         >
                           You have not added your business details.
                         </Typography>

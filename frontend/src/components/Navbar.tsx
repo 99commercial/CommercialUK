@@ -23,6 +23,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import { useRouter } from 'next/router'
+import NextImage from 'next/image';
 
 // ----------------------------------------------------------------------
 
@@ -114,7 +115,7 @@ const ActionButtons = styled(Box)(({ theme }) => ({
 }));
 
 const LoginButton = styled(Button)(({ theme }) => ({
-  backgroundColor: '#d32f2f',
+  backgroundColor: '#f2c514',
   color: '#fff',
   borderRadius: theme.spacing(1),
   padding: theme.spacing(1, 2),
@@ -127,7 +128,7 @@ const LoginButton = styled(Button)(({ theme }) => ({
     fontSize: '0.75rem',
   },
   '&:hover': {
-    backgroundColor: '#b71c1c',
+    backgroundColor: '#f2c514',
   },
 }));
 
@@ -145,8 +146,9 @@ const AllPropertiesLink = styled('a')(({ theme }) => ({
     marginRight: theme.spacing(0.5),
   },
   '&:hover': {
-    color: '#d32f2f',
-    backgroundColor: 'rgba(211, 47, 47, 0.1)',
+    color: '#000',
+    borderBottom: '1px solid #f2c514',
+    backgroundColor: 'rgba(242, 198, 20, 0.45)',
   },
 }));
 
@@ -377,25 +379,12 @@ export default function Navbar({ onAdvertise, onLanguageChange }: NavbarProps) {
           alignItems: 'center'
         }}>
           {/* Logo */}
-          <LogoContainer onClick={()=>router.push('/')}>
-            <LogoIcon />
-            <Typography 
-              variant="h6" 
-              component="div" 
-              sx={{ 
-                color: '#000000', 
-                fontWeight: 800,
-                fontSize: { xs: '1.1rem', sm: '1.3rem', md: '1.5rem' },
-                letterSpacing: '0.5px',
-                textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
-                transition: 'all 0.2s ease',
-                '&:hover': {
-                  color: '#d32f2f',
-                }
-              }}
-            >
-              CommercialUK™
-            </Typography>
+          <LogoContainer onClick={()=>router.push('/')} sx={{ py: 2 }}>
+              <img
+                src="/images/CommercialUK2.png"
+                alt="CommercialUK"
+                style={{ width: 200, objectFit: 'contain' }}
+              />
           </LogoContainer>
 
           {/* Mobile Menu Button */}

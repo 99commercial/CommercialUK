@@ -128,10 +128,10 @@ const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
       borderRadius: '4px',
     },
     '&::-webkit-scrollbar-thumb': {
-      background: '#dc2626',
+      background: '#f2c514',
       borderRadius: '4px',
       '&:hover': {
-        background: '#b91c1c',
+        background: '#d4a912',
       },
     },
   },
@@ -172,7 +172,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:hover': {
     backgroundColor: 'rgba(220, 38, 38, 0.05)',
     transform: 'translateX(4px)',
-    boxShadow: 'inset 4px 0 0 #dc2626',
+    boxShadow: 'inset 4px 0 0 #f2c514',
   },
   '&:last-child td': {
     borderBottom: 'none',
@@ -218,7 +218,7 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 const StyledDialogTitle = styled(DialogTitle)(({ theme }) => ({
-  background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
+  background: 'linear-gradient(135deg, #f2c514 0%, #d4a912 100%)',
   color: '#ffffff',
   fontFamily: '"Montserrat", sans-serif',
   fontWeight: 700,
@@ -252,10 +252,10 @@ const StyledDialogContent = styled(DialogContent)(({ theme }) => ({
       borderRadius: '3px',
     },
     '&::-webkit-scrollbar-thumb': {
-      background: '#dc2626',
+      background: '#f2c514',
       borderRadius: '3px',
       '&:hover': {
-        background: '#b91c1c',
+        background: '#d4a912',
       },
     },
   },
@@ -416,7 +416,7 @@ const MyPropertyQueries: React.FC<MyPropertyQueriesProps> = ({
           <Typography 
             variant="h6" 
             sx={{ 
-              color: '#dc2626',
+              color: '#f2c514',
               fontWeight: 700,
               fontSize: '1.25rem',
               fontFamily: '"Montserrat", sans-serif',
@@ -428,7 +428,7 @@ const MyPropertyQueries: React.FC<MyPropertyQueriesProps> = ({
           <Typography 
             variant="body1"
             sx={{ 
-              color: '#991b1b',
+              color: '#c9a010',
               fontWeight: 400,
               fontSize: '1rem',
               fontFamily: '"Lato", sans-serif',
@@ -614,7 +614,7 @@ const MyPropertyQueries: React.FC<MyPropertyQueriesProps> = ({
               >
                 <StyledTableCell>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <PersonIcon sx={{ fontSize: { xs: '1rem', sm: '1.2rem' }, color: '#dc2626', opacity: 0.7, flexShrink: 0 }} />
+                    <PersonIcon sx={{ fontSize: { xs: '1rem', sm: '1.2rem' }, color: '#f2c514', opacity: 0.7, flexShrink: 0 }} />
                     <Typography sx={{ 
                       fontFamily: '"Lato", sans-serif', 
                       fontWeight: 500,
@@ -659,7 +659,7 @@ const MyPropertyQueries: React.FC<MyPropertyQueriesProps> = ({
                       fontSize: { xs: '0.7rem', sm: '0.75rem' },
                       fontWeight: 600,
                       backgroundColor: 'rgba(220, 38, 38, 0.1)',
-                      color: '#dc2626',
+                      color: '#f2c514',
                       whiteSpace: 'nowrap',
                     }}
                   />
@@ -779,7 +779,7 @@ const MyPropertyQueries: React.FC<MyPropertyQueriesProps> = ({
                   {/* Personal Information */}
                   <Box>
                     <StyledCardHeader>
-                      <PersonIcon sx={{ color: '#dc2626', fontSize: { xs: '1.25rem', sm: '1.5rem' }, flexShrink: 0 }} />
+                      <PersonIcon sx={{ color: '#f2c514', fontSize: { xs: '1.25rem', sm: '1.5rem' }, flexShrink: 0 }} />
                       <Typography 
                         variant="h6" 
                         sx={{ 
@@ -968,7 +968,7 @@ const MyPropertyQueries: React.FC<MyPropertyQueriesProps> = ({
                 {/* Query Details */}
                 <Box>
                   <StyledCardHeader>
-                    <InfoIcon sx={{ color: '#dc2626', fontSize: { xs: '1.25rem', sm: '1.5rem' }, flexShrink: 0 }} />
+                    <InfoIcon sx={{ color: '#f2c514', fontSize: { xs: '1.25rem', sm: '1.5rem' }, flexShrink: 0 }} />
                     <Typography 
                       variant="h6" 
                       sx={{ 
@@ -1107,7 +1107,7 @@ const MyPropertyQueries: React.FC<MyPropertyQueriesProps> = ({
                 {/* Property Information */}
                 <Box>
                   <StyledCardHeader>
-                    <HomeIcon sx={{ color: '#dc2626', fontSize: { xs: '1.25rem', sm: '1.5rem' }, flexShrink: 0 }} />
+                    <HomeIcon sx={{ color: '#f2c514', fontSize: { xs: '1.25rem', sm: '1.5rem' }, flexShrink: 0 }} />
                     <Typography 
                       variant="h6" 
                       sx={{ 
@@ -1144,7 +1144,7 @@ const MyPropertyQueries: React.FC<MyPropertyQueriesProps> = ({
                           fontSize: { xs: '0.7rem', sm: '0.75rem' },
                           fontWeight: 600,
                           backgroundColor: 'rgba(220, 38, 38, 0.1)',
-                          color: '#dc2626',
+                          color: '#f2c514',
                           height: 'auto',
                           py: 0.5,
                         }}
@@ -1267,7 +1267,7 @@ const MyPropertyQueries: React.FC<MyPropertyQueriesProps> = ({
                 {/* User Information */}
                 <Box>
                   <StyledCardHeader>
-                    <PersonIcon sx={{ color: '#dc2626', fontSize: { xs: '1.25rem', sm: '1.5rem' }, flexShrink: 0 }} />
+                    <PersonIcon sx={{ color: '#f2c514', fontSize: { xs: '1.25rem', sm: '1.5rem' }, flexShrink: 0 }} />
                     <Typography 
                       variant="h6" 
                       sx={{ 
@@ -1375,7 +1375,7 @@ const MyPropertyQueries: React.FC<MyPropertyQueriesProps> = ({
                 {/* System Information */}
                 <Box>
                   <StyledCardHeader>
-                    <InfoIcon sx={{ color: '#dc2626', fontSize: { xs: '1.25rem', sm: '1.5rem' }, flexShrink: 0 }} />
+                    <InfoIcon sx={{ color: '#f2c514', fontSize: { xs: '1.25rem', sm: '1.5rem' }, flexShrink: 0 }} />
                     <Typography 
                       variant="h6" 
                       sx={{ 
@@ -1551,7 +1551,7 @@ const MyPropertyQueries: React.FC<MyPropertyQueriesProps> = ({
             variant="contained"
             fullWidth={isMobile}
             sx={{
-              background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
+              background: 'linear-gradient(135deg, #f2c514 0%, #d4a912 100%)',
               color: '#ffffff',
               fontFamily: '"Montserrat", sans-serif',
               fontWeight: 600,
@@ -1562,7 +1562,7 @@ const MyPropertyQueries: React.FC<MyPropertyQueriesProps> = ({
               letterSpacing: '0.02em',
               boxShadow: '0 4px 14px rgba(220, 38, 38, 0.4)',
               '&:hover': {
-                background: 'linear-gradient(135deg, #b91c1c 0%, #991b1b 100%)',
+                background: 'linear-gradient(135deg, #d4a912 0%, #c9a010 100%)',
                 boxShadow: '0 6px 20px rgba(220, 38, 38, 0.5)',
                 transform: 'translateY(-2px)',
               },

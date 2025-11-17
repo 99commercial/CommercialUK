@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import {
   Box,
   TextField,
@@ -72,9 +72,12 @@ interface PropertyImagesFormData {
 
 interface PropertyImagesFormProps {
   onStepSubmitted?: (data: any) => void;
+  propertyData: any;
+  fetchPropertyData: () => void;
+  hasExistingData: boolean;
 }
 
-const PropertyImagesForm: React.FC<PropertyImagesFormProps> = ({ onStepSubmitted }) => {
+const PropertyImagesForm: React.FC<PropertyImagesFormProps> = ({ onStepSubmitted, propertyData, fetchPropertyData, hasExistingData }) => {
   const {
     register,
     formState: { errors },
@@ -101,8 +104,137 @@ const PropertyImagesForm: React.FC<PropertyImagesFormProps> = ({ onStepSubmitted
   });
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { enqueueSnackbar } = useSnackbar();
+  const [originalData, setOriginalData] = useState<PropertyImagesFormData | null>(null);
+  const lastPropertyIdRef = useRef<string | null>(null);
+  const hasInitializedRef = useRef<boolean>(false);
 
   const watchedValues = watch();
+  
+  // Watch property_images array for change detection
+  const watchedImages = watch('property_images') || [];
+  
+  // Extract specific fields for granular change detection
+  const watchedCaptions = watchedImages.map((img: any) => img?.caption || '');
+  const watchedImageTypes = watchedImages.map((img: any) => img?.image_type || '');
+  const watchedIsPrimary = watchedImages.map((img: any) => img?.is_primary || false);
+
+  // Initialize form data from propertyData.images_id
+  useEffect(() => {
+    const currentPropertyId = propertyData?._id || null;
+    
+    if (propertyData?.images_id?._id && propertyData?.images_id?.images) {
+      const shouldInitialize = !hasInitializedRef.current || 
+        (currentPropertyId !== null && lastPropertyIdRef.current !== currentPropertyId);
+      
+      if (shouldInitialize) {
+        const imagesData = propertyData.images_id.images;
+        
+        // Map existing images to form format
+        const property_images = imagesData.map((img: any, index: number) => ({
+          id: Date.now() + index,
+          file_name: img.file_name || '',
+          file_size: img.file_size || 0,
+          file_type: img.mime_type || '',
+          image_type: img.image_type || 'Photo',
+          caption: img.caption || '',
+          uploaded_at: img.createdAt || new Date().toISOString(),
+          preview_url: img.url || '',
+          url: img.url || '',
+          is_primary: img.is_thumbnail || index === 0,
+          // No file property for existing images
+        }));
+        
+        const initializedData: PropertyImagesFormData = {
+          property_images
+        };
+        
+        setValue('property_images', property_images);
+        setOriginalData({ ...initializedData });
+        lastPropertyIdRef.current = currentPropertyId;
+        hasInitializedRef.current = true;
+      }
+    } else if (hasInitializedRef.current && currentPropertyId !== lastPropertyIdRef.current) {
+      // If property changed and new property has no images_id, reset
+      setValue('property_images', []);
+      setOriginalData({ property_images: [] });
+      lastPropertyIdRef.current = currentPropertyId;
+    }
+  }, [propertyData?.images_id?._id, propertyData?.images_id?.images, propertyData?._id, setValue]);
+
+  // Helper function to normalize values for comparison
+  const normalizeValue = (value: any): any => {
+    if (value === null || value === undefined || value === '') {
+      return '';
+    }
+    if (typeof value === 'string') {
+      return value.trim();
+    }
+    return value;
+  };
+
+  // Check if form data has changed from original
+  const hasChanges = useMemo(() => {
+    if (!hasExistingData || !propertyData?.images_id?._id || !originalData) {
+      return false;
+    }
+
+    const currentImages = watchedValues.property_images || [];
+    const originalImages = originalData.property_images || [];
+    
+    // If lengths are different, there are changes
+    if (currentImages.length !== originalImages.length) {
+      return true;
+    }
+
+    // Compare each image
+    for (let i = 0; i < currentImages.length; i++) {
+      const current = currentImages[i];
+      const original = originalImages[i];
+      
+      // If current image has a file, it's a new upload
+      if (current.file) {
+        return true;
+      }
+      
+      // Compare caption and image_type - use watched values for reactivity
+      const currentCaption = normalizeValue(watchedCaptions[i] || current.caption);
+      const originalCaption = normalizeValue(original.caption);
+      
+      const currentImageType = normalizeValue(watchedImageTypes[i] || current.image_type);
+      const originalImageType = normalizeValue(original.image_type);
+      
+      const currentIsPrimary = normalizeValue(watchedIsPrimary[i] !== undefined ? watchedIsPrimary[i] : current.is_primary);
+      const originalIsPrimary = normalizeValue(original.is_primary);
+      
+      if (
+        currentCaption !== originalCaption ||
+        currentImageType !== originalImageType ||
+        currentIsPrimary !== originalIsPrimary
+      ) {
+        return true;
+      }
+      
+      // If original image URL doesn't match current URL, image was removed/replaced
+      if (original.url && current.url !== original.url) {
+        return true;
+      }
+    }
+
+    return false;
+  }, [
+    watchedValues.property_images,
+    watchedCaptions,
+    watchedImageTypes,
+    watchedIsPrimary,
+    propertyData?.images_id?._id,
+    hasExistingData,
+    originalData
+  ]);
+
+  // Check if images data exists
+  const hasImagesData = useMemo(() => {
+    return !!(propertyData?.images_id?._id && propertyData?.images_id?.images?.length > 0);
+  }, [propertyData?.images_id?._id, propertyData?.images_id?.images]);
 
   const handleFileUpload = async (files: FileList) => {
     // Check if adding these files would exceed the 10-file limit
@@ -210,10 +342,21 @@ const PropertyImagesForm: React.FC<PropertyImagesFormProps> = ({ onStepSubmitted
     setPreviewDialog({ open: false, image: null });
   };
 
+  // Get property ID from localStorage or propertyData
+  const getPropertyId = () => {
+    if (propertyData?._id) {
+      return propertyData._id;
+    }
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('newpropertyId') || localStorage.getItem('propertyId');
+    }
+    return null;
+  };
+
   const handleSubmit = async () => {
-    const storedPropertyId = localStorage.getItem('propertyId');
-    if (!storedPropertyId) {
-      console.error('Property ID not found in localStorage');
+    const propertyId = getPropertyId();
+    if (!propertyId) {
+      enqueueSnackbar('Property ID not found. Please complete the previous steps first.', { variant: 'error' });
       return;
     }
 
@@ -229,7 +372,7 @@ const PropertyImagesForm: React.FC<PropertyImagesFormProps> = ({ onStepSubmitted
     const filesToUpload = images.filter(img => img.file); // Only upload files that haven't been uploaded yet
 
     if (filesToUpload.length === 0) {
-      console.log('No new files to upload');
+      enqueueSnackbar('No new files to upload', { variant: 'info' });
       return;
     }
 
@@ -255,7 +398,7 @@ const PropertyImagesForm: React.FC<PropertyImagesFormProps> = ({ onStepSubmitted
 
       // Upload to backend
       const response = await axiosInstance.put(
-        `/api/agent/properties/${storedPropertyId}/images`,
+        `/api/agent/properties/${propertyId}/images`,
         formData,
         {
           headers: {
@@ -270,22 +413,132 @@ const PropertyImagesForm: React.FC<PropertyImagesFormProps> = ({ onStepSubmitted
         }
       );
         
-        // Update propertyId in localStorage
-       if (response.data.data && response.data.data._id) {
-           setIsUploaded(true);
-           localStorage.setItem('propertyId', response.data.data._id);
-           // Show success message
-           enqueueSnackbar('Images uploaded successfully!', { variant: 'success' });
-           console.log('Images uploaded successfully');
-           
-           // Mark step as submitted to enable Next button
-           if (onStepSubmitted) {
-             onStepSubmitted(6); // Step 6 is the images step
-           }
-       }
+      // Update propertyId in localStorage
+      if (response.data.data && response.data.data._id) {
+        setIsUploaded(true);
+        localStorage.setItem('propertyId', response.data.data._id);
+        // Show success message
+        enqueueSnackbar('Images uploaded successfully!', { variant: 'success' });
+
+        fetchPropertyData?.();
+        
+        // Update original data after successful save
+        setOriginalData({ property_images: images });
+        
+        // Mark step as submitted to enable Next button
+        if (onStepSubmitted) {
+          onStepSubmitted(6); // Step 6 is the images step
+        }
+      }
 
     } catch (error: any) {
-      console.error('Upload failed:', error);
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to upload images. Please try again.';
+      enqueueSnackbar(errorMessage, { variant: 'error' });
+    } finally {
+      setIsSubmitting(false);
+      setUploadProgress(0);
+    }
+  };
+
+  const handleUpdateImages = async () => {
+    const propertyId = getPropertyId();
+    if (!propertyId) {
+      enqueueSnackbar('Property ID not found. Please complete the previous steps first.', { variant: 'error' });
+      return;
+    }
+
+    const images = watchedValues.property_images || [];
+    
+    // Validate that all images have captions
+    const imagesWithoutCaptions = images.filter(img => !img.caption || img.caption.trim().length === 0);
+    if (imagesWithoutCaptions.length > 0) {
+      enqueueSnackbar('All images must have captions before updating', { variant: 'error' });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Create FormData for multipart upload
+      const formData = new FormData();
+      
+      // Separate existing images and new files
+      const existingImages: any[] = [];
+      const newFiles: File[] = [];
+      const newCaptions: string[] = [];
+      const newImageTypes: string[] = [];
+      
+      images.forEach((image) => {
+        if (image.file) {
+          // New file to upload
+          newFiles.push(image.file);
+          newCaptions.push(image.caption || '');
+          newImageTypes.push(image.image_type || 'Photo');
+        } else {
+          // Existing image - send its data
+          existingImages.push({
+            url: image.url,
+            caption: image.caption || '',
+            image_type: image.image_type || 'Photo',
+            file_name: image.file_name || '',
+            file_size: image.file_size || 0,
+            mime_type: image.file_type || '',
+            is_thumbnail: image.is_primary || false,
+          });
+        }
+      });
+
+      // Add new files to FormData
+      newFiles.forEach((file) => {
+        formData.append('files', file);
+      });
+
+      // Add captions and image types for new files
+      newCaptions.forEach(caption => formData.append('captions', caption));
+      newImageTypes.forEach(type => formData.append('image_types', type));
+
+      // Add existing images data
+      formData.append('existing_images', JSON.stringify(existingImages));
+
+      // Update to backend using mixed endpoint
+      const response = await axiosInstance.put(
+        `/api/agent/properties/${propertyId}/images/mixed`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          onUploadProgress: (progressEvent) => {
+            if (progressEvent.total) {
+              const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+              setUploadProgress(progress);
+            }
+          },
+        }
+      );
+      
+      if (response.data.success || response.data.data) {
+        enqueueSnackbar(response.data.message || 'Images updated successfully!', { variant: 'success' });
+        
+        // Update original data after successful update
+        setOriginalData({ property_images: images });
+        
+        setIsUploaded(true);
+        
+        // Refresh property data if callback is provided
+          fetchPropertyData();
+        
+        // Mark step as submitted
+        if (onStepSubmitted) {
+          onStepSubmitted(6);
+        }
+      } else {
+        throw new Error(response.data.message || 'Failed to update images');
+      }
+
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to update images. Please try again.';
+      enqueueSnackbar(errorMessage, { variant: 'error' });
     } finally {
       setIsSubmitting(false);
       setUploadProgress(0);
@@ -494,25 +747,44 @@ const PropertyImagesForm: React.FC<PropertyImagesFormProps> = ({ onStepSubmitted
           </Box>
         )}
 
-        {/* Update Button */}
+        {/* Save/Update Button */}
         {fields.length > 0 && (
           <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
-            <Button
-              variant="contained"
-              size="large"
-              onClick={handleSubmit}
-              disabled={isSubmitting || uploading || isUploaded}
-              startIcon={isSubmitting ? <CircularProgress size={20} /> : <CloudUpload />}
-              sx={{ 
-                minWidth: 200,
-                backgroundColor: isUploaded ? 'success.main' : 'error.main',
-                '&:hover': {
-                  backgroundColor: isUploaded ? 'success.dark' : 'error.dark',
-                }
-              }}
-            >
-              {isUploaded ? 'Uploaded Successfully' : isSubmitting ? 'Uploading...' : 'Update Images'}
-            </Button>
+            {hasExistingData && hasImagesData ? (
+              <Button
+                variant="contained"
+                size="large"
+                onClick={handleUpdateImages}
+                disabled={isSubmitting || uploading || !hasChanges}
+                startIcon={isSubmitting ? <CircularProgress size={20} /> : <CloudUpload />}
+                sx={{ 
+                  minWidth: 200,
+                  backgroundColor: hasChanges ? '#ea580c' : '#9ca3af',
+                  '&:hover': {
+                    backgroundColor: hasChanges ? '#c2410c' : '#9ca3af',
+                  }
+                }}
+              >
+                {isSubmitting ? 'Updating...' : hasChanges ? 'Update Images' : 'No Changes Made'}
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                size="large"
+                onClick={handleSubmit}
+                disabled={isSubmitting || uploading || isUploaded}
+                startIcon={isSubmitting ? <CircularProgress size={20} /> : <CloudUpload />}
+                sx={{ 
+                  minWidth: 200,
+                  backgroundColor: isUploaded ? 'success.main' : '#f2c514',
+                  '&:hover': {
+                    backgroundColor: isUploaded ? 'success.dark' : '#d4a912',
+                  }
+                }}
+              >
+                {isUploaded ? 'Uploaded Successfully' : isSubmitting ? 'Uploading...' : 'Upload Images'}
+              </Button>
+            )}
           </Box>
         )}
 

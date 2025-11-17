@@ -124,7 +124,7 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
               width: 60,
               height: 60,
               borderRadius: '50%',
-              backgroundColor: 'red',
+              backgroundColor: '#f2c514',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -169,7 +169,7 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <Email sx={{ color: '#dc2626' }} />
+                  <Email sx={{ color: '#f2c514' }} />
                 </InputAdornment>
               ),
             }}
@@ -181,10 +181,10 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
                   borderColor: 'rgba(220, 38, 38, 0.3)',
                 },
                 '&:hover fieldset': {
-                  borderColor: '#dc2626',
+                  borderColor: '#f2c514',
                 },
                 '&.Mui-focused fieldset': {
-                  borderColor: '#dc2626',
+                  borderColor: '#f2c514',
                 },
               },
               '& .MuiInputLabel-root': {
@@ -208,7 +208,7 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <Lock sx={{ color: '#dc2626' }} />
+                  <Lock sx={{ color: '#f2c514' }} />
                 </InputAdornment>
               ),
               endAdornment: (
@@ -231,10 +231,10 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
                   borderColor: 'rgba(220, 38, 38, 0.3)',
                 },
                 '&:hover fieldset': {
-                  borderColor: '#dc2626',
+                  borderColor: '#f2c514',
                 },
                 '&.Mui-focused fieldset': {
-                  borderColor: '#dc2626',
+                  borderColor: '#f2c514',
                 },
               },
               '& .MuiInputLabel-root': {
@@ -256,14 +256,14 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
             sx={{
               py: 1.5,
               mb: 2,
-              backgroundColor: '#dc2626',
+              backgroundColor: '#f2c514',
               color: 'white',
               fontWeight: 600,
               textTransform: 'uppercase',
               letterSpacing: '0.5px',
               boxShadow: '0 4px 14px 0 rgba(220, 38, 38, 0.4)',
               '&:hover': {
-                backgroundColor: '#991b1b',
+                backgroundColor: '#c9a010',
                 boxShadow: '0 6px 20px 0 rgba(220, 38, 38, 0.6)',
                 transform: 'translateY(-1px)',
               },
@@ -280,11 +280,11 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
               href="/auth/forget-password"
               variant="body2"
               sx={{
-                color: '#dc2626',
+                color: '#f2c514',
                 textDecoration: 'none',
                 '&:hover': {
                   textDecoration: 'underline',
-                  color: '#991b1b',
+                  color: '#c9a010',
                 },
               }}
             >
@@ -304,12 +304,12 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
               <Link
                 href="/auth/register"
                 sx={{
-                  color: '#dc2626',
+                  color: '#f2c514',
                   textDecoration: 'none',
                   fontWeight: 500,
                   '&:hover': {
                     textDecoration: 'underline',
-                    color: '#991b1b',
+                    color: '#c9a010',
                   },
                 }}
               >

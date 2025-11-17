@@ -65,9 +65,12 @@ interface GeneralDetailsFormProps {
   onStepSubmitted?: (step: number) => void;
   initialData?: GeneralDetailsFormData;
   onDataChange?: (data: GeneralDetailsFormData) => void;
+  propertyData?: any;
+  hasExistingData?: boolean;
+  fetchPropertyData?: () => void;
 }
 
-const GeneralDetailsForm: React.FC<GeneralDetailsFormProps> = ({ onStepSubmitted, initialData, onDataChange }) => {
+const GeneralDetailsForm: React.FC<GeneralDetailsFormProps> = ({ onStepSubmitted, initialData, onDataChange, propertyData, hasExistingData = false , fetchPropertyData }) => {
 
   const [formData, setFormData] = useState<GeneralDetailsFormData>(initialData || {
     building_name: '',
@@ -91,39 +94,50 @@ const GeneralDetailsForm: React.FC<GeneralDetailsFormProps> = ({ onStepSubmitted
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  
+  // Store original data for comparison
+  const [originalData, setOriginalData] = useState<GeneralDetailsFormData | null>(null);
+  const lastPropertyIdRef = React.useRef<string | null>(null);
+  const hasInitializedRef = React.useRef<boolean>(false);
 
-  // Use ref to prevent infinite loops when updating from parent
-  const isUpdatingFromParent = React.useRef(false);
-
-  // Update form data when initialData changes
+  // Initialize form data only when property changes or on first mount
   React.useEffect(() => {
-    if (initialData && !isUpdatingFromParent.current) {
-      isUpdatingFromParent.current = true;
-      setFormData(initialData);
-      setTimeout(() => {
-        isUpdatingFromParent.current = false;
-      }, 0);
+    const currentPropertyId = propertyData?._id || null;
+    
+    // Priority: propertyData.general_details > initialData
+    const dataToUse = propertyData?.general_details || initialData;
+    
+    // Only update if:
+    // 1. We have data to use AND
+    // 2. (We haven't initialized yet OR the property ID has changed to a different property)
+    const shouldInitialize = dataToUse && (
+      !hasInitializedRef.current || 
+      (currentPropertyId !== null && lastPropertyIdRef.current !== currentPropertyId)
+    );
+    
+    if (shouldInitialize) {
+      setFormData(dataToUse);
+      // Store original data for comparison
+      setOriginalData({ ...dataToUse });
+      lastPropertyIdRef.current = currentPropertyId;
+      hasInitializedRef.current = true;
     }
-  }, [initialData]);
+  }, [initialData, propertyData?._id]);
 
-  // Notify parent of data changes - use useCallback to prevent infinite loops
-  const stableOnDataChange = React.useCallback((data: GeneralDetailsFormData) => {
-    if (onDataChange && !isUpdatingFromParent.current) {
-      onDataChange(data);
-    }
-  }, [onDataChange]);
-
+  // Notify parent of data changes with debouncing to prevent infinite loops
   React.useEffect(() => {
-    if (!isUpdatingFromParent.current) {
-      stableOnDataChange(formData);
+    if (onDataChange) {
+      const timeoutId = setTimeout(() => {
+        onDataChange(formData);
+      }, 100); // Small delay to debounce
+      
+      return () => clearTimeout(timeoutId);
     }
-  }, [formData, stableOnDataChange]);
+  }, [formData, onDataChange]);
 
-  // Debug: Log field errors when they change (only in development)
+  // Debug: Log field errors when they change
   React.useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Field errors state updated:', fieldErrors);
-    }
+    console.log('Field errors state updated:', fieldErrors);
   }, [fieldErrors]);
 
 
@@ -159,6 +173,9 @@ const GeneralDetailsForm: React.FC<GeneralDetailsFormProps> = ({ onStepSubmitted
       const response = await axiosInstance.post('/api/user/properties', submitData);
       enqueueSnackbar(response.data.message, { variant: 'success' });
       
+      // Update original data to current form data after successful create
+      setOriginalData({ ...formData });
+      
       // Set submitted state
       setIsSubmitted(true);
       
@@ -167,7 +184,9 @@ const GeneralDetailsForm: React.FC<GeneralDetailsFormProps> = ({ onStepSubmitted
         onStepSubmitted(0);
       }
 
-      localStorage.setItem('propertyId', response.data.data._id);
+      localStorage.setItem('newpropertyId', response.data.data._id);
+
+      fetchPropertyData?.();
 
     } catch (error: any) {
       // Handle field-specific validation errors
@@ -207,8 +226,105 @@ const GeneralDetailsForm: React.FC<GeneralDetailsFormProps> = ({ onStepSubmitted
     }
   };
 
+  const handleFormUpdate = async (event: React.FormEvent) => {
+    event.preventDefault(); // Prevent page reload
+    setIsSubmitting(true);
+    setSubmitError(null);
+    setFieldErrors({});
+
+    try {
+      // Get property ID from propertyData or localStorage
+      const propertyId = propertyData?._id || localStorage.getItem('newpropertyId');
+      
+      if (!propertyId) {
+        throw new Error('Property ID not found. Please create a property first.');
+      }
+
+      // Prepare the data for API submission
+      const submitData = {
+        general_details: formData,
+      };
+
+      // Make API call to update property general details using PATCH
+      const response = await axiosInstance.patch(
+        `/api/user/properties/${propertyId}/general-details`,
+        submitData
+      );
+      
+      enqueueSnackbar(response.data.message || 'General details updated successfully!', { variant: 'success' });
+      
+      // Update original data to current form data after successful update
+      setOriginalData({ ...formData });
+      
+      // Set submitted state
+      setIsSubmitted(true);
+
+      fetchPropertyData?.();
+      
+      // Notify parent component that step 0 has been successfully submitted
+      if (onStepSubmitted) {
+        onStepSubmitted(0);
+      }
+
+    } catch (error: any) {
+      // Handle field-specific validation errors
+      if (error.errors && Array.isArray(error.errors) && error.errors.length > 0) {
+        const fieldErrorMap: Record<string, string> = {};
+        
+        console.log('Processing validation errors:', error.errors);
+        
+        error.errors.forEach((err: any) => {
+          console.log('Processing error:', err);
+          if (err.path) {
+            // Extract field name from path (e.g., "general_details.postcode" -> "postcode")
+            const fieldName = err.path.split('.').pop();
+            console.log('Field name extracted:', fieldName, 'from path:', err.path);
+            if (fieldName) {
+              fieldErrorMap[fieldName] = err.msg;
+            }
+          }
+        });
+        
+        console.log('Field error map created:', fieldErrorMap);
+        setFieldErrors(fieldErrorMap);
+        
+        // Show general error message
+        const errorMessage = 'Please fix the validation errors below.';
+        setSubmitError(errorMessage);
+        enqueueSnackbar(errorMessage, { variant: 'error' });
+      } else {
+        // Handle general errors
+        const errorMessage = 'Failed to update general details. Please try again.';
+        setSubmitError(errorMessage);
+        enqueueSnackbar(errorMessage, { variant: 'error' });
+      }
+      
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Check if form data has changed from original
+  const hasChanges = React.useMemo(() => {
+    if (!hasExistingData || !originalData) {
+      return true; // Always allow create or if no original data
+    }
+    
+    // Deep comparison of form data with original data
+    return JSON.stringify(formData) !== JSON.stringify(originalData);
+  }, [formData, originalData, hasExistingData]);
+
+  // Determine which handler to use based on whether we're updating or creating
+  const handleFormSubmitWrapper = (event: React.FormEvent) => {
+    if (hasExistingData) {
+      handleFormUpdate(event);
+    } else {
+      handleFormSubmit(event);
+    }
+  };
+
   return (
-    <Box component="form" onSubmit={handleFormSubmit}>
+    <Box component="form" onSubmit={handleFormSubmitWrapper}>
       <Typography variant="h6" gutterBottom>
         Basic Property Information
       </Typography>
@@ -358,10 +474,9 @@ const GeneralDetailsForm: React.FC<GeneralDetailsFormProps> = ({ onStepSubmitted
           <Box sx={{ flex: '1 1 200px', minWidth: '200px' }}>
             <TextField
               value={formData.country_region}
-              onChange={(e) => handleInputChange('country_region', e.target.value)}
               label="Country/Region"
               fullWidth
-              placeholder="e.g., England, Scotland"
+              disabled
               required
               error={!!fieldErrors.country_region}
               helperText={fieldErrors.country_region}
@@ -417,16 +532,13 @@ const GeneralDetailsForm: React.FC<GeneralDetailsFormProps> = ({ onStepSubmitted
           {/* Max Eaves Height */}
           <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
             <TextField
-              value={formData.max_eaves_height}
-              onChange={(e) => handleInputChange('max_eaves_height', Number(e.target.value))}
+              value={formData.max_eaves_height || ''}
+              onChange={(e) => handleInputChange('max_eaves_height', e.target.value === '' ? 0 : Number(e.target.value))}
               label="Max Eaves Height (m)"
               type="number"
               fullWidth
               placeholder="0"
-              required
               inputProps={{ step: 0.1, min: 0, max: 1000 }}
-              error={!!fieldErrors.max_eaves_height}
-              helperText={fieldErrors.max_eaves_height}
             />
           </Box>
 
@@ -451,16 +563,13 @@ const GeneralDetailsForm: React.FC<GeneralDetailsFormProps> = ({ onStepSubmitted
           {/* Expansion Capacity */}
           <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
             <TextField
-              value={formData.expansion_capacity_percent}
-              onChange={(e) => handleInputChange('expansion_capacity_percent', Number(e.target.value))}
+              value={formData.expansion_capacity_percent || ''}
+              onChange={(e) => handleInputChange('expansion_capacity_percent', e.target.value === '' ? 0 : Number(e.target.value))}
               label="Expansion Capacity (%)"
               type="number"
               fullWidth
               placeholder="0"
-              required
               inputProps={{ min: 0, max: 100 }}
-              error={!!fieldErrors.expansion_capacity_percent}
-              helperText={fieldErrors.expansion_capacity_percent}
             />
           </Box>
         </Box>
@@ -479,32 +588,26 @@ const GeneralDetailsForm: React.FC<GeneralDetailsFormProps> = ({ onStepSubmitted
         {/* Invoice Details */}
         <Box>
           <TextField
-            value={formData.invoice_details}
+            value={formData.invoice_details || ''}
             onChange={(e) => handleInputChange('invoice_details', e.target.value)}
             label="Invoice Details"
             fullWidth
             multiline
             rows={3}
             placeholder="Enter invoice and billing information"
-            required
-            error={!!fieldErrors.invoice_details}
-            helperText={fieldErrors.invoice_details}
           />
         </Box>
 
         {/* Property Notes */}
         <Box>
           <TextField
-            value={formData.property_notes}
+            value={formData.property_notes || ''}
             onChange={(e) => handleInputChange('property_notes', e.target.value)}
             label="Property Notes"
             fullWidth
             multiline
             rows={4}
             placeholder="Enter detailed property notes and additional information"
-            required
-            error={!!fieldErrors.property_notes}
-            helperText={fieldErrors.property_notes}
           />
         </Box>
 
@@ -514,16 +617,27 @@ const GeneralDetailsForm: React.FC<GeneralDetailsFormProps> = ({ onStepSubmitted
             type="submit"
             variant="contained"
             startIcon={isSubmitting ? <CircularProgress size={20} /> : <Save />}
-            disabled={isSubmitting || isSubmitted}
+            disabled={isSubmitting || isSubmitted || (hasExistingData && !hasChanges)}
             sx={{
               minWidth: 200,
-              backgroundColor: '#dc2626',
+              backgroundColor: '#f2c514',
               '&:hover': {
-                backgroundColor: '#b91c1c',
+                backgroundColor: '#d4a912',
+              },
+              '&:disabled': {
+                backgroundColor: '#e0e0e0',
+                color: '#9e9e9e',
               },
             }}
           >
-            {isSubmitting ? 'Saving...' : isSubmitted ? 'General Details Saved' : 'Save General Details'}
+            {isSubmitting 
+              ? (hasExistingData ? 'Updating...' : 'Saving...') 
+              : isSubmitted 
+                ? (hasExistingData ? 'General Details Updated' : 'General Details Saved')
+                : (hasExistingData 
+                    ? (hasChanges ? 'Update General Details' : 'No Changes Made')
+                    : 'Save General Details')
+            }
           </Button>
         </Box>
       </Box>
