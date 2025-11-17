@@ -737,15 +737,15 @@ class AgentService {
   async getAllProperties(queryParams = {}) {
     try {
       const {
-        page = 1,
-        limit = 10,
+        page,
+        limit,
         property_type,
         sale_status,
         town_city,
         postcode,
         min_size,
         max_size,
-        sort_by = 'created_at',
+        sort_by = 'createdAt',
         sort_order = 'desc'
       } = queryParams;
 
@@ -781,7 +781,7 @@ class AgentService {
       
 
 
-      // Build sort object
+      // Build sort object - default to newest first (createdAt descending)
       const sort = {};
       sort[sort_by] = sort_order === 'desc' ? -1 : 1;
 

@@ -28,15 +28,15 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/agent/account/my-profile": [
+    "/general/all-properties": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/agent/account/my-profile.js"
+      "static/chunks/pages/general/all-properties.js"
     ],
-    "/auth/login": [
+    "/property/[id]": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/auth/login.js"
+      "static/chunks/pages/property/[id].js"
     ]
   },
   "ampFirstPages": []

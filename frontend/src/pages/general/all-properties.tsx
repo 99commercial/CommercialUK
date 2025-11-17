@@ -169,7 +169,7 @@ const AllPropertiesPage: React.FC = () => {
   };
 
   // fetchProperty function that fetches ALL properties
-  const fetchProperty = async () => {
+  const fetchProperty = async (page: number = currentPage) => {
     setLoading(true);
     setError(null);
 
@@ -177,17 +177,21 @@ const AllPropertiesPage: React.FC = () => {
       // Make API call to fetch all properties (public endpoint)
       const response = await axiosInstance.get('/api/agent/properties/all', {
         params: {
-          page: currentPage,
-          limit: 12,
+          page: page,
+          limit: 12, // Match backend limit
         },
       });
 
       if (response.data.success) {
         const fetchedProperties = response.data.data.properties || [];
+        const pagination = response.data.data.pagination || {};
+        
         setProperties(fetchedProperties);
         setDisplayProperties(fetchedProperties);
-        setTotalPages(response.data.data.pagination.total_pages || 1);
-        setTotalCount(response.data.data.pagination.total_documents || 0);
+        // Update currentPage from API response to keep it in sync
+        setCurrentPage(pagination.current_page || page);
+        setTotalPages(pagination.total_pages || 1);
+        setTotalCount(pagination.total_documents || 0);
       } else {
         throw new Error(response.data.message || 'Failed to load properties');
       }
@@ -203,8 +207,10 @@ const AllPropertiesPage: React.FC = () => {
 
   // Handle page change
   const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
-    setCurrentPage(page);
-    fetchProperty();
+    // Scroll to top when page changes
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Pass the new page number directly to fetchProperty
+    fetchProperty(page);
   };
 
   // Handle favorite toggle
@@ -241,7 +247,7 @@ const AllPropertiesPage: React.FC = () => {
 
   // Load properties and check user auth on component mount
   useEffect(() => {
-    fetchProperty();
+    fetchProperty(1);
     const currentUser = checkUserAuth();
     if (currentUser) {
       fetchFavorites();
