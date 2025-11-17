@@ -184,11 +184,6 @@ class AccountService {
         throw new Error('Business email is required');
       }
 
-      // Validate business type specific requirements
-      if ((businessData.business_type === 'limited_company' || businessData.business_type === 'llp') && !businessData.company_registration_number) {
-        throw new Error('Company registration number is required for limited companies and LLPs');
-      }
-
       // Create business details
       const businessDetails = new this.BusinessDetails(businessData);
       console.log('Business details object created:', businessDetails);
