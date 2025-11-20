@@ -263,6 +263,11 @@ export default function Navbar({ onAdvertise, onLanguageChange }: NavbarProps) {
     setMobileOpen(false);
   };
 
+  const handleContact = () => {
+    router.push('/contact-us');
+    setMobileOpen(false);
+  };
+
   const handleAdvertise = () => {
     router.push('/advertise');
     setMobileOpen(false);
@@ -411,6 +416,9 @@ export default function Navbar({ onAdvertise, onLanguageChange }: NavbarProps) {
             </AllPropertiesLink>
             <AllPropertiesLink onClick={handleAbout}>
               About Us
+            </AllPropertiesLink>
+            <AllPropertiesLink onClick={handleContact}>
+              Contact Us
             </AllPropertiesLink>
             <LoginButton onClick={handleLogin}>
               Login

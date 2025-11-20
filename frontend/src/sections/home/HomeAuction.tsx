@@ -99,7 +99,7 @@ export default function HomeAuction() {
                 <CardMedia
                   component="img"
                   height={isMobile ? "300" : isTablet ? "350" : "450"}
-                  image="https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  image="/images/auction.jpg"
                   alt="Retail Property"
                   sx={{
                     objectFit: 'cover',
@@ -109,7 +109,7 @@ export default function HomeAuction() {
                     },
                   }}
                 />
-                <Box
+                {/* <Box
                   sx={{
                     position: 'absolute',
                     top: { xs: 12, md: 20 },
@@ -167,9 +167,9 @@ export default function HomeAuction() {
                       Starting at $2.5M
                     </Typography>
                   </Box>
-                </Box>
+                </Box> */}
               </Box>
-              <CardContent sx={{ p: { xs: 2, md: 3 } }}>
+              {/* <CardContent sx={{ p: { xs: 2, md: 3 } }}>
                 <Button
                   variant="outlined"
                   endIcon={<ArrowForwardIcon />}
@@ -190,7 +190,7 @@ export default function HomeAuction() {
                 >
                   View Details
                 </Button>
-              </CardContent>
+              </CardContent> */}
             </AuctionCard>
           </Box>
 

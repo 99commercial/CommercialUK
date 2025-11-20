@@ -1,12 +1,13 @@
 import React from 'react';
 import { NextPage } from 'next';
 import { Page } from '@/components';
-import { Box, Button, Typography, Container, Stack, Chip } from '@mui/material';
+import { Box, Button, Typography, Stack, Card, CardContent, Container } from '@mui/material';
+import { Campaign, SupportAgent, Phone, ArrowForward } from '@mui/icons-material';
 
 const ContactUs: NextPage = () => {
   return (
     <Page
-      title="Get in Touch with the experts | CommercialUK"
+      title="Get in Touch with the experts | commercialuk"
       meta={
         <>
           <meta
@@ -22,102 +23,326 @@ const ContactUs: NextPage = () => {
         </>
       }
     >
+      {/* Hero Section - Yellow Background */}
       <Box
-          sx={{
-            position: 'relative',
-            py: { xs: 10, md: 16 },
-            color: 'common.white',
-            background:
-              'linear-gradient(135deg, rgba(242, 197, 20,0.85) 0%, rgba(242, 197, 20,0.75) 100%), url(https://static.vecteezy.com/system/resources/previews/042/237/066/non_2x/flat-illustration-group-business-team-meeting-and-creative-agency-workspace-vector.jpg) center/cover no-repeat',
-            borderRadius: 2,
-            mb: 6
-          }}
-        >
-          <Container maxWidth="lg">
-            <Stack spacing={3} alignItems="center" textAlign="center">
+        sx={{
+          position: 'relative',
+          background: '#f2c514',
+          py: { xs: 6, md: 10 },
+          padding:"5%",
+          overflow: 'hidden'
+        }}
+      >
+        {/* <Container maxWidth="lg"> */}
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: { xs: '1fr', md: '1.2fr 1fr' },
+              gap: { xs: 4, md: 6 },
+              alignItems: 'center'
+            }}
+          >
+            {/* Left Side - Text Content */}
+            <Box>
               <Typography
-                variant="h2"
+                variant="h1"
                 sx={{
-                  fontWeight: 900,
+                  fontWeight: 800,
+                  fontSize: { xs: '2.5rem', md: '3.5rem', lg: '4rem' },
+                  color: '#000000',
+                  fontFamily: `'Montserrat', 'Inter', sans-serif`,
                   lineHeight: 1.2,
-                  color: 'common.white',
-                  textShadow: '0 2px 10px rgba(0,0,0,0.1)',
-                  fontSize: { xs: '2rem', md: '3rem' },
+                  mb: 3
                 }}
               >
                 GET IN TOUCH
               </Typography>
-            </Stack>
-          </Container>
-      </Box>
+              <Typography
+                variant="h5"
+                sx={{
+                  fontWeight: 400,
+                  fontSize: { xs: '1.1rem', md: '1.3rem' },
+                  color: '#000000',
+                  fontFamily: `'Inter', 'Montserrat', sans-serif`,
+                  lineHeight: 1.6,
+                  opacity: 0.9
+                }}
+              >
+                We'd love to hear from you. Whether you're looking to advertise your property, explore partnership opportunities, or need assistance with your CommercialUK account, our team is here for you.
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  fontWeight: 400,
+                  fontSize: { xs: '1rem', md: '1.1rem' },
+                  color: '#000000',
+                  fontFamily: `'Inter', 'Montserrat', sans-serif`,
+                  lineHeight: 1.6,
+                  mt: 3,
+                  opacity: 0.85
+                }}
+              >
+                Contact the relevant department below and let us make your property objectives a reality.
+              </Typography>
+            </Box>
 
-      <Box sx={{ px: { xs: 2, md: 4 }, fontFamily: `'Inter', 'Montserrat', sans-serif`  }}>
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 4 }}>
-          <Box>
+            {/* Right Side - Image with C-type curve */}
             <Box
               sx={{
+                display: { xs: 'none', md: 'block' },
                 position: 'relative',
-                borderRadius: 2,
-                overflow: 'hidden',
-                minHeight: { xs: 300, md: 420 },
-                display: 'flex',
-                alignItems: 'flex-end',
-                p: { xs: 4, md: 5 },
-                color: 'common.white',
-                backgroundImage:
-                  'linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.45)), url("https://www.salesforce.com/blog/wp-content/uploads/sites/2/2025/04/Market-Penetration-SMB.jpg?w=843")',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
+                height: '100%',
+                minHeight: '500px',
+                width: '100%',
+                overflow: 'visible',
+                alignSelf: 'stretch'
               }}
             >
-              <Box>
-                <Typography variant="h5" component="h2" gutterBottom sx={{ fontFamily: `'Montserrat', 'Inter', sans-serif`, fontWeight: 800 }}>
-                  Advertise with Us
-                </Typography>
-                <Typography variant="body1" sx={{ maxWidth: 900, mb: 2, fontFamily: `'Inter', 'Montserrat', sans-serif`, fontWeight: 600 }}>
-                  Talk to our CommercialUK property marketing experts and find out about bespoke advertising
-                  solutions that enable you to connect with buyers, tenants, and investors in the UK.
-                </Typography>
-                <Button variant="contained" sx={{ backgroundColor: '#f2c514', '&:hover': { backgroundColor: '#c9a010' } }}>
-                  Connect with us
-                </Button>
+              <Box
+                sx={{
+                  position: 'relative',
+                  width: '100%',
+                  height: '100%',
+                  // clipPath: 'circle(94.4% at 99% 47%)',
+                  borderRadius: '0 0 0 30px'
+                }}
+              >
+                <Box
+                  component="img"
+                  src="https://www.shutterstock.com/image-photo/young-businesswoman-using-smart-phone-600nw-1936412359.jpg"
+                  alt="Customer service representative"
+                  sx={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    display: 'block',
+                    borderRadius: '20px'
+                  }}
+                />
               </Box>
             </Box>
           </Box>
+        {/* </Container> */}
+      </Box>
 
-          <Box>
-            <Box
-              sx={{
-                position: 'relative',
-                borderRadius: 2,
-                overflow: 'hidden',
-                minHeight: { xs: 300, md: 420 },
-                display: 'flex',
-                alignItems: 'flex-end',
-                p: { xs: 4, md: 5 },
-                color: 'common.white',
-                backgroundImage:
-                  'linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.45)), url("https://www.salesforce.com/content/dam/web/en_us/www/images/hub/how-to-close-the-sale/list-of-most-important-customer-service-skills-header.jpg")',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-              }}
-            >
-              <Box>
-                <Typography variant="h5" component="h2" gutterBottom sx={{ fontFamily: `'Montserrat', 'Inter', sans-serif`, fontWeight: 800 }}>
+      {/* Main Content - Two Columns */}
+      <Container maxWidth="lg" sx={{ py: { xs: 6, md: 10 } }}>
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+            gap: { xs: 4, md: 6 },
+            position: 'relative',
+            marginTop:"-113px"
+          }}
+        >
+          {/* Advertise with us Card */}
+          <Card
+            elevation={0}
+            sx={{
+              borderRadius: 3,
+              border: '1px solid rgba(0,0,0,0.08)',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                transform: 'translateY(-4px)'
+              },
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column'
+            }}
+          >
+            <CardContent sx={{ p: 4, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+              <Box sx={{ mb: 3 }}>
+                <Campaign
+                  sx={{
+                    fontSize: 48,
+                    color: '#666666',
+                    mb: 2
+                  }}
+                />
+                <Typography
+                  variant="h4"
+                  sx={{
+                    fontWeight: 700,
+                    color: '#333333',
+                    fontFamily: `'Montserrat', 'Inter', sans-serif`,
+                    mb: 2
+                  }}
+                >
+                  Advertise with us
+                </Typography>
+              </Box>
+
+              <Stack spacing={2} sx={{ flexGrow: 1 }}>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    fontFamily: `'Inter', 'Montserrat', sans-serif`,
+                    fontWeight: 400,
+                    lineHeight: 1.7,
+                    color: '#666666',
+                    fontSize: '1rem'
+                  }}
+                >
+                  Connect with our Commercial UK property marketing team and discover bespoke advertising solutions to enhance your brand and maximize exposure.
+                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    fontFamily: `'Inter', 'Montserrat', sans-serif`,
+                    fontWeight: 400,
+                    lineHeight: 1.7,
+                    color: '#666666',
+                    fontSize: '1rem'
+                  }}
+                >
+                  We offer flexible packages, premium placements, and data-driven insights to make your listings stand out in the competitive marketplace.
+                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    fontFamily: `'Inter', 'Montserrat', sans-serif`,
+                    fontWeight: 400,
+                    lineHeight: 1.7,
+                    color: '#666666',
+                    fontSize: '1rem'
+                  }}
+                >
+                  Let's build a marketing strategy that works for you.
+                </Typography>
+              </Stack>
+
+              <Box sx={{ mt: 4 }}>
+                <Button
+                  variant="contained"
+                  size="large"
+                  endIcon={<ArrowForward />}
+                  sx={{
+                    backgroundColor: '#f2c514',
+                    color: '#000000',
+                    fontWeight: 700,
+                    px: 4,
+                    py: 1.5,
+                    fontSize: '1rem',
+                    fontFamily: `'Inter', 'Montserrat', sans-serif`,
+                    textTransform: 'none',
+                    borderRadius: 2,
+                    '&:hover': {
+                      backgroundColor: '#c9a010'
+                    }
+                  }}
+                >
+                  Connect with Us
+                </Button>
+              </Box>
+            </CardContent>
+          </Card>
+
+          {/* Get Support Card */}
+          <Card
+            elevation={0}
+            sx={{
+              borderRadius: 3,
+              border: '1px solid rgba(0,0,0,0.08)',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                transform: 'translateY(-4px)'
+              },
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column'
+            }}
+          >
+            <CardContent sx={{ p: 4, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+              <Box sx={{ mb: 3 }}>
+                <SupportAgent
+                  sx={{
+                    fontSize: 48,
+                    color: '#666666',
+                    mb: 2
+                  }}
+                />
+                <Typography
+                  variant="h4"
+                  sx={{
+                    fontWeight: 700,
+                    color: '#333333',
+                    fontFamily: `'Montserrat', 'Inter', sans-serif`,
+                    mb: 2
+                  }}
+                >
                   Get Support
                 </Typography>
-                <Typography variant="body1" sx={{ maxWidth: 900, mb: 2, fontFamily: `'Inter', 'Montserrat', sans-serif`, fontWeight: 600 }}>
-                  We’re here to help you every step of the way. Our dedicated support team can assist with
-                  listings, payments, account access, and more — so you can focus on what matters most.
+              </Box>
+
+              <Stack spacing={2} sx={{ flexGrow: 1 }}>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    fontFamily: `'Inter', 'Montserrat', sans-serif`,
+                    fontWeight: 400,
+                    lineHeight: 1.7,
+                    color: '#666666',
+                    fontSize: '1rem'
+                  }}
+                >
+                  We are here to make your CommercialUK experience smooth and stress-free.
                 </Typography>
-                <Button variant="contained" sx={{ backgroundColor: '#f2c514', '&:hover': { backgroundColor: '#c9a010' } }}>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    fontFamily: `'Inter', 'Montserrat', sans-serif`,
+                    fontWeight: 400,
+                    lineHeight: 1.7,
+                    color: '#666666',
+                    fontSize: '1rem'
+                  }}
+                >
+                  Our dedicated support team is ready to help with everything from managing your listings, updating your business details, to resolving any billing issues, account access, and technical queries.
+                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    fontFamily: `'Inter', 'Montserrat', sans-serif`,
+                    fontWeight: 400,
+                    lineHeight: 1.7,
+                    color: '#666666',
+                    fontSize: '1rem'
+                  }}
+                >
+                  Reach out today, and let us get you back on track in no time.
+                </Typography>
+              </Stack>
+
+              <Box sx={{ mt: 4 }}>
+                <Button
+                  variant="contained"
+                  size="large"
+                  endIcon={<ArrowForward />}
+                  sx={{
+                    backgroundColor: '#f2c514',
+                    color: '#000000',
+                    fontWeight: 700,
+                    px: 4,
+                    py: 1.5,
+                    fontSize: '1rem',
+                    fontFamily: `'Inter', 'Montserrat', sans-serif`,
+                    textTransform: 'none',
+                    borderRadius: 2,
+                    '&:hover': {
+                      backgroundColor: '#c9a010'
+                    }
+                  }}
+                >
                   Get Help
                 </Button>
               </Box>
-            </Box>
-          </Box>
+            </CardContent>
+          </Card>
         </Box>
-      </Box>
+      </Container>
     </Page>
   );
 };

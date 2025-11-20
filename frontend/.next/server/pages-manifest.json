@@ -2,8 +2,7 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/auth/login": "pages/auth/login.js",
-  "/": "pages/index.js",
-  "/general/all-properties": "pages/general/all-properties.js",
-  "/property/[id]": "pages/property/[id].js"
+  "/contact-us": "pages/contact-us.js",
+  "/advertise": "pages/advertise.js",
+  "/about-us": "pages/about-us.js"
 }

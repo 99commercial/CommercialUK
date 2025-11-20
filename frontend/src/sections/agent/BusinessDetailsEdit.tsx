@@ -178,12 +178,12 @@ const IconFieldWrapper = styled(Box)(({ theme }) => ({
   transition: 'all 0.3s ease',
   '&:hover': {
     borderColor: '#f2c514',
-    boxShadow: '0 2px 8px rgba(220, 38, 38, 0.1)',
+    // boxShadow: '0 2px 8px rgba(220, 38, 38, 0.1)',
   },
   '&:focus-within': {
     borderColor: '#f2c514',
     borderWidth: '2px',
-    boxShadow: '0 4px 12px rgba(220, 38, 38, 0.15)',
+    // boxShadow: '0 4px 12px rgba(220, 38, 38, 0.15)',
   },
   '& .icon-wrapper': {
     display: 'flex',
@@ -192,7 +192,7 @@ const IconFieldWrapper = styled(Box)(({ theme }) => ({
     minWidth: 40,
     height: 40,
     borderRadius: 8,
-    backgroundColor: '#fee2e2',
+    // backgroundColor: '#fee2e2',
     color: '#f2c514',
   },
 }));
@@ -486,7 +486,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   width: 48,
                   height: 48,
                   borderRadius: 2,
-                  backgroundColor: '#fee2e2',
+                  // backgroundColor: '#fee2e2',
                   color: '#f2c514',
                 }}>
                   <BusinessIcon sx={{ fontSize: '1.75rem' }} />
@@ -679,7 +679,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   width: 48,
                   height: 48,
                   borderRadius: 2,
-                  backgroundColor: '#fee2e2',
+                  // backgroundColor: '#fee2e2',
                   color: '#f2c514',
                 }}>
                   <SecurityIcon sx={{ fontSize: '1.75rem' }} />
@@ -831,7 +831,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   width: 48,
                   height: 48,
                   borderRadius: 2,
-                  backgroundColor: '#fee2e2',
+                  // backgroundColor: '#fee2e2',
                   color: '#f2c514',
                 }}>
                   <LocationIcon sx={{ fontSize: '1.75rem' }} />
@@ -1008,7 +1008,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   width: 48,
                   height: 48,
                   borderRadius: 2,
-                  backgroundColor: '#fee2e2',
+                  // backgroundColor: '#fee2e2',
                   color: '#f2c514',
                 }}>
                   <PhoneIcon sx={{ fontSize: '1.75rem' }} />
@@ -1127,7 +1127,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   width: 48,
                   height: 48,
                   borderRadius: 2,
-                  backgroundColor: '#fee2e2',
+                  // backgroundColor: '#fee2e2',
                   color: '#f2c514',
                 }}>
                   <WorkIcon sx={{ fontSize: '1.75rem' }} />
@@ -1287,7 +1287,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   width: 48,
                   height: 48,
                   borderRadius: 2,
-                  backgroundColor: '#fee2e2',
+                  // backgroundColor: '#fee2e2',
                   color: '#f2c514',
                 }}>
                   <ScheduleIcon sx={{ fontSize: '1.75rem' }} />
@@ -1453,7 +1453,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   width: 48,
                   height: 48,
                   borderRadius: 2,
-                  backgroundColor: '#fee2e2',
+                  // backgroundColor: '#fee2e2',
                   color: '#f2c514',
                 }}>
                   <SchoolIcon sx={{ fontSize: '1.75rem' }} />
@@ -1544,7 +1544,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   width: 48,
                   height: 48,
                   borderRadius: 2,
-                  backgroundColor: '#fee2e2',
+                  // backgroundColor: '#fee2e2',
                   color: '#f2c514',
                 }}>
                   <ShieldIcon sx={{ fontSize: '1.75rem' }} />

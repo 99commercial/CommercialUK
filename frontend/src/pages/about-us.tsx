@@ -32,15 +32,15 @@ const AboutUs: NextPage = () => {
           color: '#f2c514',
           py: { xs: 8, md: 14 },
           background:
-            'linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url(https://www.shutterstock.com/image-photo/why-choose-us-businessman-holding-600nw-1431803342.jpg) center/cover no-repeat',
+            'linear-gradient(135deg, rgba(242, 197, 20,0.85) 0%, rgba(242, 197, 20,0.75) 100%), url(https://www.shutterstock.com/image-photo/why-choose-us-businessman-holding-600nw-1431803342.jpg) center/cover no-repeat',
         }}
       >
         <Container maxWidth="lg" sx={{ maxWidth: '100%' }}>
-          <Stack spacing={2} alignItems="flex-start">
-            <Typography variant="h2" component="h1" sx={{ fontWeight: 800, lineHeight: 1.1, color: 'common.white' }}>
+          <Stack spacing={2} alignItems="center" textAlign="center">
+            <Typography variant="h2" component="h1" sx={{ fontWeight: 800, lineHeight: 1.1, color: 'black' }}>
               About CommercialUK
             </Typography>
-            <Typography variant="h6" sx={{ maxWidth: 900, opacity: 0.9, color: 'common.white' }}>
+            <Typography variant="h6" sx={{ maxWidth: 900, opacity: 0.9, color: 'black' }}>
               Quick, efficient, and cost‑effective property listing services covering the whole of the UK.
             </Typography>
           </Stack>

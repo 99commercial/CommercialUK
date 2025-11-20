@@ -96,7 +96,7 @@ const Advertise: NextPage = () => {
               label="Commercial Property Marketing" 
               sx={{ 
                 bgcolor: 'rgba(255,255,255,0.25)', 
-                color: 'common.white', 
+                color: 'black', 
                 fontWeight: 700,
                 fontSize: '0.875rem',
                 py: 2.5,
@@ -111,7 +111,7 @@ const Advertise: NextPage = () => {
               sx={{ 
                 fontWeight: 900, 
                 lineHeight: 1.2,
-                color: 'common.white',
+                color: 'black',
                 textShadow: '0 2px 10px rgba(0,0,0,0.1)',
                 fontSize: { xs: '2rem', md: '3rem' },
                 fontFamily: titleFontFamily
@@ -123,7 +123,7 @@ const Advertise: NextPage = () => {
               variant="h6" 
               sx={{ 
                 maxWidth: 900, 
-                color: 'rgba(255,255,255,0.95)',
+                color: 'rgba(0, 0, 0, 0.95)',
                 fontWeight: 400,
                 lineHeight: 1.6,
                 fontFamily: bodyFontFamily
@@ -201,6 +201,546 @@ const Advertise: NextPage = () => {
                   </Typography>
                 </Box>
               </Stack>
+            </Paper>
+
+            {/* What's Included Section */}
+            <Paper 
+              variant="outlined" 
+              sx={{ 
+                p: { xs: 4, md: 6 }, 
+                borderRadius: 4,
+                background: 'linear-gradient(135deg, rgba(245, 245, 245, 0.98) 0%, rgba(250, 250, 250, 0.98) 100%)',
+                borderLeft: (t) => `6px solid #f2c514`,
+                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05)'
+              }}
+            >
+              <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr', lg: '1fr', xl: '1.3fr 1.5fr' }, gap: { xs: 4, xl: 6 }, alignItems: 'stretch', minHeight: '100%' }}>
+                {/* Left Side - Rating Box and Visual Element */}
+                <Box 
+                  sx={{ 
+                    display: { xs: 'flex', md: 'none', lg: 'none', xl: 'flex' },
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '100%',
+                    width: '100%',
+                    alignSelf: 'stretch',
+                    padding: { xs: 0, xl: 3 },
+                    minHeight: { xs: '300px', xl: '100%' }
+                  }}
+                >
+                    <Box
+                      component="img"
+                      src="https://platform.vox.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/22383752/GettyImages_1268536478.jpg?quality=90&strip=all&crop=16.666666666667,0,66.666666666667,100"
+                      alt="Professional service representative"
+                      sx={{
+                        width: '100%',
+                        height: '100%',
+                        borderRadius: 5,
+                      }}
+                    />
+                </Box>
+
+                {/* Right Side - Content */}
+                <Stack spacing={5}>
+                  <Stack direction="row" spacing={2} alignItems="center">
+                    <CheckCircle sx={{ fontSize: { xs: '2rem', md: '2.5rem' }, color: '#f2c514' }} />
+                    <Typography 
+                      variant="h3" 
+                      sx={{ 
+                        fontWeight: 900,
+                        color: '#000000',
+                        fontSize: { xs: '1.75rem', md: '2.25rem' },
+                        fontFamily: titleFontFamily
+                      }}
+                    >
+                      What's Included
+                    </Typography>
+                  </Stack>
+                  
+                  <Typography 
+                    variant="body1" 
+                    sx={{ 
+                      fontSize: '1.05rem', 
+                      lineHeight: 1.8, 
+                      color: '#000000',
+                      fontFamily: bodyFontFamily
+                    }}
+                  >
+                    Comprehensive commercial property listing service designed to maximize your property's visibility and connect you with serious buyers, tenants, and investors across the UK.
+                  </Typography>
+
+                  {/* Two Column Features Grid */}
+                  <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 4, mt: 2 }}>
+                    {/* Left Column */}
+                    <Stack spacing={4}>
+                      <Stack direction="row" spacing={3} alignItems="flex-start">
+                        <Box 
+                          sx={{ 
+                            minWidth: 56,
+                            height: 56,
+                            borderRadius: '50%',
+                            bgcolor: '#f2c514',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexShrink: 0
+                          }}
+                        >
+                          <Description sx={{ color: 'common.white', fontSize: 28 }} />
+                        </Box>
+                        <Box>
+                          <Typography 
+                            variant="subtitle1" 
+                            sx={{ 
+                              fontWeight: 700, 
+                              color: '#000000',
+                              mb: 1,
+                              fontSize: { xs: '1.1rem', md: '1.2rem' },
+                              fontFamily: subtitleFontFamily
+                            }}
+                          >
+                            Detailed Listings
+                          </Typography>
+                          <Typography 
+                            variant="body2" 
+                            sx={{ 
+                              color: '#000000',
+                              lineHeight: 1.7,
+                              fontSize: { xs: '0.95rem', md: '1.05rem' },
+                              fontFamily: bodyFontFamily
+                            }}
+                          >
+                            Unrestricted text, PDF attachments, maps, and high-quality images for all types of commercial property for lease and commercial property listing service in the UK.
+                          </Typography>
+                        </Box>
+                      </Stack>
+
+                      <Stack direction="row" spacing={3} alignItems="flex-start">
+                        <Box 
+                          sx={{ 
+                            minWidth: 56,
+                            height: 56,
+                            borderRadius: '50%',
+                            bgcolor: '#f2c514',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexShrink: 0
+                          }}
+                        >
+                          <PhoneInTalk sx={{ color: 'common.white', fontSize: 28 }} />
+                        </Box>
+                        <Box>
+                          <Typography 
+                            variant="subtitle1" 
+                            sx={{ 
+                              fontWeight: 700, 
+                              color: '#000000',
+                              mb: 1,
+                              fontSize: { xs: '1.1rem', md: '1.2rem' },
+                              fontFamily: subtitleFontFamily
+                            }}
+                          >
+                            Never Miss an Enquiry
+                          </Typography>
+                          <Typography 
+                            variant="body2" 
+                            sx={{ 
+                              color: '#000000',
+                              lineHeight: 1.7,
+                              fontSize: { xs: '0.95rem', md: '1.05rem' },
+                              fontFamily: bodyFontFamily
+                            }}
+                          >
+                            Monitored phone lines and email forwarding to ensure you capture every opportunity.
+                          </Typography>
+                        </Box>
+                      </Stack>
+
+                      <Stack direction="row" spacing={3} alignItems="flex-start">
+                        <Box 
+                          sx={{ 
+                            minWidth: 56,
+                            height: 56,
+                            borderRadius: '50%',
+                            bgcolor: '#f2c514',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexShrink: 0
+                          }}
+                        >
+                          <Analytics sx={{ color: 'common.white', fontSize: 28 }} />
+                        </Box>
+                        <Box>
+                          <Typography 
+                            variant="subtitle1" 
+                            sx={{ 
+                              fontWeight: 700, 
+                              color: '#000000',
+                              mb: 1,
+                              fontSize: { xs: '1.1rem', md: '1.2rem' },
+                              fontFamily: subtitleFontFamily
+                            }}
+                          >
+                            Performance Monitoring
+                          </Typography>
+                          <Typography 
+                            variant="body2" 
+                            sx={{ 
+                              color: '#000000',
+                              lineHeight: 1.7,
+                              fontSize: { xs: '0.95rem', md: '1.05rem' },
+                              fontFamily: bodyFontFamily
+                            }}
+                          >
+                            Track enquiries, page views & brochure downloads to measure your listing's success.
+                          </Typography>
+                        </Box>
+                      </Stack>
+
+                      <Stack direction="row" spacing={3} alignItems="flex-start">
+                        <Box 
+                          sx={{ 
+                            minWidth: 56,
+                            height: 56,
+                            borderRadius: '50%',
+                            bgcolor: '#f2c514',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexShrink: 0
+                          }}
+                        >
+                          <SupportAgent sx={{ color: 'common.white', fontSize: 28 }} />
+                        </Box>
+                        <Box>
+                          <Typography 
+                            variant="subtitle1" 
+                            sx={{ 
+                              fontWeight: 700, 
+                              color: '#000000',
+                              mb: 1,
+                              fontSize: { xs: '1.1rem', md: '1.2rem' },
+                              fontFamily: subtitleFontFamily
+                            }}
+                          >
+                            Committed Support
+                          </Typography>
+                          <Typography 
+                            variant="body2" 
+                            sx={{ 
+                              color: '#000000',
+                              lineHeight: 1.7,
+                              fontSize: { xs: '0.95rem', md: '1.05rem' },
+                              fontFamily: bodyFontFamily
+                            }}
+                          >
+                            Our experts ensure listings remain accurate and optimised for maximum visibility.
+                          </Typography>
+                        </Box>
+                      </Stack>
+
+                      <Stack direction="row" spacing={3} alignItems="flex-start">
+                        <Box 
+                          sx={{ 
+                            minWidth: 56,
+                            height: 56,
+                            borderRadius: '50%',
+                            bgcolor: '#f2c514',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexShrink: 0
+                          }}
+                        >
+                          <BrandingWatermark sx={{ color: 'common.white', fontSize: 28 }} />
+                        </Box>
+                        <Box>
+                          <Typography 
+                            variant="subtitle1" 
+                            sx={{ 
+                              fontWeight: 700, 
+                              color: '#000000',
+                              mb: 1,
+                              fontSize: { xs: '1.1rem', md: '1.2rem' },
+                              fontFamily: subtitleFontFamily
+                            }}
+                          >
+                            Company Promotion
+                          </Typography>
+                          <Typography 
+                            variant="body2" 
+                            sx={{ 
+                              color: '#000000',
+                              lineHeight: 1.7,
+                              fontSize: { xs: '0.95rem', md: '1.05rem' },
+                              fontFamily: bodyFontFamily
+                            }}
+                          >
+                            Showcase agents in peak marketplace positions to build your brand presence.
+                          </Typography>
+                        </Box>
+                      </Stack>
+
+                      <Stack direction="row" spacing={3} alignItems="flex-start">
+                        <Box 
+                          sx={{ 
+                            minWidth: 56,
+                            height: 56,
+                            borderRadius: '50%',
+                            bgcolor: '#f2c514',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexShrink: 0
+                          }}
+                        >
+                          <Business sx={{ color: 'common.white', fontSize: 28 }} />
+                        </Box>
+                        <Box>
+                          <Typography 
+                            variant="subtitle1" 
+                            sx={{ 
+                              fontWeight: 700, 
+                              color: '#000000',
+                              mb: 1,
+                              fontSize: { xs: '1.1rem', md: '1.2rem' },
+                              fontFamily: subtitleFontFamily
+                            }}
+                          >
+                            Commercial Only
+                          </Typography>
+                          <Typography 
+                            variant="body2" 
+                            sx={{ 
+                              color: '#000000',
+                              lineHeight: 1.7,
+                              fontSize: { xs: '0.95rem', md: '1.05rem' },
+                              fontFamily: bodyFontFamily
+                            }}
+                          >
+                            Offices, retail space, industrial, warehouses, restaurants, coworking, and small commercial properties for sale.
+                          </Typography>
+                        </Box>
+                      </Stack>
+                    </Stack>
+
+                    {/* Right Column */}
+                    <Stack spacing={4}>
+                      <Stack direction="row" spacing={3} alignItems="flex-start">
+                        <Box 
+                          sx={{ 
+                            minWidth: 56,
+                            height: 56,
+                            borderRadius: '50%',
+                            bgcolor: '#f2c514',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexShrink: 0
+                          }}
+                        >
+                          <HomeWork sx={{ color: 'common.white', fontSize: 28 }} />
+                        </Box>
+                        <Box>
+                          <Typography 
+                            variant="subtitle1" 
+                            sx={{ 
+                              fontWeight: 700, 
+                              color: '#000000',
+                              mb: 1,
+                              fontSize: { xs: '1.1rem', md: '1.2rem' },
+                              fontFamily: subtitleFontFamily
+                            }}
+                          >
+                            Mobile Responsive Platform
+                          </Typography>
+                          <Typography 
+                            variant="body2" 
+                            sx={{ 
+                              color: '#000000',
+                              lineHeight: 1.7,
+                              fontSize: { xs: '0.95rem', md: '1.05rem' },
+                              fontFamily: bodyFontFamily
+                            }}
+                          >
+                            Easy browsing for buyers, tenants, investors on any device.
+                          </Typography>
+                        </Box>
+                      </Stack>
+
+                      <Stack direction="row" spacing={3} alignItems="flex-start">
+                        <Box 
+                          sx={{ 
+                            minWidth: 56,
+                            height: 56,
+                            borderRadius: '50%',
+                            bgcolor: '#f2c514',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexShrink: 0
+                          }}
+                        >
+                          <Email sx={{ color: 'common.white', fontSize: 28 }} />
+                        </Box>
+                        <Box>
+                          <Typography 
+                            variant="subtitle1" 
+                            sx={{ 
+                              fontWeight: 700, 
+                              color: '#000000',
+                              mb: 1,
+                              fontSize: { xs: '1.1rem', md: '1.2rem' },
+                              fontFamily: subtitleFontFamily
+                            }}
+                          >
+                            Intelligent Marketing
+                          </Typography>
+                          <Typography 
+                            variant="body2" 
+                            sx={{ 
+                              color: '#000000',
+                              lineHeight: 1.7,
+                              fontSize: { xs: '0.95rem', md: '1.05rem' },
+                              fontFamily: bodyFontFamily
+                            }}
+                          >
+                            New & updated listings emailed directly to active occupiers searching business property to rent near me or commercial property investment UK opportunities.
+                          </Typography>
+                        </Box>
+                      </Stack>
+
+                      <Stack direction="row" spacing={3} alignItems="flex-start">
+                        <Box 
+                          sx={{ 
+                            minWidth: 56,
+                            height: 56,
+                            borderRadius: '50%',
+                            bgcolor: '#f2c514',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexShrink: 0
+                          }}
+                        >
+                          <Link sx={{ color: 'common.white', fontSize: 28 }} />
+                        </Box>
+                        <Box>
+                          <Typography 
+                            variant="subtitle1" 
+                            sx={{ 
+                              fontWeight: 700, 
+                              color: '#000000',
+                              mb: 1,
+                              fontSize: { xs: '1.1rem', md: '1.2rem' },
+                              fontFamily: subtitleFontFamily
+                            }}
+                          >
+                            Data Feed Support
+                          </Typography>
+                          <Typography 
+                            variant="body2" 
+                            sx={{ 
+                              color: '#000000',
+                              lineHeight: 1.7,
+                              fontSize: { xs: '0.95rem', md: '1.05rem' },
+                              fontFamily: bodyFontFamily
+                            }}
+                          >
+                            Ideal for commercial real estate agencies in the UK portfolios with seamless integration.
+                          </Typography>
+                        </Box>
+                      </Stack>
+
+                      <Stack direction="row" spacing={3} alignItems="flex-start">
+                        <Box 
+                          sx={{ 
+                            minWidth: 56,
+                            height: 56,
+                            borderRadius: '50%',
+                            bgcolor: '#f2c514',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexShrink: 0
+                          }}
+                        >
+                          <Assessment sx={{ color: 'common.white', fontSize: 28 }} />
+                        </Box>
+                        <Box>
+                          <Typography 
+                            variant="subtitle1" 
+                            sx={{ 
+                              fontWeight: 700, 
+                              color: '#000000',
+                              mb: 1,
+                              fontSize: { xs: '1.1rem', md: '1.2rem' },
+                              fontFamily: subtitleFontFamily
+                            }}
+                          >
+                            Advanced Reporting
+                          </Typography>
+                          <Typography 
+                            variant="body2" 
+                            sx={{ 
+                              color: '#000000',
+                              lineHeight: 1.7,
+                              fontSize: { xs: '0.95rem', md: '1.05rem' },
+                              fontFamily: bodyFontFamily
+                            }}
+                          >
+                            Export data to Excel, PDF, or Word for presentations and analysis.
+                          </Typography>
+                        </Box>
+                      </Stack>
+
+                      <Stack direction="row" spacing={3} alignItems="flex-start">
+                        <Box 
+                          sx={{ 
+                            minWidth: 56,
+                            height: 56,
+                            borderRadius: '50%',
+                            bgcolor: '#f2c514',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexShrink: 0
+                          }}
+                        >
+                          <Campaign sx={{ color: 'common.white', fontSize: 28 }} />
+                        </Box>
+                        <Box>
+                          <Typography 
+                            variant="subtitle1" 
+                            sx={{ 
+                              fontWeight: 700, 
+                              color: '#000000',
+                              mb: 1,
+                              fontSize: { xs: '1.1rem', md: '1.2rem' },
+                              fontFamily: subtitleFontFamily
+                            }}
+                          >
+                            Extra Marketing
+                          </Typography>
+                          <Typography 
+                            variant="body2" 
+                            sx={{ 
+                              color: '#000000',
+                              lineHeight: 1.7,
+                              fontSize: { xs: '0.95rem', md: '1.05rem' },
+                              fontFamily: bodyFontFamily
+                            }}
+                          >
+                            Newsletters, social advertising, regional highlighting to maximize your reach.
+                          </Typography>
+                        </Box>
+                      </Stack>
+                    </Stack>
+                  </Box>
+                </Stack>
+              </Box>
             </Paper>
 
             {/* Banner Advertising Section */}

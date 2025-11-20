@@ -91,7 +91,7 @@ const PropertyForSale: NextPage = () => {
               label="Commercial Property Marketplace" 
               sx={{ 
                 bgcolor: 'rgba(255,255,255,0.25)', 
-                color: 'common.white', 
+                color: 'black', 
                 fontWeight: 700,
                 fontSize: '0.875rem',
                 py: 2.5,
@@ -105,7 +105,7 @@ const PropertyForSale: NextPage = () => {
               sx={{ 
                 fontWeight: 900, 
                 lineHeight: 1.2,
-                color: 'common.white',
+                color: 'black',
                 textShadow: '0 2px 10px rgba(0,0,0,0.1)',
                 fontSize: { xs: '2rem', md: '3rem' }
               }}
