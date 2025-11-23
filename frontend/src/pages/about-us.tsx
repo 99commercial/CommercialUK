@@ -32,7 +32,7 @@ const AboutUs: NextPage = () => {
           color: '#f2c514',
           py: { xs: 8, md: 14 },
           background:
-            'linear-gradient(135deg, rgba(242, 197, 20,0.85) 0%, rgba(242, 197, 20,0.75) 100%), url(https://www.shutterstock.com/image-photo/why-choose-us-businessman-holding-600nw-1431803342.jpg) center/cover no-repeat',
+            'linear-gradient(135deg, rgba(242, 197, 20,0.85) 0%, rgba(242, 197, 20,0.75) 100%), url(https://www.impactbnd.com/hubfs/blog-image-uploads/best-about-us-pages.jpg) center/cover no-repeat',
         }}
       >
         <Container maxWidth="lg" sx={{ maxWidth: '100%' }}>
