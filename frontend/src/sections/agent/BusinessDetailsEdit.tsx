@@ -192,8 +192,8 @@ const IconFieldWrapper = styled(Box)(({ theme }) => ({
     minWidth: 40,
     height: 40,
     borderRadius: 8,
-    // backgroundColor: '#fee2e2',
-    color: '#f2c514',
+    backgroundColor: 'rgba(242, 197, 20, 0.85)',
+    color: '#000000',
   },
 }));
 
@@ -477,7 +477,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
         <Box component="form" onSubmit={handleSubmit}>
           {/* Basic Business Information */}
           <SectionAccordion defaultExpanded>
-            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#f2c514' }} />}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#000000' }} />}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                 <Box sx={{ 
                   display: 'flex', 
@@ -486,8 +486,8 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   width: 48,
                   height: 48,
                   borderRadius: 2,
-                  // backgroundColor: '#fee2e2',
-                  color: '#f2c514',
+                  backgroundColor: 'rgba(242, 197, 20, 0.85)',
+                  color: '#000000',
                 }}>
                   <BusinessIcon sx={{ fontSize: '1.75rem' }} />
                 </Box>
@@ -537,7 +537,18 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                 <Grid size={{ xs: 12, md: 6 }}>
                   <CardFieldContainer>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-                      <CorporateIcon sx={{ color: '#f2c514', fontSize: '1.25rem' }} />
+                      <Box sx={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        width: 32,
+                        height: 32,
+                        borderRadius: 1,
+                        backgroundColor: 'rgba(242, 197, 20, 0.85)',
+                        color: '#000000',
+                      }}>
+                        <CorporateIcon sx={{ color: '#000000', fontSize: '1.25rem' }} />
+                      </Box>
                       <Typography variant="body2" sx={{ fontWeight: 600, color: '#374151', fontFamily: '"Inter", sans-serif' }}>
                         Business Type
                       </Typography>
@@ -576,7 +587,18 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                 <Grid size={{ xs: 12, md: 6 }}>
                   <CardFieldContainer>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-                      <BadgeIcon sx={{ color: '#f2c514', fontSize: '1.25rem' }} />
+                      <Box sx={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        width: 32,
+                        height: 32,
+                        borderRadius: 1,
+                        backgroundColor: 'rgba(242, 197, 20, 0.85)',
+                        color: '#000000',
+                      }}>
+                        <BadgeIcon sx={{ color: '#000000', fontSize: '1.25rem' }} />
+                      </Box>
                       <Typography variant="body2" sx={{ fontWeight: 600, color: '#374151', fontFamily: '"Inter", sans-serif' }}>
                         Company Registration Number
                       </Typography>
@@ -634,7 +656,18 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   <GradientBorderField>
                     <Box className="field-content">
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                        <CalendarIcon sx={{ color: '#f2c514', fontSize: '1.5rem' }} />
+                        <Box sx={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'center',
+                          width: 40,
+                          height: 40,
+                          borderRadius: 1,
+                          backgroundColor: 'rgba(242, 197, 20, 0.85)',
+                          color: '#000000',
+                        }}>
+                          <CalendarIcon sx={{ color: '#000000', fontSize: '1.5rem' }} />
+                        </Box>
                         <StyledTextField
                           fullWidth
                           name="years_in_business"
@@ -670,7 +703,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
 
           {/* UK Real Estate Specific Fields */}
           <SectionAccordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#f2c514' }} />}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#000000' }} />}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                 <Box sx={{ 
                   display: 'flex', 
@@ -679,8 +712,8 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   width: 48,
                   height: 48,
                   borderRadius: 2,
-                  // backgroundColor: '#fee2e2',
-                  color: '#f2c514',
+                  backgroundColor: 'rgba(242, 197, 20, 0.85)',
+                  color: '#000000',
                 }}>
                   <SecurityIcon sx={{ fontSize: '1.75rem' }} />
                 </Box>
@@ -725,7 +758,18 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                 <Grid size={{ xs: 12, md: 6 }}>
                   <CardFieldContainer>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-                      <AccountBalanceIcon sx={{ color: '#f2c514', fontSize: '1.25rem' }} />
+                      <Box sx={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        width: 32,
+                        height: 32,
+                        borderRadius: 1,
+                        backgroundColor: 'rgba(242, 197, 20, 0.85)',
+                        color: '#000000',
+                      }}>
+                        <AccountBalanceIcon sx={{ color: '#000000', fontSize: '1.25rem' }} />
+                      </Box>
                       <Typography variant="body2" sx={{ fontWeight: 600, color: '#374151', fontFamily: '"Inter", sans-serif' }}>
                         Property Ombudsman Membership
                       </Typography>
@@ -750,7 +794,18 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   <GradientBorderField>
                     <Box className="field-content">
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
-                        <GavelIcon sx={{ color: '#f2c514', fontSize: '1.25rem' }} />
+                        <Box sx={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'center',
+                          width: 32,
+                          height: 32,
+                          borderRadius: 1,
+                          backgroundColor: 'rgba(242, 197, 20, 0.85)',
+                          color: '#000000',
+                        }}>
+                          <GavelIcon sx={{ color: '#000000', fontSize: '1.25rem' }} />
+                        </Box>
                         <Typography variant="body2" sx={{ fontWeight: 600, color: '#374151', fontFamily: '"Inter", sans-serif' }}>
                           Redress Scheme
                         </Typography>
@@ -822,7 +877,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
 
           {/* Business Address */}
           <SectionAccordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#f2c514' }} />}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#000000' }} />}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                 <Box sx={{ 
                   display: 'flex', 
@@ -831,8 +886,8 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   width: 48,
                   height: 48,
                   borderRadius: 2,
-                  // backgroundColor: '#fee2e2',
-                  color: '#f2c514',
+                  backgroundColor: 'rgba(242, 197, 20, 0.85)',
+                  color: '#000000',
                 }}>
                   <LocationIcon sx={{ fontSize: '1.75rem' }} />
                 </Box>
@@ -847,7 +902,18 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   <GradientBorderField>
                     <Box className="field-content">
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                        <PlaceIcon sx={{ color: '#f2c514', fontSize: '1.5rem' }} />
+                        <Box sx={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'center',
+                          width: 40,
+                          height: 40,
+                          borderRadius: 1,
+                          backgroundColor: 'rgba(242, 197, 20, 0.85)',
+                          color: '#000000',
+                        }}>
+                          <PlaceIcon sx={{ color: '#000000', fontSize: '1.5rem' }} />
+                        </Box>
                         <StyledTextField
                           fullWidth
                           name="business_address.street"
@@ -880,7 +946,18 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                 <Grid size={{ xs: 12, md: 6 }}>
                   <CardFieldContainer>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-                      <HomeIcon sx={{ color: '#f2c514', fontSize: '1.25rem' }} />
+                      <Box sx={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        width: 32,
+                        height: 32,
+                        borderRadius: 1,
+                        backgroundColor: 'rgba(242, 197, 20, 0.85)',
+                        color: '#000000',
+                      }}>
+                        <HomeIcon sx={{ color: '#000000', fontSize: '1.25rem' }} />
+                      </Box>
                       <Typography variant="body2" sx={{ fontWeight: 600, color: '#374151', fontFamily: '"Inter", sans-serif' }}>
                         City
                       </Typography>
@@ -938,7 +1015,18 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   <GradientBorderField>
                     <Box className="field-content">
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                        <LocationIcon sx={{ color: '#f2c514', fontSize: '1.5rem' }} />
+                        <Box sx={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'center',
+                          width: 40,
+                          height: 40,
+                          borderRadius: 1,
+                          backgroundColor: 'rgba(242, 197, 20, 0.85)',
+                          color: '#000000',
+                        }}>
+                          <LocationIcon sx={{ color: '#000000', fontSize: '1.5rem' }} />
+                        </Box>
                         <StyledTextField
                           fullWidth
                           name="business_address.postcode"
@@ -972,7 +1060,18 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                 <Grid size={{ xs: 12, md: 6 }}>
                   <CardFieldContainer>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-                      <PublicIcon sx={{ color: '#f2c514', fontSize: '1.25rem' }} />
+                      <Box sx={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        width: 32,
+                        height: 32,
+                        borderRadius: 1,
+                        backgroundColor: 'rgba(242, 197, 20, 0.85)',
+                        color: '#000000',
+                      }}>
+                        <PublicIcon sx={{ color: '#000000', fontSize: '1.25rem' }} />
+                      </Box>
                       <Typography variant="body2" sx={{ fontWeight: 600, color: '#374151', fontFamily: '"Inter", sans-serif' }}>
                         Country
                       </Typography>
@@ -999,7 +1098,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
 
           {/* Contact Information */}
           <SectionAccordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#f2c514' }} />}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#000000' }} />}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                 <Box sx={{ 
                   display: 'flex', 
@@ -1008,8 +1107,8 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   width: 48,
                   height: 48,
                   borderRadius: 2,
-                  // backgroundColor: '#fee2e2',
-                  color: '#f2c514',
+                  backgroundColor: 'rgba(242, 197, 20, 0.85)',
+                  color: '#000000',
                 }}>
                   <PhoneIcon sx={{ fontSize: '1.75rem' }} />
                 </Box>
@@ -1057,7 +1156,18 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   <GradientBorderField>
                     <Box className="field-content">
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                        <EmailIcon sx={{ color: '#f2c514', fontSize: '1.5rem' }} />
+                        <Box sx={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'center',
+                          width: 40,
+                          height: 40,
+                          borderRadius: 1,
+                          backgroundColor: 'rgba(242, 197, 20, 0.85)',
+                          color: '#000000',
+                        }}>
+                          <EmailIcon sx={{ color: '#000000', fontSize: '1.5rem' }} />
+                        </Box>
                         <StyledTextField
                           fullWidth
                           name="business_email"
@@ -1091,7 +1201,18 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                 <Grid size={12}>
                   <CardFieldContainer>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-                      <WebsiteIcon sx={{ color: '#f2c514', fontSize: '1.25rem' }} />
+                      <Box sx={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        width: 32,
+                        height: 32,
+                        borderRadius: 1,
+                        backgroundColor: 'rgba(242, 197, 20, 0.85)',
+                        color: '#000000',
+                      }}>
+                        <WebsiteIcon sx={{ color: '#000000', fontSize: '1.25rem' }} />
+                      </Box>
                       <Typography variant="body2" sx={{ fontWeight: 600, color: '#374151', fontFamily: '"Inter", sans-serif' }}>
                         Website
                       </Typography>
@@ -1118,7 +1239,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
 
           {/* Services and Specializations */}
           <SectionAccordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#f2c514' }} />}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#000000' }} />}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                 <Box sx={{ 
                   display: 'flex', 
@@ -1127,8 +1248,8 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   width: 48,
                   height: 48,
                   borderRadius: 2,
-                  // backgroundColor: '#fee2e2',
-                  color: '#f2c514',
+                  backgroundColor: 'rgba(242, 197, 20, 0.85)',
+                  color: '#000000',
                 }}>
                   <WorkIcon sx={{ fontSize: '1.75rem' }} />
                 </Box>
@@ -1143,7 +1264,18 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   <GradientBorderField>
                     <Box className="field-content">
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1.5 }}>
-                        <WorkIcon sx={{ color: '#f2c514', fontSize: '1.5rem' }} />
+                        <Box sx={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'center',
+                          width: 40,
+                          height: 40,
+                          borderRadius: 1,
+                          backgroundColor: 'rgba(242, 197, 20, 0.85)',
+                          color: '#000000',
+                        }}>
+                          <WorkIcon sx={{ color: '#000000', fontSize: '1.5rem' }} />
+                        </Box>
                         <Typography variant="body2" sx={{ fontWeight: 600, color: '#374151', fontFamily: '"Inter", sans-serif' }}>
                           Services Offered
                         </Typography>
@@ -1171,8 +1303,8 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                                   sx={{ 
                                     fontFamily: '"Inter", sans-serif',
                                     fontWeight: 500,
-                                    backgroundColor: '#fee2e2',
-                                    color: '#f2c514',
+                                    backgroundColor: 'rgba(242, 197, 20, 0.85)',
+                                    color: '#000000',
                                   }}
                                 />
                               ))}
@@ -1193,7 +1325,18 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                 <Grid size={12}>
                   <CardFieldContainer>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-                      <StarIcon sx={{ color: '#f2c514', fontSize: '1.25rem' }} />
+                      <Box sx={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        width: 32,
+                        height: 32,
+                        borderRadius: 1,
+                        backgroundColor: 'rgba(242, 197, 20, 0.85)',
+                        color: '#000000',
+                      }}>
+                        <StarIcon sx={{ color: '#000000', fontSize: '1.25rem' }} />
+                      </Box>
                       <Typography variant="body2" sx={{ fontWeight: 600, color: '#374151', fontFamily: '"Inter", sans-serif' }}>
                         Specializations
                       </Typography>
@@ -1221,8 +1364,8 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                                 sx={{ 
                                   fontFamily: '"Inter", sans-serif',
                                   fontWeight: 500,
-                                  backgroundColor: '#fee2e2',
-                                  color: '#f2c514',
+                                  backgroundColor: 'rgba(242, 197, 20, 0.85)',
+                                  color: '#000000',
                                 }}
                               />
                             ))}
@@ -1278,7 +1421,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
 
           {/* Business Hours */}
           <SectionAccordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#f2c514' }} />}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#000000' }} />}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                 <Box sx={{ 
                   display: 'flex', 
@@ -1287,8 +1430,8 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   width: 48,
                   height: 48,
                   borderRadius: 2,
-                  // backgroundColor: '#fee2e2',
-                  color: '#f2c514',
+                  backgroundColor: 'rgba(242, 197, 20, 0.85)',
+                  color: '#000000',
                 }}>
                   <ScheduleIcon sx={{ fontSize: '1.75rem' }} />
                 </Box>
@@ -1305,7 +1448,18 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                       <GradientBorderField>
                         <Box className="field-content">
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
-                            <AccessTimeIcon sx={{ color: '#f2c514', fontSize: '1.25rem' }} />
+                            <Box sx={{ 
+                              display: 'flex', 
+                              alignItems: 'center', 
+                              justifyContent: 'center',
+                              width: 32,
+                              height: 32,
+                              borderRadius: 1,
+                              backgroundColor: 'rgba(242, 197, 20, 0.85)',
+                              color: '#000000',
+                            }}>
+                              <AccessTimeIcon sx={{ color: '#000000', fontSize: '1.25rem' }} />
+                            </Box>
                             <Typography variant="subtitle1" sx={{ fontWeight: 600, textTransform: 'capitalize', fontFamily: '"Inter", sans-serif', color: '#1f2937' }}>
                               {day}
                             </Typography>
@@ -1366,7 +1520,18 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                     ) : (
                       <CardFieldContainer>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
-                          <AccessTimeIcon sx={{ color: '#f2c514', fontSize: '1.25rem' }} />
+                          <Box sx={{ 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            justifyContent: 'center',
+                            width: 32,
+                            height: 32,
+                            borderRadius: 1,
+                            backgroundColor: 'rgba(242, 197, 20, 0.85)',
+                            color: '#000000',
+                          }}>
+                            <AccessTimeIcon sx={{ color: '#000000', fontSize: '1.25rem' }} />
+                          </Box>
                           <Typography variant="subtitle1" sx={{ fontWeight: 600, textTransform: 'capitalize', fontFamily: '"Inter", sans-serif', color: '#1f2937' }}>
                             {day}
                           </Typography>
@@ -1444,7 +1609,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
 
           {/* Professional Information */}
           <SectionAccordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#f2c514' }} />}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#000000' }} />}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                 <Box sx={{ 
                   display: 'flex', 
@@ -1453,8 +1618,8 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   width: 48,
                   height: 48,
                   borderRadius: 2,
-                  // backgroundColor: '#fee2e2',
-                  color: '#f2c514',
+                  backgroundColor: 'rgba(242, 197, 20, 0.85)',
+                  color: '#000000',
                 }}>
                   <SchoolIcon sx={{ fontSize: '1.75rem' }} />
                 </Box>
@@ -1468,7 +1633,18 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                 <Grid size={12}>
                   <CardFieldContainer>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-                      <DescriptionIcon sx={{ color: '#f2c514', fontSize: '1.25rem' }} />
+                      <Box sx={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        width: 32,
+                        height: 32,
+                        borderRadius: 1,
+                        backgroundColor: 'rgba(242, 197, 20, 0.85)',
+                        color: '#000000',
+                      }}>
+                        <DescriptionIcon sx={{ color: '#000000', fontSize: '1.25rem' }} />
+                      </Box>
                       <Typography variant="body2" sx={{ fontWeight: 600, color: '#374151', fontFamily: '"Inter", sans-serif' }}>
                         Business Description
                       </Typography>
@@ -1535,7 +1711,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
 
           {/* Insurance Details */}
           <SectionAccordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#f2c514' }} />}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#000000' }} />}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                 <Box sx={{ 
                   display: 'flex', 
@@ -1544,8 +1720,8 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   width: 48,
                   height: 48,
                   borderRadius: 2,
-                  // backgroundColor: '#fee2e2',
-                  color: '#f2c514',
+                  backgroundColor: 'rgba(242, 197, 20, 0.85)',
+                  color: '#000000',
                 }}>
                   <ShieldIcon sx={{ fontSize: '1.75rem' }} />
                 </Box>
@@ -1590,7 +1766,18 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                 <Grid size={{ xs: 12, md: 6 }}>
                   <CardFieldContainer>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-                      <AssignmentIcon sx={{ color: '#f2c514', fontSize: '1.25rem' }} />
+                      <Box sx={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        width: 32,
+                        height: 32,
+                        borderRadius: 1,
+                        backgroundColor: 'rgba(242, 197, 20, 0.85)',
+                        color: '#000000',
+                      }}>
+                        <AssignmentIcon sx={{ color: '#000000', fontSize: '1.25rem' }} />
+                      </Box>
                       <Typography variant="body2" sx={{ fontWeight: 600, color: '#374151', fontFamily: '"Inter", sans-serif' }}>
                         Policy Number
                       </Typography>
@@ -1615,7 +1802,18 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                   <GradientBorderField>
                     <Box className="field-content">
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                        <EventIcon sx={{ color: '#f2c514', fontSize: '1.5rem' }} />
+                        <Box sx={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'center',
+                          width: 40,
+                          height: 40,
+                          borderRadius: 1,
+                          backgroundColor: 'rgba(242, 197, 20, 0.85)',
+                          color: '#000000',
+                        }}>
+                          <EventIcon sx={{ color: '#000000', fontSize: '1.5rem' }} />
+                        </Box>
                         <StyledTextField
                           fullWidth
                           name="professional_indemnity_insurance.expiry_date"
