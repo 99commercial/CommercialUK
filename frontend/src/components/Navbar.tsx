@@ -116,7 +116,7 @@ const ActionButtons = styled(Box)(({ theme }) => ({
 
 const LoginButton = styled(Button)(({ theme }) => ({
   backgroundColor: '#f2c514',
-  color: '#fff',
+  color: '#000',
   borderRadius: theme.spacing(1),
   padding: theme.spacing(1, 2),
   textTransform: 'none',

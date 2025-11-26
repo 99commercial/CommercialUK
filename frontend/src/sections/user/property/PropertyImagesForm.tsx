@@ -760,6 +760,7 @@ const PropertyImagesForm: React.FC<PropertyImagesFormProps> = ({ onStepSubmitted
                 sx={{ 
                   minWidth: 200,
                   backgroundColor: hasChanges ? '#ea580c' : '#9ca3af',
+                  color: 'black',
                   '&:hover': {
                     backgroundColor: hasChanges ? '#c2410c' : '#9ca3af',
                   }

@@ -286,7 +286,7 @@ const Advertise: NextPage = () => {
                             flexShrink: 0
                           }}
                         >
-                          <Description sx={{ color: 'common.white', fontSize: 28 }} />
+                          <Description sx={{ color: 'black', fontSize: 28 }} />
                         </Box>
                         <Box>
                           <Typography 
@@ -328,7 +328,7 @@ const Advertise: NextPage = () => {
                             flexShrink: 0
                           }}
                         >
-                          <PhoneInTalk sx={{ color: 'common.white', fontSize: 28 }} />
+                          <PhoneInTalk sx={{ color: 'black', fontSize: 28 }} />
                         </Box>
                         <Box>
                           <Typography 
@@ -370,7 +370,7 @@ const Advertise: NextPage = () => {
                             flexShrink: 0
                           }}
                         >
-                          <Analytics sx={{ color: 'common.white', fontSize: 28 }} />
+                          <Analytics sx={{ color: 'black', fontSize: 28 }} />
                         </Box>
                         <Box>
                           <Typography 
@@ -412,7 +412,7 @@ const Advertise: NextPage = () => {
                             flexShrink: 0
                           }}
                         >
-                          <SupportAgent sx={{ color: 'common.white', fontSize: 28 }} />
+                          <SupportAgent sx={{ color: 'black', fontSize: 28 }} />
                         </Box>
                         <Box>
                           <Typography 
@@ -454,7 +454,7 @@ const Advertise: NextPage = () => {
                             flexShrink: 0
                           }}
                         >
-                          <BrandingWatermark sx={{ color: 'common.white', fontSize: 28 }} />
+                          <BrandingWatermark sx={{ color: 'black', fontSize: 28 }} />
                         </Box>
                         <Box>
                           <Typography 
@@ -496,7 +496,7 @@ const Advertise: NextPage = () => {
                             flexShrink: 0
                           }}
                         >
-                          <Business sx={{ color: 'common.white', fontSize: 28 }} />
+                          <Business sx={{ color: 'black', fontSize: 28 }} />
                         </Box>
                         <Box>
                           <Typography 
@@ -541,7 +541,7 @@ const Advertise: NextPage = () => {
                             flexShrink: 0
                           }}
                         >
-                          <HomeWork sx={{ color: 'common.white', fontSize: 28 }} />
+                          <HomeWork sx={{ color: 'black', fontSize: 28 }} />
                         </Box>
                         <Box>
                           <Typography 
@@ -583,7 +583,7 @@ const Advertise: NextPage = () => {
                             flexShrink: 0
                           }}
                         >
-                          <Email sx={{ color: 'common.white', fontSize: 28 }} />
+                          <Email sx={{ color: 'black', fontSize: 28 }} />
                         </Box>
                         <Box>
                           <Typography 
@@ -625,7 +625,7 @@ const Advertise: NextPage = () => {
                             flexShrink: 0
                           }}
                         >
-                          <Link sx={{ color: 'common.white', fontSize: 28 }} />
+                            <Link sx={{ color: 'black', fontSize: 28 }} />
                         </Box>
                         <Box>
                           <Typography 
@@ -667,7 +667,7 @@ const Advertise: NextPage = () => {
                             flexShrink: 0
                           }}
                         >
-                          <Assessment sx={{ color: 'common.white', fontSize: 28 }} />
+                          <Assessment sx={{ color: 'black', fontSize: 28 }} />
                         </Box>
                         <Box>
                           <Typography 
@@ -709,7 +709,7 @@ const Advertise: NextPage = () => {
                             flexShrink: 0
                           }}
                         >
-                          <Campaign sx={{ color: 'common.white', fontSize: 28 }} />
+                            <Campaign sx={{ color: 'black', fontSize: 28 }} />
                         </Box>
                         <Box>
                           <Typography 
@@ -1101,6 +1101,7 @@ const Advertise: NextPage = () => {
                       fontSize: '1.1rem',
                       fontWeight: 700,
                       fontFamily: subtitleFontFamily,
+                      color: 'black',
                       background: 'linear-gradient(135deg, rgba(242, 197, 20,1) 0%, rgba(242, 197, 20,1) 100%)',
                       '&:hover': {
                         background: 'linear-gradient(135deg, rgba(242, 197, 20,1) 0%, rgba(242, 197, 20,1) 100%)',
@@ -1128,10 +1129,10 @@ const Advertise: NextPage = () => {
               }}
             >
               <Stack spacing={3} alignItems="center">
-                <Typography variant="h3" sx={{ fontWeight: 900, fontSize: { xs: '1.75rem', md: '2.5rem' }, fontFamily: titleFontFamily }}>
+                <Typography variant="h3" sx={{ fontWeight: 900, color: 'black', fontSize: { xs: '1.75rem', md: '2.5rem' }, fontFamily: titleFontFamily }}>
                   Promote Your Property on CommercialUK
                 </Typography>
-                <Typography variant="h6" sx={{ fontWeight: 400, maxWidth: 700, opacity: 0.95, fontFamily: bodyFontFamily }}>
+                <Typography variant="h6" sx={{ fontWeight: 400, maxWidth: 700, opacity: 0.95, color: 'black', fontFamily: bodyFontFamily }}>
                   Boost your property's visibility and reach motivated buyers, tenants, and investors across the UK. With targeted marketing and intelligent placement, we help you generate quality enquiries and secure deals faster.
                 </Typography>
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} sx={{ mt: 2 }}>
@@ -1141,13 +1142,13 @@ const Advertise: NextPage = () => {
                     sx={{ 
                       px: 4, 
                       py: 1.5,
-                      bgcolor: 'common.white',
+                      bgcolor: 'black',
                       color: '#f2c514',
                       fontSize: '1.1rem',
                       fontWeight: 700,
                       fontFamily: subtitleFontFamily,
                       '&:hover': {
-                        bgcolor: 'rgba(255,255,255,0.9)',
+                        bgcolor: 'rgba(0, 0, 0, 0.9)',
                       }
                     }}
                     startIcon={<Upload />}
@@ -1160,14 +1161,14 @@ const Advertise: NextPage = () => {
                     sx={{ 
                       px: 4, 
                       py: 1.5,
-                      borderColor: 'common.white',
-                      color: 'common.white',
+                      borderColor: 'black',
+                      color: 'black',
                       fontSize: '1.1rem',
                       fontWeight: 700,
                       fontFamily: subtitleFontFamily,
                       '&:hover': {
-                        borderColor: 'rgba(255,255,255,0.8)',
-                        bgcolor: 'rgba(255,255,255,0.1)',
+                        borderColor: 'rgba(0, 0, 0, 0.8)',
+                        bgcolor: 'rgba(0, 0, 0, 0.1)',
                       }
                     }}
                     startIcon={<MailOutline />}

@@ -32,7 +32,7 @@ const AboutUs: NextPage = () => {
           color: '#f2c514',
           py: { xs: 8, md: 14 },
           background:
-            'linear-gradient(135deg, rgba(242, 197, 20,0.85) 0%, rgba(242, 197, 20,0.75) 100%), url(https://www.impactbnd.com/hubfs/blog-image-uploads/best-about-us-pages.jpg) center/cover no-repeat',
+            'linear-gradient(135deg, rgba(242, 197, 20,0.85) 0%, rgba(242, 197, 20,0.75) 100%), url(https://img.freepik.com/premium-photo/cartoon-people-working-computer-with-blue-background_1068983-28531.jpg?semt=ais_hybrid&w=740&q=80) center/cover no-repeat',
         }}
       >
         <Container maxWidth="lg" sx={{ maxWidth: '100%' }}>
@@ -86,9 +86,10 @@ const AboutUs: NextPage = () => {
                 boxShadow: (t) => t.shadows[8],
                 minHeight: 320,
                 background:
-                  'url(/window.svg), url(/globe.svg), linear-gradient(135deg, rgba(25,118,210,0.08), rgba(16,185,129,0.08))',
+                  'url(https://numalis.com/wp-content/uploads/2024/10/Property-Search-RealEstate.jpg)',
                 backgroundRepeat: 'no-repeat, no-repeat, no-repeat',
-                backgroundPosition: 'left 20% top 20%, right 10% bottom 10%, center',
+                backgroundSize: 'cover',
+                // backgroundPosition: 'left 20% top 20%, right 10% bottom 10%, center',
               }}
             />
           </Box>

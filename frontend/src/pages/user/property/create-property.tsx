@@ -800,6 +800,7 @@ const CreatePropertyPage: React.FC = () => {
                     endIcon={<ArrowForward />}
                     onClick={handleNext}
                     variant="contained"
+                    sx={{ color: 'black' }}
                     disabled={isSubmitting || !isCurrentStepValid()}
                   >
                     Next
@@ -809,6 +810,7 @@ const CreatePropertyPage: React.FC = () => {
                     startIcon={isSubmitting ? <CircularProgress size={20} /> : <Save />}
                     onClick={onSubmit}
                     variant="contained"
+                    sx={{ color: 'black' }}
                     disabled={isSubmitting || !isCurrentStepValid()}
                   >
                     {isSubmitting ? 'Creating Property...' : 'Create Property'}

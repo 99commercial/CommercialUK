@@ -257,7 +257,7 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
               py: 1.5,
               mb: 2,
               backgroundColor: '#f2c514',
-              color: 'white',
+              color: 'black',
               fontWeight: 600,
               textTransform: 'uppercase',
               letterSpacing: '0.5px',

@@ -302,7 +302,7 @@ const PersonalDetailsEdit: React.FC<PersonalDetailsEditProps> = ({
   return (
     <StyledCard>
       <SectionHeader>
-        <EditIcon sx={{ fontSize: '1.75rem' }} />
+        <EditIcon sx={{ fontSize: '1.75rem', color: 'black' }} />
         <Typography 
           variant="h6" 
           sx={{ 
@@ -310,6 +310,7 @@ const PersonalDetailsEdit: React.FC<PersonalDetailsEditProps> = ({
             fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
             fontSize: '1.5rem',
             letterSpacing: '-0.01em',
+            color: 'black',
           }}
         >
           Edit Personal Details
@@ -534,6 +535,7 @@ const PersonalDetailsEdit: React.FC<PersonalDetailsEditProps> = ({
               startIcon={loading ? <CircularProgress size={22} color="inherit" /> : <SaveIcon sx={{ fontSize: '1.5rem' }} />}
               sx={{
                 backgroundColor: '#f2c514',
+                color: 'black',
                 '&:hover': {
                   backgroundColor: '#d4a912',
                 },

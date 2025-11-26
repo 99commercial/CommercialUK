@@ -286,7 +286,7 @@ export default function ForgetPasswordForm({ onSendResetEmail }: ForgetPasswordF
               py: { xs: 1, sm: 1.5 },
               mb: { xs: 1, sm: 2 },
               backgroundColor: '#f2c514',
-              color: 'white',
+              color: 'black',
               fontWeight: 600,
               textTransform: 'uppercase',
               letterSpacing: '0.5px',

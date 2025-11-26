@@ -355,7 +355,7 @@ export default function HomeTrustedBusinesses() {
               size="large"
               sx={{
                 background: 'linear-gradient(135deg, #f2c514 0%,rgba(242, 198, 20, 0.8) 100%)',
-                color: 'white',
+                color: '#000',
                 fontWeight: 700,
                 px: 4,
                 py: 2,

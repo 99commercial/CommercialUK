@@ -196,12 +196,12 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData }) => {
               sx={{
                 width: { xs: 120, md: 160 },
                 height: { xs: 120, md: 160 },
-                backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                border: '4px solid rgba(255, 255, 255, 0.5)',
-                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2)',
+                backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                border: '4px solid rgba(0, 0, 0, 0.5)',
+                boxShadow: '0 8px 24px rgba(91, 91, 91, 0.2)',
               }}
             >
-              <PersonIcon sx={{ fontSize: { xs: 60, md: 80 }, color: 'white' }} />
+              <PersonIcon sx={{ fontSize: { xs: 60, md: 80 }, color: 'black' }} />
             </Avatar>
             
             <Box sx={{ 
@@ -214,7 +214,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData }) => {
                   sx={{ 
                     fontWeight: 700, 
                     mb: 0.5,
-                    color: 'white',
+                    color: 'black',
                     fontSize: { xs: '1.75rem', md: '2.25rem' },
                     fontFamily: '"Poppins", sans-serif',
                     lineHeight: 1.2,
@@ -226,7 +226,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData }) => {
               )}
               <Typography 
                 sx={{ 
-                  color: 'rgba(255, 255, 255, 0.95)', 
+                  color: 'rgb(0, 0, 0)', 
                   mb: 1,
                   fontWeight: 400,
                   fontSize: { xs: '0.95rem', md: '1.1rem' },
@@ -259,7 +259,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData }) => {
               <Typography 
                 variant="body2" 
                 sx={{ 
-                  color: 'white', 
+                  color: 'black', 
                   fontWeight: 600,
                   fontFamily: '"Inter", sans-serif',
                   fontSize: '0.95rem',

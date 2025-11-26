@@ -210,7 +210,7 @@ const PhotoUpdate: React.FC<PhotoUpdateProps> = ({
       const data = new FormData();
       data.append('profile_photo', selectedFile);
 
-      const response = await axiosInstance.put('/api/agent/users/profile/photo', data, {
+      const response = await axiosInstance.put('/api/user/users/profile/photo', data, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -241,13 +241,14 @@ const PhotoUpdate: React.FC<PhotoUpdateProps> = ({
   return (
     <StyledCard>
       <SectionHeader>
-        <PhotoCameraIcon sx={{ fontSize: '1.75rem' }} />
+        <PhotoCameraIcon sx={{ fontSize: '1.75rem', color: 'black' }} />
         <Typography 
           variant="h6" 
           sx={{ 
             fontWeight: 600,
             fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
             fontSize: '1.5rem',
+            color: 'black',
             letterSpacing: '-0.01em',
           }}
         >
@@ -399,6 +400,7 @@ const PhotoUpdate: React.FC<PhotoUpdateProps> = ({
                 fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
                 fontSize: '1.125rem',
                 fontWeight: 600,
+                color: 'black',
                 padding: theme.spacing(1.75, 4),
                 borderRadius: 14,
                 boxShadow: '0 6px 16px rgba(220, 38, 38, 0.25), 0 2px 4px rgba(220, 38, 38, 0.1)',
@@ -470,6 +472,7 @@ const PhotoUpdate: React.FC<PhotoUpdateProps> = ({
               startIcon={loading ? <CircularProgress size={22} color="inherit" /> : <CheckCircleIcon sx={{ fontSize: '1.5rem' }} />}
               sx={{
                 backgroundColor: '#f2c514',
+                color: 'black',
                 '&:hover': {
                   backgroundColor: '#d4a912',
                 },

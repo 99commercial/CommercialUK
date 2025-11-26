@@ -392,13 +392,14 @@ const PasswordUpdate: React.FC<PasswordUpdateProps> = ({
   return (
     <StyledCard>
       <SectionHeader>
-        <SecurityIcon sx={{ fontSize: '1.75rem' }} />
+        <SecurityIcon sx={{ fontSize: '1.75rem', color: 'black' }} />
         <Typography 
           variant="h6" 
           sx={{ 
             fontWeight: 600,
             fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
             fontSize: '1.5rem',
+            color: 'black',
             letterSpacing: '-0.01em',
           }}
         >
@@ -672,6 +673,7 @@ const PasswordUpdate: React.FC<PasswordUpdateProps> = ({
               startIcon={loading ? <CircularProgress size={22} color="inherit" /> : <CheckCircleIcon sx={{ fontSize: '1.5rem' }} />}
               sx={{
                 backgroundColor: '#f2c514',
+                color: 'black',
                 '&:hover': {
                   backgroundColor: '#d4a912',
                 },

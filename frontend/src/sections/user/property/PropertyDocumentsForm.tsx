@@ -519,6 +519,7 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({ onStepSub
                 sx={{ 
                   minWidth: 200,
                   backgroundColor: isUploaded ? 'success.main' : 'error.main',
+                  
                   '&:hover': {
                     backgroundColor: isUploaded ? 'success.dark' : 'error.dark',
                   }

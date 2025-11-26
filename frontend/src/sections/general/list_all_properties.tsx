@@ -83,7 +83,7 @@ const ListAllProperties: React.FC<ListAllPropertiesProps> = ({
                   mb: 1,
                   mt: 4,
                   textAlign: 'center',
-                  color: '#ffffff'
+                  color: '#000'
                 }}
               >
                 All Properties
@@ -94,7 +94,7 @@ const ListAllProperties: React.FC<ListAllPropertiesProps> = ({
                 sx={{ 
                   mb: 4, 
                   textAlign: 'center',
-                  color: '#cccccc'
+                  color: '#000'
                 }}
               >
                 Discover commercial properties across the UK
@@ -104,7 +104,7 @@ const ListAllProperties: React.FC<ListAllPropertiesProps> = ({
       {/* Results Header */}
       <ResultsHeader>
         <Box>
-          <Typography variant="h6" sx={{ fontWeight: 600, color: '#ffffff' }}>
+          <Typography variant="h6" sx={{ fontWeight: 600, color: '#000' }}>
             {totalCount} Properties Found
           </Typography>
         </Box>

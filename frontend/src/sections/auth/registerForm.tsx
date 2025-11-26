@@ -616,9 +616,10 @@ const RegisterForm = () => {
             borderRadius: 2,
             background: 'linear-gradient(135deg, #f2c514 0%, #c9a010 100%)',
             boxShadow: '0 8px 24px rgba(220, 38, 38, 0.4)',
+            color: 'black',
             '&:hover': {
-              background: 'linear-gradient(135deg, #d4a912 0%, #7f1d1d 100%)',
-              boxShadow: '0 12px 32px rgba(220, 38, 38, 0.6)',
+              background: 'linear-gradient(135deg, #d4a912 0%,rgb(255, 170, 0) 100%)',
+              boxShadow: '0 12px 32px rgba(220, 181, 38, 0.6)',
               transform: 'translateY(-2px)',
             },
             '&:disabled': {
@@ -628,7 +629,7 @@ const RegisterForm = () => {
           }}
         >
           {loading ? (
-            <CircularProgress size={24} sx={{ color: 'white' }} />
+            <CircularProgress size={24} sx={{ color: 'black' }} />
           ) : (
             'CREATE ACCOUNT'
           )}

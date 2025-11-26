@@ -1,11 +1,1 @@
-{
-  "/_app": "pages/_app.js",
-  "/_error": "pages/_error.js",
-  "/_document": "pages/_document.js",
-  "/auth/login": "pages/auth/login.js",
-  "/user": "pages/user.js",
-  "/user/account/my-business-account": "pages/user/account/my-business-account.js",
-  "/": "pages/index.js",
-  "/agent": "pages/agent.js",
-  "/agent/account/my-business-account": "pages/agent/account/my-business-account.js"
-}
+{}

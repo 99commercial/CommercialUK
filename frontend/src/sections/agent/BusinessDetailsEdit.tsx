@@ -446,8 +446,8 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
   return (
     <StyledCard>
       <SectionHeader>
-        <BusinessIcon sx={{ fontSize: '2.5rem' }} />
-        <Typography variant="h5" sx={{ fontFamily: '"Inter", sans-serif', fontWeight: 700, letterSpacing: '-0.02em' }}>
+        <BusinessIcon sx={{ fontSize: '2.5rem', color: 'black' }} />
+        <Typography variant="h5" sx={{ fontFamily: '"Inter", sans-serif', fontWeight: 700, letterSpacing: '-0.02em', color: 'black' }}>
           Business Details
         </Typography>
       </SectionHeader>
@@ -491,7 +491,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                 }}>
                   <BusinessIcon sx={{ fontSize: '1.75rem' }} />
                 </Box>
-                <Typography variant="h6" sx={{ color: '#f2c514', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
+                <Typography variant="h6" sx={{ color: '#000', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
                   Basic Business Information
                 </Typography>
               </Box>
@@ -552,7 +552,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                       <Typography variant="body2" sx={{ fontWeight: 600, color: '#374151', fontFamily: '"Inter", sans-serif' }}>
                         Business Type
                       </Typography>
-                      <Typography component="span" sx={{ color: '#f2c514', ml: 'auto' }}>*</Typography>
+                      <Typography component="span" sx={{ color: '#000', ml: 'auto' }}>*</Typography>
                     </Box>
                     <FormControl fullWidth required>
                       <Select
@@ -717,7 +717,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                 }}>
                   <SecurityIcon sx={{ fontSize: '1.75rem' }} />
                 </Box>
-                <Typography variant="h6" sx={{ color: '#f2c514', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
+                <Typography variant="h6" sx={{ color: '#000', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
                   UK Real Estate Compliance
                 </Typography>
               </Box>
@@ -891,7 +891,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                 }}>
                   <LocationIcon sx={{ fontSize: '1.75rem' }} />
                 </Box>
-                <Typography variant="h6" sx={{ color: '#f2c514', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
+                <Typography variant="h6" sx={{ color: '#000', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
                   Business Address
                 </Typography>
               </Box>
@@ -961,7 +961,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                       <Typography variant="body2" sx={{ fontWeight: 600, color: '#374151', fontFamily: '"Inter", sans-serif' }}>
                         City
                       </Typography>
-                      <Typography component="span" sx={{ color: '#f2c514', ml: 'auto' }}>*</Typography>
+                      <Typography component="span" sx={{ color: '#000', ml: 'auto' }}>*</Typography>
                     </Box>
                     <StyledTextField
                       fullWidth
@@ -1112,7 +1112,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                 }}>
                   <PhoneIcon sx={{ fontSize: '1.75rem' }} />
                 </Box>
-                <Typography variant="h6" sx={{ color: '#f2c514', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
+                <Typography variant="h6" sx={{ color: '#000', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
                   Contact Information
                 </Typography>
               </Box>
@@ -1253,7 +1253,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                 }}>
                   <WorkIcon sx={{ fontSize: '1.75rem' }} />
                 </Box>
-                <Typography variant="h6" sx={{ color: '#f2c514', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
+                <Typography variant="h6" sx={{ color: '#000', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
                   Services & Specializations
                 </Typography>
               </Box>
@@ -1435,7 +1435,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                 }}>
                   <ScheduleIcon sx={{ fontSize: '1.75rem' }} />
                 </Box>
-                <Typography variant="h6" sx={{ color: '#f2c514', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
+                <Typography variant="h6" sx={{ color: '#000', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
                   Business Hours
                 </Typography>
               </Box>
@@ -1623,7 +1623,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                 }}>
                   <SchoolIcon sx={{ fontSize: '1.75rem' }} />
                 </Box>
-                <Typography variant="h6" sx={{ color: '#f2c514', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
+                <Typography variant="h6" sx={{ color: '#000', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
                   Professional Information
                 </Typography>
               </Box>
@@ -1725,7 +1725,7 @@ const BusinessDetailsEdit: React.FC<BusinessDetailsEditProps> = ({
                 }}>
                   <ShieldIcon sx={{ fontSize: '1.75rem' }} />
                 </Box>
-                <Typography variant="h6" sx={{ color: '#f2c514', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
+                <Typography variant="h6" sx={{ color: '#000', fontWeight: 600, fontFamily: '"Inter", sans-serif', letterSpacing: '-0.01em' }}>
                   Insurance Details
                 </Typography>
               </Box>

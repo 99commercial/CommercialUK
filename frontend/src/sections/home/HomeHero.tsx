@@ -576,7 +576,6 @@ export default function HomeHero() {
               variant="contained"
               sx={{
                 backgroundColor: '#f2c514',
-                color: 'white',
                 borderRadius: 2,
                 height: 56,
                 px: 4,
@@ -585,6 +584,7 @@ export default function HomeHero() {
                 textTransform: 'none',
                 width: { xs: '100%', sm: 'auto' },
                 minWidth: { xs: '100%', sm: '140px' },
+                color: '#000',
                 // For screens up to 901px - maintain inline sizing
                 [`@media (max-width: 901px)`]: {
                   width: 'auto',
