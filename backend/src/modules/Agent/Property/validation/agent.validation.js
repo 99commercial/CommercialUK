@@ -107,13 +107,13 @@ export const updatePropertyDetailsValidator = [
   // EPC validation
   body('epc.rating')
     .optional()
-    .isIn(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'Exempt', 'Not Required'])
+    .isIn(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'Exempt', 'Not Required','Unknown'])
     .withMessage('Invalid EPC rating'),
 
   // Council Tax validation
   body('council_tax.band')
     .optional()
-    .isIn(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'Exempt', 'Not Applicable'])
+    .isIn(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'Exempt', 'Not Applicable','Unknown'])
     .withMessage('Invalid council tax band'),
 
   // Rateable Value validation

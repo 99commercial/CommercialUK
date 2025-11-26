@@ -112,20 +112,20 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
 
   const [formData, setFormData] = useState<UpdatePropertyDetailsFormData>({
     epc: {
-      rating: initialData?.epc.rating || '',
-      score: initialData?.epc.score || 0,
-      certificate_number: initialData?.epc.certificate_number || '',
-      expiry_date: formatDateForInput(initialData?.epc.expiry_date),
+      rating: initialData?.epc?.rating || '',
+      score: initialData?.epc?.score || 0,
+      certificate_number: initialData?.epc?.certificate_number || '',
+      expiry_date: formatDateForInput(initialData?.epc?.expiry_date),
     },
     council_tax: {
-      band: initialData?.council_tax.band || '',
-      authority: initialData?.council_tax.authority || '',
+      band: initialData?.council_tax?.band || '',
+      authority: initialData?.council_tax?.authority || '',
     },
-    rateable_value: 0,
+    rateable_value: initialData?.rateable_value || 0,
     planning: {
-      status: initialData?.planning.status || '',
-      application_number: initialData?.planning.application_number || '',
-      decision_date: formatDateForInput(initialData?.planning.decision_date),
+      status: initialData?.planning?.status || '',
+      application_number: initialData?.planning?.application_number || '',
+      decision_date: formatDateForInput(initialData?.planning?.decision_date),
     },
   });
 

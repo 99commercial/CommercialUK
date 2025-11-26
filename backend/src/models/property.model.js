@@ -182,7 +182,7 @@ const propertySchema = new Schema(
     epc: {
       rating: {
         type: String,
-        enum: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'Exempt', 'Not Required'],
+        enum: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'Exempt', 'Not Required','Unknown'],
         description: 'EPC rating (A = best, G = worst)',
       },
       score: {
@@ -205,7 +205,7 @@ const propertySchema = new Schema(
     council_tax: {
       band: {
         type: String,
-        enum: ['A','B','C','D','E','F','G','H','Exempt','Not Applicable'],
+        enum: ['A','B','C','D','E','F','G','H','Exempt','Not Applicable','Unknown'],
         description: 'Council tax band of the property',
       },
       authority: {

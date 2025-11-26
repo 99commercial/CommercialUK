@@ -146,6 +146,9 @@ const CreatePropertyPage: React.FC = () => {
   
   // State to store form data for each step
   const [stepData, setStepData] = useState<Record<number, any>>({});
+  
+  // Ref to prevent rapid clicks
+  const isNavigatingRef = React.useRef(false);
 
   const methods = useForm({
     mode: 'onSubmit', // Changed from 'onChange' to prevent validation errors
@@ -382,7 +385,17 @@ const CreatePropertyPage: React.FC = () => {
 
 
   // Handle step click
-  const handleStepClick = async (step: number) => {
+  const handleStepClick = React.useCallback((step: number) => {
+    // Prevent rapid clicks
+    if (isNavigatingRef.current) {
+      return;
+    }
+    
+    // Early return if clicking the same step
+    if (step === activeStep) {
+      return;
+    }
+    
     // Allow navigation to:
     // 1. Any completed step (to go back)
     // 2. The current step (already there)
@@ -395,9 +408,15 @@ const CreatePropertyPage: React.FC = () => {
     // - Step is the current active step (can stay/refresh)
     // - Step is within allowed range (can move forward up to next step)
     if (completedSteps.has(step) || step === activeStep || step <= maxAllowedStep) {
+      isNavigatingRef.current = true;
       setActiveStep(step);
+      
+      // Reset navigation lock after a short delay
+      setTimeout(() => {
+        isNavigatingRef.current = false;
+      }, 150);
     }
-  };
+  }, [activeStep, completedSteps]);
 
   // Handle step submission (called by child components)
   const handleStepSubmission = (step: number) => {
@@ -662,62 +681,68 @@ const CreatePropertyPage: React.FC = () => {
                 return (
                   <Step key={tab.id} completed={isCompleted}>
                     <StepLabel
-                      onClick={() => handleStepClick(index)}
-                      sx={{
-                        cursor: isClickable ? 'pointer' : 'not-allowed',
-                        minWidth: 120,
-                        opacity: isClickable ? 1 : 0.6,
-                        '& .MuiStepLabel-label': {
-                          fontSize: '0.875rem',
-                        },
-                        '&:hover': {
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          if (isClickable && !isNavigatingRef.current) {
+                            handleStepClick(index);
+                          }
+                        }}
+                        sx={{
+                          cursor: isClickable ? 'pointer' : 'not-allowed',
+                          minWidth: 120,
                           opacity: isClickable ? 1 : 0.6,
                           '& .MuiStepLabel-label': {
-                            color: isClickable ? 'primary.main' : 'text.secondary',
+                            fontSize: '0.875rem',
                           },
-                        },
-                      }}
-                      StepIconComponent={({ active, completed }) => (
-                        <Box
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (isClickable) {
-                              handleStepClick(index);
-                            }
-                          }}
-                          sx={{
-                            width: 40,
-                            height: 40,
-                            borderRadius: '50%',
-                            backgroundColor: completed ? tab.color : active ? tab.color : '#e5e7eb',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            color: 'white',
-                            cursor: isClickable ? 'pointer' : 'not-allowed',
-                            transition: 'all 0.2s ease-in-out',
+                          '&:hover': {
                             opacity: isClickable ? 1 : 0.6,
-                            '&:hover': {
-                              transform: isClickable ? 'scale(1.1)' : 'scale(1)',
-                              boxShadow: isClickable ? '0 4px 12px rgba(0,0,0,0.15)' : 'none',
-                              opacity: isClickable ? 1 : 0.6,
+                            '& .MuiStepLabel-label': {
+                              color: isClickable ? 'primary.main' : 'text.secondary',
                             },
-                          }}
-                        >
-                          {completed ? <CheckCircle /> : tab.icon}
-                        </Box>
-                      )}
-                    >
-                    <Box>
-                      <Typography variant="body2" fontWeight={activeStep === index ? 600 : 400}>
-                        {tab.label}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        {tab.description}
-                      </Typography>
-                    </Box>
-                  </StepLabel>
-                </Step>
+                          },
+                        }}
+                        StepIconComponent={({ active, completed }) => (
+                          <Box
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              if (isClickable && !isNavigatingRef.current) {
+                                handleStepClick(index);
+                              }
+                            }}
+                            sx={{
+                              width: 40,
+                              height: 40,
+                              borderRadius: '50%',
+                              backgroundColor: completed ? tab.color : active ? tab.color : '#e5e7eb',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              color: 'white',
+                              cursor: isClickable ? 'pointer' : 'not-allowed',
+                              opacity: isClickable ? 1 : 0.6,
+                              '&:hover': {
+                                transform: 'scale(1.1)',
+                                boxShadow: isClickable ? '0 4px 12px rgba(0,0,0,0.15)' : 'none',
+                                opacity: isClickable ? 1 : 0.6,
+                              },
+                            }}
+                          >
+                            {completed ? <CheckCircle /> : tab.icon}
+                          </Box>
+                        )}
+                      >
+                      <Box>
+                        <Typography variant="body2" fontWeight={activeStep === index ? 600 : 400}>
+                          {tab.label}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          {tab.description}
+                        </Typography>
+                      </Box>
+                    </StepLabel>
+                  </Step>
                 );
               })}
             </Stepper>

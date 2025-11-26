@@ -185,12 +185,17 @@ const UpdateGeneralDetailsForm: React.FC<UpdateGeneralDetailsFormProps> = ({
   const validateForm = (): boolean => {
     const errors: Record<string, string> = {};
 
+    // Validate required fields
     if (!formData.building_name.trim()) {
       errors.building_name = 'Building name is required';
     }
 
     if (!formData.property_type) {
       errors.property_type = 'Property type is required';
+    }
+
+    if (!formData.property_sub_type || formData.property_sub_type.trim() === '') {
+      errors.property_sub_type = 'Property sub type is required';
     }
 
     if (!formData.sale_status) {
@@ -209,23 +214,33 @@ const UpdateGeneralDetailsForm: React.FC<UpdateGeneralDetailsFormProps> = ({
       errors.postcode = 'Postcode is required';
     }
 
-    if (formData.size_minimum < 0) {
-      errors.size_minimum = 'Size minimum must be 0 or greater';
+    // Validate size_minimum - required
+    if (!formData.size_minimum || formData.size_minimum === 0) {
+      errors.size_minimum = 'Size minimum is required';
+    } else if (formData.size_minimum < 0) {
+      errors.size_minimum = 'Size minimum must be greater than 0';
     }
 
-    if (formData.size_maximum < 0) {
-      errors.size_maximum = 'Size maximum must be 0 or greater';
-    }
-
-    if (formData.size_minimum > formData.size_maximum && formData.size_maximum > 0) {
+    // Validate size_maximum - required
+    if (!formData.size_maximum || formData.size_maximum === 0) {
+      errors.size_maximum = 'Size maximum is required';
+    } else if (formData.size_maximum < 0) {
+      errors.size_maximum = 'Size maximum must be greater than 0';
+    } else if (formData.size_minimum > formData.size_maximum) {
       errors.size_maximum = 'Size maximum must be greater than or equal to size minimum';
     }
 
-    if (formData.max_eaves_height < 0) {
-      errors.max_eaves_height = 'Max eaves height must be 0 or greater';
+    // Validate max_eaves_height - required
+    if (!formData.max_eaves_height || formData.max_eaves_height === 0) {
+      errors.max_eaves_height = 'Max eaves height is required';
+    } else if (formData.max_eaves_height < 0) {
+      errors.max_eaves_height = 'Max eaves height must be greater than 0';
     }
 
-    if (formData.approximate_year_of_construction < 1800 || formData.approximate_year_of_construction > new Date().getFullYear()) {
+    // Validate approximate_year_of_construction - required
+    if (!formData.approximate_year_of_construction || formData.approximate_year_of_construction === 0) {
+      errors.approximate_year_of_construction = 'Approximate year of construction is required';
+    } else if (formData.approximate_year_of_construction < 1800 || formData.approximate_year_of_construction > new Date().getFullYear()) {
       errors.approximate_year_of_construction = 'Year of construction must be between 1800 and current year';
     }
 
@@ -245,15 +260,20 @@ const UpdateGeneralDetailsForm: React.FC<UpdateGeneralDetailsFormProps> = ({
     
     // Clear field error when user starts typing
     if (fieldErrors[field]) {
-      setFieldErrors(prev => ({
-        ...prev,
-        [field]: ''
-      }));
+      setFieldErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Clear previous errors before validation
+    setFieldErrors({});
+    setSubmitError(null);
     
     if (!validateForm()) {
       return;
@@ -265,7 +285,6 @@ const UpdateGeneralDetailsForm: React.FC<UpdateGeneralDetailsFormProps> = ({
     }
 
     setIsSubmitting(true);
-    setSubmitError(null);
 
     try {
       const response = await axiosInstance.patch(`/api/user/properties/${propertyId}/general-details`, formData);
@@ -341,8 +360,11 @@ const UpdateGeneralDetailsForm: React.FC<UpdateGeneralDetailsFormProps> = ({
                 <TextField
                   fullWidth
                   label="Property Sub Type"
+                  required
                   value={formData.property_sub_type}
                   onChange={(e) => handleInputChange('property_sub_type', e.target.value)}
+                  error={!!fieldErrors.property_sub_type}
+                  helperText={fieldErrors.property_sub_type}
                   placeholder="e.g., Grade A Office, Prime Retail"
                 />
               </FormField>
@@ -431,6 +453,7 @@ const UpdateGeneralDetailsForm: React.FC<UpdateGeneralDetailsFormProps> = ({
                   fullWidth
                   label="Size Minimum (sq ft)"
                   type="number"
+                  required
                   value={formData.size_minimum}
                   onChange={(e) => handleInputChange('size_minimum', parseFloat(e.target.value) || 0)}
                   error={!!fieldErrors.size_minimum}
@@ -443,6 +466,7 @@ const UpdateGeneralDetailsForm: React.FC<UpdateGeneralDetailsFormProps> = ({
                   fullWidth
                   label="Size Maximum (sq ft)"
                   type="number"
+                  required
                   value={formData.size_maximum}
                   onChange={(e) => handleInputChange('size_maximum', parseFloat(e.target.value) || 0)}
                   error={!!fieldErrors.size_maximum}
@@ -457,6 +481,7 @@ const UpdateGeneralDetailsForm: React.FC<UpdateGeneralDetailsFormProps> = ({
                   fullWidth
                   label="Max Eaves Height (m)"
                   type="number"
+                  required
                   value={formData.max_eaves_height}
                   onChange={(e) => handleInputChange('max_eaves_height', parseFloat(e.target.value) || 0)}
                   error={!!fieldErrors.max_eaves_height}
@@ -469,6 +494,7 @@ const UpdateGeneralDetailsForm: React.FC<UpdateGeneralDetailsFormProps> = ({
                   fullWidth
                   label="Approximate Year of Construction"
                   type="number"
+                  required
                   value={formData.approximate_year_of_construction}
                   onChange={(e) => handleInputChange('approximate_year_of_construction', parseInt(e.target.value) || 0)}
                   error={!!fieldErrors.approximate_year_of_construction}

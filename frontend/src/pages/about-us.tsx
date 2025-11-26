@@ -11,6 +11,11 @@ import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import SearchIcon from '@mui/icons-material/Search';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import BusinessIcon from '@mui/icons-material/Business';
  
 
 const AboutUs: NextPage = () => {
@@ -41,40 +46,79 @@ const AboutUs: NextPage = () => {
               About CommercialUK
             </Typography>
             <Typography variant="h6" sx={{ maxWidth: 900, opacity: 0.9, color: 'black' }}>
-              Quick, efficient, and cost‑effective property listing services covering the whole of the UK.
+              Your Gateway to Smarter UK Commercial Property
             </Typography>
           </Stack>
         </Container>
       </Box>
 
-      {/* About narrative */}
-      <Container maxWidth="lg" sx={{ py: { xs: 8, md: 12 }, maxWidth: '100%' }}>
+      {/* Intro */}
+      {/* <Container maxWidth="lg" sx={{ py: { xs: 10, md: 14 }, maxWidth: '100%' }}> */}
+        <Stack alignItems="center" textAlign="center">
+          <Box
+          sx={{
+            maxWidth: 1500,
+            px: { xs: 0.5, md: 1.5 },
+          }}
+          >
+            <Typography
+              variant="h5"
+              component="p"
+              sx={{
+                fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' },
+                lineHeight: { xs: 1.6, md: 1.7 },
+                fontWeight: 400,
+                color: 'text.primary',
+                letterSpacing: '0.01em',
+                '&::before': {
+                  content: '""',
+                  display: 'block',
+                  width: 60,
+                  height: 4,
+                  background: 'linear-gradient(90deg, #f2c514 0%, rgba(242, 197, 20, 0.3) 100%)',
+                  margin: '0 auto 2rem',
+                  borderRadius: 2,
+                },
+              }}
+            >
+              CommercialUK is where you go when you want UK commercial property to be{' '}
+              <Box component="span" sx={{ fontWeight: 600, color: '#f2c514' }}>
+                less of a headache
+              </Box>
+              . We&apos;ve built a platform that makes buying, selling, or letting commercial real estate{' '}
+              <Box component="span" sx={{ fontWeight: 600, color: '#f2c514' }}>
+                way easier
+              </Box>
+              . Owners, landlords, developers, investors, agents,{' '}
+              <Box component="span" sx={{ fontWeight: 600, color: '#f2c514' }}>
+                everyone&apos;s welcome
+              </Box>
+              . We blend fresh tech with real industry know-how for a user experience that{' '}
+              <Box component="span" sx={{ fontWeight: 600, color: '#f2c514' }}>
+                actually works
+              </Box>
+              .
+            </Typography>
+          </Box>
+        </Stack>
+      {/* </Container> */}
+
+      {/* What's our goal? */}
+      <Container sx={{ py: { xs: 6, md: 10 }, maxWidth: '100%' }}>
         <Stack direction={{ xs: 'column', md: 'row' }} spacing={6} alignItems="center">
           <Box sx={{ width: { xs: '100%', md: '50%' } }}>
             <Stack spacing={2}>
               <Typography variant="overline" sx={{ fontWeight: 700, color: '#f2c514' }}>
-                About
+                What's our goal?
               </Typography>
               <Typography variant="h4" sx={{ fontWeight: 800, color: 'text.primary' }}>
-                Your partner in UK commercial property search
+                We want to make finding UK commercial property faster, clearer, and just plain better for everyone.
               </Typography>
               <Typography variant="body1" color="text.secondary">
-                CommercialUK is your go‑to partner in commercial property search within the UK. As seasoned
-                experts in linking property owners, landlords, developers, and agents, we are committed to
-                making commercial property transactions easy, transparent, and efficient.
+                With advanced tools and up-to-date content, CommercialUK helps you discover and manage all kinds of spaces, offices, retail units, warehouses, industrial sites, land, leisure properties, investment deals, you name it.
               </Typography>
               <Typography variant="body1" color="text.secondary">
-                Our intuitive listing platform and customized PropTech solutions are designed to suit the needs
-                of owners, investors, and commercial agents.
-              </Typography>
-              <Typography variant="body1" color="text.secondary">
-                Today, CommercialUK features increasing numbers of listings from top commercial property
-                agents across the country, allowing buyers, tenants, and investors to quickly find the right
-                properties.
-              </Typography>
-              <Typography variant="body1" color="text.secondary">
-                Founded with one aim: make buying, selling, and letting UK commercial property as simple as
-                possible. Whatever your regional or national search, our site saves time and delivers results.
+                Expanding your portfolio? Selling something? Hunting for that perfect spot? We pull together the tools, insights, and visibility you need to get the job done.
               </Typography>
             </Stack>
           </Box>
@@ -89,90 +133,163 @@ const AboutUs: NextPage = () => {
                   'url(https://numalis.com/wp-content/uploads/2024/10/Property-Search-RealEstate.jpg)',
                 backgroundRepeat: 'no-repeat, no-repeat, no-repeat',
                 backgroundSize: 'cover',
-                // backgroundPosition: 'left 20% top 20%, right 10% bottom 10%, center',
               }}
             />
           </Box>
         </Stack>
       </Container>
 
-      {/* Why CommercialUK */}
+      {/* What We Do */}
       <Container maxWidth="lg" sx={{ maxWidth: '100%' }}>
-      <Box  sx={{ py: { xs: 8, md: 12 }, bgcolor: 'background.default' , maxWidth: '100%' }}>
-        <Container maxWidth="lg">
-          <Stack spacing={2} sx={{ mb: 4 }}>
+        <Box sx={{ py: { xs: 8, md: 12 }, bgcolor: 'background.default', maxWidth: '100%' }}>
+          <Container maxWidth="lg">
+            <Stack spacing={2} sx={{ mb: 6 }}>
+              <Typography variant="overline" sx={{ fontWeight: 700, color: '#f2c514' }}>
+                What We Do
+              </Typography>
+              <Typography variant="h4" sx={{ fontWeight: 800, color: 'text.primary' }}>
+                A Complete Ecosystem for UK Commercial Real Estate
+              </Typography>
+              <Typography variant="body1" color="text.secondary">
+                CommercialUK covers every step of the commercial property journey with a platform built for real results.
+              </Typography>
+            </Stack>
+
+            <Box
+              sx={{
+                display: 'grid',
+                gap: 3,
+                gridTemplateColumns: {
+                  xs: '1fr',
+                  sm: '1fr 1fr',
+                  md: '1fr 1fr',
+                },
+              }}
+            >
+              {[
+                {
+                  icon: <SearchIcon sx={{ color: '#f2c514' }} />,
+                  title: 'Smart Property Search',
+                  desc: 'Find exactly what you want using intelligent filters, location insights, and live commercial property data from across the UK.',
+                },
+                {
+                  icon: <CloudUploadIcon sx={{ color: '#f2c514' }} />,
+                  title: 'Advanced Listing Tech',
+                  desc: 'Upload, manage, and promote properties with our modern PropTech interface — easy, fast, and effective.',
+                },
+                {
+                  icon: <DashboardIcon sx={{ color: '#f2c514' }} />,
+                  title: 'Seamless Tools for Agents & Owners',
+                  desc: 'From lead tracking to performance analytics, we help agents and landlords stay ahead of the game.',
+                },
+                {
+                  icon: <LocationOnIcon sx={{ color: '#f2c514' }} />,
+                  title: 'Nationwide Reach',
+                  desc: 'Connect with motivated buyers, tenants, and investors from every corner of the UK.',
+                },
+              ].map((item, idx) => (
+                <Paper key={idx} variant="outlined" sx={{ p: 3, height: '100%', borderRadius: 2, borderLeft: '4px solid #f2c514' }}>
+                  <Stack direction="row" spacing={2} alignItems="flex-start">
+                    <Box sx={{ p: 1.25, borderRadius: 1.5, bgcolor: 'rgba(242, 197, 20, 0.1)' }}>{item.icon}</Box>
+                    <Stack spacing={0.5}>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                        {item.title}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {item.desc}
+                      </Typography>
+                    </Stack>
+                  </Stack>
+                </Paper>
+              ))}
+            </Box>
+          </Container>
+        </Box>
+      </Container>
+
+      {/* Why Choose CommercialUK */}
+      <Container maxWidth="lg" sx={{ py: { xs: 8, md: 12 }, maxWidth: '100%' }}>
+        <Stack spacing={2} sx={{ mb: 4 }}>
+          <Typography variant="overline" sx={{ fontWeight: 700, color: '#f2c514' }}>
+            Why Choose CommercialUK?
+          </Typography>
+          <Typography variant="h4" sx={{ fontWeight: 800, color: 'text.primary' }}>
+            Where Technology Meets Trusted Property Expertise
+          </Typography>
+        </Stack>
+
+        <Box
+          sx={{
+            display: 'grid',
+            gap: 3,
+            gridTemplateColumns: {
+              xs: '1fr',
+              sm: '1fr 1fr',
+              md: '1fr 1fr',
+            },
+          }}
+        >
+          {[
+            {
+              icon: <ApartmentIcon sx={{ color: '#f2c514' }} />,
+              title: 'Unmatched Commercial Listings',
+              desc: 'Thousands of properties from trusted agents and landlords, updated daily and shown with total accuracy.',
+            },
+            {
+              icon: <BusinessIcon sx={{ color: '#f2c514' }} />,
+              title: 'Built for Professionals',
+              desc: 'Designed for agents, surveyors, developers, and asset managers — with tools that save time and boost productivity.',
+            },
+            {
+              icon: <TrendingUpIcon sx={{ color: '#f2c514' }} />,
+              title: 'High-Impact Visibility',
+              desc: 'Your listings get strong SEO, smart digital campaigns, and a platform that brings in serious enquiries.',
+            },
+            {
+              icon: <PriceCheckIcon sx={{ color: '#f2c514' }} />,
+              title: 'Flexible, Value-Focused Packages',
+              desc: 'Pick a plan that fits — whether you\'re an independent agent or a large enterprise.',
+            },
+            {
+              icon: <SpeedIcon sx={{ color: '#f2c514' }} />,
+              title: 'Fast, Hassle-Free Uploads',
+              desc: 'Optimized workflows mean you can upload properties, make bulk edits, and manage everything with ease.',
+            },
+            {
+              icon: <SupportAgentIcon sx={{ color: '#f2c514' }} />,
+              title: 'Dedicated UK Support',
+              desc: 'Personalized onboarding and ongoing help, so you can sell your commercial properties with confidence.',
+            },
+          ].map((item, idx) => (
+            <Paper key={idx} variant="outlined" sx={{ p: 3, height: '100%', borderRadius: 2, borderLeft: '4px solid #f2c514' }}>
+              <Stack direction="row" spacing={2} alignItems="flex-start">
+                <Box sx={{ p: 1.25, borderRadius: 1.5, bgcolor: 'rgba(242, 197, 20, 0.1)' }}>{item.icon}</Box>
+                <Stack spacing={0.5}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                    {item.title}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {item.desc}
+                  </Typography>
+                </Stack>
+              </Stack>
+            </Paper>
+          ))}
+        </Box>
+      </Container>
+
+      {/* Our Commitment */}
+      <Container maxWidth="lg" sx={{ py: { xs: 8, md: 12 }, maxWidth: '100%' }}>
+        <Box sx={{ bgcolor: 'background.default', p: { xs: 4, md: 6 }, borderRadius: 3 }}>
+          <Stack spacing={2}>
             <Typography variant="overline" sx={{ fontWeight: 700, color: '#f2c514' }}>
-              Why CommercialUK?
+              Our Commitment
             </Typography>
-            <Typography variant="h4" sx={{ fontWeight: 800, color: 'text.primary' }}>
-              Reasons clients choose us
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              Flexible, affordable solutions from complete management to hands‑on assistance whenever you
-              need it.
+            <Typography variant="body1" sx={{ fontSize: '1.1rem', lineHeight: 1.8, color: 'text.secondary' }}>
+              We&apos;re here to make UK commercial property simple, accessible, and results-driven. CommercialUK is all about taking the friction out of the commercial property process. Our intuitive platform, smart tools, and ever-expanding content help professionals get better results faster and more efficiently.
             </Typography>
           </Stack>
-
-          <Box
-            sx={{
-              display: 'grid',
-              gap: 3,
-              gridTemplateColumns: {
-                xs: '1fr',
-                sm: '1fr 1fr',
-                md: '1fr 1fr 1fr',
-              },
-            }}
-          >
-            {[
-              {
-                icon: <ApartmentIcon sx={{ color: '#f2c514' }} />,
-                title: 'Thousands of UK properties',
-                desc: 'For sale and to let across the UK',
-              },
-              {
-                icon: <VerifiedIcon sx={{ color: '#f2c514' }} />,
-                title: 'Trusted by top professionals',
-                desc: 'Recommended by landlords, developers, and agents',
-              },
-              {
-                icon: <PriceCheckIcon sx={{ color: '#f2c514' }} />,
-                title: 'Competitive subscriptions',
-                desc: 'Best value for money across packages',
-              },
-              {
-                icon: <SupportAgentIcon sx={{ color: '#f2c514' }} />,
-                title: 'Customer‑centric support',
-                desc: 'Responsive and personalized assistance',
-              },
-              {
-                icon: <TrendingUpIcon sx={{ color: '#f2c514' }} />,
-                title: 'Exceptional visibility',
-                desc: 'Powered by SEO and digital marketing',
-              },
-              {
-                icon: <SpeedIcon sx={{ color: '#f2c514' }} />,
-                title: 'Rapid, easy uploads',
-                desc: 'Spick‑and‑span management solutions',
-              },
-            ].map((item, idx) => (
-              <Paper key={idx} variant="outlined" sx={{ p: 3, height: '100%', borderRadius: 2, borderLeft: '4px solid #f2c514' }}>
-                <Stack direction="row" spacing={2} alignItems="flex-start">
-                  <Box sx={{ p: 1.25, borderRadius: 1.5, bgcolor: 'rgba(242, 197, 20, 0.1)' }}>{item.icon}</Box>
-                  <Stack spacing={0.5}>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                      {item.title}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {item.desc}
-                    </Typography>
-                  </Stack>
-                </Stack>
-              </Paper>
-            ))}
-          </Box>
-        </Container>
-      </Box>
+        </Box>
       </Container>
 
       {/* Footer note */}

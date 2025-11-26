@@ -232,7 +232,6 @@ const UpdatePropertyDocumentsForm: React.FC<UpdatePropertyDocumentsFormProps> = 
       }));
 
       enqueueSnackbar(`${uploadedDocuments.length} document(s) added successfully`, { variant: 'success' });
-      setHasChanges(true);
 
     } catch (error) {
       console.error('Upload failed:', error);

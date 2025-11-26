@@ -31,6 +31,7 @@ const epcRatings = [
   'G',
   'Exempt',
   'Not Required',
+  'Unknown',
 ];
 
 const councilTaxBands = [
@@ -44,6 +45,7 @@ const councilTaxBands = [
   'H',
   'Exempt',
   'Not Applicable',
+  'Unknown',
 ];
 
 const planningStatuses = [
@@ -323,7 +325,7 @@ const PropertyDetailsForm: React.FC<PropertyDetailsFormProps> = ({
 
       let response = await axiosInstance.put(`/api/agent/properties/${propertyId}/property-details`, formData);
 
-      console.log(response.data , 'shardul is smart');
+      // console.log(response.data , 'shardul is smart');
       
       enqueueSnackbar(response.data.message, { variant: 'success' });
       
@@ -507,8 +509,9 @@ const PropertyDetailsForm: React.FC<PropertyDetailsFormProps> = ({
                   </Box>
 
                   {watchedValues.epc?.rating && 
-                   watchedValues.epc?.rating !== 'Exempt' && 
-                   watchedValues.epc?.rating !== 'Not Required' && (
+                    watchedValues.epc?.rating !== 'Exempt' && 
+                    watchedValues.epc?.rating !== 'Not Required' &&
+                    watchedValues.epc?.rating !== 'Unknown' && (
                     <>
                       <Box sx={{ flex: '1 1 200px', minWidth: '200px' }}>
                         <TextField
@@ -547,7 +550,8 @@ const PropertyDetailsForm: React.FC<PropertyDetailsFormProps> = ({
 
                 {watchedValues.epc?.rating && 
                  watchedValues.epc?.rating !== 'Exempt' && 
-                 watchedValues.epc?.rating !== 'Not Required' && (
+                 watchedValues.epc?.rating !== 'Not Required' &&
+                 watchedValues.epc?.rating !== 'Unknown' && (
                   <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
                     <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
                       <TextField
@@ -609,7 +613,8 @@ const PropertyDetailsForm: React.FC<PropertyDetailsFormProps> = ({
 
                 {watchedValues.council_tax?.band && 
                  watchedValues.council_tax?.band !== 'Exempt' && 
-                 watchedValues.council_tax?.band !== 'Not Applicable' && (
+                 watchedValues.council_tax?.band !== 'Not Applicable' &&
+                 watchedValues.council_tax?.band !== 'Unknown' && (
                   <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
                     <TextField
                       {...register('council_tax.authority')}
@@ -702,7 +707,8 @@ const PropertyDetailsForm: React.FC<PropertyDetailsFormProps> = ({
                 </Box>
 
                 {watchedValues.planning?.status && 
-                 watchedValues.planning?.status !== 'Unknown' && (
+                  watchedValues.planning?.status !== 'Unknown' &&
+                  watchedValues.planning?.status !== 'No Planning Required' && (
                   <>
                     <Box sx={{ flex: '1 1 200px', minWidth: '200px' }}>
                       <TextField

@@ -660,7 +660,7 @@ const CreatePropertyPage: React.FC = () => {
                 const isClickable = isCompleted || index === activeStep || index <= maxAllowedStep;
                 
                 return (
-                  <Step key={tab.id} completed={isCompleted}>
+                  <Step onClick={() => handleStepClick(index)} key={tab.id} completed={isCompleted}>
                     <StepLabel
                       onClick={() => handleStepClick(index)}
                       sx={{
@@ -695,7 +695,6 @@ const CreatePropertyPage: React.FC = () => {
                             justifyContent: 'center',
                             color: 'white',
                             cursor: isClickable ? 'pointer' : 'not-allowed',
-                            transition: 'all 0.2s ease-in-out',
                             opacity: isClickable ? 1 : 0.6,
                             '&:hover': {
                               transform: isClickable ? 'scale(1.1)' : 'scale(1)',
