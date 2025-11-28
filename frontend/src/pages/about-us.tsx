@@ -168,29 +168,29 @@ const AboutUs: NextPage = () => {
             >
               {[
                 {
-                  icon: <SearchIcon sx={{ color: '#f2c514' }} />,
+                  icon: <SearchIcon sx={{ color: '#000' }} />,
                   title: 'Smart Property Search',
                   desc: 'Find exactly what you want using intelligent filters, location insights, and live commercial property data from across the UK.',
                 },
                 {
-                  icon: <CloudUploadIcon sx={{ color: '#f2c514' }} />,
+                  icon: <CloudUploadIcon sx={{ color: '#000' }} />,
                   title: 'Advanced Listing Tech',
                   desc: 'Upload, manage, and promote properties with our modern PropTech interface — easy, fast, and effective.',
                 },
                 {
-                  icon: <DashboardIcon sx={{ color: '#f2c514' }} />,
+                  icon: <DashboardIcon sx={{ color: '#000' }} />,
                   title: 'Seamless Tools for Agents & Owners',
                   desc: 'From lead tracking to performance analytics, we help agents and landlords stay ahead of the game.',
                 },
                 {
-                  icon: <LocationOnIcon sx={{ color: '#f2c514' }} />,
+                  icon: <LocationOnIcon sx={{ color: '#000' }} />,
                   title: 'Nationwide Reach',
                   desc: 'Connect with motivated buyers, tenants, and investors from every corner of the UK.',
                 },
               ].map((item, idx) => (
                 <Paper key={idx} variant="outlined" sx={{ p: 3, height: '100%', borderRadius: 2, borderLeft: '4px solid #f2c514' }}>
                   <Stack direction="row" spacing={2} alignItems="flex-start">
-                    <Box sx={{ p: 1.25, borderRadius: 1.5, bgcolor: 'rgba(242, 197, 20, 0.1)' }}>{item.icon}</Box>
+                    <Box sx={{ p: 1.25, borderRadius: 1.5, bgcolor: 'rgb(242, 198, 20)' }}>{item.icon}</Box>
                     <Stack spacing={0.5}>
                       <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
                         {item.title}
@@ -231,39 +231,39 @@ const AboutUs: NextPage = () => {
         >
           {[
             {
-              icon: <ApartmentIcon sx={{ color: '#f2c514' }} />,
+              icon: <ApartmentIcon sx={{ color: '#000' }} />,
               title: 'Unmatched Commercial Listings',
               desc: 'Thousands of properties from trusted agents and landlords, updated daily and shown with total accuracy.',
             },
             {
-              icon: <BusinessIcon sx={{ color: '#f2c514' }} />,
+              icon: <BusinessIcon sx={{ color: '#000' }} />,
               title: 'Built for Professionals',
               desc: 'Designed for agents, surveyors, developers, and asset managers — with tools that save time and boost productivity.',
             },
             {
-              icon: <TrendingUpIcon sx={{ color: '#f2c514' }} />,
+              icon: <TrendingUpIcon sx={{ color: '#000' }} />,
               title: 'High-Impact Visibility',
               desc: 'Your listings get strong SEO, smart digital campaigns, and a platform that brings in serious enquiries.',
             },
             {
-              icon: <PriceCheckIcon sx={{ color: '#f2c514' }} />,
+              icon: <PriceCheckIcon sx={{ color: '#000' }} />,
               title: 'Flexible, Value-Focused Packages',
               desc: 'Pick a plan that fits — whether you\'re an independent agent or a large enterprise.',
             },
             {
-              icon: <SpeedIcon sx={{ color: '#f2c514' }} />,
+              icon: <SpeedIcon sx={{ color: '#000' }} />,
               title: 'Fast, Hassle-Free Uploads',
               desc: 'Optimized workflows mean you can upload properties, make bulk edits, and manage everything with ease.',
             },
             {
-              icon: <SupportAgentIcon sx={{ color: '#f2c514' }} />,
+              icon: <SupportAgentIcon sx={{ color: '#000' }} />,
               title: 'Dedicated UK Support',
               desc: 'Personalized onboarding and ongoing help, so you can sell your commercial properties with confidence.',
             },
           ].map((item, idx) => (
             <Paper key={idx} variant="outlined" sx={{ p: 3, height: '100%', borderRadius: 2, borderLeft: '4px solid #f2c514' }}>
               <Stack direction="row" spacing={2} alignItems="flex-start">
-                <Box sx={{ p: 1.25, borderRadius: 1.5, bgcolor: 'rgba(242, 197, 20, 0.1)' }}>{item.icon}</Box>
+                <Box sx={{ p: 1.25, borderRadius: 1.5, bgcolor: 'rgb(242, 198, 20)' }}>{item.icon}</Box>
                 <Stack spacing={0.5}>
                   <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
                     {item.title}
@@ -285,7 +285,7 @@ const AboutUs: NextPage = () => {
             <Typography variant="overline" sx={{ fontWeight: 700, color: '#f2c514' }}>
               Our Commitment
             </Typography>
-            <Typography variant="body1" sx={{ fontSize: '1.1rem', lineHeight: 1.8, color: 'text.secondary' }}>
+            <Typography variant="body1" sx={{ fontSize: '1.6rem', lineHeight: 1.8, color: 'text.secondary' }}>
               We&apos;re here to make UK commercial property simple, accessible, and results-driven. CommercialUK is all about taking the friction out of the commercial property process. Our intuitive platform, smart tools, and ever-expanding content help professionals get better results faster and more efficiently.
             </Typography>
           </Stack>

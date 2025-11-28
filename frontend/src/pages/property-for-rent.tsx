@@ -162,6 +162,7 @@ const PropertyForRent: NextPage = () => {
                     sx={{
                       py: 1.75,
                       fontWeight: 700,
+                      color: 'black',
                       background: 'linear-gradient(135deg, rgba(242, 197, 20,1) 0%, rgba(242, 197, 20,1) 100%)',
                       '&:hover': {
                         background: 'linear-gradient(135deg, rgba(242, 197, 20,1) 0%, rgba(242, 197, 20,1) 100%)',

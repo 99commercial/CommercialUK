@@ -2,7 +2,12 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/auth/login": "pages/auth/login.js",
-  "/general/all-properties": "pages/general/all-properties.js",
-  "/about-us": "pages/about-us.js"
+  "/agent/queries/my-queries-raised": "pages/agent/queries/my-queries-raised.js",
+  "/agent/property/my-properties": "pages/agent/property/my-properties.js",
+  "/agent/property/my-favourite-list": "pages/agent/property/my-favourite-list.js",
+  "/agent/account/my-account": "pages/agent/account/my-account.js",
+  "/agent/queries/my-property-queries": "pages/agent/queries/my-property-queries.js",
+  "/agent/account/my-profile": "pages/agent/account/my-profile.js",
+  "/agent": "pages/agent.js",
+  "/": "pages/index.js"
 }

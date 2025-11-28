@@ -650,6 +650,7 @@ const PropertyDetailsForm: React.FC<PropertyDetailsFormProps> = ({
                 <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
                   <TextField
                     {...register('rateable_value', { valueAsNumber: true })}
+                    value={rateableValue || ''}
                     label="Rateable Value (GBP)"
                     type="number"
                     fullWidth
@@ -660,7 +661,8 @@ const PropertyDetailsForm: React.FC<PropertyDetailsFormProps> = ({
                       startAdornment: <InputAdornment position="start">£</InputAdornment>,
                     }}
                     onChange={(e) => {
-                      register('rateable_value', { valueAsNumber: true }).onChange(e);
+                      const value = e.target.value === '' ? 0 : Number(e.target.value);
+                      setValue('rateable_value', value);
                       clearFieldError('rateable_value');
                     }}
                   />

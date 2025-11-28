@@ -438,15 +438,27 @@ const SideBar: React.FC<SideBarProps> = ({ open, onToggle, onClose }) => {
     if (!open) {
       return (
         <Tooltip key={item.id} title={item.label} placement="right">
-          <Link href={item.path} prefetch onClick={handleAfterNavigate}>
+          <Link 
+            href={item.path} 
+            prefetch 
+            style={{ display: 'block', textDecoration: 'none' }}
+            onClick={(e) => {
+              handleSetActive(item.id);
+              handleAfterNavigate();
+            }}
+          >
             <CollapsedIconButton
-              onClick={() => handleSetActive(item.id)}
               sx={{
                 background: isActive
                   ? 'linear-gradient(90deg, #dcfce7 0%, rgba(220, 252, 231, 0) 100%)'
                   : 'transparent',
                 color: isActive ? '#10b981' : '#6b7280',
                 transition: 'all 0.2s ease-in-out',
+                width: '100%',
+                '&:hover': {
+                  backgroundColor: '#f3f4f6',
+                  transform: 'translateX(2px)',
+                },
               }}
             >
               <IconComponent />
@@ -460,12 +472,26 @@ const SideBar: React.FC<SideBarProps> = ({ open, onToggle, onClose }) => {
 
     return (
       <ListItem key={item.id} disablePadding>
-        <Link href={item.path} prefetch onClick={handleAfterNavigate} style={{ width: '100%', textDecoration: 'none' }}>
+        <Link 
+          href={item.path} 
+          prefetch 
+          style={{ width: '100%', textDecoration: 'none', display: 'block' }}
+          onClick={(e) => {
+            handleSetActive(item.id);
+            handleAfterNavigate();
+          }}
+        >
           <StyledListItemButton
             active={isActive}
-            onClick={() => handleSetActive(item.id)}
             sx={{
               transition: 'all 0.2s ease-in-out',
+              width: '100%',
+              '&:hover': {
+                background: isActive
+                  ? 'linear-gradient(90deg, #dcfce7 0%, rgba(220, 252, 231, 0) 100%)'
+                  : '#f3f4f6',
+                transform: 'translateX(2px)',
+              },
             }}
           >
             <ListItemIcon>

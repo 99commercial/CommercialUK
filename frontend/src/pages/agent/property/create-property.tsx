@@ -688,12 +688,18 @@ const CreatePropertyPage: React.FC = () => {
                             handleStepClick(index);
                           }
                         }}
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                        }}
                         sx={{
                           cursor: isClickable ? 'pointer' : 'not-allowed',
                           minWidth: 120,
                           opacity: isClickable ? 1 : 0.6,
+                          userSelect: 'none',
                           '& .MuiStepLabel-label': {
                             fontSize: '0.875rem',
+                            pointerEvents: 'none',
                           },
                           '&:hover': {
                             opacity: isClickable ? 1 : 0.6,
@@ -711,6 +717,10 @@ const CreatePropertyPage: React.FC = () => {
                                 handleStepClick(index);
                               }
                             }}
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                            }}
                             sx={{
                               width: 40,
                               height: 40,
@@ -722,10 +732,15 @@ const CreatePropertyPage: React.FC = () => {
                               color: 'white',
                               cursor: isClickable ? 'pointer' : 'not-allowed',
                               opacity: isClickable ? 1 : 0.6,
+                              userSelect: 'none',
+                              pointerEvents: 'auto',
                               '&:hover': {
                                 transform: 'scale(1.1)',
                                 boxShadow: isClickable ? '0 4px 12px rgba(0,0,0,0.15)' : 'none',
                                 opacity: isClickable ? 1 : 0.6,
+                              },
+                              '&:active': {
+                                transform: isClickable ? 'scale(0.95)' : 'scale(1)',
                               },
                             }}
                           >
@@ -733,7 +748,7 @@ const CreatePropertyPage: React.FC = () => {
                           </Box>
                         )}
                       >
-                      <Box>
+                      <Box sx={{ pointerEvents: 'none' }}>
                         <Typography variant="body2" fontWeight={activeStep === index ? 600 : 400}>
                           {tab.label}
                         </Typography>

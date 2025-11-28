@@ -499,8 +499,8 @@ const GeneralDetailsForm: React.FC<GeneralDetailsFormProps> = ({ onStepSubmitted
           {/* Size Range */}
           <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
             <TextField
-              value={formData.size_minimum}
-              onChange={(e) => handleInputChange('size_minimum', Number(e.target.value))}
+              value={formData.size_minimum || ''}
+              onChange={(e) => handleInputChange('size_minimum', e.target.value === '' ? 0 : Number(e.target.value))}
               label="Minimum Size (sq ft)"
               type="number"
               fullWidth
@@ -514,8 +514,8 @@ const GeneralDetailsForm: React.FC<GeneralDetailsFormProps> = ({ onStepSubmitted
 
           <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
             <TextField
-              value={formData.size_maximum}
-              onChange={(e) => handleInputChange('size_maximum', Number(e.target.value))}
+              value={formData.size_maximum || ''}
+              onChange={(e) => handleInputChange('size_maximum', e.target.value === '' ? 0 : Number(e.target.value))}
               label="Maximum Size (sq ft)"
               type="number"
               fullWidth

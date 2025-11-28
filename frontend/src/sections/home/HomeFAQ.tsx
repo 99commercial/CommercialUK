@@ -137,9 +137,9 @@ const IconWrapper = styled(Box)(({ theme }) => ({
   width: '48px',
   height: '48px',
   borderRadius: '50%',
-  backgroundColor: '#333',
   marginRight: theme.spacing(2),
-  color: 'white',
+  color: 'black',
+  backgroundColor: '#f2c514',
   transition: 'all 0.3s ease',
   '&:hover': {
     backgroundColor: '#1a1a1a',
@@ -215,37 +215,37 @@ const faqs = [
 const profileManagementFaqs = [
   {
     question: 'How do I delegate another user to handle my listing?',
-    answer: 'Assign listing permissions and access to team members.',
+    answer: 'You can assign specific listings to team members by granting them listing access and permissions from your account settings. This allows them to manage listings on your behalf.',
     icon: <QuestionAnswerIcon />,
     category: 'Profile Management',
   },
   {
     question: 'How do I modify my CommercialUK profile?',
-    answer: 'Modify your business name, description, and contact information.',
+    answer: 'Go to your profile settings to update your business name, description, and contact details anytime.',
     icon: <BusinessIcon />,
     category: 'Profile Management',
   },
   {
     question: 'How do I edit my email, password, or login credentials?',
-    answer: 'Easily update account credentials and contact information.',
+    answer: 'Visit the account settings section to update your email, password, or other login details securely.',
     icon: <QuestionAnswerIcon />,
     category: 'Profile Management',
   },
   {
     question: 'Where do I edit my business information?',
-    answer: 'Update business information like address, phone, and brand.',
+    answer: 'Edit your business address, phone number, and branding details directly under the "Business Information" tab in settings.',
     icon: <BusinessIcon />,
     category: 'Profile Management',
   },
   {
     question: 'Why am I receiving an invalid login error?',
-    answer: 'Resolve frequent sign-in problems and login errors.',
+    answer: 'Ensure you\'re entering the correct credentials and check for typos. If the issue persists, reset your password or contact support.',
     icon: <TrendingUpIcon />,
     category: 'Profile Management',
   },
   {
     question: 'I forgot my password. How do I reset it?',
-    answer: 'Utilise the password recovery tool to regain access to your account.',
+    answer: 'Click "Forgot Password" on the login page and follow the recovery steps to regain access to your account.',
     icon: <QuestionAnswerIcon />,
     category: 'Profile Management',
   },
@@ -449,28 +449,28 @@ const paymentDetailsFaqs = [
   {
     question: 'How can I modify my payment method or payment details?',
     answer:
-      'You can modify your payment method at any time from your CommercialUK account. Log in to your account, navigate to Billing & Payments within settings, choose Update Payment Method, provide your new card or direct debit details, and save. Your new method will be used for future transactions.',
+      'You can modify your payment method at any time from your CommercialUK account. Log in to your account. Navigate to Billing & Payments within your account settings. Choose Update Payment Method. Provide your new credit/debit card or direct debit information. Save. Your new payment method will be applied to all future transactions.',
     icon: <BusinessIcon />,
     category: 'Payment Details',
   },
   {
     question: 'How do I print or download my invoice?',
     answer:
-      "Log in to your CommercialUK account, go to Billing & Payments, click Invoices/Receipts, select the invoice you want, and choose Download PDF or Print Invoice. Your invoices remain available in your account history.",
+      "To view your invoices: Log in to your CommercialUK account. Go to Billing & Payments. Click Invoices/Receipts. Select the invoice you'd like to download. Click Download PDF or Print Invoice. All invoices are still in your account history for reference.",
     icon: <QuestionAnswerIcon />,
     category: 'Payment Details',
   },
   {
     question: "What if my payment doesn't go through?",
     answer:
-      "If a payment fails, you'll receive an email. Verify your payment method details, ensure sufficient funds/credit, and try reprocessing the payment from Billing & Payments. If it still fails, contact CommercialUK Support for assistance.",
+      "If a payment fails, we'll send you an email. Please: Make sure your payment method details are accurate and current. Make sure you have enough money or available credit. Try to reprocess the payment from Billing & Payments in your account. If the problem persists, reach out to CommercialUK Support so that we can resolve it as soon as possible.",
     icon: <TrendingUpIcon />,
     category: 'Payment Details',
   },
   {
     question: 'Can I change my billing cycle (monthly/yearly)?',
     answer:
-      'Yes. Visit Billing & Payments, choose Manage Subscription, pick Monthly or Annual billing, and confirm. The new cycle applies from your next renewal date.',
+      'Yes, you can change your billing cycle: Visit Billing & Payments in your account. Choose Manage Subscription. Pick Monthly or Annual billing. Confirm the change. Your new billing cycle will take effect from your next renewal date.',
     icon: <BusinessIcon />,
     category: 'Payment Details',
   },
@@ -481,22 +481,141 @@ const listingPromotionsFaqs = [
   {
     question: 'How do I add and modify a commercial property listing?',
     answer:
-      'Log in to your CommercialUK account. Select Create Listing from your dashboard. Add property details (location, size, price, type, description) and supporting documents (images, floor plans, brochures). Save and publish. To modify, open My Listings, edit the listing, and Save — changes take effect immediately.',
+      'Log in to your CommercialUK account. Select Create Listing from your dashboard. Add property details (location, size, price, type, description). Add supporting documents (images, floor plans, brochures). Save and publish. To modify a listing, edit from your My Listings tab, make changes, and click Save. Changes are effective immediately.',
     icon: <TrendingUpIcon />,
     category: 'Listing Promotions',
   },
   {
     question: 'How do I delete my property listing?',
     answer:
-      'Go to My Listings, select the property, click Delete Listing, and confirm. Warning: deleted listings cannot be recovered.',
+      'Go to My Listings in your account. Select the property you want to delete. Click Delete Listing. Confirm to delete. Warning: deleted listings cannot be recovered.',
     icon: <QuestionAnswerIcon />,
     category: 'Listing Promotions',
   },
   {
     question: 'How do I update contacts on my listing?',
     answer:
-      'Open the property in My Listings, go to Contact Information, add/edit/remove contacts, then Save. This ensures enquiries are routed to the correct person.',
+      'Open the property in My Listings. Go to the Contact Information section. Add, edit, or remove contacts. Save changes. This ensures enquiries are directed to the right person.',
     icon: <BusinessIcon />,
+    category: 'Listing Promotions',
+  },
+  {
+    question: 'How do I build a professional company or agent profile?',
+    answer:
+      'Go to My Profile under your account. Add your company logo, contact information, and bio. Upload credentials or certifications if applicable. Save updates. A complete profile earns credibility with buyers and renters.',
+    icon: <BusinessIcon />,
+    category: 'Listing Promotions',
+  },
+  {
+    question: 'How can I add or modify admins on my listings?',
+    answer:
+      'Go to Account Settings > Team Management. Add an admin by providing their email. Allocate roles (Admin, Editor, Viewer). Save. Admins can edit and manage listings for you.',
+    icon: <QuestionAnswerIcon />,
+    category: 'Listing Promotions',
+  },
+  {
+    question: 'How do I see my Listing Performance Report?',
+    answer:
+      'Log in to your account. Go to Analytics > Listing Performance. Choose the property. Views, enquiries, and engagement activity are shown in reports.',
+    icon: <TrendingUpIcon />,
+    category: 'Listing Promotions',
+  },
+  {
+    question: 'How do I update details for an active listing?',
+    answer:
+      'Simple: Open the listing in My Listings. Make required fields current (price, availability, description). Save. Your listing is refreshed throughout the platform.',
+    icon: <QuestionAnswerIcon />,
+    category: 'Listing Promotions',
+  },
+  {
+    question: 'How do I upload and refresh brochures, floor plans, photos, and documents?',
+    answer:
+      'Open your property in My Listings. Go to Media & Documents. Add new brochures, floor plans, or photos. To override, remove existing files and add new ones. Save changes.',
+    icon: <BusinessIcon />,
+    category: 'Listing Promotions',
+  },
+  {
+    question: 'How do I upgrade my listing visibility (featured or premium)?',
+    answer:
+      'Visit My Listings. Select the property you wish to promote. Click Upgrade Visibility. Select Featured or Premium and accept payment. More advanced listings receive greater exposure.',
+    icon: <TrendingUpIcon />,
+    category: 'Listing Promotions',
+  },
+  {
+    question: 'How do I choose which photo is shown as the main photo?',
+    answer:
+      'Load all property photos in Media & Photos. Hover over the image you want to be displayed as the main photo. Click Set as Main Photo. This photo will be displayed first in searches and on your listing.',
+    icon: <QuestionAnswerIcon />,
+    category: 'Listing Promotions',
+  },
+  {
+    question: 'How do I view and manage leads on my property?',
+    answer:
+      'Go to the Leads Dashboard in your account. Select the property. View enquiries, messages, and contact details. Allocate follow-ups or export lead data.',
+    icon: <TrendingUpIcon />,
+    category: 'Listing Promotions',
+  },
+  {
+    question: 'How do I set up a marketing or email campaign on CommercialUK?',
+    answer:
+      'Go to Marketing Tools. Select Email Campaign. Pick a template, add property details and images. Target audience (buyers, tenants, investors). Preview and send.',
+    icon: <TrendingUpIcon />,
+    category: 'Listing Promotions',
+  },
+  {
+    question: 'How do I manage and organize documents for my listings?',
+    answer:
+      'Go to Media & Documents across all listings. Organize folders for brochures, compliance, and legal documents. Upload documents and label them clearly. This keeps you professional and compliant.',
+    icon: <BusinessIcon />,
+    category: 'Listing Promotions',
+  },
+  {
+    question: 'How do I add highlights, key features, and amenities?',
+    answer:
+      'Open your listing. Go to the Highlights/Features section. Add details such as parking, transport links, amenities. Save changes. Well-detailed features improve listing engagement.',
+    icon: <QuestionAnswerIcon />,
+    category: 'Listing Promotions',
+  },
+  {
+    question: 'How do I upload or update compliance documents (EPC, safety certificates)?',
+    answer:
+      'Go to Compliance Documents in your listing. Upload EPC, Gas Safety, EICR, or other certificates. Update or replace as needed. Compliance documents help to build trust with tenants and buyers.',
+    icon: <BusinessIcon />,
+    category: 'Listing Promotions',
+  },
+  {
+    question: 'How do I renew or extend my property listing?',
+    answer:
+      'Go to My Listings. Select the listing that you want to extend. Click Renew/Extend Listing. Choose the new term and accept payment.',
+    icon: <QuestionAnswerIcon />,
+    category: 'Listing Promotions',
+  },
+  {
+    question: 'How do I change my subscription or billing plan?',
+    answer:
+      'Go to Billing & Payments in your account. Select Manage Subscription. Change plans (monthly/yearly or package upgrade). Authorise changes.',
+    icon: <BusinessIcon />,
+    category: 'Listing Promotions',
+  },
+  {
+    question: 'How do I advertise multiple properties or portfolios?',
+    answer:
+      'Use the Portfolio Listing function in Create Listing. Upload details for multiple properties. Bulk manages them in the Portfolio Dashboard. Recommended for developers, agencies, or large landlords.',
+    icon: <TrendingUpIcon />,
+    category: 'Listing Promotions',
+  },
+  {
+    question: 'How do I expose my property to investors and tenants?',
+    answer:
+      'Become Premium Visibility. Use Targeted Email Campaigns. Broadcast your property on CommercialUK partner networks. These features maximize visibility.',
+    icon: <TrendingUpIcon />,
+    category: 'Listing Promotions',
+  },
+  {
+    question: 'How do I get CommercialUK support?',
+    answer:
+      'You can reach our support staff via: Help Centre live chat, Support ticket system in your account, Email: support@commercialuk.com, Phone: [insert number]. Support is available [hours of operation].',
+    icon: <QuestionAnswerIcon />,
     category: 'Listing Promotions',
   },
 ];
@@ -776,12 +895,12 @@ export default function HomeFAQ() {
                                       label={faq.category}
                                       size="small"
                                       sx={{
-                                        backgroundColor: '#333',
-                                        color: 'white',
+                                        backgroundColor: '#f2c514',
+                                        color: 'black',
                                         fontWeight: 600,
                                         fontSize: '0.75rem',
                                         '&:hover': {
-                                          backgroundColor: '#1a1a1a',
+                                          backgroundColor: '#f2c514',
                                         },
                                       }}
                                     />
