@@ -259,18 +259,18 @@ From start-ups to multinational corporations, CommercialUK is the market of choi
                 </LiveAuctionButton> */}
 
                 <Button
-                  variant="outlined"
+                  variant="contained"
                   fullWidth={isMobile}
+                  href="/general/all-properties"
                   sx={{
-                    borderColor: '#f2c514',
-                    color: '#f2c514',
+                    backgroundColor: '#f2c514',
+                    color: '#000',
                     fontWeight: 600,
                     py: { xs: 1.5, md: 2 },
                     borderRadius: 2,
                     fontSize: { xs: '0.875rem', md: '1rem' },
                     '&:hover': {
-                      borderColor: '#f2c514',
-                      backgroundColor: 'rgba(211, 47, 47, 0.04)',
+                      backgroundColor: '#d4a912',
                       transform: 'translateY(-1px)',
                     },
                   }}

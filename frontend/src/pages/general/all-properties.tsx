@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Box,
-  Container,
   Typography,
-  useTheme,
-  useMediaQuery,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Property } from '../../components/PropertyCard';
@@ -17,41 +14,21 @@ import InteractiveMap from '../../sections/general/InteractiveMap';
 // ----------------------------------------------------------------------
 
 const PageContainer = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(2, 0),
-  background: `
-    linear-gradient(45deg, #c9a010 0%, #f2c514 25%, #c9a010 50%, #f2c514 75%, #c9a010 100%),
-    radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.05) 0%, transparent 50%)
-  `,
-  backgroundSize: '400% 400%, 300px 300px, 300px 300px, 200px 200px',
-  color: '#ffffff',
+  padding: 0,
+  background: 'transparent',
+  color: '#000',
   position: 'relative',
   display: 'flex',
-  '&::before': {
-    content: '""',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    background: `
-      repeating-linear-gradient(
-        45deg,
-        transparent,
-        transparent 8px,
-        rgba(255, 255, 255, 0.08) 8px,
-        rgba(255, 255, 255, 0.08) 16px
-      )
-    `,
-    pointerEvents: 'none',
-  },
+  flexDirection: 'column',
+  width: '100%',
+  margin: 0,
 }));
 
 const MainContent = styled(Box)(({ theme }) => ({
   flex: 1,
   width: '100%',
-  margin: '0', 
+  margin: 0,
+  padding: 0,
   position: 'relative',
   zIndex: 2,
 }));
@@ -63,9 +40,7 @@ const MainContent = styled(Box)(({ theme }) => ({
 
 
 const AllPropertiesPage: React.FC = () => {
-  const theme = useTheme();
   const router = useRouter();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   // State management
   const [properties, setProperties] = useState<Property[]>([]);
@@ -257,55 +232,98 @@ const AllPropertiesPage: React.FC = () => {
   return (
     <PageContainer>
       <MainContent>
-          <>
-            <Box
-              sx={{
-                display: 'flex',
-                gap: 3,
-                flexDirection: 'column',
-                minHeight: 'calc(100vh - 300px)',
-              }}
-            >
-              <Box
-                sx={{
-                  width: '100%',
-                  position: 'sticky',
-                  top: 0,
-                  zIndex: 10,
-                }}
-              >
-                <InteractiveMap
+        {/* Title Header - Always Visible */}
+        <Box
+          sx={{
+            backgroundColor: '#000',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+            padding: 2,
+            textAlign: 'center',
+            margin: 0,
+            width: '100%',
+          }}
+        >
+          <Typography 
+            variant="h3" 
+            component="h1" 
+            sx={{ 
+              fontWeight: 700, 
+              mb: 1,
+              color: '#f2c514',
+              fontSize: '1.5rem',
+              margin: 0,
+            }}
+          >
+            All Properties
+          </Typography>
+          <Typography 
+            variant="h6" 
+            sx={{ 
+              color: '#f2c514',
+              fontSize: '0.875rem',
+              margin: 0,
+            }}
+          >
+            Discover commercial properties across the UK
+          </Typography>
+          {/* <Typography variant="h6" sx={{ fontWeight: 600, color: '#f2c514' }}>
+            ({totalCount} Properties Found)
+          </Typography> */}
+        </Box>
 
-                  properties={properties}
-                  onPropertyClick={handleViewDetails}
-                  onAreaSearch={handleAreaSearch}
+        <Box
+          sx={{
+            display: 'flex',
+            gap: 0,
+            flexDirection: 'row',
+            height: 'calc(100vh - 120px)',
+            width: '100%',
+            margin: 0,
+            padding: 0,
+          }}
+        >
+          {/* Map Section */}
+          <Box
+            sx={{
+              width: '40%',
+              position: 'sticky',
+              top: 0,
+              height: '100%',
+              display: 'block',
+              zIndex: 10,
+              backgroundColor: 'transparent',
+            }}
+          >
+            <InteractiveMap
+              properties={properties}
+              onPropertyClick={handleViewDetails}
+              onAreaSearch={handleAreaSearch}
+            />
+          </Box>
+
+          <Box
+            sx={{
+              width: '60%',
+              flexDirection: 'column',
+              overflow: 'auto',
+              height: '100%',
+              backgroundColor: 'transparent',
+            }}
+          >
+                <ListAllProperties
+                  properties={displayProperties}
+                  loading={loading}
+                  error={error}
+                  totalCount={isAreaFiltered ? displayProperties.length : totalCount}
+                  currentPage={currentPage}
+                  totalPages={isAreaFiltered ? 1 : totalPages}
+                  favoriteProperties={favoriteProperties}
+                  handlePageChange={handlePageChange}
+                  handleFavorite={handleFavorite}
+                  handleViewDetails={handleViewDetails}
                 />
               </Box>
-
-              <Box
-                sx={{
-                  width: '100%',
-                  flexDirection: 'column',
-                  overflow: 'hidden',
-                }}
-              >
-                <Container maxWidth="xl">
-                  <ListAllProperties
-                    properties={displayProperties}
-                    loading={loading}
-                    error={error}
-                    totalCount={isAreaFiltered ? displayProperties.length : totalCount}
-                    currentPage={currentPage}
-                    totalPages={isAreaFiltered ? 1 : totalPages}
-                    favoriteProperties={favoriteProperties}
-                    handlePageChange={handlePageChange}
-                    handleFavorite={handleFavorite}
-                    handleViewDetails={handleViewDetails}
-                  />
-                </Container>
-              </Box>
-            </Box>
-          </>
+        </Box>
       </MainContent>
     </PageContainer>
   );

@@ -404,13 +404,13 @@ export default function Navbar({ onAdvertise, onLanguageChange }: NavbarProps) {
 
           {/* Desktop Action Buttons */}
           <MobileActionButtons>
-            <IconButton
+            {/* <IconButton
               color="inherit"
               onClick={handleLanguageChange}
               sx={{ color: '#666666' }}
             >
               <LanguageIcon />
-            </IconButton>
+            </IconButton> */}
             <AllPropertiesLink onClick={handleAllProperties}>
               All Properties
             </AllPropertiesLink>

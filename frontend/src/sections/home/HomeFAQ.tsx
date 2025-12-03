@@ -174,40 +174,22 @@ const StatItem = styled(Box)(({ theme }) => ({
 
 const faqs = [
   {
-    question: 'Is CommercialUK Available for International Property Searches?',
-    answer: 'Yes, CommercialUK operates globally with dedicated platforms in the UK, Canada, France, and Spain. Our international presence allows you to search for commercial real estate properties across multiple countries, with localized content and currency options.',
-    icon: <BusinessIcon />,
-    category: 'Global Reach',
-  },
-  {
-    question: 'Office Space or Coworking: Which Fits Your Business Needs?',
-    answer: 'The choice between traditional office space and coworking depends on your business size, growth plans, and operational needs. Traditional offices offer privacy and customization, while coworking spaces provide flexibility and networking opportunities.',
-    icon: <TrendingUpIcon />,
-    category: 'Business Solutions',
-  },
-  {
-    question: 'What Should I Know Before Investing in Multifamily Properties?',
-    answer: 'Multifamily property investment requires understanding market dynamics, property management, financing options, and local regulations. Key factors include location analysis, cash flow projections, and tenant management strategies.',
+    question: 'How can I set up alerts for new commercial listings?',
+    answer: 'Create a free CommercialUK account and save your search filters to enable property alerts. This will send you immediate notifications when any new commercial spaces that match your criteria go live, ensuring you are always the first to know.',
     icon: <QuestionAnswerIcon />,
-    category: 'Investment',
+    category: 'Account & Alerts',
   },
   {
-    question: 'How Do I Evaluate Commercial Property Investment Returns?',
-    answer: 'Commercial property returns are evaluated through metrics like cap rates, cash-on-cash returns, and internal rate of return (IRR). Consider factors like location, tenant quality, lease terms, and market conditions for comprehensive analysis.',
-    icon: <TrendingUpIcon />,
-    category: 'Investment',
-  },
-  {
-    question: 'What Are the Key Factors in Commercial Real Estate Due Diligence?',
-    answer: 'Due diligence includes property inspection, financial analysis, market research, legal review, environmental assessment, and tenant evaluation. This comprehensive process helps identify potential risks and opportunities before investment.',
+    question: 'Can one perform a search using a business or site address?',
+    answer: 'Yes, simply type the name of the business, street, or postcode in the search bar. Our system will show all the available commercial listings that are situated in or around that address for your convenience in finding properties in specific business districts or high-demand areas.',
     icon: <BusinessIcon />,
-    category: 'Due Diligence',
+    category: 'Property Search',
   },
   {
-    question: 'How Can I Find the Right Commercial Real Estate Agent?',
-    answer: 'Look for agents with local market expertise, proven track record, strong network, and specialization in your property type. Check credentials, references, and ensure they understand your specific investment goals and timeline.',
-    icon: <QuestionAnswerIcon />,
-    category: 'Professional Services',
+    question: 'How do you find commercial properties using specific keywords or requirements?',
+    answer: 'You can search for a warehouse, retail unit, office suite, industrial unit, drive-in access, or any other feature in which you have an interest. This will help you rapidly sift through properties to find the ones that meet your operational requirements.',
+    icon: <TrendingUpIcon />,
+    category: 'Property Search',
   },
 ];
 
@@ -695,6 +677,102 @@ const tenantCustomReportsFaqs = [
   },
 ];
 
+// Investor → Document Hub specific FAQs
+const investorDocumentHubFaqs = [
+  {
+    question: 'What is the difference between Standard Access and Enhanced Access in the Data Room?',
+    answer: 'With Standard Access, users can view only the essential files, while Enhanced Access gives them access to more confidential documents, analytics, and materials shared with only verified parties. This helps maintain security while supporting serious commercial enquiries.',
+    icon: <QuestionAnswerIcon />,
+    category: 'Document Hub',
+  },
+  {
+    question: 'Must I add tags to files while uploading?',
+    answer: 'Tagging is not required but highly encouraged. It really helps the investors, agents, and other stakeholders find the documents quickly, especially for large projects with numerous files.',
+    icon: <BusinessIcon />,
+    category: 'Document Hub',
+  },
+  {
+    question: 'Will the documents or information be visible on other platforms besides CommercialUK?',
+    answer: 'All files remain within the CommercialUK ecosystem; they do not automatically sync to other external platforms, unless you decide to share them or give permission to your selected partners.',
+    icon: <TrendingUpIcon />,
+    category: 'Document Hub',
+  },
+  {
+    question: 'Can I create my own folders and organize documents my own way?',
+    answer: 'Yes, you can set up custom folders and organize your Data Room to fit your workflow for the project, based on property type, due-diligence category, or however the team prefers.',
+    icon: <BusinessIcon />,
+    category: 'Document Hub',
+  },
+  {
+    question: 'When I upload or edit files, do I have to save changes separately?',
+    answer: 'Yes, all edits should be saved; otherwise, the changes will not take full effect. Unsaved edits will not be visible to other users or even collaborators.',
+    icon: <QuestionAnswerIcon />,
+    category: 'Document Hub',
+  },
+  {
+    question: 'Why is there a selection to mark the files as \'Open\' within the secure section?',
+    answer: 'The \'Open\' setting is for non-sensitive documents that you want to be visible for all users, without any access approvals, such as brochures, floor plans, or general project summaries.',
+    icon: <TrendingUpIcon />,
+    category: 'Document Hub',
+  },
+  {
+    question: 'How do investors efficiently browse and review Data Room content?',
+    answer: 'Investors can use filters, tags, and the folder structure to find key documents quickly and with ease. The preview also allows them to scan files without downloading, making due diligence a lot easier.',
+    icon: <BusinessIcon />,
+    category: 'Document Hub',
+  },
+  {
+    question: 'Are tenant details, financials, and other sensitive uploaded documents all subject to access permission settings?',
+    answer: 'Yes. The access level you select will be applicable for all files within the Data Room, unless permission for individual documents is changed manually.',
+    icon: <QuestionAnswerIcon />,
+    category: 'Document Hub',
+  },
+];
+
+// Investor → Custom Report specific FAQs
+const investorCustomReportFaqs = [
+  {
+    question: 'How do I view a report for my commercial listing?',
+    answer: 'You can directly access the comprehensive reports from your listing dashboard. In each property, there is a reporting tab where insights, such as page views, enquiries, and visibility metrics, can be found.',
+    icon: <BusinessIcon />,
+    category: 'Custom Report',
+  },
+  {
+    question: 'Can I download the reports for offline access?',
+    answer: 'Yes, all reports are downloadable in PDF or Excel formats for your use in reviewing performance, updating partners, or including the data in investment presentations.',
+    icon: <TrendingUpIcon />,
+    category: 'Custom Report',
+  },
+  {
+    question: 'What are the types of reporting formats or templates available?',
+    answer: 'CommercialUK supports a range of report styles to suit your needs, including enquiry summaries, marketing performance reports, lead-source breakdowns, and property visibility analytics. You can choose which template works best for your reporting purpose.',
+    icon: <QuestionAnswerIcon />,
+    category: 'Custom Report',
+  },
+];
+
+// Investor → Search Property specific FAQs
+const investorSearchPropertyFaqs = [
+  {
+    question: 'How can I receive notifications for new commercial listings and save my searches? What are the steps involved?',
+    answer: 'By logging into your CommercialUK account, you can set up alerts and save your search preferences, such as location, property type, or size. When you save it, you\'ll receive automatic alerts whenever there are matching commercial properties.',
+    icon: <QuestionAnswerIcon />,
+    category: 'Search Property',
+  },
+  {
+    question: 'Is it possible to refine my search for commercial properties using specific keywords?',
+    answer: 'You have the option to enter your desired keywords, such as warehouse, retail unit, office floor, or industrial space, but you can also add any feature you desire. It facilitates the search for properties that meet your requirements as a business or investment.',
+    icon: <TrendingUpIcon />,
+    category: 'Search Property',
+  },
+  {
+    question: 'Can you explain how to locate a property using an address?',
+    answer: 'To search for the street name, postcode, or business district, simply enter the complete or partial address. The system will show all available commercial listings in that area.',
+    icon: <BusinessIcon />,
+    category: 'Search Property',
+  },
+];
+
 export default function HomeFAQ() {
   const [expanded, setExpanded] = useState<string | false>('panel0');
   const [topTabIndex, setTopTabIndex] = useState<number>(0);
@@ -724,6 +802,14 @@ export default function HomeFAQ() {
         'Find a Property Advisor',
         'Custom Reports',
         'Search Properties',
+      ],
+    },
+    {
+      label: 'INVESTOR',
+      subTabs: [
+        'Document Hub',
+        'Custom Report',
+        'Search Property',
       ],
     },
   ];
@@ -868,6 +954,14 @@ export default function HomeFAQ() {
                         ? tenantFindAdvisorFaqs
                         : topTabIndex === 1 && innerTabIndex === 2
                         ? tenantCustomReportsFaqs
+                        : topTabIndex === 1 && innerTabIndex === 3
+                        ? faqs
+                        : topTabIndex === 2 && innerTabIndex === 0
+                        ? investorDocumentHubFaqs
+                        : topTabIndex === 2 && innerTabIndex === 1
+                        ? investorCustomReportFaqs
+                        : topTabIndex === 2 && innerTabIndex === 2
+                        ? investorSearchPropertyFaqs
                         : faqs
                     ).map((faq, index) => (
                       <Fade in timeout={800 + index * 200} key={index}>
@@ -890,7 +984,7 @@ export default function HomeFAQ() {
                                   {faq.icon}
                                 </IconWrapper>
                                 <Box sx={{ flex: 1 }}>
-                                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
+                                  {/* <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
                                     <Chip
                                       label={faq.category}
                                       size="small"
@@ -904,7 +998,7 @@ export default function HomeFAQ() {
                                         },
                                       }}
                                     />
-                                  </Box>
+                                  </Box> */}
                                   <Typography
                                     variant={isMobile ? "subtitle1" : "h6"}
                                     sx={{

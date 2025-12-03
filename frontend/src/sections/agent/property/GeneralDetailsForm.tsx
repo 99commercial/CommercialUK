@@ -545,8 +545,8 @@ const GeneralDetailsForm: React.FC<GeneralDetailsFormProps> = ({ onStepSubmitted
           {/* Year of Construction */}
           <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
             <TextField
-              value={formData.approximate_year_of_construction}
-              onChange={(e) => handleInputChange('approximate_year_of_construction', Number(e.target.value))}
+              value={formData.approximate_year_of_construction || ''}
+              onChange={(e) => handleInputChange('approximate_year_of_construction', e.target.value === '' ? 0 : Number(e.target.value))}
               label="Year of Construction"
               type="number"
               fullWidth

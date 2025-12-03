@@ -218,6 +218,7 @@ const ContactUs: NextPage = () => {
                   variant="contained"
                   size="large"
                   endIcon={<ArrowForward />}
+                  href="mailto:info@commercialuk.com"
                   sx={{
                     backgroundColor: '#f2c514',
                     color: '#000000',
@@ -321,6 +322,7 @@ const ContactUs: NextPage = () => {
                   variant="contained"
                   size="large"
                   endIcon={<ArrowForward />}
+                  href="mailto:info@commercialuk.com"
                   sx={{
                     backgroundColor: '#f2c514',
                     color: '#000000',

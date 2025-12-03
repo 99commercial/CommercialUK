@@ -841,6 +841,13 @@ const CreatePropertyPage: React.FC = () => {
                     onClick={handleNext}
                     variant="contained"
                     disabled={isSubmitting || !isCurrentStepValid()}
+                    sx={{
+                      backgroundColor: '#f2c514',
+                      color: 'black',
+                      '&:hover': {
+                        backgroundColor: '#f2c514',
+                      },
+                    }}
                   >
                     Next
                   </Button>

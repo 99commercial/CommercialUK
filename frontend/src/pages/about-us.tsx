@@ -42,10 +42,10 @@ const AboutUs: NextPage = () => {
       >
         <Container maxWidth="lg" sx={{ maxWidth: '100%' }}>
           <Stack spacing={2} alignItems="center" textAlign="center">
-            <Typography variant="h2" component="h1" sx={{ fontWeight: 800, lineHeight: 1.1, color: 'black' }}>
+            <Typography variant="h4" component="h1" sx={{ fontWeight: 800, lineHeight: 1.1, color: 'black' }}>
               About CommercialUK
             </Typography>
-            <Typography variant="h6" sx={{ maxWidth: 900, opacity: 0.9, color: 'black' }}>
+            <Typography variant="h5" sx={{ maxWidth: 900, opacity: 0.9, color: 'black' }}>
               Your Gateway to Smarter UK Commercial Property
             </Typography>
           </Stack>
@@ -108,10 +108,10 @@ const AboutUs: NextPage = () => {
         <Stack direction={{ xs: 'column', md: 'row' }} spacing={6} alignItems="center">
           <Box sx={{ width: { xs: '100%', md: '50%' } }}>
             <Stack spacing={2}>
-              <Typography variant="overline" sx={{ fontWeight: 700, color: '#f2c514' }}>
+              <Typography variant="h4" sx={{ fontWeight: 700, color: '#f2c514' }}>
                 What's our goal?
               </Typography>
-              <Typography variant="h4" sx={{ fontWeight: 800, color: 'text.primary' }}>
+              <Typography variant="h5" sx={{ fontWeight: 800, color: 'text.primary' }}>
                 We want to make finding UK commercial property faster, clearer, and just plain better for everyone.
               </Typography>
               <Typography variant="body1" color="text.secondary">
@@ -144,10 +144,10 @@ const AboutUs: NextPage = () => {
         <Box sx={{ py: { xs: 8, md: 12 }, bgcolor: 'background.default', maxWidth: '100%' }}>
           <Container maxWidth="lg">
             <Stack spacing={2} sx={{ mb: 6 }}>
-              <Typography variant="overline" sx={{ fontWeight: 700, color: '#f2c514' }}>
+              <Typography variant="h4" sx={{ fontWeight: 700, color: '#f2c514' }}>
                 What We Do
               </Typography>
-              <Typography variant="h4" sx={{ fontWeight: 800, color: 'text.primary' }}>
+              <Typography variant="h5" sx={{ fontWeight: 800, color: 'text.primary' }}>
                 A Complete Ecosystem for UK Commercial Real Estate
               </Typography>
               <Typography variant="body1" color="text.secondary">
@@ -210,10 +210,10 @@ const AboutUs: NextPage = () => {
       {/* Why Choose CommercialUK */}
       <Container maxWidth="lg" sx={{ py: { xs: 8, md: 12 }, maxWidth: '100%' }}>
         <Stack spacing={2} sx={{ mb: 4 }}>
-          <Typography variant="overline" sx={{ fontWeight: 700, color: '#f2c514' }}>
+          <Typography variant="h4" sx={{ fontWeight: 700, color: '#f2c514' }}>
             Why Choose CommercialUK?
           </Typography>
-          <Typography variant="h4" sx={{ fontWeight: 800, color: 'text.primary' }}>
+          <Typography variant="h5" sx={{ fontWeight: 800, color: 'text.primary' }}>
             Where Technology Meets Trusted Property Expertise
           </Typography>
         </Stack>
@@ -282,10 +282,10 @@ const AboutUs: NextPage = () => {
       <Container maxWidth="lg" sx={{ py: { xs: 8, md: 12 }, maxWidth: '100%' }}>
         <Box sx={{ bgcolor: 'background.default', p: { xs: 4, md: 6 }, borderRadius: 3 }}>
           <Stack spacing={2}>
-            <Typography variant="overline" sx={{ fontWeight: 700, color: '#f2c514' }}>
+            <Typography variant="h4" sx={{ fontWeight: 700, color: '#f2c514' }}>
               Our Commitment
             </Typography>
-            <Typography variant="body1" sx={{ fontSize: '1.6rem', lineHeight: 1.8, color: 'text.secondary' }}>
+            <Typography variant="body1" sx={{ fontSize: '1.2rem', lineHeight: 1.8, color: 'text.secondary' }}>
               We&apos;re here to make UK commercial property simple, accessible, and results-driven. CommercialUK is all about taking the friction out of the commercial property process. Our intuitive platform, smart tools, and ever-expanding content help professionals get better results faster and more efficiently.
             </Typography>
           </Stack>

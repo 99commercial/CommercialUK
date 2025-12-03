@@ -25,40 +25,15 @@ globalThis.__BUILD_MANIFEST = {
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/agent": [
+    "/general/all-properties": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/agent.js"
+      "static/chunks/pages/general/all-properties.js"
     ],
-    "/agent/account/my-account": [
+    "/property-for-sale": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/agent/account/my-account.js"
-    ],
-    "/agent/account/my-profile": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/agent/account/my-profile.js"
-    ],
-    "/agent/property/my-favourite-list": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/agent/property/my-favourite-list.js"
-    ],
-    "/agent/property/my-properties": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/agent/property/my-properties.js"
-    ],
-    "/agent/queries/my-property-queries": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/agent/queries/my-property-queries.js"
-    ],
-    "/agent/queries/my-queries-raised": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/agent/queries/my-queries-raised.js"
+      "static/chunks/pages/property-for-sale.js"
     ]
   },
   "ampFirstPages": []

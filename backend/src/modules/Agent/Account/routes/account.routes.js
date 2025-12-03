@@ -51,28 +51,24 @@ router.get('/users/profile',
   // Add property to favorites
   router.post('/favorites/:propertyId', 
     authenticate,
-    authorize(['agent']),
     agentController.addToFavorites.bind(agentController)
   );
   
   // Remove property from favorites
   router.delete('/favorites/:propertyId', 
     authenticate,
-    authorize(['agent']),
     agentController.removeFromFavorites.bind(agentController)
   );
   
   // Get user's favorite properties
   router.get('/favorites', 
     authenticate,
-    authorize(['agent']),
     agentController.getMyFavorites.bind(agentController)
   );
 
   // Get user's favorite properties details
   router.get('/favorites/details', 
     authenticate,
-    authorize(['agent']),
     agentController.getMyFavoritesDetails.bind(agentController)
   );
 

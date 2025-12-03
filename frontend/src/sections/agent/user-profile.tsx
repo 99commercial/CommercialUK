@@ -276,26 +276,31 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData }) => {
         <ContentWrapper>
           {/* About Section */}
           {userData?.about && (
-            <Box sx={{ 
-              mb: 5,
-              p: 3,
-              borderRadius: 12,
-              background: 'linear-gradient(135deg, #fef3f2 0%, #fee2e2 100%)',
-              border: '1px solid #fecaca',
-              borderLeft: '4px solid #f2c514',
-            }}>
-              <Typography 
-                sx={{ 
-                  color: '#7f1d1d', 
-                  fontStyle: 'italic',
-                  fontSize: '1rem',
-                  lineHeight: 1.8,
-                  fontFamily: '"Inter", sans-serif',
-                  fontWeight: 400,
-                }}
-              >
-                "{userData.about}"
-              </Typography>
+            <Box sx={{ mb: 5 }}>
+              <SectionTitle>
+                <InfoIcon sx={{ fontSize: 28 }} />
+                About Me
+              </SectionTitle>
+              <Box sx={{ 
+                p: 3,
+                borderRadius: 12,
+                background: 'linear-gradient(135deg, #fef3f2 0%, #fee2e2 100%)',
+                border: '1px solid #fecaca',
+                borderLeft: '4px solid #f2c514',
+              }}>
+                <Typography 
+                  sx={{ 
+                    color: '#7f1d1d', 
+                    fontStyle: 'italic',
+                    fontSize: '1rem',
+                    lineHeight: 1.8,
+                    fontFamily: '"Inter", sans-serif',
+                    fontWeight: 400,
+                  }}
+                >
+                  "{userData.about}"
+                </Typography>
+              </Box>
             </Box>
           )}
 

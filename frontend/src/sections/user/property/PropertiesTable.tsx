@@ -78,13 +78,13 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   letterSpacing: '0.01em',
   lineHeight: 1.6,
   '&.MuiTableCell-head': {
-    backgroundColor: alpha(theme.palette.primary.main, 0.08),
+    backgroundColor: '#ffffff',
     fontWeight: 600,
     fontSize: '0.8125rem',
     color: theme.palette.text.primary,
     letterSpacing: '0.08em',
     textTransform: 'uppercase',
-    borderBottom: `2px solid ${alpha(theme.palette.primary.main, 0.2)}`,
+    borderBottom: '2px solid #e0e0e0',
     paddingTop: theme.spacing(3),
     paddingBottom: theme.spacing(3),
     lineHeight: 1.5,
@@ -442,7 +442,7 @@ const PropertiesTable: React.FC = () => {
                 {isLargeScreen && <StyledTableCell>Image</StyledTableCell>}
                 <StyledTableCell 
                   onClick={() => handleSort('building_name')}
-                  sx={{ cursor: 'pointer', userSelect: 'none', '&:hover': { backgroundColor: alpha(theme.palette.primary.main, 0.12) } }}
+                  sx={{ cursor: 'pointer', userSelect: 'none', '&:hover': { backgroundColor: '#f5f5f5' } }}
                 >
                   <Box display="flex" alignItems="center" gap={1}>
                     Property Name
@@ -455,7 +455,7 @@ const PropertiesTable: React.FC = () => {
                 <StyledTableCell>Status</StyledTableCell>
                 <StyledTableCell 
                   onClick={() => handleSort('createdAt')}
-                  sx={{ cursor: 'pointer', userSelect: 'none', '&:hover': { backgroundColor: alpha(theme.palette.primary.main, 0.12) } }}
+                  sx={{ cursor: 'pointer', userSelect: 'none', '&:hover': { backgroundColor: '#f5f5f5' } }}
                 >
                   <Box display="flex" alignItems="center" gap={1}>
                     Created Date

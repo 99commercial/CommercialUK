@@ -1095,6 +1095,7 @@ const Advertise: NextPage = () => {
                   <Button 
                     variant="contained" 
                     size="large"
+                    href="/auth/login"
                     sx={{ 
                       px: 4, 
                       py: 1.5,
@@ -1139,6 +1140,7 @@ const Advertise: NextPage = () => {
                   <Button 
                     variant="contained" 
                     size="large"
+                    href="/auth/login"
                     sx={{ 
                       px: 4, 
                       py: 1.5,

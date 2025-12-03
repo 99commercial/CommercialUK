@@ -618,9 +618,19 @@ const PropertyCardComponent: React.FC<PropertyCardProps> = ({
       {/* Image Section */}
       <Box sx={{ 
         position: 'relative', 
-        width: { lg: '40%', md: '100%' }, 
+        width: { 
+          xs: '100%',      // Mobile: Full width
+          sm: '100%',      // Tablet: Full width
+          md: '100%',      // Laptop: Full width
+          lg: '40%'        // Desktop: 40% width
+        }, 
         flexShrink: 0,
-        height: { lg: 'auto', md: '250px', sm: '200px' },
+        height: { 
+          xs: '200px',     // Mobile: 200px
+          sm: '250px',     // Tablet: 250px
+          md: '280px',     // Laptop: 280px
+          lg: 'auto'       // Desktop: Auto height
+        },
       }}>
         <ImageGallery images={getAllImages()} />
         <CategoryChip
@@ -656,15 +666,35 @@ const PropertyCardComponent: React.FC<PropertyCardProps> = ({
         flex: 1, 
         display: 'flex', 
         flexDirection: 'column',
-        padding: { lg: '16px 20px', md: '16px', sm: '12px' },
+        padding: { 
+          xs: '12px',      // Mobile: 12px
+          sm: '14px',      // Tablet: 14px
+          md: '16px',      // Laptop: 16px
+          lg: '16px 20px'  // Desktop: 16px 20px
+        },
         justifyContent: 'space-between',
         overflow: 'hidden',
-        width: { lg: '60%', md: '100%' },
+        width: { 
+          xs: '100%',      // Mobile: Full width
+          sm: '100%',      // Tablet: Full width
+          md: '100%',      // Laptop: Full width
+          lg: '60%'        // Desktop: 60% width
+        },
         minHeight: 'auto',
         wordWrap: 'break-word',
-        marginTop: { lg: 0, md: '8px', sm: '8px' }, // Add top margin on mobile/tablet
+        marginTop: { 
+          xs: '8px',       // Mobile: 8px
+          sm: '8px',       // Tablet: 8px
+          md: '8px',       // Laptop: 8px
+          lg: 0            // Desktop: 0
+        },
         '&:last-child': {
-          paddingBottom: { lg: '16px', md: '16px', sm: '12px' },
+          paddingBottom: { 
+            xs: '12px',    // Mobile: 12px
+            sm: '14px',    // Tablet: 14px
+            md: '16px',    // Laptop: 16px
+            lg: '16px'     // Desktop: 16px
+          },
         },
       }}>
         <Box>
@@ -674,14 +704,24 @@ const PropertyCardComponent: React.FC<PropertyCardProps> = ({
             sx={{ 
               fontWeight: 700, 
               mb: 1,
-              fontSize: { lg: '1.5rem', md: '1.4rem', sm: '1.2rem' },
+              fontSize: { 
+                xs: '1.1rem',    // Mobile: 1.1rem
+                sm: '1.2rem',    // Tablet: 1.2rem
+                md: '1.4rem',    // Laptop: 1.4rem
+                lg: '1.5rem'     // Desktop: 1.5rem
+              },
               lineHeight: 1.2,
               wordWrap: 'break-word',
               overflowWrap: 'break-word',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               display: '-webkit-box',
-              WebkitLineClamp: { lg: 2, md: 2, sm: 1 },
+              WebkitLineClamp: { 
+                xs: 1,           // Mobile: 1 line
+                sm: 1,           // Tablet: 1 line
+                md: 2,           // Laptop: 2 lines
+                lg: 2            // Desktop: 2 lines
+              },
               WebkitBoxOrient: 'vertical',
               hyphens: 'auto',
             }}
@@ -699,6 +739,7 @@ const PropertyCardComponent: React.FC<PropertyCardProps> = ({
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
+              display: { xs: 'none', sm: 'block' }, // Hide on mobile
             }}
           >
             {capitalizeFirstLetter(property.general_details.property_sub_type)}
@@ -711,7 +752,7 @@ const PropertyCardComponent: React.FC<PropertyCardProps> = ({
               color="text.secondary" 
               sx={{ 
                 fontWeight: 500, 
-                fontSize: { md: '1rem', sm: '0.9rem' },
+                fontSize: { md: '1rem', sm: '0.9rem', xs: '0.85rem' },
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
@@ -722,7 +763,15 @@ const PropertyCardComponent: React.FC<PropertyCardProps> = ({
             </Typography>
           </Stack>
 
-          <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
+          <Stack 
+            direction="row" 
+            alignItems="center" 
+            spacing={1} 
+            sx={{ 
+              mb: 1,
+              display: { xs: 'none', sm: 'flex' }, // Hide on mobile
+            }}
+          >
             <SquareFootIcon fontSize="medium" color="action" />
             <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 500, fontSize: '1rem' }}>
               {formatSize()}
@@ -736,7 +785,12 @@ const PropertyCardComponent: React.FC<PropertyCardProps> = ({
               sx={{ 
                 mb: 1,
                 lineHeight: 1.5,
-                display: '-webkit-box',
+                display: { 
+                  xs: 'none',        // Hide on mobile
+                  sm: '-webkit-box', // Show on tablet and up
+                  md: '-webkit-box',
+                  lg: '-webkit-box'
+                },
                 WebkitLineClamp: { lg: 2, md: 2, sm: 3 },
                 WebkitBoxOrient: 'vertical',
                 overflow: 'hidden',
@@ -758,12 +812,22 @@ const PropertyCardComponent: React.FC<PropertyCardProps> = ({
             onClick={() => onViewDetails?.(property._id)}
             sx={{
               fontWeight: 600,
-              fontSize: { lg: '1.1rem', md: '1rem', sm: '0.95rem' },
+              fontSize: { 
+                xs: '0.9rem',    // Mobile: 0.9rem
+                sm: '0.95rem',   // Tablet: 0.95rem
+                md: '1rem',      // Laptop: 1rem
+                lg: '1.1rem'     // Desktop: 1.1rem
+              },
               textDecoration: 'none',
               color: '#f2c514',
               width: '100%',
               textAlign: 'left',
-              padding: '8px 0',
+              padding: { 
+                xs: '6px 0',    // Mobile: 6px 0
+                sm: '8px 0',     // Tablet: 8px 0
+                md: '8px 0',     // Laptop: 8px 0
+                lg: '8px 0'      // Desktop: 8px 0
+              },
               display: 'block',
               '&:hover': {
                 textDecoration: 'underline',

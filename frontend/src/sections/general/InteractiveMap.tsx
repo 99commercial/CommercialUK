@@ -30,7 +30,6 @@ if (typeof window !== 'undefined') {
 const MapWrapper = styled(Box)(({ theme }) => ({
   width: '100%',
   height: '100%',
-  minHeight: '500px',
   borderRadius: 0,
   overflow: 'hidden',
   backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -55,14 +54,6 @@ const MapWrapper = styled(Box)(({ theme }) => ({
   '& .leaflet-popup-content': {
     margin: theme.spacing(1.5),
     minWidth: '200px',
-  },
-  [theme.breakpoints.down('md')]: {
-    minHeight: '400px',
-    height: '400px',
-  },
-  [theme.breakpoints.down('sm')]: {
-    minHeight: '350px',
-    height: '350px',
   },
 }));
 

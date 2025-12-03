@@ -353,6 +353,7 @@ export default function HomeTrustedBusinesses() {
             <Button
               variant="contained"
               size="large"
+              href="/auth/login"
               sx={{
                 background: 'linear-gradient(135deg, #f2c514 0%,rgba(242, 198, 20, 0.8) 100%)',
                 color: '#000',
