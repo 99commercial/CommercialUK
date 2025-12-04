@@ -36,7 +36,8 @@ app.use(cors({
     'http://127.0.0.1:3000',
     'http://127.0.0.1:3001',
     'https://commercial-uk.vercel.app',
-    'https://www.commercialuk.co.uk'
+    'https://www.commercialuk.co.uk',
+    'http://72.61.202.155',
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
