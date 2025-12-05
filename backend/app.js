@@ -28,24 +28,37 @@ connectDB(); // Connect to MongoDB
 ========================== */
 
 // Enable CORS for all routes
+const allowedOrigins = [
+  process.env.FRONTEND_URL || 'http://localhost:3000',
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://127.0.0.1:3000',
+  'http://127.0.0.1:3001',
+  'https://commercial-uk.vercel.app',
+  'https://www.commercialuk.co.uk',
+  'https://commercialuk.co.uk',
+  'http://72.61.202.155',
+];
+
 app.use(cors({
-  origin: [
-    process.env.FRONTEND_URL || 'http://localhost:3000',
-    'http://localhost:3000',
-    'http://localhost:3001', // Alternative port
-    'http://127.0.0.1:3000',
-    'http://127.0.0.1:3001',
-    'https://commercial-uk.vercel.app',
-    'https://www.commercialuk.co.uk',
-    'https://backend.commercialuk.co.uk', 
-    'http://72.61.202.155',
-  ],
+  origin(origin, callback) {
+    // allow tools like Postman (no origin)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    console.log('❌ Blocked by CORS:', origin);
+    return callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
   exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar'],
-  optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
+  optionsSuccessStatus: 200,
 }));
+
 
 // Set security-related HTTP headers
 app.use(helmet());
