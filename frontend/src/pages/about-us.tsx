@@ -140,9 +140,9 @@ const AboutUs: NextPage = () => {
       </Container>
 
       {/* What We Do */}
-      <Container maxWidth="lg" sx={{ maxWidth: '100%' }}>
-        <Box sx={{ py: { xs: 8, md: 12 }, bgcolor: 'background.default', maxWidth: '100%' }}>
-          <Container maxWidth="lg">
+      <Container sx={{ py: { xs: 6, md: 10 }, maxWidth: '100%' }}>
+        <Box sx={{ bgcolor: 'background.default'}}>
+          {/* <Container maxWidth="lg"> */}
             <Stack spacing={2} sx={{ mb: 6 }}>
               <Typography variant="h4" sx={{ fontWeight: 700, color: '#f2c514' }}>
                 What We Do
@@ -203,12 +203,12 @@ const AboutUs: NextPage = () => {
                 </Paper>
               ))}
             </Box>
-          </Container>
+          {/* </Container> */}
         </Box>
       </Container>
 
       {/* Why Choose CommercialUK */}
-      <Container maxWidth="lg" sx={{ py: { xs: 8, md: 12 }, maxWidth: '100%' }}>
+      <Container maxWidth="lg" sx={{ py: { xs: 6, md: 10 }, maxWidth: '100%' }}>
         <Stack spacing={2} sx={{ mb: 4 }}>
           <Typography variant="h4" sx={{ fontWeight: 700, color: '#f2c514' }}>
             Why Choose CommercialUK?
@@ -279,8 +279,8 @@ const AboutUs: NextPage = () => {
       </Container>
 
       {/* Our Commitment */}
-      <Container maxWidth="lg" sx={{ py: { xs: 8, md: 12 }, maxWidth: '100%' }}>
-        <Box sx={{ bgcolor: 'background.default', p: { xs: 4, md: 6 }, borderRadius: 3 }}>
+      <Container maxWidth="lg" sx={{ py: { xs: 6, md: 10 }, maxWidth: '100%' }}>
+        <Box sx={{ bgcolor: 'background.default', borderRadius: 3 }}>
           <Stack spacing={2}>
             <Typography variant="h4" sx={{ fontWeight: 700, color: '#f2c514' }}>
               Our Commitment

@@ -281,6 +281,24 @@ const CollapsedIconButton = styled(IconButton)(({ theme }) => ({
   },
 }));
 
+const CollapsedLinkWrapper = styled(Link)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  textDecoration: 'none',
+  width: '100%',
+  padding: '4px 8px',
+  cursor: 'pointer',
+  transition: 'all 0.2s ease-in-out',
+  transform: 'scale(1)',
+  position: 'relative',
+  zIndex: 9999,
+  '&:hover': {
+    transform: 'scale(1.1)',
+    zIndex: 10000,
+  },
+}));
+
 const DecorativeElement = styled(Box)(({ theme }) => ({
   position: 'absolute',
   bottom: 0,
@@ -438,10 +456,9 @@ const SideBar: React.FC<SideBarProps> = ({ open, onToggle, onClose }) => {
     if (!open) {
       return (
         <Tooltip key={item.id} title={item.label} placement="right">
-          <Link 
-            href={item.path} 
-            prefetch 
-            style={{ display: 'block', textDecoration: 'none' }}
+          <CollapsedLinkWrapper
+            href={item.path}
+            prefetch
             onClick={(e) => {
               handleSetActive(item.id);
               handleAfterNavigate();
@@ -455,6 +472,7 @@ const SideBar: React.FC<SideBarProps> = ({ open, onToggle, onClose }) => {
                 color: isActive ? '#10b981' : '#6b7280',
                 transition: 'all 0.2s ease-in-out',
                 width: '100%',
+                pointerEvents: 'none',
                 '&:hover': {
                   backgroundColor: '#f3f4f6',
                   transform: 'translateX(2px)',
@@ -463,7 +481,7 @@ const SideBar: React.FC<SideBarProps> = ({ open, onToggle, onClose }) => {
             >
               <IconComponent />
             </CollapsedIconButton>
-          </Link>
+          </CollapsedLinkWrapper>
         </Tooltip>
       );
     }

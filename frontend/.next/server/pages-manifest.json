@@ -2,8 +2,10 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/": "pages/index.js",
-  "/property-for-sale": "pages/property-for-sale.js",
-  "/general/all-properties": "pages/general/all-properties.js",
-  "/property-for-rent": "pages/property-for-rent.js"
+  "/auth/login": "pages/auth/login.js",
+  "/agent": "pages/agent.js",
+  "/agent/queries/my-queries-raised": "pages/agent/queries/my-queries-raised.js",
+  "/agent/queries/my-property-queries": "pages/agent/queries/my-property-queries.js",
+  "/agent/property/my-favourite-list": "pages/agent/property/my-favourite-list.js",
+  "/agent/account/my-business-account": "pages/agent/account/my-business-account.js"
 }

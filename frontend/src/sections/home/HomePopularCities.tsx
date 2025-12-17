@@ -68,28 +68,196 @@ const NavigationButton = styled(IconButton)(({ theme }) => ({
 
 const cities = [
   {
-    name: 'New York City',
-    image: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+    name: 'Bedfordshire',
+    image: 'https://cdn.britannica.com/46/122346-004-C4F857EF/Market-place-Ampthill-Central-Bedfordshire-England.jpg',
   },
   {
-    name: 'London',
-    image: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+    name: 'Berkshire',
+    image: 'https://cdn.britannica.com/91/116791-050-7697A7B4/Windsor-Castle-Berkshire-England.jpg',
   },
   {
-    name: 'Paris',
-    image: 'https://images.unsplash.com/photo-1502602898536-47ad22581b52?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+    name: 'Bristol',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfAG9vfRBZ2IVFtzzp4kIFCY1Y7oG-nUbWMw&s',
   },
   {
-    name: 'Madrid',
-    image: 'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+    name: 'Buckinghamshire',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQutv_2rvoILwMHGnbh0SMN63cltF2mvA8h-g&s',
   },
   {
-    name: 'Toronto',
-    image: 'https://images.unsplash.com/photo-1517935706615-2717063c2225?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+    name: 'Cambridgeshire',
+    image: 'https://theswan-ely.com/wp-content/uploads/2023/09/Cambridgeshire_-The-11th-Happiest-Place-to-Live-in-England-1024x682.jpg',
   },
   {
-    name: 'Los Angeles',
-    image: 'https://images.unsplash.com/photo-1515894204813-788a25c4f72a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+    name: 'Cheshire',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiU4Ucr5tfPbmSp-rShU66WsvuB5B_GPQGlw&s',
+  },
+  {
+    name: 'City of London',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxqWHnhum9f6m7ww7mvk-RmS63SY_-KYD8Mw&s',
+  },
+  {
+    name: 'Cornwall',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcOrdH2ylCzkZu9wyMjojKZaVfDVBqEPOnZQ&s',
+  },
+  {
+    name: 'County Durham',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyYrTJyOkvuRgQVfJYJ8EGTd7K_OCnIDtikw&s',
+  },
+  {
+    name: 'Cumbria',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTua9WYKmMsZRWvXRWbXeb-8eNN5vNvticKTA&s',
+  },
+  {
+    name: 'Derbyshire',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS86_jpALec788rEvrNo3DCIRwEE3yIaaT3pg&s',
+  },
+  {
+    name: 'Devon',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnNwB10daEuh1VmQ1orsAfaCXv-W6Ikq7JIA&s',
+  },
+  {
+    name: 'Dorset',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4c9Kb9nmEk-1TaWG-ktlgjxWrHtmzgF5PTA&s',
+  },
+  {
+    name: 'East Riding of Yorkshire',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsKb19OHnGYavw9qxRKoyAswAiBf6zQ6XdxQ&s',
+  },
+  {
+    name: 'East Sussex',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR52Pc9LAOlv-w4Rl77jGMqIRo8nlmJUAuQEA&s',
+  },
+  {
+    name: 'Essex',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSucN3SSJnAF5QzGYftj_xLRM4Ar8CoNQkTig&s',
+  },
+  {
+    name: 'Gloucestershire',
+    image: 'https://cdn.britannica.com/53/117153-050-B465E9DE/Cheltenham-Gloucestershire-England.jpg',
+  },
+  {
+    name: 'Greater London',
+    image: 'https://media-whichmedia.s3.ap-southeast-1.amazonaws.com/media/large/3/2/32912cd0135e.jpeg',
+  },
+  {
+    name: 'Greater Manchester',
+    image: 'https://cdn.britannica.com/42/116342-050-5AC41785/Manchester-Eng.jpg',
+  },
+  {
+    name: 'Hampshire',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-VeO0e4TW2GG52m4PR6sbn-roC48RQXQZ_g&s',
+  },
+  {
+    name: 'Herefordshire',
+    image: 'https://cdn.britannica.com/06/135706-050-2B32D127/River-Wye-Ross-on-Wye-England-Herefordshire.jpg',
+  },
+  {
+    name: 'Hertfordshire',
+    image: 'https://images.shiksha.com/mediadata/images/1533895092phpoIejGB.jpeg',
+  },
+  {
+    name: 'Isle of Wight',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQt6h29JVIaUGPygdCGg-dh3Rni9gXRbBSYg&s',
+  },
+  {
+    name: 'Kent',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRx1hMtIg6weMWxsIIGjkinug3EipcxyUjQMg&s',
+  },
+  {
+    name: 'Lancashire',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThEC7bIWMnPfr4Q1BakZTehLwZ2Q-7ur2yIw&s',
+  },
+  {
+    name: 'Leicestershire',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Leicester_Clock_Tower_wide_view.jpg/330px-Leicester_Clock_Tower_wide_view.jpg',
+  },
+  {
+    name: 'Lincolnshire',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgqMIx_mRYf-KmFQMM6Xtmciij9q6evKacRg&s',
+  },
+  {
+    name: 'Merseyside',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEOX64Xsuy4OIxnx30cPlxk-4ZdBhZkVBcDw&s',
+  },
+  {
+    name: 'Norfolk',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSz5liMbVwl_IxPxbIlPQ6SWkhhrYIhCUrbgw&s',
+  },
+  {
+    name: 'Northamptonshire',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvr_EMDFxEpKWbEKDipQ7Hm08gf2T-oiVCNQ&s',
+  },
+  {
+    name: 'Northumberland',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3ZiXNComy4YvnEb54XcHGjKsBb2ybZPDytw&s',
+  },
+  {
+    name: 'North Yorkshire',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDoNwdbyv-cK_JrHZmPlzaMo4ASy_rkLNR_Q&s',
+  },
+  {
+    name: 'Nottinghamshire',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGmyyAimn36fkhD7NoEL13Qm0O-qhz-xuW4w&s',
+  },
+  {
+    name: 'Oxfordshire',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnWOgW_v-oDhhnKtsjw12z1gB8LfqG2L0Jsg&s',
+  },
+  {
+    name: 'Rutland',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/6/6f/Downtown_Rutland%2C_Vermont.jpg',
+  },
+  {
+    name: 'Shropshire',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWumFju_gpnjnQ1XNrK-Agb22F09f2ypNAcA&s',
+  },
+  {
+    name: 'Somerset',
+    image: 'https://cdn.britannica.com/77/148977-050-924F44D7/shopping-district-Wells-England-Somerset-centre-background.jpg',
+  },
+  {
+    name: 'South Yorkshire',
+    image: 'https://cdn.britannica.com/56/148756-050-FDEB798B/Peace-Gardens-background-town-hall-Sheffield-South.jpg',
+  },
+  {
+    name: 'Staffordshire',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUJRvreYUsl41dknHHcKjNRcAs_OXO62njhA&s',
+  },
+  {
+    name: 'Suffolk',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaAqsb1G4qI3y-w2mo7CsVgk2OZlDhec-3OQ&s',
+  },
+  {
+    name: 'Surrey',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGkRdE03NebPTDdmfwfQrl_WR7pUthHJTXdw&s',
+  },
+  {
+    name: 'Tyne and Wear',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrQipHrKbA7futgjqN8EJeanB-gvF8yQcfSQ&s',
+  },
+  {
+    name: 'Warwickshire',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSVCn2SLRbUB-bRHgtBFTIkjogbmE1rGlt_DA&s',
+  },
+  {
+    name: 'West Midlands',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3LnDSQ43qU2lgOvne-kupmIEky5DOrz1uGQ&s',
+  },
+  {
+    name: 'West Sussex',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNUNIUE0k9ZcSe2aQQ6SquPJfW4ys_IgNTtg&s',
+  },
+  {
+    name: 'West Yorkshire',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIOYlZlYgbo1Co1SuoAKQPDiH-9a_p4gCX9w&s',
+  },
+  {
+    name: 'Wiltshire',
+    image: 'https://cdn.britannica.com/01/76501-050-16A9EDCE/Sarsen-horseshoe-Stonehenge-III-Wiltshire-Eng.jpg',
+  },
+  {
+    name: 'Worcestershire',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/River_Severn%2C_Central_Worcester_-_geograph.org.uk_-_3185511_%28cropped%29.jpg/330px-River_Severn%2C_Central_Worcester_-_geograph.org.uk_-_3185511_%28cropped%29.jpg',
   },
 ];
 
@@ -142,7 +310,7 @@ export default function HomePopularCities() {
             color: '#333',
           }}
         >
-          Explore Popular Cities
+          Explore Popular Counties
         </Typography>
 
         <CarouselContainer>

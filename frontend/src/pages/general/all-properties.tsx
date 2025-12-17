@@ -235,8 +235,8 @@ const AllPropertiesPage: React.FC = () => {
         {/* Title Header - Always Visible */}
         <Box
           sx={{
-            backgroundColor: '#000',
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+            backgroundColor: '#f2c514',
+            boxShadow: '0 2px 8px rgba(242, 198, 20, 0.1)',
             padding: 2,
             textAlign: 'center',
             margin: 0,
@@ -249,7 +249,7 @@ const AllPropertiesPage: React.FC = () => {
             sx={{ 
               fontWeight: 700, 
               mb: 1,
-              color: '#f2c514',
+              color: '#000',
               fontSize: '1.5rem',
               margin: 0,
             }}
@@ -259,7 +259,7 @@ const AllPropertiesPage: React.FC = () => {
           <Typography 
             variant="h6" 
             sx={{ 
-              color: '#f2c514',
+              color: '#000',
               fontSize: '0.875rem',
               margin: 0,
             }}

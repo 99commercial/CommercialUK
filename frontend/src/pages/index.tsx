@@ -42,7 +42,7 @@ export default function HomePage() {
       <HomeHero />
       <ContentStyle>
         <HomeTrustMetrics />
-        <HomeTrendingListings />
+        {/* <HomeTrendingListings /> */}
         <HomeAuction />
         <HomePopularCities />
         <HomeBenefits />
