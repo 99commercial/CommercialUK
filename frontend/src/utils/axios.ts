@@ -27,6 +27,8 @@ const axiosInstance: AxiosInstance = axios.create({
           config.headers['Authorization'] = `Bearer ${token}`;
         }
       }
+      // Don't override timeout if it's explicitly set in request config
+      // The timeout from request config will override the default instance timeout
       return config;
     },
     (error: AxiosError) => Promise.reject(error)

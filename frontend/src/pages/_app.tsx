@@ -19,6 +19,43 @@ const theme = createTheme({
       main: '#d32f2f',
     },
   },
+  typography: {
+    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    h1: {
+      fontFamily: '"Playfair Display", "Montserrat", "Inter", serif',
+      fontWeight: 700,
+    },
+    h2: {
+      fontFamily: '"Playfair Display", "Montserrat", "Inter", serif',
+      fontWeight: 700,
+    },
+    h3: {
+      fontFamily: '"Playfair Display", "Montserrat", "Inter", serif',
+      fontWeight: 600,
+    },
+    h4: {
+      fontFamily: '"Playfair Display", "Montserrat", "Inter", serif',
+      fontWeight: 600,
+    },
+    h5: {
+      fontFamily: '"Montserrat", "Inter", sans-serif',
+      fontWeight: 600,
+    },
+    h6: {
+      fontFamily: '"Montserrat", "Inter", sans-serif',
+      fontWeight: 600,
+    },
+    body1: {
+      fontFamily: '"Inter", "Roboto", sans-serif',
+    },
+    body2: {
+      fontFamily: '"Inter", "Roboto", sans-serif',
+    },
+    button: {
+      fontFamily: '"Montserrat", "Inter", sans-serif',
+      fontWeight: 500,
+    },
+  },
 });
 
 // Extend AppProps to include getLayout

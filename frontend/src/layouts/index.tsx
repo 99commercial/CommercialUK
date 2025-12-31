@@ -20,6 +20,11 @@ export default function Layout({ children }: Props) {
 
   let queryArray = query.split('/');
 
+  // Check if it's a report page - return children without any layout (no navbar)
+  if (queryArray.includes('report')) {
+    return <>{children}</>;
+  }
+
   if (queryArray.includes('agent')) {
     return <AgentLayout>{children}</AgentLayout>;
   } else if(queryArray.includes('user')) {

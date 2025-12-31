@@ -10,6 +10,11 @@ globalThis.__BUILD_MANIFEST = {
   "rootMainFiles": [],
   "rootMainFilesTree": {},
   "pages": {
+    "/": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/index.js"
+    ],
     "/_app": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
@@ -20,40 +25,15 @@ globalThis.__BUILD_MANIFEST = {
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/agent": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/agent.js"
-    ],
-    "/agent/account/my-business-account": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/agent/account/my-business-account.js"
-    ],
-    "/agent/property/my-favourite-list": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/agent/property/my-favourite-list.js"
-    ],
-    "/agent/queries/my-property-queries": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/agent/queries/my-property-queries.js"
-    ],
-    "/agent/queries/my-queries-raised": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/agent/queries/my-queries-raised.js"
-    ],
     "/auth/login": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/auth/login.js"
     ],
-    "/general/all-properties": [
+    "/report/[id]": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/general/all-properties.js"
+      "static/chunks/pages/report/[id].js"
     ]
   },
   "ampFirstPages": []

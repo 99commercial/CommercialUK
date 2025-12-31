@@ -351,6 +351,13 @@ const SideBar: React.FC<SideBarProps> = ({ open, onToggle, onClose }) => {
         { id: 'Approve Properties', path: '/admin/dashboard/approve-properties', label: 'Approve Properties', icon: CheckCircleIcon },
       ],
     },
+    {
+      section: 'AI Calculator',
+      items: [
+        { id: 'AI Create Property', path: '/admin/aical/addProperty', label: 'AI Create Property', icon: HomeWorkIcon },
+        { id: 'Property Data', path: '/admin/aical/listPropertyData', label: 'Property Data', icon: CheckCircleIcon },
+      ],
+    },
   ];
 
   // Sync active item with current route

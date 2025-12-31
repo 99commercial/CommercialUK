@@ -15,6 +15,7 @@ import userRoutes from './src/modules/User/Property/routes/user.routes.js';
 import userAccountRoutes from './src/modules/User/Account/routes/account.routes.js';
 import adminRoutes from './src/modules/admin/Features/routes/features.routes.js';
 import feedRoutes from './src/modules/Feed/routes/feed.routes.js';
+import aicalRoutes from './src/modules/AICal/routes/aical.routes.js';
 import validateSecurity from './src/utils/security.validation.js';
 const app = express();
 
@@ -109,6 +110,9 @@ app.use('/api/admin', adminRoutes);
 
 // Feed routes
 app.use('/api/feed', feedRoutes);
+
+// AICal routes
+app.use('/api/aical', aicalRoutes);
 
 
 /* ==========================

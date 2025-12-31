@@ -11,10 +11,15 @@ const commercialPropertySchema = new Schema(
 
     property_link: {
       type: String,
-      required: true,
+      required: false,
       trim: true,
       validate: {
         validator: function(v) {
+          // Skip validation if value is empty (since field is not required)
+          if (!v || v.trim() === '') {
+            return true;
+          }
+          // Validate URL format - must start with http:// or https://
           return /^https?:\/\/.+/.test(v);
         },
         message: 'Please enter a valid URL',
@@ -25,7 +30,7 @@ const commercialPropertySchema = new Schema(
       type: String,
       required: true,
       trim: true,
-      match: [/^[A-Z]{1,2}[0-9][A-Z0-9]? [0-9][A-Z]{2}$/i, 'Please enter a valid UK postcode'],
+      match: [/^[A-Z]{1,2}[0-9A-Z]{1,2}$/i, 'Please enter a valid postcode area (3-4 characters)'],
     },
 
     pricingPCM: {
@@ -78,6 +83,6 @@ const commercialPropertySchema = new Schema(
     timestamps: true,
   }
 );
-userSchema.plugin(mongoosePaginate);
+commercialPropertySchema.plugin(mongoosePaginate);
 
 export default model('commercialProperty', commercialPropertySchema);

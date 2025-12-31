@@ -27,6 +27,12 @@ type PagesPageConfig = {
 
 
 
+// Validate ../../src/pages/AICalculator.tsx
+{
+  const handler = {} as typeof import("../../src/pages/AICalculator.js")
+  handler satisfies PagesPageConfig
+}
+
 // Validate ../../src/pages/_app.tsx
 {
   const handler = {} as typeof import("../../src/pages/_app.js")
@@ -48,6 +54,18 @@ type PagesPageConfig = {
 // Validate ../../src/pages/access-denied.tsx
 {
   const handler = {} as typeof import("../../src/pages/access-denied.js")
+  handler satisfies PagesPageConfig
+}
+
+// Validate ../../src/pages/admin/aical/addProperty.tsx
+{
+  const handler = {} as typeof import("../../src/pages/admin/aical/addProperty.js")
+  handler satisfies PagesPageConfig
+}
+
+// Validate ../../src/pages/admin/aical/listPropertyData.tsx
+{
+  const handler = {} as typeof import("../../src/pages/admin/aical/listPropertyData.js")
   handler satisfies PagesPageConfig
 }
 
@@ -246,6 +264,12 @@ type PagesPageConfig = {
 // Validate ../../src/pages/property/[id].tsx
 {
   const handler = {} as typeof import("../../src/pages/property/[id].js")
+  handler satisfies PagesPageConfig
+}
+
+// Validate ../../src/pages/report/[id].tsx
+{
+  const handler = {} as typeof import("../../src/pages/report/[id].js")
   handler satisfies PagesPageConfig
 }
 

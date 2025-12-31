@@ -289,6 +289,11 @@ export default function Navbar({ onAdvertise, onLanguageChange }: NavbarProps) {
     setLanguageOpen(!languageOpen);
   };
 
+  const handleAICalculator = () => {
+    router.push('/AICalculator');
+    setMobileOpen(false);
+  };
+
 
   const drawer = (
     <Box sx={{ width: '100%', height: '100%' , marginTop: 5 }}>
@@ -411,6 +416,9 @@ export default function Navbar({ onAdvertise, onLanguageChange }: NavbarProps) {
             >
               <LanguageIcon />
             </IconButton> */}
+            <AllPropertiesLink onClick={handleAICalculator}>
+              AI Calculator
+            </AllPropertiesLink>
             <AllPropertiesLink onClick={handleAllProperties}>
               All Properties
             </AllPropertiesLink>
