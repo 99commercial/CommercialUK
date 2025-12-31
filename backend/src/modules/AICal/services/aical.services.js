@@ -297,7 +297,7 @@ class AICalService {
       let aiAnalysis = [];
       try {
         // OpenRouter API call to get property benefits analysis
-        const openRouterApiKey = "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";
+        // const openRouterApiKey = "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";
         const openRouterUrl = `https://openrouter.ai/api/v1/chat/completions`;
         
         
@@ -331,7 +331,7 @@ class AICalService {
           },
           {
             headers: {
-              'Authorization': `Bearer ${openRouterApiKey}`,
+              'Authorization': `Bearer ${process.env.OPENROUTERAPIKEY}`,
               'HTTP-Referer': 'https://99commercial.co.uk',
               'X-Title': '99 Commercial',
               'Content-Type': 'application/json'
@@ -348,6 +348,7 @@ class AICalService {
             let summary = '';
             let currentPoint = null;
             let currentContent = [];
+            let currentRawLines = []; // Track raw lines for current point
             let isSummarySection = false;
             let titleFound = false;
             
@@ -369,13 +370,25 @@ class AICalService {
                 continue;
               }
               
-              // Check if this is a numbered point (n1, n2, n3, etc.)
-              const pointMatch = trimmedLine.match(/^n?(\d+)[\.\)]?\s*(.*)/i);
+              // Check if this is a numbered point (n1, n2, n3, etc., with or without markdown headers)
+              // Match patterns like: "1.", "### 1.", "1)", "### 1. Title", etc.
+              const pointMatch = trimmedLine.match(/^#*\s*n?(\d+)[\.\)]?\s*(.*)/i);
               
               if (pointMatch) {
                 // Save previous point if exists
                 if (currentPoint) {
                   currentPoint.content = currentContent.join(' ').trim();
+                  // Set raw text for the point (all lines that belong to this point)
+                  currentPoint.raw = currentRawLines.join('\n').trim();
+                  // Set summary (use title if available, otherwise first sentence or first 100 chars of content)
+                  if (currentPoint.title) {
+                    currentPoint.summary = currentPoint.title;
+                  } else if (currentPoint.content) {
+                    const firstSentence = currentPoint.content.split('.')[0];
+                    currentPoint.summary = firstSentence.length > 0 ? firstSentence + '.' : currentPoint.content.substring(0, 100);
+                  } else {
+                    currentPoint.summary = '';
+                  }
                   points.push(currentPoint);
                 }
                 
@@ -392,6 +405,23 @@ class AICalService {
                   title = titleMatch[1].trim();
                   afterTitle = restOfLine.replace(/\*\*.*?\*\*/g, '').trim();
                   titleFound = true;
+                } else if (restOfLine) {
+                  // If restOfLine exists and looks like a title (not too long, doesn't end with period, starts with capital)
+                  // Consider it as a title if it's less than 100 chars and doesn't look like a sentence
+                  const looksLikeTitle = restOfLine.length < 100 && 
+                                        !restOfLine.endsWith('.') && 
+                                        restOfLine.length > 0 &&
+                                        (restOfLine[0] === restOfLine[0].toUpperCase() || restOfLine.match(/^[A-Z]/));
+                  
+                  if (looksLikeTitle) {
+                    title = restOfLine;
+                    afterTitle = '';
+                    titleFound = true;
+                  } else {
+                    // Might be content or title might be on next line
+                    afterTitle = restOfLine;
+                    titleFound = false;
+                  }
                 } else {
                   // Title might be on next line, check next non-empty line
                   titleFound = false;
@@ -400,15 +430,28 @@ class AICalService {
                 currentPoint = {
                   number: pointNumber,
                   title: title,
-                  content: afterTitle
+                  content: afterTitle,
+                  raw: '', // Will be set when point is complete
+                  summary: '' // Will be set when point is complete
                 };
                 currentContent = afterTitle ? [afterTitle] : [];
+                currentRawLines = [line]; // Start tracking raw lines for this point
                 isSummarySection = false;
               } else if (isSummaryStart) {
                 // Detected "\n\nIn summary" pattern - this is the overall summary
                 // Save current point before entering summary
                 if (currentPoint) {
                   currentPoint.content = currentContent.join(' ').trim();
+                  currentPoint.raw = currentRawLines.join('\n').trim();
+                  // Set summary (use title if available, otherwise first sentence or first 100 chars of content)
+                  if (currentPoint.title) {
+                    currentPoint.summary = currentPoint.title;
+                  } else if (currentPoint.content) {
+                    const firstSentence = currentPoint.content.split('.')[0];
+                    currentPoint.summary = firstSentence.length > 0 ? firstSentence + '.' : currentPoint.content.substring(0, 100);
+                  } else {
+                    currentPoint.summary = '';
+                  }
                   points.push(currentPoint);
                   currentPoint = null;
                 }
@@ -416,17 +459,34 @@ class AICalService {
                 // Remove "In summary" prefix and keep the rest
                 summary = trimmedLine.replace(/^in summary\s*:?\s*/i, '').trim();
               } else if (currentPoint) {
-                // Check if this line contains a title in ** ** (for current point)
+                // Add line to raw tracking for current point
+                if (trimmedLine) {
+                  currentRawLines.push(line);
+                }
+                
+                // Check if this line contains a title in ** ** (for current point) or is a standalone title
                 const titleMatch = trimmedLine.match(/\*\*(.*?)\*\*/);
                 
                 if (titleMatch && !titleFound) {
-                  // This is the title for the current point
+                  // This is the title for the current point (in bold markers)
                   currentPoint.title = titleMatch[1].trim();
                   titleFound = true;
                   const afterTitle = trimmedLine.replace(/\*\*.*?\*\*/g, '').trim();
                   if (afterTitle) {
                     currentContent.push(afterTitle);
                   }
+                } else if (!titleFound && trimmedLine && 
+                          trimmedLine.length < 100 && 
+                          !trimmedLine.endsWith('.') &&
+                          (trimmedLine[0] === trimmedLine[0].toUpperCase() || trimmedLine.match(/^[A-Z]/)) &&
+                          !trimmedLine.includes('approximately') && 
+                          !trimmedLine.includes('The property') &&
+                          !trimmedLine.includes('This') &&
+                          !trimmedLine.includes('Just') &&
+                          !trimmedLine.includes('Recent')) {
+                  // This looks like a standalone title (short, capitalized, no period)
+                  currentPoint.title = trimmedLine;
+                  titleFound = true;
                 } else {
                   // Check if we're entering summary section (fallback check)
                   const lowerLine = trimmedLine.toLowerCase();
@@ -435,6 +495,16 @@ class AICalService {
                     // Save current point before entering summary
                     if (currentPoint) {
                       currentPoint.content = currentContent.join(' ').trim();
+                      currentPoint.raw = currentRawLines.join('\n').trim();
+                      // Set summary (use title if available, otherwise first sentence or first 100 chars of content)
+                      if (currentPoint.title) {
+                        currentPoint.summary = currentPoint.title;
+                      } else if (currentPoint.content) {
+                        const firstSentence = currentPoint.content.split('.')[0];
+                        currentPoint.summary = firstSentence.length > 0 ? firstSentence + '.' : currentPoint.content.substring(0, 100);
+                      } else {
+                        currentPoint.summary = '';
+                      }
                       points.push(currentPoint);
                       currentPoint = null;
                     }
@@ -464,6 +534,16 @@ class AICalService {
             // Save last point if exists
             if (currentPoint) {
               currentPoint.content = currentContent.join(' ').trim();
+              currentPoint.raw = currentRawLines.join('\n').trim();
+              // Set summary (use title if available, otherwise first sentence or first 100 chars of content)
+              if (currentPoint.title) {
+                currentPoint.summary = currentPoint.title;
+              } else if (currentPoint.content) {
+                const firstSentence = currentPoint.content.split('.')[0];
+                currentPoint.summary = firstSentence.length > 0 ? firstSentence + '.' : currentPoint.content.substring(0, 100);
+              } else {
+                currentPoint.summary = '';
+              }
               points.push(currentPoint);
             }
             
