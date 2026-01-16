@@ -62,13 +62,16 @@ interface UpdateVirtualToursFormProps {
   onDataChange?: (data: VirtualToursData) => void;
   propertyId?: string;
   fetchProperty?: () => void;
+  fetchPropertyData?: () => void;
 }
 
 const UpdateVirtualToursForm: React.FC<UpdateVirtualToursFormProps> = ({ 
   onStepSubmitted, 
   initialData, 
   onDataChange,
-  propertyId
+  propertyId,
+  fetchProperty,
+  fetchPropertyData
 }) => {
   const [formData, setFormData] = useState<VirtualToursData>({
     _id: initialData?._id || '',
@@ -218,6 +221,7 @@ const UpdateVirtualToursForm: React.FC<UpdateVirtualToursFormProps> = ({
         if (onStepSubmitted) {
           onStepSubmitted(4);
         }
+        fetchPropertyData?.();
       } else {
         throw new Error(response.data.message || 'Failed to update virtual tours');
       }

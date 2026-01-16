@@ -58,6 +58,20 @@ const commercialPropertySchema = new Schema(
         },
     },
 
+    latitude:{
+      type: Number,
+      required: false ,
+      min: -90,
+      max: 90,
+    },
+
+    longitude:{
+      type: Number,
+      required: false,
+      min: -180,
+      max: 180,
+    },
+
     pricePerSqftPA: {
       type: Number,
       required: true,

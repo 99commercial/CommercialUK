@@ -399,23 +399,207 @@ const LoadingOverlay = styled(Box)(({ theme }) => ({
   position: 'fixed',
   top: 0,
   left: 0,
-  right: 0,
-  bottom: 0,
-  backgroundColor: 'rgba(255, 255, 255, 0.95)',
-  backdropFilter: 'blur(8px)',
+  width: '100vw',
+  height: '100vh',
+  backgroundColor: '#ffffff',
   zIndex: 10000,
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
   gap: theme.spacing(3),
+  '& > *': {
+    position: 'relative',
+    zIndex: 2,
+  },
+}));
+
+const LoadingContainer = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: theme.spacing(6),
 }));
 
 const LoadingText = styled(Typography)(({ theme }) => ({
-  fontSize: '24px',
-  fontWeight: 500,
+  fontSize: '42px',
+  fontWeight: 700,
   color: '#1a1a1a',
-  marginTop: theme.spacing(2),
+  textAlign: 'center',
+  fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+  letterSpacing: '-0.02em',
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '32px',
+  },
+}));
+
+const CommandsContainer = styled(Box)(({ theme }) => ({
+  position: 'relative',
+  width: '100%',
+  maxWidth: '800px',
+  height: '120px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  overflow: 'hidden',
+  [theme.breakpoints.down('sm')]: {
+    maxWidth: '90%',
+    height: '100px',
+  },
+}));
+
+const CommandLine = styled(Box)<{ state?: 'entering' | 'active' | 'exiting' }>(({ theme, state }) => {
+  let animation = 'none';
+  let opacity = 0;
+  let transform = 'translateX(100%)';
+
+  if (state === 'entering') {
+    animation = 'slideInFromRight 0.6s ease-out forwards';
+    opacity = 0;
+    transform = 'translateX(100%)';
+  } else if (state === 'active') {
+    opacity = 1;
+    transform = 'translateX(0)';
+  } else if (state === 'exiting') {
+    animation = 'slideOutToLeft 0.6s ease-in forwards';
+    opacity = 1;
+    transform = 'translateX(0)';
+  }
+
+  return {
+    position: 'absolute',
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(3),
+    padding: theme.spacing(2, 4),
+    opacity,
+    transform,
+    animation,
+    width: '100%',
+    justifyContent: 'center',
+    '@keyframes slideInFromRight': {
+      '0%': {
+        opacity: 0,
+        transform: 'translateX(100%)',
+      },
+      '100%': {
+        opacity: 1,
+        transform: 'translateX(0)',
+      },
+    },
+    '@keyframes slideOutToLeft': {
+      '0%': {
+        opacity: 1,
+        transform: 'translateX(0)',
+      },
+      '100%': {
+        opacity: 0,
+        transform: 'translateX(-100%)',
+      },
+    },
+    [theme.breakpoints.down('sm')]: {
+      gap: theme.spacing(2),
+      padding: theme.spacing(1.5, 2),
+    },
+  };
+});
+
+const CommandIcon = styled(Box)(({ theme }) => ({
+  fontSize: '48px',
+  minWidth: '48px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  animation: 'pulse 2s ease-in-out infinite',
+  '@keyframes pulse': {
+    '0%, 100%': {
+      transform: 'scale(1)',
+    },
+    '50%': {
+      transform: 'scale(1.1)',
+    },
+  },
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '36px',
+    minWidth: '36px',
+  },
+}));
+
+const CommandText = styled(Typography)(({ theme }) => ({
+  fontSize: '28px',
+  fontWeight: 500,
+  color: '#333333',
+  fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+  letterSpacing: '-0.01em',
+  textAlign: 'center',
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '20px',
+  },
+}));
+
+const ProgressBar = styled(Box)(({ theme }) => ({
+  width: '100%',
+  height: '4px',
+  backgroundColor: '#f0f0f0',
+  borderRadius: '2px',
+  overflow: 'hidden',
+  marginTop: theme.spacing(3),
+}));
+
+const ProgressFill = styled(Box)<{ progress?: number }>(({ theme, progress = 0 }) => ({
+  height: '100%',
+  backgroundColor: '#f2c514',
+  width: `${progress}%`,
+  transition: 'width 0.5s ease',
+  borderRadius: '2px',
+}));
+
+const DottedBackground = styled(Box)(({ theme }) => ({
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  overflow: 'hidden',
+  zIndex: 1,
+  display: 'grid',
+  gridTemplateColumns: 'repeat(50, 1fr)',
+  gridTemplateRows: 'repeat(30, 1fr)',
+  padding: '20px',
+  gap: 0,
+}));
+
+const FlickerDot = styled(Box)<{ delay?: number; duration?: number; colorDelay?: number }>(({ theme, delay = 0, duration = 3, colorDelay = 0 }) => ({
+  width: '2px',
+  height: '2px',
+  borderRadius: '50%',
+  backgroundColor: 'rgba(180, 180, 180, 0.5)',
+  justifySelf: 'center',
+  alignSelf: 'center',
+  animation: `blip ${duration}s ease-in-out infinite, colorChange ${duration * 2}s ease-in-out infinite`,
+  animationDelay: `${delay}s, ${colorDelay}s`,
+  '@keyframes blip': {
+    '0%, 100%': {
+      opacity: 0.4,
+      transform: 'scale(1)',
+    },
+    '50%': {
+      opacity: 0.8,
+      transform: 'scale(1.3)',
+    },
+  },
+  '@keyframes colorChange': {
+    '0%, 100%': {
+      backgroundColor: 'rgba(180, 180, 180, 0.5)',
+    },
+    '33%': {
+      backgroundColor: 'rgba(150, 150, 200, 0.6)',
+    },
+    '66%': {
+      backgroundColor: 'rgba(200, 150, 200, 0.6)',
+    },
+  },
 }));
 
 // Property types from the codebase
@@ -465,6 +649,47 @@ interface CalculatorFormData {
   epcData: any;
 }
 
+const AI_COMMANDS = [
+  { icon: '🔍', text: 'Starting property evaluation...' },
+  { icon: '📍', text: 'Analyzing location and postcode data...' },
+  { icon: '🏢', text: 'Fetching similar properties in the area...' },
+  { icon: '📊', text: 'Checking current market rates...' },
+  { icon: '📏', text: 'Evaluating property size and specifications...' },
+  { icon: '💷', text: 'Calculating lettings price...' },
+  { icon: '£', text: 'Calculating sales price...' },
+  { icon: '📈', text: 'Analyzing market trends...' },
+  { icon: '🎯', text: 'Generating comprehensive valuation report...' },
+  { icon: '✅', text: 'Finalizing your report...' },
+];
+
+// Generate dots for background - structured grid pattern
+const generateDots = () => {
+  const dots = [];
+  const rows = 30;
+  const cols = 50;
+  
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const x = (col * 100) / (cols - 1);
+      const y = (row * 100) / (rows - 1);
+      const delay = Math.random() * 5; // Random animation start delay (0-5s)
+      const duration = 2 + Math.random() * 3; // Random duration (2-5s)
+      const colorDelay = Math.random() * 3; // Random color change delay (0-3s)
+      
+      dots.push({
+        id: `dot-${row}-${col}`,
+        x: `${x}%`,
+        y: `${y}%`,
+        delay,
+        duration,
+        colorDelay,
+      });
+    }
+  }
+  
+  return dots;
+};
+
 export default function CalculatorForm() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
@@ -483,6 +708,9 @@ export default function CalculatorForm() {
   const [addresses, setAddresses] = useState<string[]>([]);
   const [loadingAddresses, setLoadingAddresses] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [currentCommandIndex, setCurrentCommandIndex] = useState(0);
+  const [commandState, setCommandState] = useState<'entering' | 'active' | 'exiting'>('entering');
+  const [dots] = useState(generateDots());
 
   const fetchCommercialPlaces = useCallback(async (postcode: string) => {
     setLoadingAddresses(true);
@@ -519,6 +747,43 @@ export default function CalculatorForm() {
     }
   }, [currentStep, formData.postcode, fetchCommercialPlaces]);
 
+  // Animate through commands when submitting - 40 seconds total
+  useEffect(() => {
+    if (!isSubmitting) return;
+
+    // If we're at the last command, stay there until API responds
+    if (currentCommandIndex >= AI_COMMANDS.length - 1) {
+      setCommandState('active');
+      return;
+    }
+
+    // Reset to entering state when command changes
+    setCommandState('entering');
+
+    // Entering animation: 0.6s
+    const enterTimer = setTimeout(() => {
+      setCommandState('active');
+    }, 600);
+
+    // Active state duration: 2.8s (showing the message)
+    const activeTimer = setTimeout(() => {
+      setCommandState('exiting');
+    }, 3400); // 600ms + 2800ms
+
+    // Exiting animation: 0.6s, then move to next command
+    const exitTimer = setTimeout(() => {
+      if (currentCommandIndex < AI_COMMANDS.length - 1) {
+        setCurrentCommandIndex(prev => prev + 1);
+      }
+    }, 4000); // 600ms + 2800ms + 600ms = 4000ms (4 seconds per command)
+
+    return () => {
+      clearTimeout(enterTimer);
+      clearTimeout(activeTimer);
+      clearTimeout(exitTimer);
+    };
+  }, [isSubmitting, currentCommandIndex]);
+
   const handleNext = () => {
     if (currentStep < 5) {
       setCurrentStep(currentStep + 1);
@@ -537,14 +802,30 @@ export default function CalculatorForm() {
         return { message: 'no epc data available for this property' };
       }
 
-      const token = "c2hhcmR1bEBjb21tZXJjaWFsdWsuY28udWs6ODU3ZjkyMjlhZGZiYmVmMWE2YWNkNjk5MTUyNmNkM2U3NDQyMGNmZQ==";
+      // Scottish postcode prefixes
+      const scottishPostcodePrefixes = ['AB', 'DD', 'DG', 'EH', 'FK', 'G', 'HS', 'IV', 'KA', 'KW', 'KY', 'ML', 'PA', 'PH', 'TD', 'ZE'];
+      
+      // Check if postcode starts with any Scottish prefix
+      const trimmedPostcode = postcode.trim().toUpperCase();
+      const isScottishPostcode = scottishPostcodePrefixes.some(prefix => trimmedPostcode.startsWith(prefix));
+      
+      // Different API credentials for Scottish vs England/Wales
+      const tokenEnglandWales = "c2hhcmR1bEBjb21tZXJjaWFsdWsuY28udWs6ODU3ZjkyMjlhZGZiYmVmMWE2YWNkNjk5MTUyNmNkM2U3NDQyMGNmZQ==";
+      const tokenScotland = "MzExZDI3ZTUtOTM0YS00OThiLWEzOGMtYzk1OWMzNmE1MjFlOmRkMDc1Njc3LTI0ZGItNDE0MC1iZWVlLWMzOGFiYWNiZDJm";
+      
+      const token = isScottishPostcode ? tokenScotland : tokenEnglandWales;
       
       const headers = {
         'Accept': 'application/json',
         'Authorization': `Basic ${token}`
       };
       
-      const baseUrl = 'https://epc.opendatacommunities.org/api/v1/non-domestic/search';
+      const baseUrlForScot = 'https://api.epcdata.scot/ew-compatible';
+      const baseUrlForEnglandWales = 'https://epc.opendatacommunities.org/api/v1/non-domestic/search';
+      
+      // Use Scottish URL if postcode is Scottish, otherwise use England & Wales URL
+      const baseUrl = isScottishPostcode ? baseUrlForScot : baseUrlForEnglandWales;
+      
       const queryParams = {
         'postcode': postcode.trim(),
       };
@@ -616,6 +897,8 @@ export default function CalculatorForm() {
     }
 
     setIsSubmitting(true);
+    setCurrentCommandIndex(0); // Reset command animation
+    setCommandState('entering'); // Reset animation state
 
     let data = await fetchEPC(formData.postcode);
 
@@ -979,8 +1262,54 @@ export default function CalculatorForm() {
 
       {isSubmitting && (
         <LoadingOverlay>
-          <Loader fullscreen={false} size="large" />
-          <LoadingText>Processing your request...</LoadingText>
+          <DottedBackground>
+            {dots.map((dot) => (
+              <FlickerDot
+                key={dot.id}
+                delay={dot.delay}
+                duration={dot.duration}
+                colorDelay={dot.colorDelay}
+              />
+            ))}
+          </DottedBackground>
+          
+          <LoadingContainer>
+
+            <Box component="img" src={'/images/loader-img.png'} alt="Loading" sx={{ width: '100px', height: '100px', marginBottom: '20px' }} ></Box>
+            
+            <LoadingText>AI is Generating Your Report</LoadingText>
+            
+            <CommandsContainer>
+              {AI_COMMANDS.map((command, index) => {
+                // Only render the current command
+                if (index !== currentCommandIndex) return null;
+                
+                return (
+                  <CommandLine 
+                    key={`${index}-${currentCommandIndex}`} 
+                    state={commandState}
+                  >
+                    <CommandIcon>
+                      {command.icon}
+                    </CommandIcon>
+                    <CommandText>
+                      {command.text}
+                    </CommandText>
+                  </CommandLine>
+                );
+              })}
+            </CommandsContainer>
+            
+            <ProgressBar>
+              <ProgressFill 
+                progress={
+                  currentCommandIndex >= AI_COMMANDS.length - 1 
+                    ? 85 
+                    : ((currentCommandIndex + 1) / AI_COMMANDS.length) * 100
+                } 
+              />
+            </ProgressBar>
+          </LoadingContainer>
         </LoadingOverlay>
       )}
     </>

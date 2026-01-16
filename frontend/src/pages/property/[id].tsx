@@ -24,6 +24,7 @@ import {
   PropertySidebar,
 } from '../../sections/property';
 import axiosInstance from '../../utils/axios';
+import { HomeFooter } from '@/sections/home';
 
 // ----------------------------------------------------------------------
 
@@ -433,6 +434,7 @@ const PropertyDetailPage: React.FC = () => {
     `${property.general_details.property_sub_type} in ${property.general_details.town_city}`;
 
   return (
+    <>
     <PageContainer>
       <Head>
         <title>{ogTitle}</title>
@@ -475,6 +477,8 @@ const PropertyDetailPage: React.FC = () => {
         )}
       </ContentSection>
     </PageContainer>
+    <HomeFooter />
+    </>
   );
 };
 

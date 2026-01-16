@@ -64,7 +64,33 @@ const reportSchema = new Schema(
       required: false,
     },
 
+    psychographicsAnalysis: {
+      type: Schema.Types.Mixed,
+      required: false,
+    },
+
     predictedPrice: {
+      type: Schema.Types.Mixed,
+      required: false,
+    },
+
+    // Area Details data
+    crimeData: {
+      type: Schema.Types.Mixed,
+      required: false,
+    },
+
+    article4Data: {
+      type: Schema.Types.Mixed,
+      required: false,
+    },
+
+    brmaLhaData: {
+      type: Schema.Types.Mixed,
+      required: false,
+    },
+
+    demographicsData: {
       type: Schema.Types.Mixed,
       required: false,
     },

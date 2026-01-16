@@ -65,6 +65,7 @@ interface UpdateBusinessDetailsFormProps {
   onDataChange?: (data: any) => void;
   propertyId?: string;
   fetchProperty?: () => void;
+  fetchPropertyData?: () => void;
 }
 
 const UpdateBusinessDetailsForm: React.FC<UpdateBusinessDetailsFormProps> = ({ 
@@ -72,7 +73,9 @@ const UpdateBusinessDetailsForm: React.FC<UpdateBusinessDetailsFormProps> = ({
   initialData, 
   onDataChange,
   propertyId,
-  fetchProperty
+  fetchProperty,
+  fetchPropertyData
+
 }) => {
   // Independent state management
   const [formData, setFormData] = useState<UpdateBusinessDetailsFormData>({
@@ -498,6 +501,7 @@ const UpdateBusinessDetailsForm: React.FC<UpdateBusinessDetailsFormProps> = ({
       if (onStepSubmitted) {
         onStepSubmitted(1);
       }
+      fetchPropertyData?.();
     } catch (error: any) {
       console.error('Error updating business details:', error);
       const errorMessage = error.response?.data?.message || error.message || 'Failed to update business details';

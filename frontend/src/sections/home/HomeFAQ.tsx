@@ -60,27 +60,29 @@ const ContentWrapper = styled(Box)(({ theme }) => ({
 const SectionTitle = styled(Typography)(({ theme }) => ({
   color: '#1a1a1a',
   textAlign: 'center',
-  marginBottom: theme.spacing(2),
+  marginBottom: theme.spacing(3),
   position: 'relative',
+  fontFamily: "'Inter', 'Roboto', 'Helvetica Neue', Arial, sans-serif",
   '&::after': {
     content: '""',
     position: 'absolute',
-    bottom: '-10px',
+    bottom: '-16px',
     left: '50%',
     transform: 'translateX(-50%)',
-    width: '60px',
+    width: '80px',
     height: '4px',
-    backgroundColor: '#333',
+    background: 'linear-gradient(90deg, #1a1a1a 0%, #f2c514 100%)',
     borderRadius: '2px',
   },
 }));
 
 const Subtitle = styled(Typography)(({ theme }) => ({
-  color: '#666',
+  color: '#4a4a4a',
   textAlign: 'center',
-  maxWidth: '600px',
+  maxWidth: '720px',
   margin: '0 auto',
   marginBottom: theme.spacing(6),
+  fontFamily: "'Inter', 'Roboto', 'Helvetica Neue', Arial, sans-serif",
 }));
 
 const CustomAccordion = styled(Accordion)(({ theme }) => ({
@@ -89,40 +91,45 @@ const CustomAccordion = styled(Accordion)(({ theme }) => ({
   },
   '&.Mui-expanded': {
     margin: 0,
+    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+    borderColor: '#1a1a1a',
   },
-  marginBottom: theme.spacing(2),
-  borderRadius: theme.spacing(1),
-  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-  border: '1px solid #e0e0e0',
-  backgroundColor: 'white',
+  marginBottom: theme.spacing(2.5),
+  borderRadius: '12px',
+  boxShadow: '0 2px 12px rgba(0, 0, 0, 0.08)',
+  border: '1px solid #e8e8e8',
+  backgroundColor: '#ffffff',
   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
   width: '100%',
+  overflow: 'hidden',
   '&:hover': {
-    transform: 'translateY(-1px)',
-    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.15)',
-    borderColor: '#333',
+    transform: 'translateY(-2px)',
+    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
+    borderColor: '#d0d0d0',
   },
   '& .MuiAccordionSummary-root': {
-    borderRadius: theme.spacing(1),
-    padding: theme.spacing(2, 3),
+    borderRadius: '12px',
+    padding: theme.spacing(2.5, 3),
     '&.Mui-expanded': {
       minHeight: 'auto',
       borderBottomLeftRadius: 0,
       borderBottomRightRadius: 0,
+      backgroundColor: '#fafafa',
     },
     '&:hover': {
-      backgroundColor: '#f5f5f5',
+      backgroundColor: '#f8f8f8',
     },
   },
   '& .MuiAccordionDetails-root': {
     padding: theme.spacing(3, 3, 4),
     borderTopLeftRadius: 0,
     borderTopRightRadius: 0,
-    borderBottomLeftRadius: theme.spacing(1),
-    borderBottomRightRadius: theme.spacing(1),
+    borderBottomLeftRadius: '12px',
+    borderBottomRightRadius: '12px',
+    backgroundColor: '#fafafa',
   },
   '& .MuiAccordionSummary-expandIconWrapper': {
-    color: '#333',
+    color: '#1a1a1a',
     transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
     '&.Mui-expanded': {
       transform: 'rotate(180deg)',
@@ -134,16 +141,22 @@ const IconWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  width: '48px',
-  height: '48px',
-  borderRadius: '50%',
-  marginRight: theme.spacing(2),
-  color: 'black',
+  width: '56px',
+  height: '56px',
+  borderRadius: '12px',
+  flexShrink: 0,
+  color: '#1a1a1a',
   backgroundColor: '#f2c514',
-  transition: 'all 0.3s ease',
+  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+  boxShadow: '0 2px 8px rgba(242, 197, 20, 0.2)',
+  '& svg': {
+    fontSize: '1.5rem',
+  },
   '&:hover': {
     backgroundColor: '#1a1a1a',
-    transform: 'scale(1.05)',
+    color: '#ffffff',
+    transform: 'scale(1.05) translateY(-2px)',
+    boxShadow: '0 4px 12px rgba(26, 26, 26, 0.25)',
   },
 }));
 
@@ -823,10 +836,16 @@ export default function HomeFAQ() {
               <SectionTitle
                 variant={isMobile ? "h3" : "h2"}
                 sx={{
-                  fontWeight: 800,
-                  fontSize: isMobile ? '2rem' : '3rem',
-                  lineHeight: 1.2,
-                  marginBottom: theme.spacing(2),
+                  fontFamily: "'Inter', 'Roboto', 'Helvetica Neue', Arial, sans-serif",
+                  fontWeight: 900,
+                  fontSize: isMobile ? '2.25rem' : '3.5rem',
+                  lineHeight: 1.15,
+                  letterSpacing: '-0.02em',
+                  marginBottom: theme.spacing(3),
+                  background: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
                 }}
               >
                 Frequently Asked Questions
@@ -835,15 +854,28 @@ export default function HomeFAQ() {
               <Subtitle
                 variant={isMobile ? "body1" : "h6"}
                 sx={{
-                  fontSize: isMobile ? '1rem' : '1.25rem',
-                  lineHeight: 1.6,
+                  fontFamily: "'Inter', 'Roboto', 'Helvetica Neue', Arial, sans-serif",
+                  fontWeight: 400,
+                  fontSize: isMobile ? '1.05rem' : '1.35rem',
+                  lineHeight: 1.7,
+                  letterSpacing: '0.01em',
+                  color: '#4a4a4a',
+                  maxWidth: '720px',
+                  margin: '0 auto',
+                  marginBottom: theme.spacing(6),
                 }}
               >
                 Get answers to the most common questions about commercial real estate investment and business solutions
               </Subtitle>
 
               {/* Top-level tabs */}
-              <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
+              <Box sx={{ 
+                display: 'flex', 
+                justifyContent: 'center', 
+                mb: 5,
+                borderBottom: '1px solid #e8e8e8',
+                pb: 1,
+              }}>
                 <Tabs
                   value={topTabIndex}
                   onChange={(_, v) => {
@@ -853,19 +885,37 @@ export default function HomeFAQ() {
                   variant={isMobile ? 'scrollable' : 'standard'}
                   scrollButtons={isMobile ? 'auto' : false}
                   textColor="inherit"
-                  TabIndicatorProps={{ style: { backgroundColor: '#333' } }}
+                  TabIndicatorProps={{ 
+                    style: { 
+                      backgroundColor: '#1a1a1a',
+                      height: 3,
+                      borderRadius: '2px 2px 0 0',
+                    } 
+                  }}
                >
                   {tabConfig.map((tab) => (
                     <Tab
                       key={tab.label}
                       label={tab.label}
                       sx={{
+                        fontFamily: "'Inter', 'Roboto', 'Helvetica Neue', Arial, sans-serif",
                         fontWeight: 700,
                         textTransform: 'none',
-                        color: '#1a1a1a',
-                        mx: 1,
-                        fontSize: { xs: '0.95rem', md: '1.05rem' },
-                        py: 1.5,
+                        color: '#6b6b6b',
+                        mx: { xs: 0.5, md: 2 },
+                        fontSize: { xs: '0.875rem', md: '0.95rem' },
+                        letterSpacing: '0.05em',
+                        py: 2,
+                        px: { xs: 1.5, md: 3 },
+                        minHeight: 56,
+                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                        '&:hover': {
+                          color: '#1a1a1a',
+                        },
+                        '&.Mui-selected': {
+                          color: '#1a1a1a',
+                          fontWeight: 800,
+                        },
                       }}
                     />
                   ))}
@@ -875,12 +925,20 @@ export default function HomeFAQ() {
               {/* Two-column layout: inner tabs at left, content at right */}
               <Box sx={{
                 display: 'grid',
-                gridTemplateColumns: { xs: '1fr', md: '20% 80%' },
-                columnGap: { xs: 0, md: 2 },
-                rowGap: { xs: 12, md: 0 },
-                width: '100%'
+                gridTemplateColumns: { xs: '1fr', md: '22% 78%' },
+                columnGap: { xs: 0, md: 4 },
+                rowGap: { xs: 4, md: 0 },
+                width: '100%',
+                alignItems: 'flex-start',
               }}>
-                <Box sx={{ mt: { xs: 0, md: 0 }, px: { xs: 2, md: 0 }, overflowX: { xs: 'auto', md: 'visible' } }}>
+                <Box sx={{ 
+                  mt: { xs: 0, md: 1 }, 
+                  px: { xs: 2, md: 0 }, 
+                  overflowX: { xs: 'auto', md: 'visible' },
+                  position: { xs: 'relative', md: 'sticky' },
+                  top: { xs: 0, md: 20 },
+                  alignSelf: 'flex-start',
+                }}>
                   <Tabs
                     orientation={isMobile ? 'horizontal' : 'vertical'}
                     value={innerTabIndex}
@@ -888,45 +946,56 @@ export default function HomeFAQ() {
                     variant={isMobile ? 'scrollable' : 'standard'}
                     scrollButtons={isMobile ? 'auto' : false}
                     sx={{
-                      borderRight: 'none',
+                      borderRight: { xs: 'none', md: '1px solid #e8e8e8' },
+                      pr: { xs: 0, md: 3 },
                       '& .MuiTabs-indicator': { display: 'none' },
                       '& .MuiTab-root': {
+                        fontFamily: "'Inter', 'Roboto', 'Helvetica Neue', Arial, sans-serif",
                         textTransform: 'none',
                         justifyContent: 'flex-start',
                         alignItems: 'center',
-                        fontSize: { xs: '0.95rem', md: '1.05rem' },
-                        py: 0.75,
-                        px: { xs: 0.5, md: 0 },
-                        borderRadius: 0,
-                        mb: { xs: 0, md: 2 },
-                        minHeight: 36,
-                        width: { xs: 'auto', md: 'fit-content' },
+                        fontSize: { xs: '0.875rem', md: '0.9375rem' },
+                        fontWeight: 500,
+                        letterSpacing: '0.02em',
+                        py: 1.25,
+                        px: { xs: 1.5, md: 2 },
+                        borderRadius: { xs: '8px', md: '8px 0 0 8px' },
+                        mb: { xs: 1, md: 1.5 },
+                        minHeight: 44,
+                        width: { xs: 'auto', md: '100%' },
                         minWidth: 'auto',
-                        mr: { xs: 2.5, md: 0 },
+                        mr: { xs: 1.5, md: 0 },
                         backgroundColor: 'transparent',
-                        transition: 'color 0.2s ease',
+                        color: '#6b6b6b',
+                        transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
                         position: 'relative',
-                        '&:after': {
+                        textAlign: 'left',
+                        '&:before': {
                           content: '""',
                           position: 'absolute',
                           left: 0,
-                          right: 'auto',
+                          top: 0,
                           bottom: 0,
-                          height: 2,
-                          width: '100%',
-                          backgroundColor: 'transparent',
-                          transition: 'background-color 0.2s ease',
+                          width: 0,
+                          backgroundColor: '#1a1a1a',
+                          transition: 'width 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                          borderRadius: { xs: '8px', md: '8px 0 0 8px' },
                         },
                       },
                       '& .MuiTab-root:hover': {
-                        color: '#000',
-                        '&:after': { backgroundColor: '#bbb' },
+                        color: '#1a1a1a',
+                        backgroundColor: '#f8f8f8',
+                        '&:before': {
+                          width: 3,
+                        },
                       },
                       '& .Mui-selected': {
                         color: '#1a1a1a',
-                        fontWeight: 800,
-                        backgroundColor: 'transparent',
-                        '&:after': { backgroundColor: '#1a1a1a' },
+                        fontWeight: 700,
+                        backgroundColor: '#f8f8f8',
+                        '&:before': {
+                          width: 3,
+                        },
                       },
                     }}
                   >
@@ -935,7 +1004,7 @@ export default function HomeFAQ() {
                     ))}
                   </Tabs>
                 </Box>
-                <Box sx={{ width: '100%', mt: { xs: 0, md: 0 }, pl: { xs: 0, md: 2 } }}>
+                <Box sx={{ width: '100%', mt: { xs: 0, md: 0 } }}>
                   <Box sx={{ width: '100%' }}>
                     {(
                       topTabIndex === 0 && innerTabIndex === 0
@@ -965,47 +1034,43 @@ export default function HomeFAQ() {
                         : faqs
                     ).map((faq, index) => (
                       <Fade in timeout={800 + index * 200} key={index}>
-                        <Box>
+                        <Box sx={{ mb: 2.5 }}>
                           <CustomAccordion
                             expanded={expanded === `panel${index}`}
                             onChange={handleChange(`panel${index}`)}
                           >
                             <AccordionSummary
-                              expandIcon={<ExpandMoreIcon />}
+                              expandIcon={
+                                <ExpandMoreIcon sx={{ 
+                                  fontSize: '1.75rem',
+                                  color: '#1a1a1a',
+                                  transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                                }} />
+                              }
                               sx={{
                                 '& .MuiAccordionSummary-content': {
-                                  margin: '16px 0',
+                                  margin: '20px 0',
                                   alignItems: 'center',
+                                },
+                                '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
+                                  transform: 'rotate(180deg)',
                                 },
                               }}
                             >
-                              <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                              <Box sx={{ display: 'flex', alignItems: 'flex-start', width: '100%', gap: 2.5 }}>
                                 <IconWrapper>
                                   {faq.icon}
                                 </IconWrapper>
-                                <Box sx={{ flex: 1 }}>
-                                  {/* <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
-                                    <Chip
-                                      label={faq.category}
-                                      size="small"
-                                      sx={{
-                                        backgroundColor: '#f2c514',
-                                        color: 'black',
-                                        fontWeight: 600,
-                                        fontSize: '0.75rem',
-                                        '&:hover': {
-                                          backgroundColor: '#f2c514',
-                                        },
-                                      }}
-                                    />
-                                  </Box> */}
+                                <Box sx={{ flex: 1, pt: 0.5 }}>
                                   <Typography
                                     variant={isMobile ? "subtitle1" : "h6"}
                                     sx={{
-                                      fontWeight: 600,
+                                      fontFamily: "'Inter', 'Roboto', 'Helvetica Neue', Arial, sans-serif",
+                                      fontWeight: 700,
                                       color: '#1a1a1a',
-                                      fontSize: isMobile ? '1rem' : '1.1rem',
-                                      lineHeight: 1.4,
+                                      fontSize: { xs: '1.0625rem', md: '1.1875rem' },
+                                      lineHeight: 1.5,
+                                      letterSpacing: '-0.01em',
                                     }}
                                   >
                                     {faq.question}
@@ -1017,9 +1082,13 @@ export default function HomeFAQ() {
                               <Typography
                                 variant="body1"
                                 sx={{
-                                  color: '#555',
-                                  lineHeight: 1.7,
-                                  fontSize: isMobile ? '0.95rem' : '1rem',
+                                  fontFamily: "'Inter', 'Roboto', 'Helvetica Neue', Arial, sans-serif",
+                                  fontWeight: 400,
+                                  color: '#4a4a4a',
+                                  lineHeight: 1.75,
+                                  letterSpacing: '0.01em',
+                                  fontSize: { xs: '0.9375rem', md: '1.0625rem' },
+                                  pl: { xs: 0, md: 9.5 },
                                 }}
                               >
                                 {faq.answer}

@@ -12,6 +12,7 @@ import User from '../../../../models/user.model.js';
 import BusinessDetails from '../../../../models/business_details.model.js';
 import { uploadMultipleToCloudinary } from '../../../../config/cloudinary.config.js';
 import mongoose from 'mongoose';
+import { emailService } from '../../../../emails/auth.email.js';
 
 class UserService {
   constructor() {
@@ -27,6 +28,7 @@ class UserService {
     this.PropertyQuery = PropertyQuery;
     this.User = User;
     this.BusinessDetails = BusinessDetails;   
+    this.emailService = new emailService();
   }
 
   // Helper method to update object fields directly
@@ -1378,7 +1380,7 @@ class UserService {
    * @param {string} userId - User ID from headers
    * @returns {Promise<Object>} Created query object
    */
-  async createPropertyQuery(queryData, propertyId, agentId, userId) {
+  async createPropertyQuery(queryData, propertyId, agentId) {
     try {
       // Verify property exists
       const property = await this.Property.findById(propertyId);
@@ -1389,11 +1391,14 @@ class UserService {
       // Use agent ID from property if not provided or property itself if no agent ID is provided
       const finalAgentId = agentId || property.listed_by;
 
+      // Extract user_id from queryData if provided
+      const { user_id, ...restQueryData } = queryData;
+
       const queryPayload = {
-        ...queryData,
+        ...restQueryData,
         property_id: propertyId,
         agent_id: finalAgentId,
-        user_id: userId
+        ...(user_id && { user_id })
       };
 
       const propertyQuery = new this.PropertyQuery(queryPayload);
@@ -1402,8 +1407,30 @@ class UserService {
       // Populate the query with property and user details
       const populatedQuery = await this.PropertyQuery.findById(savedQuery._id)
         .populate('property_id', 'general_details.building_name general_details.address general_details.town_city')
-        .populate('agent_id', 'first_name last_name email phone company_name')
+        .populate('agent_id', 'first_name last_name email phone company_name profile_picture')
         .populate('user_id', 'first_name last_name email');
+
+      console.log(populatedQuery);
+
+      const queryDetails = {
+        title: populatedQuery.title,
+        first_name: populatedQuery.first_name,
+        last_name: populatedQuery.last_name,
+        email: populatedQuery.email,
+        phone: populatedQuery.phone,
+        message: populatedQuery.message,
+      };
+
+
+      // Send email to agent if agent_id exists
+      if (populatedQuery.agent_id) {
+        await this.emailService.sendEmailUpdateForNewQuery(
+          populatedQuery.agent_id.email,
+          populatedQuery.agent_id.first_name,
+          populatedQuery.agent_id.last_name,
+          queryDetails
+        );
+      }
 
       return {
         success: true,

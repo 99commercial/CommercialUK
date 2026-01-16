@@ -419,6 +419,7 @@ export interface Property {
     _id: string;
     email: string;
     phone: string;
+    profile_picture: string;
   };
   deleted_at?: string | null;
   createdAt: string;

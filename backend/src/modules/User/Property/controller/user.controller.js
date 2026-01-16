@@ -834,9 +834,8 @@ class UserController {
     try {
       const { propertyId } = req.params;
       const queryData = req.body;
-      const userId = req.user._id; // User ID from authentication middleware
 
-      const result = await this.userService.createPropertyQuery(queryData, propertyId, null, userId);
+      const result = await this.userService.createPropertyQuery(queryData, propertyId, null);
 
       res.status(201).json({
         success: true,

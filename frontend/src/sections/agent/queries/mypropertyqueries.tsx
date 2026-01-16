@@ -776,134 +776,24 @@ const MyPropertyQueries: React.FC<MyPropertyQueriesProps> = ({
             <StyledCard>
               <CardContent sx={{ p: { xs: 2.5, sm: 4 } }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 2.5, sm: 4 } }}>
-                  {/* Personal Information */}
-                  <Box>
-                    <StyledCardHeader>
-                      <PersonIcon sx={{ color: '#f2c514', fontSize: { xs: '1.25rem', sm: '1.5rem' }, flexShrink: 0 }} />
-                      <Typography 
-                        variant="h6" 
-                        sx={{ 
-                          fontFamily: '"Montserrat", sans-serif',
-                          fontWeight: 700,
-                          color: '#1e293b',
-                          fontSize: { xs: '1.1rem', sm: '1.25rem' },
-                        }}
-                      >
-                        Personal Information
-                      </Typography>
-                    </StyledCardHeader>
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-                    <InfoField>
-                      <Typography 
-                        variant="body2" 
-                        sx={{ 
-                          color: '#64748b',
-                          fontFamily: '"Lato", sans-serif',
-                          fontWeight: 600,
-                          fontSize: { xs: '0.75rem', sm: '0.85rem' },
-                          mb: 0.5,
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.05em',
-                        }}
-                      >
-                        Title:
-                      </Typography>
-                      <Typography 
-                        variant="body1"
-                        sx={{ 
-                          fontFamily: '"Lato", sans-serif',
-                          fontWeight: 500,
-                          color: '#1e293b',
-                          fontSize: { xs: '0.9rem', sm: '1rem' },
-                        }}
-                      >
-                        {selectedQuery.title}
-                      </Typography>
-                    </InfoField>
-                    <InfoField>
-                      <Typography 
-                        variant="body2" 
-                        sx={{ 
-                          color: '#64748b',
-                          fontFamily: '"Lato", sans-serif',
-                          fontWeight: 600,
-                          fontSize: { xs: '0.75rem', sm: '0.85rem' },
-                          mb: 0.5,
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.05em',
-                        }}
-                      >
-                        Company:
-                      </Typography>
-                      <Typography 
-                        variant="body1"
-                        sx={{ 
-                          fontFamily: '"Lato", sans-serif',
-                          fontWeight: 500,
-                          color: '#1e293b',
-                          fontSize: { xs: '0.9rem', sm: '1rem' },
-                        }}
-                      >
-                        {selectedQuery.company || 'N/A'}
-                      </Typography>
-                    </InfoField>
-                    <InfoField>
-                      <Typography 
-                        variant="body2" 
-                        sx={{ 
-                          color: '#64748b',
-                          fontFamily: '"Lato", sans-serif',
-                          fontWeight: 600,
-                          fontSize: { xs: '0.75rem', sm: '0.85rem' },
-                          mb: 0.5,
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.05em',
-                        }}
-                      >
-                        First Name:
-                      </Typography>
-                      <Typography 
-                        variant="body1"
-                        sx={{ 
-                          fontFamily: '"Lato", sans-serif',
-                          fontWeight: 500,
-                          color: '#1e293b',
-                          fontSize: { xs: '0.9rem', sm: '1rem' },
-                        }}
-                      >
-                        {selectedQuery.first_name}
-                      </Typography>
-                    </InfoField>
-                    <InfoField>
-                      <Typography 
-                        variant="body2" 
-                        sx={{ 
-                          color: '#64748b',
-                          fontFamily: '"Lato", sans-serif',
-                          fontWeight: 600,
-                          fontSize: { xs: '0.75rem', sm: '0.85rem' },
-                          mb: 0.5,
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.05em',
-                        }}
-                      >
-                        Last Name:
-                      </Typography>
-                      <Typography 
-                        variant="body1"
-                        sx={{ 
-                          fontFamily: '"Lato", sans-serif',
-                          fontWeight: 500,
-                          color: '#1e293b',
-                          fontSize: { xs: '0.9rem', sm: '1rem' },
-                        }}
-                      >
-                        {selectedQuery.last_name}
-                      </Typography>
-                    </InfoField>
-                    <InfoField>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                        <EmailIcon sx={{ fontSize: { xs: '0.9rem', sm: '1rem' }, color: '#64748b', flexShrink: 0 }} />
+                {/* Personal Information */}
+                <Box>
+                      <StyledCardHeader>
+                        <PersonIcon sx={{ color: '#f2c514', fontSize: { xs: '1.25rem', sm: '1.5rem' }, flexShrink: 0 }} />
+                        <Typography 
+                          variant="h6" 
+                          sx={{ 
+                            fontFamily: '"Montserrat", sans-serif',
+                            fontWeight: 700,
+                            color: '#1e293b',
+                            fontSize: { xs: '1.1rem', sm: '1.25rem' },
+                          }}
+                        >
+                          Personal Information
+                        </Typography>
+                      </StyledCardHeader>
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+                      <InfoField>
                         <Typography 
                           variant="body2" 
                           sx={{ 
@@ -911,29 +801,26 @@ const MyPropertyQueries: React.FC<MyPropertyQueriesProps> = ({
                             fontFamily: '"Lato", sans-serif',
                             fontWeight: 600,
                             fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                            mb: 0.5,
                             textTransform: 'uppercase',
                             letterSpacing: '0.05em',
                           }}
                         >
-                          Email:
+                          Title:
                         </Typography>
-                      </Box>
-                      <Typography 
-                        variant="body1"
-                        sx={{ 
-                          fontFamily: '"Lato", sans-serif',
-                          fontWeight: 500,
-                          color: '#1e293b',
-                          fontSize: { xs: '0.9rem', sm: '1rem' },
-                          wordBreak: 'break-word',
-                        }}
-                      >
-                        {selectedQuery.email}
-                      </Typography>
-                    </InfoField>
-                    <InfoField>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                        <PhoneIcon sx={{ fontSize: { xs: '0.9rem', sm: '1rem' }, color: '#64748b', flexShrink: 0 }} />
+                        <Typography 
+                          variant="body1"
+                          sx={{ 
+                            fontFamily: '"Lato", sans-serif',
+                            fontWeight: 500,
+                            color: '#1e293b',
+                            fontSize: { xs: '0.9rem', sm: '1rem' },
+                          }}
+                        >
+                          {selectedQuery.title}
+                        </Typography>
+                      </InfoField>
+                      <InfoField>
                         <Typography 
                           variant="body2" 
                           sx={{ 
@@ -941,26 +828,112 @@ const MyPropertyQueries: React.FC<MyPropertyQueriesProps> = ({
                             fontFamily: '"Lato", sans-serif',
                             fontWeight: 600,
                             fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                            mb: 0.5,
                             textTransform: 'uppercase',
                             letterSpacing: '0.05em',
                           }}
                         >
-                          Phone:
+                          First Name:
                         </Typography>
-                      </Box>
-                      <Typography 
-                        variant="body1"
-                        sx={{ 
-                          fontFamily: '"Lato", sans-serif',
-                          fontWeight: 500,
-                          color: '#1e293b',
-                          fontSize: { xs: '0.9rem', sm: '1rem' },
-                        }}
-                      >
-                        {selectedQuery.phone}
-                      </Typography>
-                    </InfoField>
-                  </Box>
+                        <Typography 
+                          variant="body1"
+                          sx={{ 
+                            fontFamily: '"Lato", sans-serif',
+                            fontWeight: 500,
+                            color: '#1e293b',
+                            fontSize: { xs: '0.9rem', sm: '1rem' },
+                          }}
+                        >
+                          {selectedQuery.first_name}
+                        </Typography>
+                      </InfoField>
+                      <InfoField>
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            color: '#64748b',
+                            fontFamily: '"Lato", sans-serif',
+                            fontWeight: 600,
+                            fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                            mb: 0.5,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em',
+                          }}
+                        >
+                          Last Name:
+                        </Typography>
+                        <Typography 
+                          variant="body1"
+                          sx={{ 
+                            fontFamily: '"Lato", sans-serif',
+                            fontWeight: 500,
+                            color: '#1e293b',
+                            fontSize: { xs: '0.9rem', sm: '1rem' },
+                          }}
+                        >
+                          {selectedQuery.last_name}
+                        </Typography>
+                      </InfoField>
+                      <InfoField>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                          <EmailIcon sx={{ fontSize: { xs: '0.9rem', sm: '1rem' }, color: '#64748b', flexShrink: 0 }} />
+                          <Typography 
+                            variant="body2" 
+                            sx={{ 
+                              color: '#64748b',
+                              fontFamily: '"Lato", sans-serif',
+                              fontWeight: 600,
+                              fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                              textTransform: 'uppercase',
+                              letterSpacing: '0.05em',
+                            }}
+                          >
+                            Email:
+                          </Typography>
+                        </Box>
+                        <Typography 
+                          variant="body1"
+                          sx={{ 
+                            fontFamily: '"Lato", sans-serif',
+                            fontWeight: 500,
+                            color: '#1e293b',
+                            fontSize: { xs: '0.9rem', sm: '1rem' },
+                            wordBreak: 'break-word',
+                          }}
+                        >
+                          {selectedQuery.email}
+                        </Typography>
+                      </InfoField>
+                      <InfoField>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                          <PhoneIcon sx={{ fontSize: { xs: '0.9rem', sm: '1rem' }, color: '#64748b', flexShrink: 0 }} />
+                          <Typography 
+                            variant="body2" 
+                            sx={{ 
+                              color: '#64748b',
+                              fontFamily: '"Lato", sans-serif',
+                              fontWeight: 600,
+                              fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                              textTransform: 'uppercase',
+                              letterSpacing: '0.05em',
+                            }}
+                          >
+                            Phone:
+                          </Typography>
+                        </Box>
+                        <Typography 
+                          variant="body1"
+                          sx={{ 
+                            fontFamily: '"Lato", sans-serif',
+                            fontWeight: 500,
+                            color: '#1e293b',
+                            fontSize: { xs: '0.9rem', sm: '1rem' },
+                          }}
+                        >
+                          {selectedQuery.phone}
+                        </Typography>
+                      </InfoField>
+                    </Box>
                 </Box>
 
                 <Divider sx={{ my: { xs: 2, sm: 3 } }} />
@@ -982,93 +955,6 @@ const MyPropertyQueries: React.FC<MyPropertyQueriesProps> = ({
                     </Typography>
                   </StyledCardHeader>
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: { xs: 1.5, sm: 2 } }}>
-                    <InfoField>
-                      <Typography 
-                        variant="body2" 
-                        sx={{ 
-                          color: '#64748b',
-                          fontFamily: '"Lato", sans-serif',
-                          fontWeight: 600,
-                          fontSize: { xs: '0.75rem', sm: '0.85rem' },
-                          mb: 0.5,
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.05em',
-                        }}
-                      >
-                        No of People:
-                      </Typography>
-                      <Typography 
-                        variant="body1"
-                        sx={{ 
-                          fontFamily: '"Lato", sans-serif',
-                          fontWeight: 500,
-                          color: '#1e293b',
-                          fontSize: { xs: '0.9rem', sm: '1rem' },
-                        }}
-                      >
-                        {selectedQuery.no_of_people}
-                      </Typography>
-                    </InfoField>
-                    <InfoField>
-                      <Typography 
-                        variant="body2" 
-                        sx={{ 
-                          color: '#64748b',
-                          fontFamily: '"Lato", sans-serif',
-                          fontWeight: 600,
-                          fontSize: { xs: '0.75rem', sm: '0.85rem' },
-                          mb: 0.5,
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.05em',
-                        }}
-                      >
-                        Length of Term:
-                      </Typography>
-                      <Typography 
-                        variant="body1"
-                        sx={{ 
-                          fontFamily: '"Lato", sans-serif',
-                          fontWeight: 500,
-                          color: '#1e293b',
-                          fontSize: { xs: '0.9rem', sm: '1rem' },
-                        }}
-                      >
-                        {selectedQuery.length_of_term}
-                      </Typography>
-                    </InfoField>
-                    <InfoField>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                        <CalendarTodayIcon sx={{ fontSize: { xs: '0.9rem', sm: '1rem' }, color: '#64748b', flexShrink: 0 }} />
-                        <Typography 
-                          variant="body2" 
-                          sx={{ 
-                            color: '#64748b',
-                            fontFamily: '"Lato", sans-serif',
-                            fontWeight: 600,
-                            fontSize: { xs: '0.75rem', sm: '0.85rem' },
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.05em',
-                          }}
-                        >
-                          Start Date:
-                        </Typography>
-                      </Box>
-                      <Typography 
-                        variant="body1"
-                        sx={{ 
-                          fontFamily: '"Lato", sans-serif',
-                          fontWeight: 500,
-                          color: '#1e293b',
-                          fontSize: { xs: '0.9rem', sm: '1rem' },
-                        }}
-                      >
-                        {new Date(selectedQuery.start_date).toLocaleDateString('en-US', { 
-                          year: 'numeric', 
-                          month: 'long', 
-                          day: 'numeric' 
-                        })}
-                      </Typography>
-                    </InfoField>
                     <InfoField sx={{ minWidth: '100%', flex: '1 1 100%' }}>
                       <Typography 
                         variant="body2" 
@@ -1265,110 +1151,115 @@ const MyPropertyQueries: React.FC<MyPropertyQueriesProps> = ({
                 <Divider sx={{ my: { xs: 2, sm: 3 } }} />
 
                 {/* User Information */}
-                <Box>
-                  <StyledCardHeader>
-                    <PersonIcon sx={{ color: '#f2c514', fontSize: { xs: '1.25rem', sm: '1.5rem' }, flexShrink: 0 }} />
-                    <Typography 
-                      variant="h6" 
-                      sx={{ 
-                        fontFamily: '"Montserrat", sans-serif',
-                        fontWeight: 700,
-                        color: '#1e293b',
-                        fontSize: { xs: '1.1rem', sm: '1.25rem' },
-                      }}
-                    >
-                      User Information
-                    </Typography>
-                  </StyledCardHeader>
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: { xs: 1.5, sm: 2 } }}>
-                    <InfoField sx={{ minWidth: '100%', flex: '1 1 100%' }}>
-                      <Typography 
-                        variant="body2" 
-                        sx={{ 
-                          color: '#64748b',
-                          fontFamily: '"Lato", sans-serif',
-                          fontWeight: 600,
-                          fontSize: { xs: '0.75rem', sm: '0.85rem' },
-                          mb: 0.5,
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.05em',
-                        }}
-                      >
-                        User ID:
-                      </Typography>
-                      <Chip 
-                        label={selectedQuery.user_id._id} 
-                        size="small" 
-                        sx={{ 
-                          fontFamily: '"Montserrat", sans-serif',
-                          fontSize: { xs: '0.7rem', sm: '0.75rem' },
-                          fontWeight: 600,
-                          backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                          color: '#10b981',
-                        }}
-                      />
-                    </InfoField>
-                    <InfoField>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                        <EmailIcon sx={{ fontSize: { xs: '0.9rem', sm: '1rem' }, color: '#64748b', flexShrink: 0 }} />
+
+                {selectedQuery.user_id && (
+                  <>
+                    <Box>
+                      <StyledCardHeader>
+                        <PersonIcon sx={{ color: '#f2c514', fontSize: { xs: '1.25rem', sm: '1.5rem' }, flexShrink: 0 }} />
                         <Typography 
-                          variant="body2" 
+                          variant="h6" 
                           sx={{ 
-                            color: '#64748b',
-                            fontFamily: '"Lato", sans-serif',
-                            fontWeight: 600,
-                            fontSize: { xs: '0.75rem', sm: '0.85rem' },
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.05em',
+                            fontFamily: '"Montserrat", sans-serif',
+                            fontWeight: 700,
+                            color: '#1e293b',
+                            fontSize: { xs: '1.1rem', sm: '1.25rem' },
                           }}
                         >
-                          Email:
+                          User Information
                         </Typography>
+                      </StyledCardHeader>
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: { xs: 1.5, sm: 2 } }}>
+                        <InfoField sx={{ minWidth: '100%', flex: '1 1 100%' }}>
+                          <Typography 
+                            variant="body2" 
+                            sx={{ 
+                              color: '#64748b',
+                              fontFamily: '"Lato", sans-serif',
+                              fontWeight: 600,
+                              fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                              mb: 0.5,
+                              textTransform: 'uppercase',
+                              letterSpacing: '0.05em',
+                            }}
+                          >
+                            User ID:
+                          </Typography>
+                          <Chip 
+                            label={selectedQuery.user_id._id} 
+                            size="small" 
+                            sx={{ 
+                              fontFamily: '"Montserrat", sans-serif',
+                              fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                              fontWeight: 600,
+                              backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                              color: '#10b981',
+                            }}
+                          />
+                        </InfoField>
+                        <InfoField>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                            <EmailIcon sx={{ fontSize: { xs: '0.9rem', sm: '1rem' }, color: '#64748b', flexShrink: 0 }} />
+                            <Typography 
+                              variant="body2" 
+                              sx={{ 
+                                color: '#64748b',
+                                fontFamily: '"Lato", sans-serif',
+                                fontWeight: 600,
+                                fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                              }}
+                            >
+                              Email:
+                            </Typography>
+                          </Box>
+                          <Typography 
+                            variant="body1"
+                            sx={{ 
+                              fontFamily: '"Lato", sans-serif',
+                              fontWeight: 500,
+                              color: '#1e293b',
+                              fontSize: { xs: '0.9rem', sm: '1rem' },
+                              wordBreak: 'break-word',
+                            }}
+                          >
+                            {selectedQuery.user_id.email}
+                          </Typography>
+                        </InfoField>
+                        <InfoField>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                            <PhoneIcon sx={{ fontSize: { xs: '0.9rem', sm: '1rem' }, color: '#64748b', flexShrink: 0 }} />
+                            <Typography 
+                              variant="body2" 
+                              sx={{ 
+                                color: '#64748b',
+                                fontFamily: '"Lato", sans-serif',
+                                fontWeight: 600,
+                                fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                              }}
+                            >
+                              Phone:
+                            </Typography>
+                          </Box>
+                          <Typography 
+                            variant="body1"
+                            sx={{ 
+                              fontFamily: '"Lato", sans-serif',
+                              fontWeight: 500,
+                              color: '#1e293b',
+                              fontSize: { xs: '0.9rem', sm: '1rem' },
+                            }}
+                          >
+                            {selectedQuery.user_id.phone || 'N/A'}
+                          </Typography>
+                        </InfoField>
                       </Box>
-                      <Typography 
-                        variant="body1"
-                        sx={{ 
-                          fontFamily: '"Lato", sans-serif',
-                          fontWeight: 500,
-                          color: '#1e293b',
-                          fontSize: { xs: '0.9rem', sm: '1rem' },
-                          wordBreak: 'break-word',
-                        }}
-                      >
-                        {selectedQuery.user_id.email}
-                      </Typography>
-                    </InfoField>
-                    <InfoField>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                        <PhoneIcon sx={{ fontSize: { xs: '0.9rem', sm: '1rem' }, color: '#64748b', flexShrink: 0 }} />
-                        <Typography 
-                          variant="body2" 
-                          sx={{ 
-                            color: '#64748b',
-                            fontFamily: '"Lato", sans-serif',
-                            fontWeight: 600,
-                            fontSize: { xs: '0.75rem', sm: '0.85rem' },
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.05em',
-                          }}
-                        >
-                          Phone:
-                        </Typography>
-                      </Box>
-                      <Typography 
-                        variant="body1"
-                        sx={{ 
-                          fontFamily: '"Lato", sans-serif',
-                          fontWeight: 500,
-                          color: '#1e293b',
-                          fontSize: { xs: '0.9rem', sm: '1rem' },
-                        }}
-                      >
-                        {selectedQuery.user_id.phone || 'N/A'}
-                      </Typography>
-                    </InfoField>
-                  </Box>
-                </Box>
+                    </Box>
+                  </>
+                )}
 
                 <Divider sx={{ my: { xs: 2, sm: 3 } }} />
 

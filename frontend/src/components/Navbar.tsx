@@ -325,8 +325,32 @@ export default function Navbar({ onAdvertise, onLanguageChange }: NavbarProps) {
       {/* Navigation Items */}
       <List sx={{ pt: 2 }}>
         <ListItem disablePadding>
+          <MobileDrawerItem onClick={handleAICalculator}>
+            <MobileDrawerText primary="AI Calculator" />
+          </MobileDrawerItem>
+        </ListItem>
+
+        <ListItem disablePadding>
           <MobileDrawerItem onClick={handleAllProperties}>
             <MobileDrawerText primary="All Properties" />
+          </MobileDrawerItem>
+        </ListItem>
+
+        <ListItem disablePadding>
+          <MobileDrawerItem onClick={handleAbout}>
+            <MobileDrawerText primary="About Us" />
+          </MobileDrawerItem>
+        </ListItem>
+        
+        <ListItem disablePadding>
+          <MobileDrawerItem onClick={handleContact}>
+            <MobileDrawerText primary="Contact Us" />
+          </MobileDrawerItem>
+        </ListItem>
+
+        <ListItem disablePadding>
+          <MobileDrawerItem onClick={handleAdvertise}>
+            <MobileDrawerText primary="Advertise" />
           </MobileDrawerItem>
         </ListItem>
         
@@ -335,16 +359,10 @@ export default function Navbar({ onAdvertise, onLanguageChange }: NavbarProps) {
             <MobileDrawerText primary="Login" />
           </MobileDrawerItem>
         </ListItem>
-        
-        <ListItem disablePadding>
-          <MobileDrawerItem onClick={handleAdvertise}>
-            <MobileDrawerText primary="Advertise" />
-          </MobileDrawerItem>
-        </ListItem>
 
         <Divider sx={{ my: 1 }} />
 
-        <ListItem disablePadding>
+        {/* <ListItem disablePadding>
           <MobileDrawerItem onClick={handleLanguageToggle}>
             <MobileDrawerText primary="Language" />
             {languageOpen ? <ExpandLess /> : <ExpandMore />}
@@ -364,7 +382,7 @@ export default function Navbar({ onAdvertise, onLanguageChange }: NavbarProps) {
               </MobileDrawerItem>
             </ListItem>
           </List>
-        </Collapse>
+        </Collapse> */}
       </List>
     </Box>
   );

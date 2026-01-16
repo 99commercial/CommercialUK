@@ -230,4 +230,80 @@ export class emailService {
       }
     }
   }
+
+  /**
+   * Send evaluated report link email
+   * @param {string} email - User's email address
+   * @param {string} reportLink - Link to the generated evaluated report
+   * @param {string} firstName - User's first name
+   * @param {string} lastName - User's last name
+   */
+  async sendEvaluatedReportEmail(email, reportLink, firstName, lastName) {
+    try {
+      const mailOptions = {
+        from: `"CommercialUK" <noreply@commercialuk.co.uk>`,
+        to: email,
+        subject: 'Your Property Evaluation Report is Ready - CommercialUK',
+        template: 'evaluation-report',
+        context: {
+          email,
+          reportLink,
+          firstName: firstName || 'Valued Customer',
+          lastName,
+          frontendUrl: FRONTEND_URL,
+        },
+      };
+
+      // Add timeout wrapper
+      const sendPromise = this.transporter.sendMail(mailOptions);
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Email send timeout')), 30000);
+      });
+
+      const result = await Promise.race([sendPromise, timeoutPromise]);
+      console.log('✅ Evaluated report email sent successfully:', result.messageId);
+      return result;
+    } catch (error) {
+      console.error('❌ Error sending evaluated report email:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Send email update for new query
+   * @param {string} email - User's email address
+   * @param {string} firstName - User's first name
+   * @param {string} lastName - User's last name
+   * @param {object} queryDetails - Details of the new query
+   */
+  async sendEmailUpdateForNewQuery(email, firstName, lastName, queryDetails) {
+    try {
+      const mailOptions = {
+        from: `"CommercialUK" <noreply@commercialuk.co.uk>`,
+        to: email,
+        subject: 'New Query Update - CommercialUK',
+        template: 'new-query',
+        context: {
+          email,
+          firstName: firstName || 'Valued Customer',
+          lastName,
+          queryDetails,
+          frontendUrl: FRONTEND_URL,
+        },
+      };
+
+      // Add timeout wrapper
+      const sendPromise = this.transporter.sendMail(mailOptions);
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Email send timeout')), 30000);
+      });
+
+      const result = await Promise.race([sendPromise, timeoutPromise]);
+      console.log('✅ New query email sent successfully:', result.messageId);
+      return result;
+    } catch (error) {
+      console.error('❌ Error sending new query email:', error);
+      throw error;
+    }
+  }
 }

@@ -18,6 +18,16 @@ import {
   PlayArrow as PlayArrowIcon,
   Description as DescriptionIcon,
   VideoLibrary as VideoLibraryIcon,
+  CheckCircle as CheckCircleIcon,
+  AttachMoney as AttachMoneyIcon,
+  Sell as SellIcon,
+  Map as MapIcon,
+  VerifiedUser as VerifiedUserIcon,
+  CheckCircleOutline as CheckCircleOutlineIcon,
+  Receipt as ReceiptIcon,
+  Assessment as AssessmentIcon,
+  LocalTaxi as LocalTaxiIcon,
+  EnergySavingsLeaf as EcoIcon,
 } from '@mui/icons-material';
 import { Property } from '../../components/PropertyCard';
 
@@ -98,26 +108,80 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
       {/* Property Details */}
       {property.general_details && (
         <PropertyCard>
-          <CardContent>
-            <Typography variant="h5" sx={{ fontWeight: 600, mb: 3 }}>
+          <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+            <Typography 
+              variant="h4" 
+              sx={{ 
+                fontWeight: 700, 
+                mb: 4,
+                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                fontSize: { xs: '1.5rem', md: '1.75rem' },
+                letterSpacing: '-0.02em',
+                color: '#1a1a1a',
+                borderBottom: '2px solid #f2c514',
+                paddingBottom: 2
+              }}
+            >
               Property Details
             </Typography>
             
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
               <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
                 {property.general_details.address && (
-                  <Box sx={{ flex: 1 }}>
+                  <Box sx={{ 
+                    flex: 1,
+                    p: 3,
+                    borderRadius: 2,
+                    backgroundColor: '#ffffff',
+                    border: '1px solid #e8e8e8',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                      transform: 'translateY(-2px)',
+                      borderColor: '#f2c514'
+                    }
+                  }}>
                     <FeatureItem>
-                      <LocationOnIcon color="action" />
-                      <Box>
-                        <Typography variant="body2" color="text.secondary">
+                      <LocationOnIcon sx={{ color: '#f2c514', fontSize: 28 }} />
+                      <Box sx={{ flex: 1 }}>
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            color: '#666',
+                            fontSize: '0.8125rem',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.1em',
+                            fontWeight: 600,
+                            mb: 1,
+                            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif'
+                          }}
+                        >
                           Address
                         </Typography>
-                        <Typography variant="body1">
+                        <Typography 
+                          variant="body1" 
+                          sx={{ 
+                            fontWeight: 600,
+                            fontSize: '1.0625rem',
+                            color: '#1a1a1a',
+                            mb: 0.5,
+                            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                            lineHeight: 1.5
+                          }}
+                        >
                           {property.general_details.address}
                         </Typography>
                         {(property.general_details.town_city || property.general_details.postcode) && (
-                          <Typography variant="body1">
+                          <Typography 
+                            variant="body1" 
+                            sx={{ 
+                              fontWeight: 400,
+                              fontSize: '1rem',
+                              color: '#555',
+                              fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                              lineHeight: 1.5
+                            }}
+                          >
                             {property.general_details.town_city}{property.general_details.town_city && property.general_details.postcode ? ', ' : ''}{property.general_details.postcode}
                           </Typography>
                         )}
@@ -127,14 +191,46 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
                 )}
                 
                 {formatSize() && (
-                  <Box sx={{ flex: 1 }}>
+                  <Box sx={{ 
+                    flex: 1,
+                    p: 3,
+                    borderRadius: 2,
+                    backgroundColor: '#ffffff',
+                    border: '1px solid #e8e8e8',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                      transform: 'translateY(-2px)',
+                      borderColor: '#f2c514'
+                    }
+                  }}>
                     <FeatureItem>
-                      <SquareFootIcon color="action" />
-                      <Box>
-                        <Typography variant="body2" color="text.secondary">
+                      <SquareFootIcon sx={{ color: '#f2c514', fontSize: 28 }} />
+                      <Box sx={{ flex: 1 }}>
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            color: '#666',
+                            fontSize: '0.8125rem',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.1em',
+                            fontWeight: 600,
+                            mb: 1,
+                            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif'
+                          }}
+                        >
                           Size
                         </Typography>
-                        <Typography variant="body1">
+                        <Typography 
+                          variant="body1" 
+                          sx={{ 
+                            fontWeight: 600,
+                            fontSize: '1.0625rem',
+                            color: '#1a1a1a',
+                            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                            lineHeight: 1.5
+                          }}
+                        >
                           {formatSize()}
                         </Typography>
                       </Box>
@@ -145,340 +241,102 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
               
               <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
                 {property.general_details.approximate_year_of_construction && (
-                  <Box sx={{ flex: 1 }}>
+              <Box sx={{ 
+                    flex: 1,
+                    p: 3,
+                    borderRadius: 2,
+                    backgroundColor: '#ffffff',
+                    border: '1px solid #e8e8e8',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                    transform: 'translateY(-2px)',
+                      borderColor: '#f2c514'
+                    }
+                  }}>
                     <FeatureItem>
-                      <CalendarIcon color="action" />
-                      <Box>
-                        <Typography variant="body2" color="text.secondary">
+                      <CalendarIcon sx={{ color: '#f2c514', fontSize: 28 }} />
+                      <Box sx={{ flex: 1 }}>
+                        <Typography 
+                          variant="body2" 
+                        sx={{ 
+                            color: '#666',
+                            fontSize: '0.8125rem',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.1em',
+                            fontWeight: 600,
+                            mb: 1,
+                            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif'
+                          }}
+                        >
                           Year Built
-                        </Typography>
-                        <Typography variant="body1">
+                      </Typography>
+                        <Typography 
+                          variant="body1" 
+                      sx={{
+                            fontWeight: 600,
+                            fontSize: '1.0625rem',
+                            color: '#1a1a1a',
+                            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                            lineHeight: 1.5
+                          }}
+                        >
                           {property.general_details.approximate_year_of_construction}
                         </Typography>
-                      </Box>
-                    </FeatureItem>
                   </Box>
-                )}
+                    </FeatureItem>
+              </Box>
+            )}
                 
                 {property.general_details.property_type && (
-                  <Box sx={{ flex: 1 }}>
+              <Box sx={{ 
+                    flex: 1,
+                    p: 3,
+                    borderRadius: 2,
+                    backgroundColor: '#ffffff',
+                    border: '1px solid #e8e8e8',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                    transform: 'translateY(-2px)',
+                      borderColor: '#f2c514'
+                    }
+                  }}>
                     <FeatureItem>
-                      <BusinessIcon color="action" />
-                      <Box>
-                        <Typography variant="body2" color="text.secondary">
+                      <BusinessIcon sx={{ color: '#f2c514', fontSize: 28 }} />
+                      <Box sx={{ flex: 1 }}>
+                        <Typography 
+                          variant="body2" 
+                        sx={{ 
+                            color: '#666',
+                            fontSize: '0.8125rem',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.1em',
+                            fontWeight: 600,
+                            mb: 1,
+                            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif'
+                          }}
+                        >
                           Property Type
-                        </Typography>
-                        <Typography variant="body1">
+                      </Typography>
+                        <Typography 
+                          variant="body1" 
+                      sx={{
+                            fontWeight: 600,
+                            fontSize: '1.0625rem',
+                            color: '#1a1a1a',
+                            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                            lineHeight: 1.5
+                          }}
+                        >
                           {property.general_details.property_type}
                         </Typography>
-                      </Box>
-                    </FeatureItem>
                   </Box>
-                )}
+                    </FeatureItem>
               </Box>
-              
-              <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
-                {property.property_status && (
-                  <Box sx={{ flex: 1 }}>
-                    <FeatureItem>
-                      <BusinessIcon color="action" />
-                      <Box>
-                        <Typography variant="body2" color="text.secondary">
-                          Property Status
-                        </Typography>
-                        <Typography variant="body1">
-                          {property.property_status}
-                        </Typography>
-                      </Box>
-                    </FeatureItem>
-                  </Box>
-                )}
-                
-                {property.business_rates_id && property.rateable_value && (
-                  <Box sx={{ flex: 1 }}>
-                    <FeatureItem>
-                      <BusinessIcon color="action" />
-                      <Box>
-                        <Typography variant="body2" color="text.secondary">
-                          Rateable Value
-                        </Typography>
-                        <Typography variant="body1" sx={{ fontWeight: 600, color: '#1976d2' }}>
-                          £{property.rateable_value.toLocaleString()}
-                        </Typography>
-                      </Box>
-                    </FeatureItem>
-                  </Box>
-                )}
+            )}
               </Box>
             </Box>
-          </CardContent>
-        </PropertyCard>
-      )}
-
-      {/* Documents and Virtual Tours */}
-      {(hasDocuments || hasVirtualTours) && (
-        <PropertyCard>
-          <CardContent>
-            <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: '#333' }}>
-              Documents and Virtual Tours
-            </Typography>
-            {hasDocuments && (
-              <Box sx={{ 
-                display: 'flex', 
-                flexDirection: 'column',
-                gap: 2,
-                width: '100%'
-              }}>
-                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
-                  Documents
-                </Typography>
-                {property.documents_id.documents.map((document) => (
-                <Box key={document._id} sx={{ 
-                  p: { xs: 2, sm: 3 },
-                  border: '1px solid #e0e0e0',
-                  borderRadius: 3,
-                  width: '100%',
-                  maxWidth: '100%',
-                  overflow: 'hidden',
-                  boxSizing: 'border-box',
-                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
-                  transition: 'all 0.3s ease',
-                  position: 'relative',
-                  backgroundImage: `
-                    linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(248,249,250,0.85) 100%),
-                    url("https://cdn-icons-png.flaticon.com/512/11357/11357455.png"),
-                    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e3f2fd' fill-opacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")
-                  `,
-                  backgroundSize: 'cover, 120px 120px, 60px 60px',
-                  backgroundPosition: 'center, center, 0 0',
-                  backgroundRepeat: 'no-repeat, no-repeat, repeat',
-                  '&:hover': {
-                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.12)',
-                    transform: 'translateY(-2px)',
-                    backgroundImage: `
-                      linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,249,250,0.9) 100%),
-                      url("https://cdn-icons-png.flaticon.com/512/11357/11357455.png"),
-                      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e3f2fd' fill-opacity='0.3'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")
-                    `,
-                  }
-                }}>
-                  <Box sx={{ 
-                    display: 'flex', 
-                    alignItems: 'flex-start', 
-                    gap: { xs: 1.5, sm: 2 },
-                    flexDirection: { xs: 'column', sm: 'row' }
-                  }}>
-                    <Box sx={{ 
-                      display: 'flex', 
-                      flexDirection: 'column', 
-                      alignItems: 'center', 
-                      minWidth: { xs: 'auto', sm: 80 },
-                      alignSelf: { xs: 'center', sm: 'flex-start' },
-                      mb: { xs: 1, sm: 0 }
-                    }}>
-                      <Avatar
-                        src="https://static.vecteezy.com/system/resources/previews/017/178/244/non_2x/file-document-icon-on-transparent-background-free-png.png"
-                        sx={{ 
-                          width: { xs: 40, sm: 48 }, 
-                          height: { xs: 40, sm: 48 }, 
-                          backgroundColor: 'transparent',
-                          '& img': {
-                            objectFit: 'contain'
-                          }
-                        }}
-                      />
-                    </Box>
-                    <Box sx={{ flex: 1, width: '100%' }}>
-                      <Typography variant="h6" sx={{ fontWeight: 600, mb: 1, color: '#333' }}>
-                        {document.document_name}
-                      </Typography>
-                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 2 }}>
-                        <Box>
-                          <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                            Document Type
-                          </Typography>
-                          <Typography variant="body1" sx={{ fontWeight: 500, color: '#1a1a1a' }}>
-                            {document.document_type || 'PDF Document'}
-                          </Typography>
-                        </Box>
-                        {document.uploaded_at && (
-                          <Box>
-                            <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                              Upload Date
-                            </Typography>
-                            <Typography variant="body1" sx={{ fontWeight: 500, color: '#1a1a1a' }}>
-                              {new Date(document.uploaded_at).toLocaleDateString('en-US', {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric'
-                              })}
-                            </Typography>
-                          </Box>
-                        )}
-                      </Box>
-                    </Box>
-                    <Button
-                      variant="contained"
-                      startIcon={<DownloadIcon />}
-                      sx={{
-                        backgroundColor: '#1976d2',
-                        '&:hover': {
-                          backgroundColor: '#1565c0',
-                        },
-                        minWidth: { xs: '100%', sm: '120px' },
-                        width: { xs: '100%', sm: 'auto' },
-                        mt: { xs: 2, sm: 0 }
-                      }}
-                      onClick={() => {
-                        // Handle download logic here
-                        if (document.file_url) {
-                          window.open(document.file_url, '_blank');
-                        }
-                      }}
-                    >
-                      Download
-                    </Button>
-                  </Box>
-                </Box>
-              ))}
-              </Box>
-            )}
-            {hasVirtualTours && (
-              <Box sx={{ 
-                display: 'flex', 
-                flexDirection: 'column',
-                gap: 2,
-                width: '100%',
-                mt: hasDocuments ? 3 : 0
-              }}>
-                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
-                  Virtual Tours
-                </Typography>
-                {property.virtual_tours_id.virtual_tours.map((virtualTour) => (
-                <Box key={virtualTour._id} sx={{ 
-                  p: { xs: 2, sm: 3 },
-                  border: '1px solid #e0e0e0',
-                  borderRadius: 3,
-                  width: '100%',
-                  maxWidth: '100%',
-                  overflow: 'hidden',
-                  boxSizing: 'border-box',
-                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
-                  transition: 'all 0.3s ease',
-                  position: 'relative',
-                  backgroundImage: `
-                    linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(248,252,248,0.85) 100%),
-                    url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT7mQq5UqoQFA7iID-j90V9sxM_1Mr8VPSNFpPFeBnZfcKUz8pzxEJlfwlikFNfgdboyWI&usqp=CAU"),
-                    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e8f5e8' fill-opacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")
-                  `,
-                  backgroundSize: 'cover, 160px 160px, 60px 60px',
-                  backgroundPosition: 'center, center, 0 0',
-                  backgroundRepeat: 'no-repeat, no-repeat, repeat',
-                  '&:hover': {
-                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.12)',
-                    transform: 'translateY(-2px)',
-                    backgroundImage: `
-                      linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,252,248,0.9) 100%),
-                      url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT7mQq5UqoQFA7iID-j90V9sxM_1Mr8VPSNFpPFeBnZfcKUz8pzxEJlfwlikFNfgdboyWI&usqp=CAU"),
-                      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e8f5e8' fill-opacity='0.3'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")
-                    `,
-                  }
-                }}>
-                  <Box sx={{ 
-                    display: 'flex', 
-                    alignItems: 'flex-start', 
-                    gap: { xs: 1.5, sm: 2 },
-                    flexDirection: { xs: 'column', sm: 'row' }
-                  }}>
-                    <Box sx={{ 
-                      display: 'flex', 
-                      flexDirection: 'column', 
-                      alignItems: 'center', 
-                      minWidth: { xs: 'auto', sm: 80 },
-                      alignSelf: { xs: 'center', sm: 'flex-start' },
-                      mb: { xs: 1, sm: 0 }
-                    }}>
-                      <Avatar
-                        src="https://cdn-icons-png.flaticon.com/512/11357/11357455.png"
-                        sx={{ 
-                          width: { xs: 40, sm: 48 }, 
-                          height: { xs: 40, sm: 48 }, 
-                          backgroundColor: 'transparent',
-                          '& img': {
-                            objectFit: 'contain'
-                          }
-                        }}
-                      />
-                    </Box>
-                    <Box sx={{ flex: 1, width: '100%' }}>
-                      <Typography variant="h6" sx={{ fontWeight: 600, mb: 1, color: '#333' }}>
-                        {virtualTour.tour_name}
-                      </Typography>
-                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 2 }}>
-                        <Box>
-                          <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                            Tour Type
-                          </Typography>
-                          <Typography variant="body1" sx={{ fontWeight: 500, color: '#1a1a1a' }}>
-                            {virtualTour.link_type || '360° Virtual Tour'}
-                          </Typography>
-                        </Box>
-                        <Box>
-                          <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                          Duration
-                          </Typography>
-                          <Typography variant="body1" sx={{ fontWeight: 500, color: '#1a1a1a' }}>
-                            {virtualTour.duration || 'N/A'}
-                          </Typography>
-                        </Box>
-                        <Box>
-                          <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                            Description
-                          </Typography>
-                          <Typography variant="body1" sx={{ fontWeight: 500, color: '#1a1a1a' }}>
-                            {virtualTour.description || 'No description available'}
-                          </Typography>
-                        </Box>
-                        <Box>
-                          <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                            Created Date
-                          </Typography>
-                          <Typography variant="body1" sx={{ fontWeight: 500, color: '#1a1a1a' }}>
-                            {(property.virtual_tours_id?.createdAt ? new Date(property.virtual_tours_id.createdAt).toLocaleDateString('en-US', {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric'
-                            }) : 'N/A')}
-                          </Typography>
-                        </Box>
-                      </Box>
-                    </Box>
-                    <Button
-                      variant="contained"
-                      startIcon={<PlayArrowIcon />}
-                      sx={{
-                        backgroundColor: '#4caf50',
-                        '&:hover': {
-                          backgroundColor: '#388e3c',
-                        },
-                        minWidth: { xs: '100%', sm: '120px' },
-                        width: { xs: '100%', sm: 'auto' },
-                        mt: { xs: 2, sm: 0 }
-                      }}
-                      onClick={() => {
-                        // Handle virtual tour redirect logic here
-                        if (virtualTour.tour_url) {
-                          window.open(virtualTour.tour_url, '_blank');
-                        }
-                      }}
-                    >
-                      View Tour
-                    </Button>
-                  </Box>
-                </Box>
-              ))}
-              </Box>
-            )}
           </CardContent>
         </PropertyCard>
       )}
@@ -486,66 +344,89 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
       {/* Description */}
       {hasDescriptions && (
         <PropertyCard>
-          <CardContent>
-            <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: '#333' }}>
-              Property Descriptions
+          <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+            <Typography 
+              variant="h4" 
+              sx={{ 
+                fontWeight: 700, 
+                mb: 4,
+                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                fontSize: { xs: '1.5rem', md: '1.75rem' },
+                letterSpacing: '-0.02em',
+                color: '#1a1a1a',
+                borderBottom: '2px solid #f2c514',
+                paddingBottom: 2
+              }}
+            >
+              Property Overview
             </Typography>
-              <Box sx={{ 
-                display: 'grid', 
-                gridTemplateColumns: { xs: '1fr', sm: '1fr', md: 'repeat(2, 1fr)' },
-                gap: 3,
-                width: '100%',
-                maxWidth: '100%',
-                overflow: 'hidden'
-              }}>
+
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+              {/* General Description - Main Overview */}
                 {property.descriptions_id.general && (
-                  <Box sx={{ 
-                    gridColumn: { xs: '1', md: '1 / -1' },
-                    p: 2,
-                    border: '1px solid #e0e0e0',
-                    borderRadius: 2,
-                    backgroundColor: '#fafafa',
-                    width: '100%',
-                    maxWidth: '100%',
-                    overflow: 'hidden',
-                    boxSizing: 'border-box'
-                  }}>
-                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
-                      General Description
-                    </Typography>
-                    <Typography variant="body1" sx={{ 
+                      <Box>
+                  <Typography 
+                    variant="body1" 
+                    sx={{ 
+                      fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                      fontSize: { xs: '1rem', md: '1.0625rem' },
                       lineHeight: 1.8, 
-                      color: '#555',
+                      color: '#333',
                       wordWrap: 'break-word',
                       overflowWrap: 'break-word',
-                      hyphens: 'auto'
-                    }}>
+                      hyphens: 'auto',
+                      fontWeight: 400,
+                      letterSpacing: '0.01em'
+                    }}
+                  >
                       {property.descriptions_id.general}
                     </Typography>
                   </Box>
                 )}
                 
+              {/* Other Descriptions */}
+              {(property.descriptions_id.location || property.descriptions_id.accommodation || property.descriptions_id.terms || property.descriptions_id.specifications) && (
+                <Box sx={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: { xs: '1fr', sm: '1fr', md: 'repeat(2, 1fr)' },
+                  gap: 3,
+                  width: '100%'
+                }}>
                 {property.descriptions_id.location && (
                   <Box sx={{ 
-                    p: 2,
-                    border: '1px solid #e0e0e0',
+                      p: 3,
+                      border: '1px solid #e8e8e8',
                     borderRadius: 2,
-                    backgroundColor: '#fafafa',
-                    width: '100%',
-                    maxWidth: '100%',
-                    overflow: 'hidden',
-                    boxSizing: 'border-box'
-                  }}>
-                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
+                    backgroundColor: '#ffffff',
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                        borderColor: '#f2c514'
+                      }
+                    }}>
+                      <Typography 
+                        variant="h6" 
+                        sx={{ 
+                          fontWeight: 600, 
+                          mb: 2, 
+                          color: '#1a1a1a',
+                          fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                          fontSize: '1.0625rem'
+                        }}
+                      >
                       Location Description
                     </Typography>
-                    <Typography variant="body1" sx={{ 
-                      lineHeight: 1.8, 
+                      <Typography 
+                        variant="body1" 
+                        sx={{ 
+                          fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                          lineHeight: 1.7, 
                       color: '#555',
                       wordWrap: 'break-word',
                       overflowWrap: 'break-word',
-                      hyphens: 'auto'
-                    }}>
+                          fontSize: '1rem'
+                        }}
+                      >
                       {property.descriptions_id.location}
                     </Typography>
                   </Box>
@@ -553,25 +434,39 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
                 
                 {property.descriptions_id.accommodation && (
                   <Box sx={{ 
-                    p: 2,
-                    border: '1px solid #e0e0e0',
+                      p: 3,
+                      border: '1px solid #e8e8e8',
                     borderRadius: 2,
-                    backgroundColor: '#fafafa',
-                    width: '100%',
-                    maxWidth: '100%',
-                    overflow: 'hidden',
-                    boxSizing: 'border-box'
-                  }}>
-                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
+                    backgroundColor: '#ffffff',
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                        borderColor: '#f2c514'
+                      }
+                    }}>
+                      <Typography 
+                        variant="h6" 
+                        sx={{ 
+                          fontWeight: 600, 
+                          mb: 2, 
+                          color: '#1a1a1a',
+                          fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                          fontSize: '1.0625rem'
+                        }}
+                      >
                       Accommodation Details
                     </Typography>
-                    <Typography variant="body1" sx={{ 
-                      lineHeight: 1.8, 
+                      <Typography 
+                        variant="body1" 
+                        sx={{ 
+                          fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                          lineHeight: 1.7, 
                       color: '#555',
                       wordWrap: 'break-word',
                       overflowWrap: 'break-word',
-                      hyphens: 'auto'
-                    }}>
+                          fontSize: '1rem'
+                        }}
+                      >
                       {property.descriptions_id.accommodation}
                     </Typography>
                   </Box>
@@ -579,25 +474,39 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
                 
                 {property.descriptions_id.terms && (
                   <Box sx={{ 
-                    p: 2,
-                    border: '1px solid #e0e0e0',
+                      p: 3,
+                      border: '1px solid #e8e8e8',
                     borderRadius: 2,
-                    backgroundColor: '#fafafa',
-                    width: '100%',
-                    maxWidth: '100%',
-                    overflow: 'hidden',
-                    boxSizing: 'border-box'
-                  }}>
-                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
+                    backgroundColor: '#ffffff',
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                        borderColor: '#f2c514'
+                      }
+                    }}>
+                      <Typography 
+                        variant="h6" 
+                        sx={{ 
+                          fontWeight: 600, 
+                          mb: 2, 
+                          color: '#1a1a1a',
+                          fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                          fontSize: '1.0625rem'
+                        }}
+                      >
                       Terms & Conditions
                     </Typography>
-                    <Typography variant="body1" sx={{ 
-                      lineHeight: 1.8, 
+                      <Typography 
+                        variant="body1" 
+                        sx={{ 
+                          fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                          lineHeight: 1.7, 
                       color: '#555',
                       wordWrap: 'break-word',
                       overflowWrap: 'break-word',
-                      hyphens: 'auto'
-                    }}>
+                          fontSize: '1rem'
+                        }}
+                      >
                       {property.descriptions_id.terms}
                     </Typography>
                   </Box>
@@ -605,57 +514,146 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
                 
                 {property.descriptions_id.specifications && (
                   <Box sx={{ 
-                    p: 2,
-                    border: '1px solid #e0e0e0',
+                      p: 3,
+                      border: '1px solid #e8e8e8',
                     borderRadius: 2,
-                    backgroundColor: '#fafafa',
-                    width: '100%',
-                    maxWidth: '100%',
-                    overflow: 'hidden',
-                    boxSizing: 'border-box'
-                  }}>
-                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
+                    backgroundColor: '#ffffff',
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                        borderColor: '#f2c514'
+                      }
+                    }}>
+                      <Typography 
+                        variant="h6" 
+                        sx={{ 
+                          fontWeight: 600, 
+                          mb: 2, 
+                          color: '#1a1a1a',
+                          fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                          fontSize: '1.0625rem'
+                        }}
+                      >
                       Specifications
                     </Typography>
-                    <Typography variant="body1" sx={{ 
-                      lineHeight: 1.8, 
+                      <Typography 
+                        variant="body1" 
+                        sx={{ 
+                          fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                          lineHeight: 1.7, 
                       color: '#555',
                       wordWrap: 'break-word',
                       overflowWrap: 'break-word',
-                      hyphens: 'auto'
-                    }}>
+                          fontSize: '1rem'
+                        }}
+                      >
                       {property.descriptions_id.specifications}
                     </Typography>
                   </Box>
                 )}
+                  </Box>
+                )}
                 
-                {property.descriptions_id.createdAt && (
+              {/* Features & Amenities - Two Column Bullet List */}
+              {hasFeatures && (
+                <Box sx={{ mt: 2 }}>
+                  <Typography 
+                    variant="h5" 
+                    sx={{ 
+                      fontWeight: 700,
+                      mb: 3,
+                      fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                      fontSize: { xs: '1.25rem', md: '1.5rem' },
+                      letterSpacing: '-0.01em',
+                      color: '#1a1a1a'
+                    }}
+                  >
+                    Features & Amenities
+                  </Typography>
                   <Box sx={{ 
-                    p: 2,
-                    border: '1px solid #e0e0e0',
-                    borderRadius: 2,
-                    backgroundColor: '#fafafa',
-                    width: '100%',
-                    maxWidth: '100%',
-                    overflow: 'hidden',
-                    boxSizing: 'border-box'
+                    display: 'grid',
+                    gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' },
+                    gap: { xs: 2, md: 3 },
+                    columnGap: { xs: 2, md: 4 }
                   }}>
-                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
-                      Last Updated
+                    {/* Main Features */}
+                    {Object.entries(property.features_id.features || {})
+                      .filter(([key, value]) => value === 'Yes')
+                      .map(([key, value], index) => {
+                        const featureName = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                        
+                        return (
+                          <Box 
+                            key={key}
+                            sx={{ 
+                              display: 'flex',
+                              alignItems: 'flex-start',
+                              gap: 1.5,
+                              py: 0.5
+                            }}
+                          >
+                            <CheckCircleIcon 
+                              sx={{ 
+                                color: '#f2c514',
+                                fontSize: 20,
+                                mt: 0.25,
+                                flexShrink: 0
+                              }} 
+                            />
+                            <Typography 
+                              variant="body1"
+                              sx={{
+                                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                                fontSize: '1rem',
+                                color: '#333',
+                                fontWeight: 400,
+                                lineHeight: 1.6,
+                                flex: 1
+                              }}
+                            >
+                              {featureName}
                     </Typography>
-                    <Typography variant="body1" sx={{ 
-                      lineHeight: 1.8, 
-                      color: '#555',
-                      wordWrap: 'break-word',
-                      overflowWrap: 'break-word',
-                      hyphens: 'auto'
-                    }}>
-                      {new Date(property.descriptions_id.createdAt).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
+                          </Box>
+                        );
                       })}
+                    
+                    {/* Additional Features */}
+                    {property.features_id.additional_features?.filter(feature => feature.feature_value === 'Yes').map((feature) => {
+                      return (
+                        <Box 
+                          key={feature._id}
+                          sx={{ 
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            gap: 1.5,
+                            py: 0.5
+                          }}
+                        >
+                          <CheckCircleIcon 
+                            sx={{ 
+                              color: '#f2c514',
+                              fontSize: 20,
+                              mt: 0.25,
+                              flexShrink: 0
+                            }} 
+                          />
+                          <Typography 
+                            variant="body1"
+                            sx={{
+                              fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                              fontSize: '1rem',
+                              color: '#333',
+                              fontWeight: 400,
+                              lineHeight: 1.6,
+                              flex: 1
+                            }}
+                          >
+                            {feature.feature_name}
                     </Typography>
+                        </Box>
+                      );
+                    })}
+                  </Box>
                   </Box>
                 )}
               </Box>
@@ -666,53 +664,142 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
       {/* Sale Types */}
       {hasSaleTypes && (
         <PropertyCard>
-          <CardContent>
-            <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: '#333' }}>
+          <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 4 }}>
+              <SellIcon sx={{ color: '#f2c514', fontSize: 32 }} />
+              <Typography 
+                variant="h4" 
+                sx={{ 
+                  fontWeight: 700, 
+                  fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                  fontSize: { xs: '1.5rem', md: '1.75rem' },
+                  letterSpacing: '-0.02em',
+                  color: '#1a1a1a',
+                  borderBottom: '2px solid #f2c514',
+                  paddingBottom: 2,
+                  flex: 1
+                }}
+              >
               Sale Types & Pricing
             </Typography>
+            </Box>
             <Box sx={{ 
-              display: 'flex', 
-              flexDirection: 'column',
-              gap: 2,
+              display: 'grid',
+              gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' },
+              gap: 3,
               width: '100%'
             }}>
               {property.sale_types_id.sale_types.map((saleType, index) => (
-                <Box key={saleType._id || index} sx={{ 
-                  p: 3,
-                  border: '1px solid #e0e0e0',
+                <Box 
+                  key={saleType._id || index} 
+                  sx={{ 
+                    position: 'relative',
+                    p: 3.5,
+                    border: '2px solid #e8e8e8',
                   borderRadius: 3,
                   backgroundColor: '#ffffff',
                   width: '100%',
-                  maxWidth: '100%',
                   overflow: 'hidden',
                   boxSizing: 'border-box',
-                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
-                  transition: 'all 0.3s ease',
+                    boxShadow: '0 2px 12px rgba(0, 0, 0, 0.08)',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   '&:hover': {
-                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.12)',
-                    transform: 'translateY(-2px)'
-                  }
-                }}>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="h5" sx={{ fontWeight: 700, color: '#1a1a1a', mb: 0.5 }}>
+                      boxShadow: '0 8px 24px rgba(242, 197, 20, 0.15)',
+                      transform: 'translateY(-4px)',
+                      borderColor: '#f2c514'
+                    }
+                  }}
+                >
+                  {/* Accent Bar */}
+                  <Box sx={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: 4,
+                    background: 'linear-gradient(90deg, #f2c514 0%, #f5d547 100%)',
+                  }} />
+                  
+                  {/* Sale Type Badge */}
+                  <Box sx={{ 
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 1,
+                    mb: 2.5,
+                    px: 2,
+                    py: 0.75,
+                    borderRadius: 2,
+                    backgroundColor: 'rgba(242, 197, 20, 0.1)',
+                    border: '1px solid rgba(242, 197, 20, 0.2)'
+                  }}>
+                    <Typography 
+                      variant="body2" 
+                      sx={{ 
+                        fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                        fontWeight: 600,
+                        color: '#1a1a1a',
+                        fontSize: '0.75rem',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.1em'
+                      }}
+                    >
                         {saleType.sale_type}
                       </Typography>
-                      <Typography variant="body2" sx={{ color: '#666', fontSize: '0.875rem' }}>
-                        {saleType.price_unit}
-                      </Typography>
                     </Box>
-                    <Box sx={{ textAlign: 'right' }}>
-                      <Typography variant="h4" sx={{ 
+
+                  {/* Price Display */}
+                  <Box sx={{ mb: 2 }}>
+                    <Typography 
+                      variant="h3" 
+                      sx={{ 
+                        fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
                         fontWeight: 700, 
-                        color: '#1976d2',
-                        lineHeight: 1.2,
-                        fontSize: '1.75rem'
-                      }}>
-                        {saleType.price_currency === 'GBP' ? '£' : saleType.price_currency} {saleType.price_value.toLocaleString()}
+                        color: '#1a1a1a',
+                        lineHeight: 1.1,
+                        fontSize: { xs: '1.75rem', md: '2rem' },
+                        mb: 0.5,
+                        letterSpacing: '-0.02em'
+                      }}
+                    >
+                      {saleType.price_currency === 'GBP' ? '£' : saleType.price_currency}{saleType.price_value.toLocaleString()}
+                    </Typography>
+                    <Typography 
+                      variant="body2" 
+                      sx={{ 
+                        fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                        color: '#666',
+                        fontSize: '0.875rem',
+                        fontWeight: 500,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 0.5
+                      }}
+                    >
+                      <Box 
+                        component="span"
+                        sx={{
+                          width: 6,
+                          height: 6,
+                          borderRadius: '50%',
+                          backgroundColor: '#f2c514',
+                          display: 'inline-block'
+                        }}
+                      />
+                      {saleType.price_unit}
                       </Typography>
                     </Box>
-                  </Box>
+
+                  {/* Decorative Element */}
+                  <Box sx={{
+                    position: 'absolute',
+                    bottom: 0,
+                    right: 0,
+                    width: 80,
+                    height: 80,
+                    background: 'linear-gradient(135deg, rgba(242, 197, 20, 0.05) 0%, transparent 100%)',
+                    borderRadius: '50% 0 0 0',
+                    pointerEvents: 'none'
+                  }} />
                 </Box>
               ))}
             </Box>
@@ -722,11 +809,28 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
 
        {/* Location & Map */}
        {hasLocation && (
+         <>
          <PropertyCard>
-           <CardContent>
-             <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: '#333' }}>
+          <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 4 }}>
+                 <MapIcon sx={{ color: '#f2c514', fontSize: 32 }} />
+                 <Typography 
+                   variant="h4" 
+                   sx={{ 
+                     fontWeight: 700, 
+                     fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                     fontSize: { xs: '1.5rem', md: '1.75rem' },
+                     letterSpacing: '-0.02em',
+                     color: '#1a1a1a',
+                     borderBottom: '2px solid #f2c514',
+                     paddingBottom: 2,
+                     flex: 1
+                   }}
+                 >
                Location & Map
              </Typography>
+               </Box>
+               
              <Box sx={{ 
                display: 'flex', 
                flexDirection: 'column',
@@ -735,84 +839,240 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
              }}>
                {/* Address Details */}
                <Box sx={{ 
-                 p: 3,
-                 border: '1px solid #e0e0e0',
+                   p: 3.5,
+                   border: '2px solid #e8e8e8',
                  borderRadius: 3,
                  backgroundColor: '#ffffff',
                  width: '100%',
-                 maxWidth: '100%',
                  overflow: 'hidden',
                  boxSizing: 'border-box',
-                 boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)'
-               }}>
-                 <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
+                   boxShadow: '0 2px 12px rgba(0, 0, 0, 0.08)',
+                   transition: 'all 0.3s ease',
+                   position: 'relative',
+                   '&:hover': {
+                     boxShadow: '0 4px 16px rgba(242, 197, 20, 0.12)',
+                     borderColor: '#f2c514'
+                   }
+                 }}>
+                   <Box sx={{
+                     position: 'absolute',
+                     top: 0,
+                     left: 0,
+                     right: 0,
+                     height: 4,
+                     background: 'linear-gradient(90deg, #f2c514 0%, #f5d547 100%)',
+                   }} />
+                   
+                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3, mt: 1 }}>
+                     <LocationOnIcon sx={{ color: '#f2c514', fontSize: 24 }} />
+                     <Typography 
+                       variant="h6" 
+                       sx={{ 
+                         fontWeight: 600, 
+                         color: '#1a1a1a',
+                         fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                         fontSize: '1.125rem'
+                       }}
+                     >
                    Address Details
                  </Typography>
-                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                   </Box>
+                   
+                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
                    <Box>
-                     <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                       <Typography 
+                         variant="body2" 
+                         sx={{ 
+                           fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                           fontSize: '0.75rem',
+                           textTransform: 'uppercase',
+                           letterSpacing: '0.1em',
+                           fontWeight: 600,
+                           color: '#666',
+                           mb: 1
+                         }}
+                       >
                        Full Address
                      </Typography>
-                     <Typography variant="body1" sx={{ fontWeight: 500, color: '#1a1a1a' }}>
+                       <Typography 
+                         variant="body1" 
+                         sx={{ 
+                           fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                           fontWeight: 500,
+                           color: '#1a1a1a',
+                           fontSize: '1rem',
+                           lineHeight: 1.6
+                         }}
+                       >
                        {property.location_id.address_details.formatted_address}
                      </Typography>
                    </Box>
                    
-                   <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2 }}>
-                     <Box sx={{ flex: 1 }}>
-                       <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                     <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' }, gap: 2.5 }}>
+                       <Box>
+                         <Typography 
+                           variant="body2" 
+                           sx={{ 
+                             fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                             fontSize: '0.75rem',
+                             textTransform: 'uppercase',
+                             letterSpacing: '0.1em',
+                             fontWeight: 600,
+                             color: '#666',
+                             mb: 1
+                           }}
+                         >
                          Street
                        </Typography>
-                       <Typography variant="body1" sx={{ fontWeight: 500, color: '#1a1a1a' }}>
+                         <Typography 
+                           variant="body1" 
+                           sx={{ 
+                             fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                             fontWeight: 500,
+                             color: '#1a1a1a',
+                             fontSize: '0.9375rem'
+                           }}
+                         >
                          {property.location_id.address_details.street_number} {property.location_id.address_details.route}
                        </Typography>
                      </Box>
                      
-                     <Box sx={{ flex: 1 }}>
-                       <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                       <Box>
+                         <Typography 
+                           variant="body2" 
+                           sx={{ 
+                             fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                             fontSize: '0.75rem',
+                             textTransform: 'uppercase',
+                             letterSpacing: '0.1em',
+                             fontWeight: 600,
+                             color: '#666',
+                             mb: 1
+                           }}
+                         >
                          Locality
                        </Typography>
-                       <Typography variant="body1" sx={{ fontWeight: 500, color: '#1a1a1a' }}>
+                         <Typography 
+                           variant="body1" 
+                           sx={{ 
+                             fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                             fontWeight: 500,
+                             color: '#1a1a1a',
+                             fontSize: '0.9375rem'
+                           }}
+                         >
                          {property.location_id.address_details.locality}
                        </Typography>
-                     </Box>
                    </Box>
                    
-                   <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2 }}>
-                     <Box sx={{ flex: 1 }}>
-                       <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                       <Box>
+                         <Typography 
+                           variant="body2" 
+                           sx={{ 
+                             fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                             fontSize: '0.75rem',
+                             textTransform: 'uppercase',
+                             letterSpacing: '0.1em',
+                             fontWeight: 600,
+                             color: '#666',
+                             mb: 1
+                           }}
+                         >
                          State
                        </Typography>
-                       <Typography variant="body1" sx={{ fontWeight: 500, color: '#1a1a1a' }}>
+                         <Typography 
+                           variant="body1" 
+                           sx={{ 
+                             fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                             fontWeight: 500,
+                             color: '#1a1a1a',
+                             fontSize: '0.9375rem'
+                           }}
+                         >
                          {property.location_id.address_details.administrative_area_level_1}
                        </Typography>
                      </Box>
                      
-                     <Box sx={{ flex: 1 }}>
-                       <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                       <Box>
+                         <Typography 
+                           variant="body2" 
+                           sx={{ 
+                             fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                             fontSize: '0.75rem',
+                             textTransform: 'uppercase',
+                             letterSpacing: '0.1em',
+                             fontWeight: 600,
+                             color: '#666',
+                             mb: 1
+                           }}
+                         >
                          Country
                        </Typography>
-                       <Typography variant="body1" sx={{ fontWeight: 500, color: '#1a1a1a' }}>
+                         <Typography 
+                           variant="body1" 
+                           sx={{ 
+                             fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                             fontWeight: 500,
+                             color: '#1a1a1a',
+                             fontSize: '0.9375rem'
+                           }}
+                         >
                          {property.location_id.address_details.country}
                        </Typography>
-                     </Box>
                    </Box>
                    
-                   <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2 }}>
-                     <Box sx={{ flex: 1 }}>
-                       <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                       <Box>
+                         <Typography 
+                           variant="body2" 
+                           sx={{ 
+                             fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                             fontSize: '0.75rem',
+                             textTransform: 'uppercase',
+                             letterSpacing: '0.1em',
+                             fontWeight: 600,
+                             color: '#666',
+                             mb: 1
+                           }}
+                         >
                          Postal Code
                        </Typography>
-                       <Typography variant="body1" sx={{ fontWeight: 500, color: '#1a1a1a' }}>
+                         <Typography 
+                           variant="body1" 
+                           sx={{ 
+                             fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                             fontWeight: 500,
+                             color: '#1a1a1a',
+                             fontSize: '0.9375rem'
+                           }}
+                         >
                          {property.location_id.address_details.postal_code}
                        </Typography>
                      </Box>
                      
-                     <Box sx={{ flex: 1 }}>
-                       <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                       <Box>
+                         <Typography 
+                           variant="body2" 
+                           sx={{ 
+                             fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                             fontSize: '0.75rem',
+                             textTransform: 'uppercase',
+                             letterSpacing: '0.1em',
+                             fontWeight: 600,
+                             color: '#666',
+                             mb: 1
+                           }}
+                         >
                          Coordinates
                        </Typography>
-                       <Typography variant="body1" sx={{ fontWeight: 500, color: '#1a1a1a' }}>
+                         <Typography 
+                           variant="body1" 
+                           sx={{ 
+                             fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                             fontWeight: 500,
+                             color: '#1a1a1a',
+                             fontSize: '0.9375rem'
+                           }}
+                         >
                          {property.location_id.coordinates.latitude.toFixed(6)}, {property.location_id.coordinates.longitude.toFixed(6)}
                        </Typography>
                      </Box>
@@ -820,50 +1080,127 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
                  </Box>
                </Box>
                
-               
                {/* Location Verification */}
                <Box sx={{ 
-                 p: 3,
-                 border: '1px solid #e0e0e0',
+                   p: 3.5,
+                   border: '2px solid #e8e8e8',
                  borderRadius: 3,
                  backgroundColor: '#ffffff',
                  width: '100%',
-                 maxWidth: '100%',
                  overflow: 'hidden',
                  boxSizing: 'border-box',
-                 boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)'
-               }}>
-                 <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
+                   boxShadow: '0 2px 12px rgba(0, 0, 0, 0.08)',
+                   transition: 'all 0.3s ease',
+                   position: 'relative',
+                   '&:hover': {
+                     boxShadow: '0 4px 16px rgba(242, 197, 20, 0.12)',
+                     borderColor: '#f2c514'
+                   }
+                 }}>
+                   <Box sx={{
+                     position: 'absolute',
+                     top: 0,
+                     left: 0,
+                     right: 0,
+                     height: 4,
+                     background: 'linear-gradient(90deg, #f2c514 0%, #f5d547 100%)',
+                   }} />
+                   
+                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3, mt: 1 }}>
+                     {property.location_id.location_verified ? (
+                       <VerifiedUserIcon sx={{ color: '#4caf50', fontSize: 24 }} />
+                     ) : (
+                       <CheckCircleOutlineIcon sx={{ color: '#f44336', fontSize: 24 }} />
+                     )}
+                     <Typography 
+                       variant="h6" 
+                       sx={{ 
+                         fontWeight: 600, 
+                         color: '#1a1a1a',
+                         fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                         fontSize: '1.125rem'
+                       }}
+                     >
                    Location Verification
                  </Typography>
-                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                   </Box>
+                   
+                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                      <Box sx={{ 
-                       width: 8, 
-                       height: 8, 
+                         width: 12, 
+                         height: 12, 
                        borderRadius: '50%', 
-                       backgroundColor: property.location_id.location_verified ? '#4caf50' : '#f44336' 
-                     }} />
-                     <Typography variant="body1" sx={{ fontWeight: 500, color: '#1a1a1a' }}>
+                         backgroundColor: property.location_id.location_verified ? '#4caf50' : '#f44336',
+                         boxShadow: property.location_id.location_verified ? '0 0 8px rgba(76, 175, 80, 0.4)' : '0 0 8px rgba(244, 67, 54, 0.4)'
+                       }} />
+                       <Typography 
+                         variant="body1" 
+                         sx={{ 
+                           fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                           fontWeight: 600,
+                           color: '#1a1a1a',
+                           fontSize: '0.9375rem'
+                         }}
+                       >
                        Location {property.location_id.location_verified ? 'Verified' : 'Not Verified'}
                      </Typography>
                    </Box>
                    
                    <Box>
-                     <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                       <Typography 
+                         variant="body2" 
+                         sx={{ 
+                           fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                           fontSize: '0.75rem',
+                           textTransform: 'uppercase',
+                           letterSpacing: '0.1em',
+                           fontWeight: 600,
+                           color: '#666',
+                           mb: 1
+                         }}
+                       >
                        Geocoding Service
                      </Typography>
-                     <Typography variant="body1" sx={{ fontWeight: 500, color: '#1a1a1a' }}>
+                       <Typography 
+                         variant="body1" 
+                         sx={{ 
+                           fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                           fontWeight: 500,
+                           color: '#1a1a1a',
+                           fontSize: '0.9375rem'
+                         }}
+                       >
                        {property.location_id.geocoding_info.geocoding_service} ({property.location_id.geocoding_info.geocoding_accuracy})
                      </Typography>
                    </Box>
                    
                    {property.location_id.verification_notes && (
                      <Box>
-                       <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                         <Typography 
+                           variant="body2" 
+                           sx={{ 
+                             fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                             fontSize: '0.75rem',
+                             textTransform: 'uppercase',
+                             letterSpacing: '0.1em',
+                             fontWeight: 600,
+                             color: '#666',
+                             mb: 1
+                           }}
+                         >
                          Verification Notes
                        </Typography>
-                       <Typography variant="body1" sx={{ fontWeight: 500, color: '#1a1a1a' }}>
+                         <Typography 
+                           variant="body1" 
+                           sx={{ 
+                             fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                             fontWeight: 400,
+                             color: '#555',
+                             fontSize: '0.9375rem',
+                             lineHeight: 1.6
+                           }}
+                         >
                          {property.location_id.verification_notes}
                        </Typography>
                      </Box>
@@ -871,55 +1208,163 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
                  </Box>
                </Box>
              </Box>
+          </CardContent>
+           {/* Google Maps Embed */}
+           <PropertyCard sx={{ margin:3 }}>
+             <CardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
+               <Box sx={{ 
+                 position: 'relative',
+                 width: '100%',
+                 height: { xs: 400, md: 500 },
+                 borderRadius: 3,
+                 overflow: 'hidden',
+                 border: '2px solid #e8e8e8',
+                 boxShadow: '0 4px 16px rgba(0, 0, 0, 0.1)'
+               }}>
+                 <iframe
+                   src={`https://www.google.com/maps?q=${property.location_id.coordinates.latitude},${property.location_id.coordinates.longitude}&hl=en&z=14&output=embed`}
+                   width="100%"
+                   height="100%"
+                   style={{ border: 0 }}
+                   allowFullScreen
+                   loading="lazy"
+                   referrerPolicy="no-referrer-when-downgrade"
+                   title="Property Location Map"
+                 />
+             </Box>
            </CardContent>
          </PropertyCard>
+         </PropertyCard>
+         </>
        )}
 
       {/* Business Details */}
       {hasBusinessDetails && (
         <PropertyCard>
-          <CardContent>
-            <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: '#333' }}>
+          <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 4 }}>
+              <BusinessIcon sx={{ color: '#f2c514', fontSize: 32 }} />
+              <Typography 
+                variant="h4" 
+                sx={{ 
+                  fontWeight: 700, 
+                  fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                  fontSize: { xs: '1.5rem', md: '1.75rem' },
+                  letterSpacing: '-0.02em',
+                  color: '#1a1a1a',
+                  borderBottom: '2px solid #f2c514',
+                  paddingBottom: 2,
+                  flex: 1
+                }}
+              >
               Business Details
             </Typography>
+            </Box>
+            
             <Box sx={{ 
-              display: 'flex', 
-              flexDirection: 'column',
+              display: 'grid',
+              gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
               gap: 3,
               width: '100%'
             }}>
             {/* Council Tax */}
             {property.council_tax && (
               <Box sx={{ 
-                p: 3,
-                border: '1px solid #e0e0e0',
+                  position: 'relative',
+                  p: 3.5,
+                  border: '2px solid #e8e8e8',
                 borderRadius: 3,
                 backgroundColor: '#ffffff',
                 width: '100%',
-                maxWidth: '100%',
                 overflow: 'hidden',
                 boxSizing: 'border-box',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)'
-              }}>
-                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
+                  boxShadow: '0 2px 12px rgba(0, 0, 0, 0.08)',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  '&:hover': {
+                    boxShadow: '0 8px 24px rgba(242, 197, 20, 0.15)',
+                    transform: 'translateY(-4px)',
+                    borderColor: '#f2c514'
+                  }
+                }}>
+                  <Box sx={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: 4,
+                    background: 'linear-gradient(90deg, #f2c514 0%, #f5d547 100%)',
+                  }} />
+                  
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3, mt: 1 }}>
+                    <ReceiptIcon sx={{ color: '#f2c514', fontSize: 24 }} />
+                    <Typography 
+                      variant="h6" 
+                      sx={{ 
+                        fontWeight: 600, 
+                        color: '#1a1a1a',
+                        fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                        fontSize: '1.125rem'
+                      }}
+                    >
                   Council Tax
                 </Typography>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                  <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2 }}>
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                  </Box>
+                  
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+                    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' }, gap: 2.5 }}>
+                      <Box>
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                            fontSize: '0.75rem',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.1em',
+                            fontWeight: 600,
+                            color: '#666',
+                            mb: 1
+                          }}
+                        >
                         Band
                       </Typography>
-                      <Typography variant="body1" sx={{ fontWeight: 500, color: '#1a1a1a' }}>
+                        <Typography 
+                          variant="body1" 
+                          sx={{ 
+                            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                            fontWeight: 600,
+                            color: '#1a1a1a',
+                            fontSize: '1rem'
+                          }}
+                        >
                         {property.council_tax.band}
                       </Typography>
                     </Box>
                     
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                      <Box>
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                            fontSize: '0.75rem',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.1em',
+                            fontWeight: 600,
+                            color: '#666',
+                            mb: 1
+                          }}
+                        >
                         Authority
                       </Typography>
-                      <Typography variant="body1" sx={{ fontWeight: 500, color: '#1a1a1a' }}>
+                        <Typography 
+                          variant="body1" 
+                          sx={{ 
+                            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                            fontWeight: 500,
+                            color: '#1a1a1a',
+                            fontSize: '0.9375rem',
+                            lineHeight: 1.5
+                          }}
+                        >
                         {property.council_tax.authority}
                       </Typography>
                     </Box>
@@ -931,45 +1376,134 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
             {/* Planning */}
             {property.planning && (
               <Box sx={{ 
-                p: 3,
-                border: '1px solid #e0e0e0',
+                  position: 'relative',
+                  p: 3.5,
+                  border: '2px solid #e8e8e8',
                 borderRadius: 3,
                 backgroundColor: '#ffffff',
                 width: '100%',
-                maxWidth: '100%',
                 overflow: 'hidden',
                 boxSizing: 'border-box',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)'
-              }}>
-                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
+                  boxShadow: '0 2px 12px rgba(0, 0, 0, 0.08)',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  '&:hover': {
+                    boxShadow: '0 8px 24px rgba(242, 197, 20, 0.15)',
+                    transform: 'translateY(-4px)',
+                    borderColor: '#f2c514'
+                  }
+                }}>
+                  <Box sx={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: 4,
+                    background: 'linear-gradient(90deg, #f2c514 0%, #f5d547 100%)',
+                  }} />
+                  
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3, mt: 1 }}>
+                    <AssessmentIcon sx={{ color: '#f2c514', fontSize: 24 }} />
+                    <Typography 
+                      variant="h6" 
+                      sx={{ 
+                        fontWeight: 600, 
+                        color: '#1a1a1a',
+                        fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                        fontSize: '1.125rem'
+                      }}
+                    >
                   Planning Information
                 </Typography>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                  <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2 }}>
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                  </Box>
+                  
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+                    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' }, gap: 2.5 }}>
+                      <Box>
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                            fontSize: '0.75rem',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.1em',
+                            fontWeight: 600,
+                            color: '#666',
+                            mb: 1
+                          }}
+                        >
                         Status
                       </Typography>
-                      <Typography variant="body1" sx={{ fontWeight: 500, color: '#1a1a1a' }}>
+                        <Typography 
+                          variant="body1" 
+                          sx={{ 
+                            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                            fontWeight: 600,
+                            color: '#1a1a1a',
+                            fontSize: '1rem'
+                          }}
+                        >
                         {property.planning.status}
                       </Typography>
                     </Box>
                     
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                      <Box>
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                            fontSize: '0.75rem',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.1em',
+                            fontWeight: 600,
+                            color: '#666',
+                            mb: 1
+                          }}
+                        >
                         Application Number
                       </Typography>
-                      <Typography variant="body1" sx={{ fontWeight: 500, color: '#1a1a1a' }}>
+                        <Typography 
+                          variant="body1" 
+                          sx={{ 
+                            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                            fontWeight: 500,
+                            color: '#1a1a1a',
+                            fontSize: '0.9375rem',
+                            lineHeight: 1.5
+                          }}
+                        >
                         {property.planning.application_number}
                       </Typography>
                     </Box>
                   </Box>
                   
                   <Box>
-                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                      <Typography 
+                        variant="body2" 
+                        sx={{ 
+                          fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                          fontSize: '0.75rem',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.1em',
+                          fontWeight: 600,
+                          color: '#666',
+                          mb: 1
+                        }}
+                      >
                       Decision Date
                     </Typography>
-                    <Typography variant="body1" sx={{ fontWeight: 500, color: '#1a1a1a' }}>
+                      <Typography 
+                        variant="body1" 
+                        sx={{ 
+                          fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                          fontWeight: 500,
+                          color: '#1a1a1a',
+                          fontSize: '0.9375rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 0.5
+                        }}
+                      >
+                        <CalendarIcon sx={{ color: '#f2c514', fontSize: 18 }} />
                       {new Date(property.planning.decision_date).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'long',
@@ -984,45 +1518,135 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
             {/* Business Rates */}
             {property.business_rates_id && (
               <Box sx={{ 
-                p: 3,
-                border: '1px solid #e0e0e0',
+                  position: 'relative',
+                  p: 3.5,
+                  border: '2px solid #e8e8e8',
                 borderRadius: 3,
                 backgroundColor: '#ffffff',
                 width: '100%',
-                maxWidth: '100%',
                 overflow: 'hidden',
                 boxSizing: 'border-box',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)'
-              }}>
-                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
+                  boxShadow: '0 2px 12px rgba(0, 0, 0, 0.08)',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  '&:hover': {
+                    boxShadow: '0 8px 24px rgba(242, 197, 20, 0.15)',
+                    transform: 'translateY(-4px)',
+                    borderColor: '#f2c514'
+                  }
+                }}>
+                  <Box sx={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: 4,
+                    background: 'linear-gradient(90deg, #f2c514 0%, #f5d547 100%)',
+                  }} />
+                  
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3, mt: 1 }}>
+                    <LocalTaxiIcon sx={{ color: '#f2c514', fontSize: 24 }} />
+                    <Typography 
+                      variant="h6" 
+                      sx={{ 
+                        fontWeight: 600, 
+                        color: '#1a1a1a',
+                        fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                        fontSize: '1.125rem'
+                      }}
+                    >
                   Business Rates
                 </Typography>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                  <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2 }}>
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                  </Box>
+                  
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+                    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' }, gap: 2.5 }}>
+                      <Box>
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                            fontSize: '0.75rem',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.1em',
+                            fontWeight: 600,
+                            color: '#666',
+                            mb: 1
+                          }}
+                        >
                         Rateable Value
                       </Typography>
-                      <Typography variant="h6" sx={{ fontWeight: 600, color: '#1976d2' }}>
+                        <Typography 
+                          variant="h5" 
+                          sx={{ 
+                            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                            fontWeight: 700,
+                            color: '#1976d2',
+                            fontSize: '1.5rem',
+                            letterSpacing: '-0.01em'
+                          }}
+                        >
                         £{property.business_rates_id.rateable_value_gbp.toLocaleString()}
                       </Typography>
                     </Box>
                     
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                      <Box>
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                            fontSize: '0.75rem',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.1em',
+                            fontWeight: 600,
+                            color: '#666',
+                            mb: 1
+                          }}
+                        >
                         Rates Payable
                       </Typography>
-                      <Typography variant="h6" sx={{ fontWeight: 600, color: '#1976d2' }}>
+                        <Typography 
+                          variant="h5" 
+                          sx={{ 
+                            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                            fontWeight: 700,
+                            color: '#1976d2',
+                            fontSize: '1.5rem',
+                            letterSpacing: '-0.01em'
+                          }}
+                        >
                         £{property.business_rates_id.rates_payable_gbp.toLocaleString()}
                       </Typography>
                     </Box>
                   </Box>
                   
                   <Box>
-                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                      <Typography 
+                        variant="body2" 
+                        sx={{ 
+                          fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                          fontSize: '0.75rem',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.1em',
+                          fontWeight: 600,
+                          color: '#666',
+                          mb: 1
+                        }}
+                      >
                       Last Updated
                     </Typography>
-                    <Typography variant="body1" sx={{ fontWeight: 500, color: '#1a1a1a' }}>
+                      <Typography 
+                        variant="body1" 
+                        sx={{ 
+                          fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                          fontWeight: 500,
+                          color: '#1a1a1a',
+                          fontSize: '0.9375rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 0.5
+                        }}
+                      >
+                        <CalendarIcon sx={{ color: '#f2c514', fontSize: 18 }} />
                       {new Date(property.business_rates_id.updatedAt).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'long',
@@ -1037,35 +1661,102 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
             {/* EPC (Energy Performance Certificate) */}
             {property.epc && (
               <Box sx={{ 
-                p: 3,
-                border: '1px solid #e0e0e0',
+                  position: 'relative',
+                  p: 3.5,
+                  border: '2px solid #e8e8e8',
                 borderRadius: 3,
                 backgroundColor: '#ffffff',
                 width: '100%',
-                maxWidth: '100%',
                 overflow: 'hidden',
                 boxSizing: 'border-box',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)'
-              }}>
-                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
-                  Energy Performance Certificate (EPC)
+                  boxShadow: '0 2px 12px rgba(0, 0, 0, 0.08)',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  '&:hover': {
+                    boxShadow: '0 8px 24px rgba(242, 197, 20, 0.15)',
+                    transform: 'translateY(-4px)',
+                    borderColor: '#f2c514'
+                  }
+                }}>
+                  <Box sx={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: 4,
+                    background: 'linear-gradient(90deg, #f2c514 0%, #f5d547 100%)',
+                  }} />
+                  
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3, mt: 1 }}>
+                    <EcoIcon sx={{ color: '#f2c514', fontSize: 24 }} />
+                    <Typography 
+                      variant="h6" 
+                      sx={{ 
+                        fontWeight: 600, 
+                        color: '#1a1a1a',
+                        fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                        fontSize: '1.125rem'
+                      }}
+                    >
+                      Energy Performance Certificate
                 </Typography>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                  <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2 }}>
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                  </Box>
+                  
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+                    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' }, gap: 2.5 }}>
+                      <Box>
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                            fontSize: '0.75rem',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.1em',
+                            fontWeight: 600,
+                            color: '#666',
+                            mb: 1
+                          }}
+                        >
                         Rating
                       </Typography>
-                      <Typography variant="h6" sx={{ fontWeight: 600, color: '#4caf50' }}>
+                        <Typography 
+                          variant="h5" 
+                          sx={{ 
+                            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                            fontWeight: 700,
+                            color: '#4caf50',
+                            fontSize: '1.5rem',
+                            letterSpacing: '-0.01em'
+                          }}
+                        >
                         {property.epc.rating}
                       </Typography>
                     </Box>
                     
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                      <Box>
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                            fontSize: '0.75rem',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.1em',
+                            fontWeight: 600,
+                            color: '#666',
+                            mb: 1
+                          }}
+                        >
                         Score
                       </Typography>
-                      <Typography variant="h6" sx={{ fontWeight: 600, color: '#1976d2' }}>
+                        <Typography 
+                          variant="h5" 
+                          sx={{ 
+                            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                            fontWeight: 700,
+                            color: '#1976d2',
+                            fontSize: '1.5rem',
+                            letterSpacing: '-0.01em'
+                          }}
+                        >
                         {property.epc.score}
                       </Typography>
                     </Box>
@@ -1073,20 +1764,63 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
                   
                   {property.epc.certificate_number && (
                     <Box>
-                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                            fontSize: '0.75rem',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.1em',
+                            fontWeight: 600,
+                            color: '#666',
+                            mb: 1
+                          }}
+                        >
                         Certificate Number
                       </Typography>
-                      <Typography variant="body1" sx={{ fontWeight: 500, color: '#1a1a1a' }}>
+                        <Typography 
+                          variant="body1" 
+                          sx={{ 
+                            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                            fontWeight: 500,
+                            color: '#1a1a1a',
+                            fontSize: '0.9375rem',
+                            lineHeight: 1.5
+                          }}
+                        >
                         {property.epc.certificate_number}
                       </Typography>
                     </Box>
                   )}
                   
                   <Box>
-                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                      <Typography 
+                        variant="body2" 
+                        sx={{ 
+                          fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                          fontSize: '0.75rem',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.1em',
+                          fontWeight: 600,
+                          color: '#666',
+                          mb: 1
+                        }}
+                      >
                       Expiry Date
                     </Typography>
-                    <Typography variant="body1" sx={{ fontWeight: 500, color: '#1a1a1a' }}>
+                      <Typography 
+                        variant="body1" 
+                        sx={{ 
+                          fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                          fontWeight: 500,
+                          color: '#1a1a1a',
+                          fontSize: '0.9375rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 0.5
+                        }}
+                      >
+                        <CalendarIcon sx={{ color: '#f2c514', fontSize: 18 }} />
                       {new Date(property.epc.expiry_date).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'long',
@@ -1102,61 +1836,469 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
       </PropertyCard>
       )}
 
-      {/* Features */}
-      {hasFeatures && (
+      {/* Documents and Virtual Tours */}
+      {(hasDocuments || hasVirtualTours) && (
         <PropertyCard>
-          <CardContent>
-            <Typography variant="h5" sx={{ fontWeight: 600, mb: 3 }}>
-              Features & Amenities
+          <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 4 }}>
+              <DescriptionIcon sx={{ color: '#f2c514', fontSize: 32 }} />
+              <Typography 
+                variant="h4" 
+                sx={{ 
+                  fontWeight: 700, 
+                  fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                  fontSize: { xs: '1.5rem', md: '1.75rem' },
+                  letterSpacing: '-0.02em',
+                  color: '#1a1a1a',
+                  borderBottom: '2px solid #f2c514',
+                  paddingBottom: 2,
+                  flex: 1
+                }}
+              >
+                Documents and Virtual Tours
             </Typography>
+            </Box>
+            
+            {hasDocuments && (
             <Box sx={{ 
               display: 'flex', 
-              flexWrap: 'wrap',
-              gap: 1.5 
-            }}>
-              {/* Main Features */}
-              {Object.entries(property.features_id.features || {})
-                .filter(([key, value]) => value === 'Yes')
-                .map(([key, value]) => {
-                const featureName = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                flexDirection: 'column',
+                gap: 3,
+                width: '100%',
+                mb: hasVirtualTours ? 4 : 0
+              }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
+                  <DescriptionIcon sx={{ color: '#f2c514', fontSize: 24 }} />
+                  <Typography 
+                    variant="h5" 
+                    sx={{ 
+                      fontWeight: 600,
+                      fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                      fontSize: { xs: '1.25rem', md: '1.5rem' },
+                      color: '#1a1a1a'
+                    }}
+                  >
+                    Documents
+                  </Typography>
+                </Box>
                 
-                return (
-                  <Chip
-                    key={key}
-                    label={featureName}
-                    color="success"
-                    variant="filled"
+                {property.documents_id.documents.map((document) => (
+                  <Box 
+                    key={document._id} 
                     sx={{
-                      fontWeight: 500,
-                      '& .MuiChip-label': {
-                        fontSize: '0.875rem'
+                      position: 'relative',
+                      p: 3.5,
+                      border: '2px solid #e8e8e8',
+                      borderRadius: 3,
+                      backgroundColor: '#ffffff',
+                      width: '100%',
+                      overflow: 'hidden',
+                      boxSizing: 'border-box',
+                      boxShadow: '0 2px 12px rgba(0, 0, 0, 0.08)',
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                      '&:hover': {
+                        boxShadow: '0 8px 24px rgba(242, 197, 20, 0.15)',
+                        transform: 'translateY(-4px)',
+                        borderColor: '#f2c514'
                       }
                     }}
-                  />
-                );
-              })}
-              
-              {/* Additional Features */}
-              {property.features_id.additional_features?.filter(feature => feature.feature_value === 'Yes').map((feature) => {
-                return (
-                  <Chip
-                    key={feature._id}
-                    label={feature.feature_name}
-                    color="success"
-                    variant="filled"
+                  >
+                    <Box sx={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: 4,
+                      background: 'linear-gradient(90deg, #f2c514 0%, #f5d547 100%)',
+                    }} />
+                    
+                    <Box sx={{ 
+                      display: 'flex', 
+                      alignItems: 'flex-start', 
+                      gap: 3,
+                      flexDirection: { xs: 'column', sm: 'row' }
+                    }}>
+                      <Box sx={{ 
+                        display: 'flex', 
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        minWidth: { xs: 'auto', sm: 80 },
+                        width: { xs: '100%', sm: 80 },
+                        height: 80,
+                        borderRadius: 2,
+                        backgroundColor: 'rgba(242, 197, 20, 0.1)',
+                        border: '2px solid rgba(242, 197, 20, 0.2)',
+                        mb: { xs: 2, sm: 0 }
+                      }}>
+                        <DescriptionIcon sx={{ color: '#f2c514', fontSize: 40 }} />
+                      </Box>
+                      
+                      <Box sx={{ flex: 1, width: '100%' }}>
+                        <Typography 
+                          variant="h6" 
+                          sx={{ 
+                            fontWeight: 600, 
+                            mb: 2,
+                            color: '#1a1a1a',
+                            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                            fontSize: '1.125rem'
+                          }}
+                        >
+                          {document.document_name}
+                        </Typography>
+                        
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 2 }}>
+                          <Box>
+                            <Typography 
+                              variant="body2" 
+                              sx={{ 
+                                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                                fontSize: '0.75rem',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.1em',
+                                fontWeight: 600,
+                                color: '#666',
+                                mb: 0.5
+                              }}
+                            >
+                              Document Type
+                            </Typography>
+                            <Typography 
+                              variant="body1" 
+                              sx={{ 
+                                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                                fontWeight: 500,
+                                color: '#1a1a1a',
+                                fontSize: '0.9375rem'
+                              }}
+                            >
+                              {document.document_type || 'PDF Document'}
+                            </Typography>
+                          </Box>
+                          
+                          {document.uploaded_at && (
+                            <Box>
+                              <Typography 
+                                variant="body2" 
+                                sx={{ 
+                                  fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                                  fontSize: '0.75rem',
+                                  textTransform: 'uppercase',
+                                  letterSpacing: '0.1em',
+                                  fontWeight: 600,
+                                  color: '#666',
+                                  mb: 0.5
+                                }}
+                              >
+                                Upload Date
+                              </Typography>
+                              <Typography 
+                                variant="body1" 
+                                sx={{ 
+                                  fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                                  fontWeight: 500,
+                                  color: '#1a1a1a',
+                                  fontSize: '0.9375rem',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: 0.5
+                                }}
+                              >
+                                <CalendarIcon sx={{ color: '#f2c514', fontSize: 18 }} />
+                                {new Date(document.uploaded_at).toLocaleDateString('en-US', {
+                                  year: 'numeric',
+                                  month: 'long',
+                                  day: 'numeric'
+                                })}
+                              </Typography>
+                            </Box>
+                          )}
+                        </Box>
+                      </Box>
+                      
+                      <Button
+                        variant="contained"
+                        startIcon={<DownloadIcon />}
                     sx={{
-                      fontWeight: 500,
-                      '& .MuiChip-label': {
-                        fontSize: '0.875rem'
+                          backgroundColor: '#f2c514',
+                          fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                          fontWeight: 600,
+                          textTransform: 'none',
+                          borderRadius: 2,
+                          px: 3,
+                          py: 1.5,
+                          '&:hover': {
+                            backgroundColor: '#dfb612',
+                            transform: 'translateY(-2px)',
+                            boxShadow: '0 4px 12px rgba(25, 118, 210, 0.3)'
+                          },
+                          minWidth: { xs: '100%', sm: '140px' },
+                          width: { xs: '100%', sm: 'auto' },
+                          mt: { xs: 2, sm: 0 }
+                        }}
+                        onClick={() => {
+                          if (document.file_url) {
+                            window.open(document.file_url, '_blank');
+                          }
+                        }}
+                      >
+                        Download
+                      </Button>
+                    </Box>
+                  </Box>
+                ))}
+              </Box>
+            )}
+            
+            {hasVirtualTours && (
+              <Box sx={{ 
+                display: 'flex', 
+                flexDirection: 'column',
+                gap: 3,
+                width: '100%',
+                mt: hasDocuments ? 4 : 0
+              }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
+                  <VideoLibraryIcon sx={{ color: '#f2c514', fontSize: 24 }} />
+                  <Typography 
+                    variant="h5" 
+                    sx={{ 
+                      fontWeight: 600,
+                      fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                      fontSize: { xs: '1.25rem', md: '1.5rem' },
+                      color: '#1a1a1a'
+                    }}
+                  >
+                    Virtual Tours
+                  </Typography>
+                </Box>
+                
+                {property.virtual_tours_id.virtual_tours.map((virtualTour) => (
+                  <Box 
+                    key={virtualTour._id} 
+                    sx={{ 
+                      position: 'relative',
+                      p: 3.5,
+                      border: '2px solid #e8e8e8',
+                      borderRadius: 3,
+                      backgroundColor: '#ffffff',
+                      width: '100%',
+                      overflow: 'hidden',
+                      boxSizing: 'border-box',
+                      boxShadow: '0 2px 12px rgba(0, 0, 0, 0.08)',
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                      '&:hover': {
+                        boxShadow: '0 8px 24px rgba(76, 175, 80, 0.15)',
+                        transform: 'translateY(-4px)',
+                        borderColor: '#4caf50'
                       }
                     }}
-                  />
-                );
-              })}
+                  >
+                    <Box sx={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: 4,
+                      background: 'linear-gradient(90deg, #4caf50 0%, #66bb6a 100%)',
+                    }} />
+                    
+                    <Box sx={{ 
+                      display: 'flex', 
+                      alignItems: 'flex-start', 
+                      gap: 3,
+                      flexDirection: { xs: 'column', sm: 'row' }
+                    }}>
+                      <Box sx={{ 
+                        display: 'flex', 
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        minWidth: { xs: 'auto', sm: 80 },
+                        width: { xs: '100%', sm: 80 },
+                        height: 80,
+                        borderRadius: 2,
+                        backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                        border: '2px solid rgba(76, 175, 80, 0.2)',
+                        mb: { xs: 2, sm: 0 }
+                      }}>
+                        <VideoLibraryIcon sx={{ color: '#4caf50', fontSize: 40 }} />
+                      </Box>
+                      
+                      <Box sx={{ flex: 1, width: '100%' }}>
+                        <Typography 
+                          variant="h6" 
+                          sx={{ 
+                            fontWeight: 600, 
+                            mb: 2,
+                            color: '#1a1a1a',
+                            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                            fontSize: '1.125rem'
+                          }}
+                        >
+                          {virtualTour.tour_name}
+                        </Typography>
+                        
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 2 }}>
+                          <Box>
+                            <Typography 
+                              variant="body2" 
+                              sx={{ 
+                                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                                fontSize: '0.75rem',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.1em',
+                                fontWeight: 600,
+                                color: '#666',
+                                mb: 0.5
+                              }}
+                            >
+                              Tour Type
+                            </Typography>
+                            <Typography 
+                              variant="body1" 
+                              sx={{ 
+                                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                      fontWeight: 500,
+                                color: '#1a1a1a',
+                                fontSize: '0.9375rem'
+                              }}
+                            >
+                              {virtualTour.link_type || '360° Virtual Tour'}
+                            </Typography>
+                          </Box>
+                          
+                          <Box>
+                            <Typography 
+                              variant="body2" 
+                              sx={{ 
+                                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                                fontSize: '0.75rem',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.1em',
+                                fontWeight: 600,
+                                color: '#666',
+                                mb: 0.5
+                              }}
+                            >
+                              Duration
+                            </Typography>
+                            <Typography 
+                              variant="body1" 
+                              sx={{ 
+                                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                                fontWeight: 500,
+                                color: '#1a1a1a',
+                                fontSize: '0.9375rem'
+                              }}
+                            >
+                              {virtualTour.duration || 'N/A'}
+                            </Typography>
+                          </Box>
+                          
+                          <Box>
+                            <Typography 
+                              variant="body2" 
+                              sx={{ 
+                                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                                fontSize: '0.75rem',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.1em',
+                                fontWeight: 600,
+                                color: '#666',
+                                mb: 0.5
+                              }}
+                            >
+                              Description
+                            </Typography>
+                            <Typography 
+                              variant="body1" 
+                              sx={{ 
+                                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                                fontWeight: 400,
+                                color: '#555',
+                                fontSize: '0.9375rem',
+                                lineHeight: 1.6
+                              }}
+                            >
+                              {virtualTour.description || 'No description available'}
+                            </Typography>
+                          </Box>
+                          
+                          <Box>
+                            <Typography 
+                              variant="body2" 
+                              sx={{ 
+                                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                                fontSize: '0.75rem',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.1em',
+                                fontWeight: 600,
+                                color: '#666',
+                                mb: 0.5
+                              }}
+                            >
+                              Created Date
+                            </Typography>
+                            <Typography 
+                              variant="body1" 
+                              sx={{ 
+                                fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                                fontWeight: 500,
+                                color: '#1a1a1a',
+                                fontSize: '0.9375rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 0.5
+                              }}
+                            >
+                              <CalendarIcon sx={{ color: '#4caf50', fontSize: 18 }} />
+                              {(property.virtual_tours_id?.createdAt ? new Date(property.virtual_tours_id.createdAt).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                              }) : 'N/A')}
+                            </Typography>
+                          </Box>
+                        </Box>
+                      </Box>
+                      
+                      <Button
+                        variant="contained"
+                        startIcon={<PlayArrowIcon />}
+                        sx={{
+                          backgroundColor: '#4caf50',
+                          fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                          fontWeight: 600,
+                          textTransform: 'none',
+                          borderRadius: 2,
+                          px: 3,
+                          py: 1.5,
+                          '&:hover': {
+                            backgroundColor: '#388e3c',
+                            transform: 'translateY(-2px)',
+                            boxShadow: '0 4px 12px rgba(76, 175, 80, 0.3)'
+                          },
+                          minWidth: { xs: '100%', sm: '140px' },
+                          width: { xs: '100%', sm: 'auto' },
+                          mt: { xs: 2, sm: 0 }
+                        }}
+                        onClick={() => {
+                          if (virtualTour.tour_url) {
+                            window.open(virtualTour.tour_url, '_blank');
+                          }
+                        }}
+                      >
+                        View Tour
+                      </Button>
             </Box>
+                  </Box>
+                ))}
+              </Box>
+            )}
           </CardContent>
         </PropertyCard>
       )}
+
     </MainContent>
   );
 };

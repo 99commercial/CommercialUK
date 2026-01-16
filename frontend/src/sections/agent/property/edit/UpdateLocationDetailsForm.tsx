@@ -80,6 +80,7 @@ interface UpdateLocationDetailsFormProps {
   onDataChange?: (data: UpdateLocationDetailsFormData) => void;
   propertyId?: string;
   fetchProperty?: () => void;
+  fetchPropertyData?: () => void;
 }
 
 const UpdateLocationDetailsForm: React.FC<UpdateLocationDetailsFormProps> = ({ 
@@ -87,7 +88,8 @@ const UpdateLocationDetailsForm: React.FC<UpdateLocationDetailsFormProps> = ({
   initialData, 
   onDataChange,
   propertyId,
-  fetchProperty
+  fetchProperty,
+  fetchPropertyData 
 }) => {
   const [formData, setFormData] = useState<UpdateLocationDetailsFormData>({
     coordinates: {
@@ -364,6 +366,7 @@ const UpdateLocationDetailsForm: React.FC<UpdateLocationDetailsFormProps> = ({
         if (onStepSubmitted) {
           onStepSubmitted(3);
         }
+        fetchPropertyData?.();
       } else {
         throw new Error(response.data.message || 'Failed to update location details');
       }

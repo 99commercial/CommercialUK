@@ -112,13 +112,13 @@ export const updatePropertyDetailsValidator = [
 
   // Council Tax validation
   body('council_tax.band')
-    .optional()
+    .optional({ values: 'falsy' })
     .isIn(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'Exempt', 'Not Applicable','Unknown'])
     .withMessage('Invalid council tax band'),
 
   // Rateable Value validation
   body('rateable_value')
-    .optional()
+    .optional({ values: 'falsy' })
     .isNumeric()
     .withMessage('Rateable value must be a number')
     .isFloat({ min: 0 })
@@ -126,7 +126,7 @@ export const updatePropertyDetailsValidator = [
 
   // Planning validation
   body('planning.status')
-    .optional()
+    .optional({ values: 'falsy' })
     .isIn(['Full Planning', 'Outline Planning', 'No Planning Required', 'Unknown'])
     .withMessage('Invalid planning status'),
 ];
@@ -147,14 +147,14 @@ export const updateBusinessDetailsValidator = [
 
   // Business Rates validation
   body('business_rates.rateable_value_gbp')
-    .optional()
+    .optional({ values: 'falsy' })
     .isNumeric()
     .withMessage('Rateable value must be a number')
     .isFloat({ min: 0 })
     .withMessage('Rateable value must be greater than or equal to 0'),
   
   body('business_rates.rates_payable_gbp')
-    .optional()
+    .optional({ values: 'falsy' })
     .isNumeric()
     .withMessage('Rates payable must be a number')
     .isFloat({ min: 0 })
@@ -162,38 +162,38 @@ export const updateBusinessDetailsValidator = [
 
   // Descriptions validation
   body('descriptions.general')
-    .optional()
+    .optional({ values: 'falsy' })
     .trim()
     .isLength({ min: 50, max: 2000 })
     .withMessage('General description must be between 50 and 2000 characters'),
   
   body('descriptions.location')
-    .optional()
+    .optional({ values: 'falsy' })
     .trim()
     .isLength({ min: 20, max: 1000 })
     .withMessage('Location description must be between 20 and 1000 characters'),
   
   body('descriptions.accommodation')
-    .optional()
+    .optional({ values: 'falsy' })
     .trim()
     .isLength({ min: 20, max: 1000 })
     .withMessage('Accommodation description must be between 20 and 1000 characters'),
   
   body('descriptions.terms')
-    .optional()
+    .optional({ values: 'falsy' })
     .trim()
     .isLength({ min: 20, max: 1000 })
     .withMessage('Terms description must be between 20 and 1000 characters'),
   
   body('descriptions.specifications')
-    .optional()
+    .optional({ values: 'falsy' })
     .trim()
     .isLength({ min: 20, max: 1000 })
     .withMessage('Specifications description must be between 20 and 1000 characters'),
 
   // Sale Types validation
   body('sale_types')
-    .optional()
+    .optional({ values: 'falsy' })
     .isArray()
     .withMessage('Sale types must be an array')
     .custom((value) => {
@@ -205,24 +205,24 @@ export const updateBusinessDetailsValidator = [
     .withMessage('Exactly one sale type is required'),
   
   body('sale_types.*.sale_type')
-    .optional()
+    .optional({ values: 'falsy' }   )
     .isIn(['Freehold', 'Leasehold', 'To Let', 'For Sale', 'Under Offer', 'Sold', 'Let'])
     .withMessage('Invalid sale type'),
   
   body('sale_types.*.price_currency')
-    .optional()
+    .optional({ values: 'falsy' })
     .isIn(['GBP'])
     .withMessage('Price currency must be GBP'),
   
   body('sale_types.*.price_value')
-    .optional()
+    .optional({ values: 'falsy' })
     .isNumeric()
     .withMessage('Price value must be a number')
     .isFloat({ min: 0 })
     .withMessage('Price value must be greater than or equal to 0'),
   
   body('sale_types.*.price_unit')
-    .optional()
+    .optional({ values: 'falsy' })
     .isIn(['per sq ft', 'per annum', 'per month', 'per unit', 'total'])
     .withMessage('Invalid price unit'),
 ];
@@ -315,24 +315,24 @@ export const updatePropertyDocumentsValidator = [
 
   // Document names validation
   body('document_names')
-    .optional()
+    .optional({ values: 'falsy' })
     .isArray()
     .withMessage('Document names must be an array'),
   
   body('document_names.*')
-    .optional()
+    .optional({ values: 'falsy' })
     .trim()
     .isLength({ min: 2, max: 200 })
     .withMessage('Each document name must be between 2 and 200 characters'),
   
   // Document types validation
   body('document_types')
-    .optional()
+    .optional({ values: 'falsy' })
     .isArray()
     .withMessage('Document types must be an array'),
   
   body('document_types.*')
-    .optional()
+    .optional({ values: 'falsy' })
     .isIn(['Floor Plan', 'EPC Certificate', 'Planning Permission', 'Title Deeds', 'Lease Agreement', 'Survey Report', 'Insurance Certificate', 'Health & Safety Certificate', 'Fire Safety Certificate', 'Other'])
     .withMessage('Invalid document type'),
 ];
@@ -411,7 +411,7 @@ export const updatePropertyLocationValidator = [
     .withMessage('Country must not exceed 100 characters'),
   
   body('address_details.postal_code')
-    .optional()
+    .optional({ values: 'falsy' })
     .matches(/^[A-Z]{1,2}[0-9][A-Z0-9]? [0-9][A-Z]{2}$/i)
     .withMessage('Please enter a valid UK postcode'),
 ];
@@ -447,65 +447,65 @@ export const updatePropertyFeaturesValidator = [
 
   // Main features validation
   body('features.air_conditioning')
-    .optional()
+    .optional({ values: 'falsy' })
     .isIn(['Yes', 'No', 'Unknown'])
     .withMessage('Air conditioning must be Yes, No, or Unknown'),
   
   body('features.clean_room')
-    .optional()
+    .optional({ values: 'falsy' })
     .isIn(['Yes', 'No', 'Unknown'])
     .withMessage('Clean room must be Yes, No, or Unknown'),
   
   body('features.craneage')
-    .optional()
+    .optional({ values: 'falsy' })
     .isIn(['Yes', 'No', 'Unknown'])
     .withMessage('Craneage must be Yes, No, or Unknown'),
   
   body('features.laboratory')
-    .optional()
+    .optional({ values: 'falsy' } )
     .isIn(['Yes', 'No', 'Unknown'])
     .withMessage('Laboratory must be Yes, No, or Unknown'),
   
   body('features.loading_bay')
-    .optional()
+    .optional({ values: 'falsy' })
     .isIn(['Yes', 'No', 'Unknown'])
     .withMessage('Loading bay must be Yes, No, or Unknown'),
   
   body('features.secure_yard')
-    .optional()
+    .optional({ values: 'falsy' })
     .isIn(['Yes', 'No', 'Unknown'])
     .withMessage('Secure yard must be Yes, No, or Unknown'),
   
   body('features.yard')
-    .optional()
+    .optional({ values: 'falsy' })
     .isIn(['Yes', 'No', 'Unknown'])
     .withMessage('Yard must be Yes, No, or Unknown'),
 
   // Additional features validation
   body('additional_features')
-    .optional()
+    .optional({ values: 'falsy' })
     .isArray()
     .withMessage('Additional features must be an array'),
   
   body('additional_features.*.feature_name')
-    .optional()
+    .optional({ values: 'falsy' })
     .trim()
     .isLength({ min: 2, max: 100 })
     .withMessage('Feature name must be between 2 and 100 characters'),
   
   body('additional_features.*.feature_value')
-    .optional()
+    .optional({ values: 'falsy' })
     .isIn(['Yes', 'No', 'Unknown'])
     .withMessage('Feature value must be Yes, No, or Unknown'),
   
   body('additional_features.*.description')
-    .optional()
+    .optional({ values: 'falsy' })
     .trim()
     .isLength({ max: 500 })
     .withMessage('Feature description must not exceed 500 characters'),
   
   body('feature_notes')
-    .optional()
+    .optional({ values: 'falsy' })
     .trim()
     .isLength({ max: 1000 })
     .withMessage('Feature notes must not exceed 1000 characters'),
@@ -537,13 +537,6 @@ export const createPropertyQueryValidator = [
     .isLength({ min: 2, max: 50 })
     .withMessage('Last name must be between 2 and 50 characters'),
   
-  body('company')
-    .trim()
-    .notEmpty()
-    .withMessage('Company is required')
-    .isLength({ min: 2, max: 100 })
-    .withMessage('Company must be between 2 and 100 characters'),
-  
   body('email')
     .isEmail()
     .withMessage('Please provide a valid email address')
@@ -555,30 +548,6 @@ export const createPropertyQueryValidator = [
     .withMessage('Phone number is required')
     .isLength({ min: 10, max: 20 })
     .withMessage('Phone number must be between 10 and 20 characters'),
-  
-  body('no_of_people')
-    .isInt({ min: 1, max: 1000 })
-    .withMessage('Number of people must be between 1 and 1000'),
-  
-  body('start_date')
-    .isISO8601()
-    .withMessage('Start date must be a valid date')
-    .custom((value) => {
-      const startDate = new Date(value);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      if (startDate < today) {
-        throw new Error('Start date cannot be in the past');
-      }
-      return true;
-    }),
-  
-  body('length_of_term')
-    .trim()
-    .notEmpty()
-    .withMessage('Length of term is required')
-    .isLength({ min: 2, max: 100 })
-    .withMessage('Length of term must be between 2 and 100 characters'),
   
   body('message')
     .trim()

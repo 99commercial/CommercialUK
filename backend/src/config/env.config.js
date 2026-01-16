@@ -26,3 +26,6 @@ export const CLOUDINARY_API_SECRET = process.env.CLOUDINARY_API_SECRET;
 
 // EPC API CONFIGURATION
 export const EPC_API_TOKEN = process.env.EPC_API_TOKEN;
+
+// PATMA API CONFIGURATION
+export const PATMA_API_TOKEN = process.env.PATMA_API_TOKEN;

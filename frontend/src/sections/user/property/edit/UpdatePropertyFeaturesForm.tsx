@@ -67,6 +67,7 @@ interface UpdatePropertyFeaturesFormProps {
   onDataChange?: (data: UpdatePropertyFeaturesFormData) => void;
   propertyId?: string;
   fetchProperty?: () => void;
+  fetchPropertyData?: () => void;
 }
 
 const UpdatePropertyFeaturesForm: React.FC<UpdatePropertyFeaturesFormProps> = ({ 
@@ -74,7 +75,8 @@ const UpdatePropertyFeaturesForm: React.FC<UpdatePropertyFeaturesFormProps> = ({
   initialData, 
   onDataChange,
   propertyId,
-  fetchProperty
+  fetchProperty,
+  fetchPropertyData
 }) => {
   const [formData, setFormData] = useState<UpdatePropertyFeaturesFormData>({
     features: {
@@ -227,6 +229,7 @@ const UpdatePropertyFeaturesForm: React.FC<UpdatePropertyFeaturesFormProps> = ({
         if (onStepSubmitted) {
           onStepSubmitted(5);
         }
+        fetchPropertyData?.();
       } else {
         throw new Error(response.data.message || 'Failed to update property features');
       }

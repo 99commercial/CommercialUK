@@ -3,8 +3,6 @@ import {
   Container,
   Typography,
   Card,
-  CardMedia,
-  CardContent,
   IconButton,
   useTheme,
   useMediaQuery,
@@ -21,17 +19,19 @@ const CitiesSection = styled(Box)(({ theme }) => ({
 }));
 
 const CityCard = styled(Card)(({ theme }) => ({
-  borderRadius: theme.spacing(2),
+  borderRadius: theme.spacing(3),
   overflow: 'hidden',
   cursor: 'pointer',
   transition: 'all 0.3s ease',
-  minWidth: '280px',
-  maxWidth: '280px',
-  height: '320px',
+  minWidth: '380px',
+  maxWidth: '380px',
+  height: '600px',
   flexShrink: 0,
+  position: 'relative',
+  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
   '&:hover': {
     transform: 'translateY(-4px)',
-    boxShadow: theme.shadows[8],
+    boxShadow: theme.shadows[12],
   },
 }));
 
@@ -50,19 +50,20 @@ const CarouselWrapper = styled(Box)({
 
 const NavigationButton = styled(IconButton)(({ theme }) => ({
   position: 'absolute',
-  top: '50%',
-  transform: 'translateY(-50%)',
-  backgroundColor: 'rgba(255, 255, 255, 0.9)',
+  bottom: theme.spacing(2),
+  backgroundColor: 'rgba(255, 255, 255, 0.95)',
   color: theme.palette.primary.main,
   zIndex: 2,
+  boxShadow: theme.shadows[4],
   '&:hover': {
     backgroundColor: 'rgba(255, 255, 255, 1)',
+    boxShadow: theme.shadows[8],
   },
   '&.left': {
-    left: theme.spacing(1),
+    right: theme.spacing(10),
   },
   '&.right': {
-    right: theme.spacing(1),
+    right: theme.spacing(2),
   },
 }));
 
@@ -283,7 +284,7 @@ export default function HomePopularCities() {
     setCurrentIndex(clampedIndex);
     
     if (carouselRef.current) {
-      const cardWidth = 280 + 16; // card width + gap
+      const cardWidth = 380 + 16; // card width + gap
       const translateX = -clampedIndex * cardWidth;
       carouselRef.current.style.transform = `translateX(${translateX}px)`;
     }
@@ -300,45 +301,92 @@ export default function HomePopularCities() {
   return (
     <CitiesSection>
       <Container maxWidth="lg" sx={{ maxWidth: '100%' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'start'}}>
         <Typography
           variant="h4"
           component="h2"
           sx={{
+            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
             textAlign: 'center',
-            fontWeight: 700,
+            fontWeight: 900,
             mb: 6,
-            color: '#333',
+            color: '#1a1a1a',
+            fontSize: '3rem',
+            letterSpacing: '-0.02em',
+            lineHeight: 1.3,
+            
           }}
         >
           Explore Popular Counties
         </Typography>
+      </Box>
 
         <CarouselContainer>
           <CarouselWrapper ref={carouselRef}>
             {cities.map((city, index) => (
               <CityCard key={index}>
-                <CardMedia
-                  component="img"
-                  height="240"
-                  image={city.image}
-                  alt={city.name}
+                <Box
                   sx={{
-                    objectFit: 'cover',
+                    position: 'relative',
                     width: '100%',
+                    height: '100%',
+                    backgroundImage: `url(${city.image})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    '&::before': {
+                      content: '""',
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      zIndex: 1,
+                    },
                   }}
-                />
-                <CardContent sx={{ p: 2, textAlign: 'center' }}>
-                  <Typography
-                    variant="h6"
+                >
+                  <Box
                     sx={{
-                      fontWeight: 600,
-                      color: '#333',
-                      fontSize: '1.1rem',
+                      position: 'relative',
+                      zIndex: 2,
+                      height: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'flex-start',
+                      alignItems: 'flex-start',
+                      p: 3,
                     }}
                   >
-                    {city.name}
-                  </Typography>
-                </CardContent>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                        color: 'rgba(255, 255, 255, 0.95)',
+                        fontSize: '0.8125rem',
+                        fontWeight: 600,
+                        textTransform: 'uppercase',
+                        letterSpacing: '1.2px',
+                        mb: 1,
+                        lineHeight: 1.4,
+                      }}
+                    >
+                      Popular County
+                    </Typography>
+                    <Typography
+                      variant="h5"
+                      sx={{
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                        color: 'white',
+                        fontSize: '1.75rem',
+                        fontWeight: 900,
+                        lineHeight: 1.3,
+                        textShadow: '0 2px 12px rgba(0, 0, 0, 0.4)',
+                        letterSpacing: '-0.02em',
+                      }}
+                    >
+                      {city.name}
+                    </Typography>
+                  </Box>
+                </Box>
               </CityCard>
             ))}
           </CarouselWrapper>

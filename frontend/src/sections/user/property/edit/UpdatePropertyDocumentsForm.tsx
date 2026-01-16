@@ -83,6 +83,7 @@ interface UpdatePropertyDocumentsFormProps {
   onDataChange?: (data: PropertyDocumentsData) => void;
   propertyId?: string;
   fetchProperty?: () => void;
+  fetchPropertyData?: () => void;
 }
 
 const UpdatePropertyDocumentsForm: React.FC<UpdatePropertyDocumentsFormProps> = ({ 
@@ -90,7 +91,8 @@ const UpdatePropertyDocumentsForm: React.FC<UpdatePropertyDocumentsFormProps> = 
   initialData, 
   onDataChange,
   propertyId,
-  fetchProperty
+  fetchProperty,
+  fetchPropertyData 
 }) => {
   const [formData, setFormData] = useState<PropertyDocumentsData>({
     documents: initialData?.documents || [],
@@ -380,6 +382,7 @@ const UpdatePropertyDocumentsForm: React.FC<UpdatePropertyDocumentsFormProps> = 
         if (onStepSubmitted) {
           onStepSubmitted(7);
         }
+        fetchPropertyData?.();
       } else {
         throw new Error(response.data.message || 'Failed to update property documents');
       }

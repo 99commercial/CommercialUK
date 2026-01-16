@@ -174,6 +174,7 @@ const EditPropertyPage: React.FC = () => {
         initialData={propertyData?.general_details}
         onDataChange={dataChangeCallback0}
         onStepSubmitted={() => handleStepCompleted(activeStep)} 
+        fetchPropertyData={fetchPropertyData}
         />;
       case 1:
         return <UpdateBusinessDetailsForm       
@@ -181,6 +182,7 @@ const EditPropertyPage: React.FC = () => {
         initialData={propertyData}
         onDataChange={dataChangeCallback1}
         onStepSubmitted={() => handleStepCompleted(activeStep)} 
+        fetchPropertyData={fetchPropertyData}
         />;
       case 2:
         return <UpdatePropertyDetailsForm       
@@ -188,6 +190,7 @@ const EditPropertyPage: React.FC = () => {
         initialData={propertyData}
         onDataChange={dataChangeCallback2}
         onStepSubmitted={() => handleStepCompleted(activeStep)} 
+        fetchPropertyData={fetchPropertyData}
       />;
       case 3:
         return <UpdateLocationDetailsForm 
@@ -195,6 +198,7 @@ const EditPropertyPage: React.FC = () => {
         initialData={propertyData?.location_id}
         onDataChange={dataChangeCallback3}
         onStepSubmitted={() => handleStepCompleted(activeStep)} 
+        fetchPropertyData={fetchPropertyData}
         />;
       case 4:
         return <UpdateVirtualToursForm 
@@ -202,6 +206,7 @@ const EditPropertyPage: React.FC = () => {
         initialData={propertyData?.virtual_tours_id}
         onDataChange={dataChangeCallback4}
         onStepSubmitted={() => handleStepCompleted(activeStep)} 
+        fetchPropertyData={fetchPropertyData}
         />;
       case 5:
         return <UpdatePropertyFeaturesForm 
@@ -209,6 +214,7 @@ const EditPropertyPage: React.FC = () => {
         initialData={propertyData?.features_id}
         onDataChange={dataChangeCallback5}
         onStepSubmitted={() => handleStepCompleted(activeStep)} 
+        fetchPropertyData={fetchPropertyData}
         />;
       case 6:
         return <UpdatePropertyImagesForm      
@@ -216,6 +222,7 @@ const EditPropertyPage: React.FC = () => {
         initialData={propertyData?.images_id}
         onDataChange={dataChangeCallback6}
         onStepSubmitted={() => handleStepCompleted(activeStep)} 
+        fetchPropertyData={fetchPropertyData}
         />;
       case 7:
         return <UpdatePropertyDocumentsForm 
@@ -223,6 +230,7 @@ const EditPropertyPage: React.FC = () => {
         initialData={propertyData?.documents_id}
         onDataChange={dataChangeCallback7}
         onStepSubmitted={() => handleStepCompleted(activeStep)} 
+        fetchPropertyData={fetchPropertyData}
         />;
       default:
         return <UpdateGeneralDetailsForm 
@@ -230,6 +238,7 @@ const EditPropertyPage: React.FC = () => {
         initialData={propertyData}
         onDataChange={dataChangeCallback8}
         onStepSubmitted={() => handleStepCompleted(activeStep)} 
+        fetchPropertyData={fetchPropertyData}
         />;
     }
   };

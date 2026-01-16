@@ -92,18 +92,19 @@ export const updatePropertyDetailsValidator = [
     .withMessage('Invalid EPC rating'),
   
   body('epc.score')
-    .optional()
+    .optional({ values: 'falsy' })
+    .isNumeric()
     .isInt({ min: 0, max: 100 })
     .withMessage('EPC score must be between 0 and 100'),
   
   body('epc.certificate_number')
-    .optional()
+    .optional({ values: 'falsy' })
     .trim()
     .isLength({ max: 50 })
     .withMessage('Certificate number must not exceed 50 characters'),
   
   body('epc.expiry_date')
-    .optional()
+    .optional({ values: 'falsy' })
     .isISO8601()
     .withMessage('Expiry date must be a valid date'),
 
@@ -114,14 +115,14 @@ export const updatePropertyDetailsValidator = [
     .withMessage('Invalid council tax band'),
   
   body('council_tax.authority')
-    .optional()
+  .optional({ values: 'falsy' })
     .trim()
     .isLength({ max: 100 })
     .withMessage('Council authority must not exceed 100 characters'),
 
   // Rateable Value validation
   body('rateable_value')
-    .optional()
+    .optional({ values: 'falsy' })
     .isNumeric()
     .withMessage('Rateable value must be a number')
     .isFloat({ min: 0 })
@@ -129,18 +130,18 @@ export const updatePropertyDetailsValidator = [
 
   // Planning validation
   body('planning.status')
-    .optional()
+  .optional({ values: 'falsy' })
     .isIn(['Full Planning', 'Outline Planning', 'No Planning Required', 'Unknown'])
     .withMessage('Invalid planning status'),
   
   body('planning.application_number')
-    .optional()
+    .optional({ values: 'falsy' })
     .trim()
     .isLength({ max: 50 })
     .withMessage('Application number must not exceed 50 characters'),
   
   body('planning.decision_date')
-    .optional()
+    .optional({ values: 'falsy' })
     .isISO8601()
     .withMessage('Decision date must be a valid date'),
 ];
@@ -161,14 +162,14 @@ export const updateBusinessDetailsValidator = [
 
   // Business Rates validation
   body('business_rates.rateable_value_gbp')
-    .optional()
+    .optional({ values: 'falsy' })
     .isNumeric()
     .withMessage('Rateable value must be a number')
     .isFloat({ min: 0 })
     .withMessage('Rateable value must be greater than or equal to 0'),
   
   body('business_rates.rates_payable_gbp')
-    .optional()
+    .optional({ values: 'falsy' })
     .isNumeric()
     .withMessage('Rates payable must be a number')
     .isFloat({ min: 0 })
@@ -212,29 +213,29 @@ export const updateBusinessDetailsValidator = [
 
   // Sale Types validation
   body('sale_types')
-    .optional()
+    .optional({ values: 'falsy' })
     .isArray()
     .withMessage('Sale types must be an array'),
   
   body('sale_types.*.sale_type')
-    .optional()
+    .optional({ values: 'falsy' })
     .isIn(['Freehold', 'Leasehold', 'To Let', 'For Sale', 'Under Offer', 'Sold', 'Let'])
     .withMessage('Invalid sale type'),
   
   body('sale_types.*.price_currency')
-    .optional()
+    .optional({ values: 'falsy' })
     .isIn(['GBP'])
     .withMessage('Price currency must be GBP'),
   
   body('sale_types.*.price_value')
-    .optional()
+    .optional({ values: 'falsy' })
     .isNumeric()
     .withMessage('Price value must be a number')
     .isFloat({ min: 0 })
     .withMessage('Price value must be greater than or equal to 0'),
   
   body('sale_types.*.price_unit')
-    .optional()
+    .optional({ values: 'falsy' })
     .isIn(['per sq ft', 'per annum', 'per month', 'per unit', 'total'])
     .withMessage('Invalid price unit'),
 ];
@@ -327,24 +328,24 @@ export const updatePropertyDocumentsValidator = [
 
   // Document names validation
   body('document_names')
-    .optional()
+    .optional({ values: 'falsy' })
     .isArray()
     .withMessage('Document names must be an array'),
   
   body('document_names.*')
-    .optional()
+    .optional({ values: 'falsy' })
     .trim()
     .isLength({ min: 2, max: 200 })
     .withMessage('Each document name must be between 2 and 200 characters'),
   
   // Document types validation
   body('document_types')
-    .optional()
+    .optional({ values: 'falsy' })
     .isArray()
     .withMessage('Document types must be an array'),
   
   body('document_types.*')
-    .optional()
+    .optional({ values: 'falsy' })
     .isIn(['Floor Plan', 'EPC Certificate', 'Planning Permission', 'Title Deeds', 'Lease Agreement', 'Survey Report', 'Insurance Certificate', 'Health & Safety Certificate', 'Fire Safety Certificate', 'Other'])
     .withMessage('Invalid document type'),
 ];
@@ -430,50 +431,50 @@ export const updatePropertyLocationValidator = [
 
   // Map settings validation
   body('map_settings.disable_map_display')
-    .optional()
+    .optional({ values: 'falsy' })
     .isBoolean()
     .withMessage('Disable map display must be boolean'),
   
   body('map_settings.map_zoom_level')
-    .optional()
+    .optional({ values: 'falsy' })
     .isInt({ min: 1, max: 20 })
     .withMessage('Map zoom level must be between 1 and 20'),
   
   body('map_settings.map_type')
-    .optional()
+    .optional({ values: 'falsy' })
     .isIn(['roadmap', 'satellite', 'hybrid', 'terrain'])
     .withMessage('Invalid map type'),
 
   // Geocoding info validation
   body('geocoding_info.place_id')
-    .optional()
+    .optional({ values: 'falsy' })
     .trim()
     .isLength({ max: 100 })
     .withMessage('Place ID must not exceed 100 characters'),
   
   body('geocoding_info.geocoding_service')
-    .optional()
+    .optional({ values: 'falsy' })
     .isIn(['Google', 'OpenStreetMap', 'Bing', 'Manual'])
     .withMessage('Invalid geocoding service'),
   
   body('geocoding_info.geocoding_accuracy')
-    .optional()
+    .optional({ values: 'falsy' })
     .isIn(['ROOFTOP', 'RANGE_INTERPOLATED', 'GEOMETRIC_CENTER', 'APPROXIMATE'])
     .withMessage('Invalid geocoding accuracy'),
   
   body('geocoding_info.geocoded_at')
-    .optional()
+    .optional({ values: 'falsy' })
     .isISO8601()
     .withMessage('Geocoded at must be a valid date'),
 
   // Location verification validation
   body('location_verified')
-    .optional()
+    .optional({ values: 'falsy' })
     .isBoolean()
     .withMessage('Location verified must be boolean'),
   
   body('verification_notes')
-    .optional()
+    .optional({ values: 'falsy' })
     .trim()
     .isLength({ max: 500 })
     .withMessage('Verification notes must not exceed 500 characters'),
@@ -510,65 +511,65 @@ export const updatePropertyFeaturesValidator = [
 
   // Main features validation
   body('features.air_conditioning')
-    .optional()
+    .optional({ values: 'falsy' })
     .isIn(['Yes', 'No', 'Unknown'])
     .withMessage('Air conditioning must be Yes, No, or Unknown'),
   
   body('features.clean_room')
-    .optional()
+    .optional({ values: 'falsy' } )
     .isIn(['Yes', 'No', 'Unknown'])
     .withMessage('Clean room must be Yes, No, or Unknown'),
   
   body('features.craneage')
-    .optional()
+    .optional({ values: 'falsy' })
     .isIn(['Yes', 'No', 'Unknown'])
     .withMessage('Craneage must be Yes, No, or Unknown'),
   
   body('features.laboratory')
-    .optional()
+    .optional({ values: 'falsy' })
     .isIn(['Yes', 'No', 'Unknown'])
     .withMessage('Laboratory must be Yes, No, or Unknown'),
   
   body('features.loading_bay')
-    .optional()
+    .optional({ values: 'falsy' })
     .isIn(['Yes', 'No', 'Unknown'])
     .withMessage('Loading bay must be Yes, No, or Unknown'),
   
   body('features.secure_yard')
-    .optional()
+    .optional({ values: 'falsy' })
     .isIn(['Yes', 'No', 'Unknown'])
     .withMessage('Secure yard must be Yes, No, or Unknown'),
   
   body('features.yard')
-    .optional()
+    .optional({ values: 'falsy' })
     .isIn(['Yes', 'No', 'Unknown'])
     .withMessage('Yard must be Yes, No, or Unknown'),
 
   // Additional features validation
   body('additional_features')
-    .optional()
+    .optional({ values: 'falsy' })
     .isArray()
     .withMessage('Additional features must be an array'),
   
   body('additional_features.*.feature_name')
-    .optional()
+    .optional({ values: 'falsy' })
     .trim()
     .isLength({ min: 2, max: 100 })
     .withMessage('Feature name must be between 2 and 100 characters'),
   
   body('additional_features.*.feature_value')
-    .optional()
+    .optional({ values: 'falsy' })
     .isIn(['Yes', 'No', 'Unknown'])
     .withMessage('Feature value must be Yes, No, or Unknown'),
   
   body('additional_features.*.description')
-    .optional()
+    .optional({ values: 'falsy' })
     .trim()
     .isLength({ max: 500 })
     .withMessage('Feature description must not exceed 500 characters'),
   
   body('feature_notes')
-    .optional()
+    .optional({ values: 'falsy' })
     .trim()
     .isLength({ max: 1000 })
     .withMessage('Feature notes must not exceed 1000 characters'),
@@ -600,13 +601,6 @@ export const createPropertyQueryValidator = [
     .isLength({ min: 2, max: 50 })
     .withMessage('Last name must be between 2 and 50 characters'),
   
-  body('company')
-    .trim()
-    .notEmpty()
-    .withMessage('Company is required')
-    .isLength({ min: 2, max: 100 })
-    .withMessage('Company must be between 2 and 100 characters'),
-  
   body('email')
     .isEmail()
     .withMessage('Please provide a valid email address')
@@ -618,30 +612,6 @@ export const createPropertyQueryValidator = [
     .withMessage('Phone number is required')
     .isLength({ min: 10, max: 20 })
     .withMessage('Phone number must be between 10 and 20 characters'),
-  
-  body('no_of_people')
-    .isInt({ min: 1, max: 1000 })
-    .withMessage('Number of people must be between 1 and 1000'),
-  
-  body('start_date')
-    .isISO8601()
-    .withMessage('Start date must be a valid date')
-    .custom((value) => {
-      const startDate = new Date(value);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      if (startDate < today) {
-        throw new Error('Start date cannot be in the past');
-      }
-      return true;
-    }),
-  
-  body('length_of_term')
-    .trim()
-    .notEmpty()
-    .withMessage('Length of term is required')
-    .isLength({ min: 2, max: 100 })
-    .withMessage('Length of term must be between 2 and 100 characters'),
   
   body('message')
     .trim()
@@ -658,7 +628,7 @@ export const updateQueryStatusValidator = [
     .withMessage('Invalid query ID'),
 
   body('status')
-    .optional()
+    .optional({ values: 'falsy' })
     .isIn(['pending', 'read', 'responded', 'closed'])
     .withMessage('Status must be one of: pending, read, responded, closed'),
   

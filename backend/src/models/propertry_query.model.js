@@ -122,7 +122,7 @@ const propertyQuerySchema = new Schema(
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'user',
-      required: true,
+      required: false,
       index: true,
     },
 
@@ -157,18 +157,6 @@ const propertyQuerySchema = new Schema(
       maxlength: [50, 'Last name cannot exceed 50 characters']
     },
 
-    company: {
-      type: String,
-      required: true,
-      trim: true,
-      validate: {
-        validator: validateStringField,
-        message: 'Company name contains inappropriate content'
-      },
-      set: sanitizeString,
-      maxlength: [100, 'Company name cannot exceed 100 characters']
-    },
-
     email: {
       type: String,
       required: true,
@@ -192,36 +180,6 @@ const propertyQuerySchema = new Schema(
       },
       set: sanitizeString,
       maxlength: [20, 'Phone number cannot exceed 20 characters']
-    },
-
-    no_of_people: {
-      type: Number,
-      required: true,
-      min: [1, 'Number of people must be at least 1'],
-      max: [1000, 'Number of people cannot exceed 1000'],
-      validate: {
-        validator: function(value) {
-          return Number.isInteger(value) && value > 0;
-        },
-        message: 'Number of people must be a positive integer'
-      }
-    },
-
-    start_date: {
-      type: Date,
-      required: true,
-    },
-
-    length_of_term: {
-      type: String,
-      required: true,
-      trim: true,
-      validate: {
-        validator: validateStringField,
-        message: 'Length of term contains inappropriate content'
-      },
-      set: sanitizeString,
-      maxlength: [50, 'Length of term cannot exceed 50 characters']
     },
 
     message: {
@@ -249,10 +207,6 @@ const propertyQuerySchema = new Schema(
 
 // Pre-save middleware for additional validation
 propertyQuerySchema.pre('save', function(next) {
-  // Validate start_date is not in the past
-  if (this.start_date && this.start_date < new Date()) {
-    return next(new Error('Start date cannot be in the past'));
-  }
   
   // Additional validation for ObjectId fields
   if (!mongoose.Types.ObjectId.isValid(this.property_id)) {
@@ -262,10 +216,7 @@ propertyQuerySchema.pre('save', function(next) {
   if (!mongoose.Types.ObjectId.isValid(this.agent_id)) {
     return next(new Error('Invalid agent ID format'));
   }
-  
-  if (!mongoose.Types.ObjectId.isValid(this.user_id)) {
-    return next(new Error('Invalid user ID format'));
-  }
+
   
   next();
 });
@@ -275,7 +226,7 @@ propertyQuerySchema.pre(['updateOne', 'findOneAndUpdate'], function(next) {
   const update = this.getUpdate();
   
   // Validate string fields in updates
-  const stringFields = ['first_name', 'last_name', 'company', 'email', 'phone', 'length_of_term', 'message'];
+  const stringFields = ['first_name', 'last_name', 'email', 'phone', 'message'];
   
   for (const field of stringFields) {
     if (update[field] !== undefined) {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Box,
   TextField,
@@ -62,13 +62,16 @@ interface UpdateVirtualToursFormProps {
   onDataChange?: (data: VirtualToursData) => void;
   propertyId?: string;
   fetchProperty?: () => void;
+  fetchPropertyData?: () => void;
 }
 
 const UpdateVirtualToursForm: React.FC<UpdateVirtualToursFormProps> = ({ 
   onStepSubmitted, 
   initialData, 
   onDataChange,
-  propertyId
+  propertyId,
+  fetchProperty,
+  fetchPropertyData
 }) => {
   const [formData, setFormData] = useState<VirtualToursData>({
     _id: initialData?._id || '',
@@ -83,18 +86,21 @@ const UpdateVirtualToursForm: React.FC<UpdateVirtualToursFormProps> = ({
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [hasChanges, setHasChanges] = useState(false);
+  const baselineDataRef = useRef<VirtualToursData | null>(null);
 
   // Update form data when initialData changes
   React.useEffect(() => {
     if (initialData) {
-      setFormData({
+      const normalizedData = {
         _id: initialData._id || '',
         property_id: initialData.property_id || '',
         virtual_tours: initialData.virtual_tours || [],
         createdAt: initialData.createdAt || '',
         updatedAt: initialData.updatedAt || '',
         __v: initialData.__v || 0,
-      });
+      };
+      setFormData(normalizedData);
+      baselineDataRef.current = JSON.parse(JSON.stringify(normalizedData)); // Deep clone
       setIsSubmitted(true); // Mark as submitted since we're editing existing data
     }
   }, [initialData]);
@@ -106,22 +112,59 @@ const UpdateVirtualToursForm: React.FC<UpdateVirtualToursFormProps> = ({
     }
   }, [formData, onDataChange]);
 
-  // Check for changes compared to initial data
-  React.useEffect(() => {
-    if (initialData) {
-      const initialFormData = {
-        _id: initialData._id || '',
-        property_id: initialData.property_id || '',
-        virtual_tours: initialData.virtual_tours || [],
-        createdAt: initialData.createdAt || '',
-        updatedAt: initialData.updatedAt || '',
-        __v: initialData.__v || 0,
-      };
-
-      const hasDataChanged = JSON.stringify(formData) !== JSON.stringify(initialFormData);
-      setHasChanges(hasDataChanged);
+  // Deep comparison function for virtual tours
+  const deepEqual = (obj1: any, obj2: any): boolean => {
+    if (obj1 === obj2) return true;
+    if (obj1 == null || obj2 == null) return false;
+    if (typeof obj1 !== 'object' || typeof obj2 !== 'object') return obj1 === obj2;
+    
+    const keys1 = Object.keys(obj1);
+    const keys2 = Object.keys(obj2);
+    
+    if (keys1.length !== keys2.length) return false;
+    
+    for (const key of keys1) {
+      if (!keys2.includes(key)) return false;
+      if (!deepEqual(obj1[key], obj2[key])) return false;
     }
-  }, [formData, initialData]);
+    
+    return true;
+  };
+
+  // Normalize tour data for comparison
+  const normalizeTour = (tour: VirtualTour) => ({
+    tour_name: (tour.tour_name || '').trim(),
+    tour_url: (tour.tour_url || '').trim(),
+    link_type: (tour.link_type || '').trim(),
+    description: (tour.description || '').trim(),
+    thumbnail_url: (tour.thumbnail_url || '').trim(),
+    duration: tour.duration || 0,
+    is_featured: tour.is_featured || false,
+    display_order: tour.display_order ?? undefined,
+    is_active: tour.is_active !== false,
+  });
+
+  // Check for changes compared to baseline data
+  React.useEffect(() => {
+    const baseline = baselineDataRef.current;
+    
+    if (baseline) {
+      const baselineTours = (baseline.virtual_tours || []).map(normalizeTour);
+      const currentTours = (formData.virtual_tours || []).map(normalizeTour);
+
+      // Compare arrays
+      const toursChanged = 
+        baselineTours.length !== currentTours.length ||
+        !baselineTours.every((baselineTour, index) => 
+          deepEqual(baselineTour, currentTours[index])
+        );
+
+      setHasChanges(toursChanged);
+    } else {
+      // If no baseline data, check if there are any tours
+      setHasChanges((formData.virtual_tours || []).length > 0);
+    }
+  }, [formData]);
 
   const validateForm = (): boolean => {
     const errors: Record<string, string> = {};
@@ -212,12 +255,26 @@ const UpdateVirtualToursForm: React.FC<UpdateVirtualToursFormProps> = ({
       
       if (response.data.success) {
         setIsSubmitted(true);
+        // Update formData with the response data to sync with server
+        const updatedData = response.data.data;
+        const newFormData = {
+          _id: updatedData._id || formData._id,
+          property_id: updatedData.property_id || formData.property_id,
+          virtual_tours: updatedData.virtual_tours || formData.virtual_tours,
+          createdAt: updatedData.createdAt || formData.createdAt,
+          updatedAt: updatedData.updatedAt || new Date().toISOString(),
+          __v: updatedData.__v || formData.__v,
+        };
+        setFormData(newFormData);
+        // Update baseline to the new data so future comparisons work correctly
+        baselineDataRef.current = JSON.parse(JSON.stringify(newFormData)); // Deep clone
         setHasChanges(false); // Reset changes flag after successful update
         enqueueSnackbar('Virtual tours updated successfully!', { variant: 'success' });
         
         if (onStepSubmitted) {
           onStepSubmitted(4);
         }
+        fetchPropertyData?.();
       } else {
         throw new Error(response.data.message || 'Failed to update virtual tours');
       }

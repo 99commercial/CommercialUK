@@ -107,6 +107,8 @@ class AICalController {
             minimum: sqftParsed.minimum,
             maximum: sqftParsed.maximum,
           },
+          latitude: property.latitude,
+          longitude: property.longitude,
           pricePerSqftPA: parseNumber(property.PricePerSqftPA),
           pricePerSqftPCM: parseNumber(property.PricePerSqftPCM),
           comments: property.Comments || '',

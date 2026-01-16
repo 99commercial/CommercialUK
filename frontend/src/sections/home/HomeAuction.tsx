@@ -4,26 +4,22 @@ import {
   Typography,
   Card,
   CardMedia,
-  CardContent,
   Button,
   Stack,
-  Chip,
   useTheme,
   useMediaQuery,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
 
 // ----------------------------------------------------------------------
 
 const AuctionSection = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(6, 0),
-  background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
+  padding: theme.spacing(8, 2),
+  background: 'linear-gradient(180deg, #f2c514 0%,rgb(140, 122, 51) 100%)',
   position: 'relative',
-  overflow: 'hidden',
+  overflow: 'visible',
+  borderRadius: theme.spacing(4),
+  margin: theme.spacing(4, 2),
   '&::before': {
     content: '""',
     position: 'absolute',
@@ -31,40 +27,42 @@ const AuctionSection = styled(Box)(({ theme }) => ({
     left: 0,
     right: 0,
     bottom: 0,
-    background: 'linear-gradient(45deg, rgba(211, 47, 47, 0.02) 0%, rgba(25, 118, 210, 0.02) 100%)',
+    backgroundImage: `
+      radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0)
+    `,
+    backgroundSize: '20px 20px',
+    opacity: 0.3,
     zIndex: 0,
+  },
+  '&::after': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+    opacity: 0.5,
+    mixBlendMode: 'overlay',
+    pointerEvents: 'none',
+    zIndex: 1,
+    backgroundSize: '150px 150px',
+    borderRadius: theme.spacing(4),
   },
 }));
 
 const AuctionCard = styled(Card)(({ theme }) => ({
-  borderRadius: theme.spacing(3),
+  borderRadius: theme.spacing(2),
   overflow: 'hidden',
   height: '100%',
-  boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+  boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
   position: 'relative',
   zIndex: 1,
+  border: '1px solid rgba(255,255,255,0.1)',
   '&:hover': {
-    transform: 'translateY(-8px)',
-    boxShadow: '0 30px 60px rgba(0,0,0,0.15)',
-  },
-}));
-
-const LiveAuctionButton = styled(Button)(({ theme }) => ({
-  background: 'linear-gradient(45deg, #fc6c85 30%,rgba(252, 108, 132, 0.8) 90%)',
-  color: 'white',
-  borderRadius: theme.spacing(2),
-  px: 4,
-  py: 2,
-  fontWeight: 700,
-  textTransform: 'none',
-  fontSize: '1rem',
-  boxShadow: '0 8px 20px rgba(211, 47, 47, 0.3)',
-  transition: 'all 0.3s ease',
-  '&:hover': {
-    background: 'linear-gradient(45deg, #fc6c85 30%,rgba(252, 108, 132, 0.8) 90%)',
-    transform: 'translateY(-2px)',
-    boxShadow: '0 12px 30px rgba(211, 47, 47, 0.4)',
+    transform: 'translateY(-4px)',
+    boxShadow: '0 25px 70px rgba(0,0,0,0.4)',
   },
 }));
 
@@ -72,6 +70,10 @@ const ContentBox = styled(Box)(({ theme }) => ({
   position: 'relative',
   zIndex: 1,
   padding: theme.spacing(2, 0),
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  height: '100%',
 }));
 
 export default function HomeAuction() {
@@ -81,7 +83,7 @@ export default function HomeAuction() {
 
   return (
     <AuctionSection>
-      <Container maxWidth="xl">
+      <Container maxWidth="xl" sx={{ position: 'relative', overflow: 'visible' }}>
         <Box
           sx={{
             display: 'flex',
@@ -89,126 +91,30 @@ export default function HomeAuction() {
             gap: { xs: 4, md: 6, lg: 8 },
             alignItems: 'center',
             minHeight: { xs: 'auto', md: '600px' },
+            position: 'relative',
+            zIndex: 1,
           }}
         >
-
-          {/* Card Section */}
-          <Box sx={{ flex: { xs: '1', lg: '1' }, width: { xs: '100%', lg: '50%' } }}>
-            <AuctionCard>
-              <Box sx={{ position: 'relative' }}>
-                <CardMedia
-                  component="img"
-                  height={isMobile ? "300" : isTablet ? "350" : "450"}
-                  image="/images/auction.jpg"
-                  alt="Retail Property"
-                  sx={{
-                    objectFit: 'cover',
-                    transition: 'transform 0.3s ease',
-                    '&:hover': {
-                      transform: 'scale(1.05)',
-                    },
-                  }}
-                />
-                {/* <Box
-                  sx={{
-                    position: 'absolute',
-                    top: { xs: 12, md: 20 },
-                    left: { xs: 12, md: 20 },
-                    zIndex: 1,
-                  }}
-                >
-                  <Chip
-                    label="Live Auction"
-                    sx={{
-                      background: 'linear-gradient(45deg, #f2c514 30%,rgba(242, 198, 20, 0.8) 90%)',
-                      color: 'white',
-                      fontWeight: 700,
-                      fontSize: { xs: '0.75rem', md: '0.875rem' },
-                      px: 2,
-                      py: 1,
-                      boxShadow: '0 4px 12px rgba(211, 47, 47, 0.3)',
-                    }}
-                  />
-                </Box>
-                <Box
-                  sx={{
-                    position: 'absolute',
-                    bottom: { xs: 12, md: 20 },
-                    left: { xs: 12, md: 20 },
-                    right: { xs: 12, md: 20 },
-                    zIndex: 1,
-                  }}
-                >
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                    <LocationOnIcon sx={{ color: 'white', mr: 1, fontSize: { xs: '1.2rem', md: '1.5rem' } }} />
-                    <Typography
-                      variant={isMobile ? "subtitle1" : "h6"}
-                      sx={{
-                        color: 'white',
-                        fontWeight: 700,
-                        textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
-                        fontSize: { xs: '1rem', md: '1.25rem' },
-                      }}
-                    >
-                      Retail, Lynchburg, VA
-                    </Typography>
-                  </Box>
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <TrendingUpIcon sx={{ color: '#4caf50', mr: 1, fontSize: { xs: '1rem', md: '1.2rem' } }} />
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        color: 'white',
-                        fontWeight: 600,
-                        textShadow: '1px 1px 2px rgba(0,0,0,0.8)',
-                        fontSize: { xs: '0.875rem', md: '1rem' },
-                      }}
-                    >
-                      Starting at $2.5M
-                    </Typography>
-                  </Box>
-                </Box> */}
-              </Box>
-              {/* <CardContent sx={{ p: { xs: 2, md: 3 } }}>
-                <Button
-                  variant="outlined"
-                  endIcon={<ArrowForwardIcon />}
-                  fullWidth
-                  sx={{
-                    borderColor: '#f2c514',
-                    color: '#f2c514',
-                    fontWeight: 600,
-                    py: 1.5,
-                    borderRadius: 2,
-                    fontSize: { xs: '0.875rem', md: '1rem' },
-                    '&:hover': {
-                      borderColor: '#f2c514',
-                      backgroundColor: 'rgba(211, 47, 47, 0.04)',
-                      transform: 'translateY(-1px)',
-                    },
-                  }}
-                >
-                  View Details
-                </Button>
-              </CardContent> */}
-            </AuctionCard>
-          </Box>
-
-          {/* Content Section */}
-          <Box sx={{ flex: { xs: '1', lg: '1' }, width: { xs: '100%', lg: '50%' } }}>
-            <ContentBox sx={{ pl: { xs: 0, lg: 4 } }}>
+          {/* Content Section - Left Side */}
+          <Box 
+            sx={{ 
+              flex: { xs: '1', lg: '0 0 50%' }, 
+              width: { xs: '100%', lg: '50%' },
+              position: 'relative',
+              zIndex: 2,
+            }}
+          >
+            <ContentBox sx={{ pr: { xs: 0, lg: 4 } }}>
               <Typography
                 variant={isMobile ? "h4" : isTablet ? "h3" : "h2"}
                 component="h2"
                 sx={{
-                  fontWeight: 800,
+                  fontWeight: 400,
                   mb: { xs: 2, md: 3 },
-                  color: '#1a1a1a',
+                  color: '#ffffff',
                   lineHeight: 1.2,
-                  background: 'linear-gradient(45deg, #1a1a1a 30%, #f2c514 90%)',
-                  backgroundClip: 'text',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
+                  fontSize: { xs: '1.75rem', md: '2.25rem', lg: '2.75rem' },
+                  fontStyle: 'normal',
                 }}
               >
                 Trusted by Leading Businesses
@@ -217,61 +123,35 @@ export default function HomeAuction() {
               <Typography
                 variant={isMobile ? "body2" : "body1"}
                 sx={{
-                  color: '#555',
+                  color: '#d6d6d6',
                   lineHeight: 1.7,
                   mb: { xs: 3, md: 4 },
                   fontSize: { xs: '1rem', md: '1.125rem' },
+                  fontWeight: 400,
+                  fontStyle: 'normal',
                 }}
               >
-Trusted by Leading Businesses
-From start-ups to multinational corporations, CommercialUK is the market of choice for locating office space, retail units, and industrial property. Our site is employed by investors, agents, landlords, and developers keen to speed up the deal.
+                Trusted by Leading Businesses From start-ups to multinational corporations, CommercialUK is the market of choice for locating office space, retail units, and industrial property. Our site is employed by investors, agents, landlords, and developers keen to speed up the deal.
               </Typography>
 
               <Stack spacing={{ xs: 2, md: 3 }}>
-                {/* <Button
-                  variant="text"
-                  sx={{
-                    color: '#d32f2f',
-                    textAlign: 'left',
-                    justifyContent: 'flex-start',
-                    p: 0,
-                    fontWeight: 600,
-                    fontSize: { xs: '0.875rem', md: '1rem' },
-                    '&:hover': {
-                      backgroundColor: 'transparent',
-                      textDecoration: 'underline',
-                    },
-                  }}
-                >
-                  Learn More About Auctions →
-                </Button> */}
-
-                {/* <LiveAuctionButton
-                  startIcon={<AccessTimeIcon />}
-                  endIcon={<ArrowForwardIcon />}
-                  fullWidth={isMobile}
-                  sx={{
-                    fontSize: { xs: '0.875rem', md: '1rem' },
-                    py: { xs: 1.5, md: 2 },
-                  }}
-                >
-                  Live Auction Now
-                </LiveAuctionButton> */}
-
                 <Button
                   variant="contained"
                   fullWidth={isMobile}
                   href="/general/all-properties"
                   sx={{
-                    backgroundColor: '#f2c514',
-                    color: '#000',
-                    fontWeight: 600,
+                    backgroundColor: '#ffffff',
+                    color: '#357abd',
+                    fontWeight: 700,
                     py: { xs: 1.5, md: 2 },
                     borderRadius: 2,
                     fontSize: { xs: '0.875rem', md: '1rem' },
+                    textTransform: 'none',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
                     '&:hover': {
-                      backgroundColor: '#d4a912',
-                      transform: 'translateY(-1px)',
+                      backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 6px 16px rgba(0,0,0,0.3)',
                     },
                   }}
                 >
@@ -279,6 +159,45 @@ From start-ups to multinational corporations, CommercialUK is the market of choi
                 </Button>
               </Stack>
             </ContentBox>
+          </Box>
+
+          {/* Card Section - Right Side */}
+          <Box 
+            sx={{ 
+              position: { xs: 'relative', lg: 'absolute' },
+              right: { xs: 'auto', lg: '-25%' },
+              top: { xs: 'auto', lg: '50%' },
+              transform: { xs: 'none', lg: 'translateY(-50%)' },
+              width: { xs: '100%', lg: '50%' },
+              height: { xs: '300px', md: '400px', lg: '500px' },
+              overflow: 'visible',
+              zIndex: 1,
+            }}
+          >
+            <AuctionCard
+              sx={{
+                position: 'absolute',
+                right: { xs: 0, lg: '-50%' },
+                width: { xs: '100%', lg: '200%' },
+                height: '100%',
+                maxWidth: { xs: '100%', lg: 'none' },
+              }}
+            >
+              <Box sx={{ position: 'relative', height: '100%' }}>
+                <CardMedia
+                  component="img"
+                  height="100%"
+                  image="/images/auction.jpg"
+                  alt="Commercial Property Platform"
+                  sx={{
+                    objectFit: 'cover',
+                    width: '100%',
+                    height: '100%',
+                    display: 'block',
+                  }}
+                />
+              </Box>
+            </AuctionCard>
           </Box>
         </Box>
       </Container>

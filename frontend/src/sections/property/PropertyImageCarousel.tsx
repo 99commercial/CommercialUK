@@ -15,28 +15,47 @@ import {
 const ImageCarouselContainer = styled(Box)(({ theme }) => ({
   position: 'relative',
   width: '100%',
-  height: '500px',
+  height: '650px',
   overflow: 'hidden',
   backgroundColor: '#f5f5f5',
   marginBottom: theme.spacing(3),
 }));
 
-const CarouselImage = styled('img')(({ theme }) => ({
+const ImageGrid = styled(Box)<{ translateX: number }>(({ theme, translateX }) => ({
+  display: 'flex',
   width: '100%',
   height: '100%',
+  gap: '2px',
+  transform: `translateX(${translateX}%)`,
+  transition: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+}));
+
+const CarouselImage = styled('img')(({ theme }) => ({
+  flex: '0 0 calc(33.333% - 1.34px)',
+  width: 'calc(33.333% - 1.34px)',
+  height: '100%',
   objectFit: 'cover',
-  transition: 'transform 0.3s ease',
+  cursor: 'zoom-in',
+  transition: 'transform 0.3s ease, opacity 0.3s ease',
+  '&:hover': {
+    transform: 'scale(1.02)',
+    opacity: 0.95,
+  },
 }));
 
 const CarouselButton = styled(IconButton)(({ theme }) => ({
   position: 'absolute',
   top: '50%',
   transform: 'translateY(-50%)',
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  color: '#ffffff',
+  backgroundColor: 'rgba(255, 255, 255, 0.9)',
+  color: '#000000',
   zIndex: 2,
+  width: '48px',
+  height: '48px',
+  boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
   '&:hover': {
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: '#ffffff',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
   },
 }));
 
@@ -106,6 +125,8 @@ const PropertyImageCarousel: React.FC<PropertyImageCarouselProps> = ({
   onPrevImage,
 }) => {
   const currentImage = images[currentImageIndex];
+  const [displayStartIndex, setDisplayStartIndex] = useState(0);
+  const imagesPerView = 3;
 
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewIndex, setPreviewIndex] = useState(currentImageIndex || 0);
@@ -129,35 +150,63 @@ const PropertyImageCarousel: React.FC<PropertyImageCarouselProps> = ({
     setPreviewIndex((prev) => (prev - 1 + images.length) % images.length);
   };
 
+  const handleNextGroup = () => {
+    if (images.length === 0) return;
+    setDisplayStartIndex((prev) => {
+      const next = prev + imagesPerView;
+      return next >= images.length ? 0 : next;
+    });
+  };
+
+  const handlePrevGroup = () => {
+    if (images.length === 0) return;
+    setDisplayStartIndex((prev) => {
+      const next = prev - imagesPerView;
+      return next < 0 ? Math.max(0, images.length - imagesPerView) : next;
+    });
+  };
+
+  // Calculate translateX percentage for smooth sliding
+  // Each image takes 33.333% width, so we move by -33.333% * number of groups
+  const translateX = -(displayStartIndex / imagesPerView) * 100;
+
+  // Get all images to render (for smooth sliding animation)
+  const allImages = images;
+
   return (
     <ImageCarouselContainer>
-      {currentImage && (
-        <CarouselImage
-          src={currentImage.url}
-          alt={currentImage.caption}
-          onClick={() => openPreview(currentImageIndex)}
-          style={{ cursor: 'zoom-in' }}
-        />
-      )}
+      <ImageGrid translateX={translateX}>
+        {allImages.map((image, index) => (
+          <CarouselImage
+            key={image._id || index}
+            src={image.url}
+            alt={image.caption || `Image ${index + 1}`}
+            onClick={() => openPreview(index)}
+          />
+        ))}
+      </ImageGrid>
       
-      {images.length > 1 && (
+      {images.length > imagesPerView && (
         <>
           <CarouselButton
-            onClick={onPrevImage}
+            onClick={handlePrevGroup}
             sx={{ left: 16 }}
           >
             <ArrowBackIosIcon />
           </CarouselButton>
           <CarouselButton
-            onClick={onNextImage}
+            onClick={handleNextGroup}
             sx={{ right: 16 }}
           >
             <ArrowForwardIosIcon />
           </CarouselButton>
-          <ImageCounter>
-            {currentImageIndex + 1} / {images.length}
-          </ImageCounter>
         </>
+      )}
+      
+      {images.length > 0 && (
+        <ImageCounter>
+          {Math.min(displayStartIndex + imagesPerView, images.length)} / {images.length}
+        </ImageCounter>
       )}
       <Dialog
         fullScreen

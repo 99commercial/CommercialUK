@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import {
   Box,
   Typography,
-  Chip,
-  Stack,
   IconButton,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
@@ -21,12 +19,17 @@ import { Property } from '../../components/PropertyCard';
 
 const HeaderSection = styled(Box)(({ theme }) => ({
   backgroundColor: '#ffffff',
-  padding: theme.spacing(4, 3),
+  padding: theme.spacing(3, 3),
   borderBottom: '1px solid #e0e0e0',
   marginBottom: theme.spacing(3),
   width: '100%',
   display: 'flex',
   justifyContent: 'center',
+  alignItems: 'center',
+  fontFamily: '"Inter", "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+  position: 'relative',
+  overflow: 'visible',
+  minHeight: '100px',
 }));
 
 // ----------------------------------------------------------------------
@@ -55,24 +58,6 @@ const PropertyHeader: React.FC<PropertyHeaderProps> = ({
       ? [...property.images_id.images].sort((a, b) => (a.order || 0) - (b.order || 0))[0]?.url
       : '/placeholder-property.jpg';
 
-  // Get status color
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Available':
-        return 'success';
-      case 'Under Offer':
-        return 'warning';
-      case 'Sold':
-        return 'error';
-      case 'Let':
-        return 'info';
-      case 'Withdrawn':
-        return 'default';
-      default:
-        return 'default';
-    }
-  };
-
   // // Format price
   // const formatPrice = () => {
   //   if (property.sale_types_id && property.sale_types_id.sale_types.length > 0) {
@@ -98,11 +83,11 @@ const PropertyHeader: React.FC<PropertyHeaderProps> = ({
       {/* Favorite and Share Buttons - Top Right Corner */}
       <Box sx={{ 
         position: 'absolute',
-        top: 16,
-        right: 16,
+        top: 12,
+        right: 12,
         display: 'flex',
         flexDirection: 'column',
-        gap: 1,
+        gap: 0.75,
         zIndex: 1
       }}>
         <IconButton
@@ -110,14 +95,14 @@ const PropertyHeader: React.FC<PropertyHeaderProps> = ({
           sx={{
             backgroundColor: isFavorite ? '#ff4444' : '#f5f5f5',
             color: isFavorite ? '#ffffff' : '#666',
-            width: 48,
-            height: 48,
+            width: 36,
+            height: 36,
             '&:hover': {
               backgroundColor: isFavorite ? '#c9a010' : '#e0e0e0',
             },
           }}
         >
-          <FavoriteBorderIcon />
+          <FavoriteBorderIcon sx={{ fontSize: '20px' }} />
         </IconButton>
         <Box
           sx={{
@@ -133,15 +118,17 @@ const PropertyHeader: React.FC<PropertyHeaderProps> = ({
             className="share-menu"
             sx={{
               position: 'absolute',
-              right: 56, // place to the left of the share button
+              right: 44, // place to the left of the share button (36px button + 8px gap)
               top: 0,
               display: 'flex',
               flexDirection: 'column',
-              gap: 1,
+              gap: 0.75,
               opacity: shareOpen ? 1 : 0,
               transform: shareOpen ? 'translateX(0)' : 'translateX(8px)',
               pointerEvents: shareOpen ? 'auto' : 'none',
               transition: 'opacity 200ms ease, transform 200ms ease',
+              zIndex: 10,
+              maxWidth: { xs: 'calc(100vw - 120px)', sm: '220px' },
             }}
           >
             {/* Clickable preview card */}
@@ -164,7 +151,9 @@ const PropertyHeader: React.FC<PropertyHeaderProps> = ({
                 padding: '6px 8px',
                 boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
                 cursor: 'pointer',
-                width: 220,
+                width: { xs: '100%', sm: 220 },
+                maxWidth: '100%',
+                boxSizing: 'border-box',
                 '&:hover': { boxShadow: '0 4px 14px rgba(0,0,0,0.1)' },
               }}
             >
@@ -272,14 +261,14 @@ const PropertyHeader: React.FC<PropertyHeaderProps> = ({
             sx={{
               backgroundColor: '#f5f5f5',
               color: '#666',
-              width: 48,
-              height: 48,
+              width: 36,
+              height: 36,
               '&:hover': {
                 backgroundColor: '#e0e0e0',
               },
             }}
           >
-            <ShareIcon />
+            <ShareIcon sx={{ fontSize: '20px' }} />
           </IconButton>
         </Box>
       </Box>
@@ -290,34 +279,43 @@ const PropertyHeader: React.FC<PropertyHeaderProps> = ({
         alignItems: 'center', 
         flexDirection: 'column',
         textAlign: 'center',
-        maxWidth: '800px',
-        width: '100%'
+        maxWidth: '900px',
+        width: '100%',
+        paddingRight: { xs: '60px', sm: '60px' }, // Add padding to prevent overlap with buttons
+        paddingLeft: { xs: '16px', sm: '16px' },
+        boxSizing: 'border-box'
       }}>
-        <Typography variant="h3" component="h1" sx={{ fontWeight: 700, mb: 1, color: '#333' }}>
+        <Typography 
+          component="h1" 
+          sx={{ 
+            fontWeight: 100, 
+            mb: 0.75, 
+            color: '#000000',
+            fontSize: { xs: '1.75rem', sm: '2.25rem', md: '2.75rem', lg: '3rem' },
+            lineHeight: 1.15,
+            letterSpacing: '5px',
+            fontFamily: '"Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+            wordBreak: 'break-word',
+            overflowWrap: 'break-word'
+          }}
+        >
           {property.general_details.building_name}
         </Typography>
-        <Typography variant="h6" sx={{ color: '#666', mb: 2 }}>
-          {property.general_details.property_sub_type}
+        <Typography 
+          sx={{ 
+            color: '#000000', 
+            mb: 0,
+            fontSize: { xs: '0.9375rem', sm: '1rem', md: '1.0625rem' },
+            lineHeight: 1.5,
+            fontWeight: 400,
+            fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+            wordBreak: 'break-word',
+            overflowWrap: 'break-word',
+            letterSpacing: '0'
+          }}
+        >
+          {property.general_details.address}
         </Typography>
-        <Stack direction="row" spacing={1} sx={{ mb: 2, justifyContent: 'center' }}>
-          <Chip
-            label={property.general_details.property_type}
-            color="primary"
-            variant="outlined"
-          />
-          <Chip
-            label={property.general_details.sale_status}
-            color={getStatusColor(property.general_details.sale_status) as any}
-            variant="filled"
-          />
-          {property.is_featured && (
-            <Chip
-              label="Featured"
-              color="secondary"
-              variant="filled"
-            />
-          )}
-        </Stack>
       </Box>
     </HeaderSection>
   );

@@ -77,6 +77,7 @@ interface UpdatePropertyDetailsFormProps {
   onDataChange?: (data: UpdatePropertyDetailsFormData) => void;
   propertyId?: string;
   fetchProperty?: () => void;
+  fetchPropertyData?: () => void;
 }
 
 const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({ 
@@ -84,7 +85,9 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
   initialData, 
   onDataChange,
   propertyId,
-  fetchProperty
+  fetchProperty,
+  fetchPropertyData
+
 }) => {
   // Helper function to format date to yyyy-mm-dd
   const formatDateForInput = (dateString: string | undefined): string => {
@@ -325,6 +328,7 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
         if (onStepSubmitted) {
           onStepSubmitted(2);
         }
+        fetchPropertyData?.();
       } else {
         throw new Error(response.data.message || 'Failed to update property details');
       }

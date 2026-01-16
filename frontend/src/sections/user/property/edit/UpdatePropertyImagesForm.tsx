@@ -79,6 +79,7 @@ interface UpdatePropertyImagesFormProps {
   onDataChange?: (data: PropertyImagesData) => void;
   propertyId?: string;
   fetchProperty?: () => void;
+  fetchPropertyData?: () => void;
 }
 
 const UpdatePropertyImagesForm: React.FC<UpdatePropertyImagesFormProps> = ({ 
@@ -86,7 +87,8 @@ const UpdatePropertyImagesForm: React.FC<UpdatePropertyImagesFormProps> = ({
   initialData, 
   onDataChange,
   propertyId,
-  fetchProperty
+  fetchProperty,
+  fetchPropertyData
 }) => {
   const [formData, setFormData] = useState<PropertyImagesData>({
     _id: initialData?._id || '',
@@ -376,6 +378,7 @@ const UpdatePropertyImagesForm: React.FC<UpdatePropertyImagesFormProps> = ({
         if (onStepSubmitted) {
           onStepSubmitted(6);
         }
+        fetchPropertyData?.();
       } else {
         throw new Error(response.data.message || 'Failed to update property images');
       }

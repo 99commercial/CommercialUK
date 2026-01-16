@@ -6,6 +6,7 @@ import PropertyImages from '../models/property.images.model.js';
 import PropertyDocuments from '../models/property.documents.model.js';
 import PropertyFeatures from '../models/property.features.model.js';
 import PropertyLocation from '../models/property.location.model.js';
+import PropertyVirtualTours from '../models/property.virtual.tours.model.js';
 
 export default async function importFirstFeedProperty(properties, userId, index) {
   try {
@@ -408,6 +409,16 @@ export default async function importFirstFeedProperty(properties, userId, index)
     propertyReferenceUpdates.documents_id = propertyDocumentsDocument._id;
   } catch (error) {
     warnings.push(`Documents not saved: ${error.message}`);
+  }
+  
+  try {
+    const propertyVirtualToursDocument = await PropertyVirtualTours.create({
+      property_id: propertyId,
+      virtual_tours: [],
+    });
+    propertyReferenceUpdates.virtual_tours_id = propertyVirtualToursDocument._id;
+  } catch (error) {
+    warnings.push(`Virtual tours not saved: ${error.message}`);
   }
 
   try {

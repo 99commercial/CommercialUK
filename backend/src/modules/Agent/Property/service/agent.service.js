@@ -12,6 +12,7 @@ import User from '../../../../models/user.model.js';
 import BusinessDetails from '../../../../models/business_details.model.js';
 import { uploadMultipleToCloudinary } from '../../../../config/cloudinary.config.js';
 import mongoose from 'mongoose';
+import { emailService } from '../../../../emails/auth.email.js';
 
 class AgentService {
   constructor() {
@@ -27,6 +28,7 @@ class AgentService {
     this.PropertyQuery = PropertyQuery;
     this.User = User;
     this.BusinessDetails = BusinessDetails;
+    this.emailService = new emailService();
   }
 
   // Helper method to update object fields directly
@@ -490,7 +492,7 @@ class AgentService {
    * @param {Object} documentsData - Documents data object with existing documents and new files
    * @returns {Promise<Object>} Updated property object
    */
-        async updatePropertyDocumentsMixed(propertyId, documentsData) {
+  async updatePropertyDocumentsMixed(propertyId, documentsData) {
           try {
             console.log('Service updatePropertyDocumentsMixed called with:', { propertyId, documentsData });
             
@@ -914,7 +916,7 @@ class AgentService {
   async getPropertyById(propertyId) {
     try {
       const property = await this.Property.findById(propertyId)
-        .populate('listed_by', 'first_name last_name email phone company_name')
+        .populate('listed_by', 'first_name last_name email phone profile_picture company_name')
         .populate('business_rates_id')
         .populate('descriptions_id')
         .populate('sale_types_id')
@@ -1376,7 +1378,7 @@ class AgentService {
    * @param {string} userId - User ID from headers
    * @returns {Promise<Object>} Created query object
    */
-  async createPropertyQuery(queryData, propertyId, agentId, userId) {
+  async createPropertyQuery(queryData, propertyId, agentId) {
     try {
       // Verify property exists and get agent ID
       const property = await this.Property.findById(propertyId);
@@ -1387,11 +1389,14 @@ class AgentService {
       // Use agent ID from property if not provided
       const finalAgentId = agentId || property.listed_by;
 
+      // Extract userId from queryData if provided
+      const { user_id, ...restQueryData } = queryData;
+
       const queryPayload = {
-        ...queryData,
+        ...restQueryData,
         property_id: propertyId,
         agent_id: finalAgentId,
-        user_id: userId
+        ...(user_id && { user_id })
       };
 
       const propertyQuery = new this.PropertyQuery(queryPayload);
@@ -1402,6 +1407,25 @@ class AgentService {
         .populate('property_id', 'general_details.building_name general_details.address general_details.town_city')
         .populate('agent_id', 'first_name last_name email phone company_name')
         .populate('user_id', 'first_name last_name email');
+
+        const queryDetails = {
+          title: populatedQuery.title,
+          first_name: populatedQuery.first_name,
+          last_name: populatedQuery.last_name,
+          email: populatedQuery.email,
+          phone: populatedQuery.phone,
+          message: populatedQuery.message,
+        };
+
+      // Send email to user only if user_id exists
+      if (populatedQuery.agent_id) {
+        await this.emailService.sendEmailUpdateForNewQuery(
+          populatedQuery.agent_id.email,
+          populatedQuery.agent_id.first_name,
+          populatedQuery.agent_id.last_name,
+          queryDetails
+        );
+      }
 
       return {
         success: true,

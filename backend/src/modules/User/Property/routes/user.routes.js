@@ -271,8 +271,6 @@ router.put('/properties/:propertyId/documents/mixed',
 
 // Create property query
 router.post('/properties/:propertyId/queries', 
-  authenticate,
-  authorize(['user']),
   createPropertyQueryValidator,
   validateRequest,
   userController.createPropertyQuery.bind(userController)

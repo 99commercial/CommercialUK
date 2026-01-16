@@ -107,6 +107,7 @@ interface UpdateGeneralDetailsFormProps {
   onDataChange?: (data: UpdateGeneralDetailsFormData) => void;
   propertyId?: string;
   fetchProperty?: () => void;
+  fetchPropertyData?: () => void;
 }
 
 const UpdateGeneralDetailsForm: React.FC<UpdateGeneralDetailsFormProps> = ({ 
@@ -114,7 +115,8 @@ const UpdateGeneralDetailsForm: React.FC<UpdateGeneralDetailsFormProps> = ({
   initialData, 
   onDataChange,
   propertyId,
-  fetchProperty
+  fetchProperty,
+  fetchPropertyData 
 }) => {
 
   const [formData, setFormData] = useState<UpdateGeneralDetailsFormData>(() => ({
@@ -297,6 +299,7 @@ const UpdateGeneralDetailsForm: React.FC<UpdateGeneralDetailsFormProps> = ({
         if (onStepSubmitted) {
           onStepSubmitted(0);
         }
+        fetchPropertyData?.();
       } else {
         throw new Error(response.data.message || 'Failed to update general details');
       }
