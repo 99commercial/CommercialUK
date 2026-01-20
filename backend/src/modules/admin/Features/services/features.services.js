@@ -1,6 +1,7 @@
 import { MESSAGES, USER_STATUS } from '../../../../config/constant.config.js';
 import User from '../../../../models/user.model.js';
 import Property from '../../../../models/property.model.js';
+import GeneralPage from '../../../../models/general.page.model.js';
 import mongoose from 'mongoose';
 
 export class FeaturesService {
@@ -532,6 +533,73 @@ export class FeaturesService {
       };
     } catch (error) {
       throw new Error(`Failed to fetch dashboard statistics: ${error.message}`);
+    }
+  }
+
+  // ==================== STATIC PAGES SERVICES ====================
+
+  /**
+   * Get general page
+   */
+  async getGeneralPage() {
+    try {
+      const generalPage = await GeneralPage.findOne({ deleted_at: null });
+      return generalPage;
+    } catch (error) {
+      throw new Error(`Failed to fetch general page: ${error.message}`);
+    }
+  }
+
+  /**
+   * Get general page by ID
+   */
+  async getGeneralPageById(id) {
+    try {
+      const generalPage = await GeneralPage.findOne({ _id: id, deleted_at: null });
+      return generalPage;
+    } catch (error) {
+      throw new Error(`Failed to fetch general page by ID: ${error.message}`);
+    }
+  }
+
+  /**
+   * Update general page
+   */
+  async updateGeneralPage(id, generalPageData) {
+    try {
+      const updatedGeneralPage = await GeneralPage.findOneAndUpdate(
+        { _id: id, deleted_at: null },
+        { LegalContent: generalPageData.LegalContent || [] },
+        { new: true, upsert: true }
+      );
+      return updatedGeneralPage;
+    } catch (error) {
+      throw new Error(`Failed to update general page: ${error.message}`);
+    }
+  }
+
+  /**
+   * Create or update general page (if no id provided, creates new one)
+   */
+  async createOrUpdateGeneralPage(generalPageData) {
+    try {
+      // Try to find existing general page
+      let generalPage = await GeneralPage.findOne({ deleted_at: null });
+      
+      if (generalPage) {
+        // Update existing
+        generalPage.LegalContent = generalPageData.LegalContent || [];
+        await generalPage.save();
+        return generalPage;
+      } else {
+        // Create new
+        generalPage = await GeneralPage.create({
+          LegalContent: generalPageData.LegalContent || [],
+        });
+        return generalPage;
+      }
+    } catch (error) {
+      throw new Error(`Failed to create or update general page: ${error.message}`);
     }
   }
 }

@@ -356,4 +356,61 @@ export class FeaturesController {
       next(error);
     }
   };
+
+  // ==================== STATIC PAGES CONTROLLERS ====================
+
+  /**
+   * Get general page
+   */
+  getGeneralPage = async (req, res, next) => {
+    try {
+      // Get ID from query params or body
+      const { id } = req.query || req.body;
+      
+      if (!id) {
+        return res.status(400).json({
+          success: false,
+          message: 'ID is required in request body or query parameters',
+        });
+      }
+      
+      const generalPage = await this.featuresService.getGeneralPageById(id);
+      res.status(200).json({
+        success: true,
+        message: 'General page fetched successfully',
+        data: generalPage,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
+   * Update general page
+   */
+  updateGeneralPage = async (req, res, next) => {
+    try {
+      const { id, LegalContent } = req.body;
+      
+      if (!id) {
+        return res.status(400).json({
+          success: false,
+          message: 'ID is required in request body',
+        });
+      }
+      
+      const generalPageData = { LegalContent };
+      const updatedGeneralPage = await this.featuresService.updateGeneralPage(id, generalPageData);
+      
+      res.status(200).json({
+        success: true,
+        message: 'General page updated successfully',
+        data: updatedGeneralPage,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+
 }

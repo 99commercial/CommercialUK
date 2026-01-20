@@ -58,4 +58,12 @@ router.patch('/properties/:id/activate', featuresController.activateProperty);
 // GET /api/admin/dashboard - Get admin dashboard overview
 router.get('/dashboard', featuresController.getDashboardStats);
 
+// ==================== STATIC PAGES ROUTES ====================
+
+// GET /api/admin/static-pages/general-page - Get general page
+router.get('/static-pages/general-page', featuresController.getGeneralPage);
+
+// PATCH /api/admin/static-pages/general-page - Update general page
+router.patch('/static-pages/general-page', featuresController.updateGeneralPage);
+
 export default router;

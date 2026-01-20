@@ -143,30 +143,151 @@ const AllPropertiesPage: React.FC = () => {
     }
   };
 
+  // Helper function to filter properties by location
+  const filterPropertiesByLocation = (properties: Property[], location: string): Property[] => {
+    if (!location || location.trim() === '') {
+      return properties;
+    }
+
+    try {
+      // Try to parse location as JSON first
+      let locationData: any = null;
+      try {
+        locationData = JSON.parse(location);
+      } catch {
+        // If not JSON, treat as plain string
+        locationData = location;
+      }
+
+      const searchTerms: string[] = [];
+      
+      if (typeof locationData === 'object' && locationData !== null) {
+        // Extract searchable fields from location object
+        if (locationData.building_name) searchTerms.push(locationData.building_name.toLowerCase());
+        if (locationData.address) searchTerms.push(locationData.address.toLowerCase());
+        if (locationData.town_city) searchTerms.push(locationData.town_city.toLowerCase());
+        if (locationData.postcode) searchTerms.push(locationData.postcode.toLowerCase());
+        if (locationData.country_region) searchTerms.push(locationData.country_region.toLowerCase());
+      } else if (typeof locationData === 'string') {
+        // If it's a string, split by spaces and use all parts
+        searchTerms.push(...locationData.toLowerCase().split(/\s+/).filter(term => term.length > 0));
+      }
+
+      if (searchTerms.length === 0) {
+        return properties;
+      }
+
+      // Filter properties that match any of the search terms in any address field
+      return properties.filter(property => {
+        const { general_details } = property;
+        if (!general_details) return false;
+
+        const searchableText = [
+          general_details.building_name || '',
+          general_details.address || '',
+          general_details.town_city || '',
+          general_details.postcode || '',
+          general_details.country_region || '',
+        ]
+          .join(' ')
+          .toLowerCase();
+
+        // Check if any search term matches the searchable text
+        return searchTerms.some(term => searchableText.includes(term));
+      });
+    } catch (error) {
+      console.error('Error filtering properties by location:', error);
+      return properties;
+    }
+  };
+
   // fetchProperty function that fetches ALL properties
   const fetchProperty = async (page: number = currentPage) => {
     setLoading(true);
     setError(null);
 
     try {
+      // Get URL query parameters
+      const { location, forSale, toLet } = router.query;
+
+      console.log('location', location);
+      console.log('forSale', forSale);
+      console.log('toLet', toLet);
+      
+      // Determine sale_status filter based on forSale and toLet
+      let saleStatus: string | undefined = undefined;
+      const forSaleValue = forSale === 'true' || (Array.isArray(forSale) && forSale[0] === 'true');
+      const toLetValue = toLet === 'true' || (Array.isArray(toLet) && toLet[0] === 'true');
+
+      if (toLetValue && !forSaleValue) {
+        // Only toLet is true - filter for 'Let' status
+        saleStatus = 'To Let';
+      } else if (forSaleValue && !toLetValue) {
+        // Only forSale is true - filter for sale properties
+        // Send 'Available' status to backend (most common status for properties for sale)
+        saleStatus = 'For Sale';
+      } else if (forSaleValue && toLetValue) {
+        // Both are true - show both (no filter)
+        saleStatus = undefined;
+      } else {
+        // Both are false - show both (no filter)
+        saleStatus = undefined;
+      }
+
+      // Build API params
+      const apiParams: any = {
+        page: page,
+        limit: 12, // Match backend limit
+      };
+
+      // Add sale_status parameter to backend API
+      if (saleStatus) {
+        apiParams.sale_status = saleStatus;
+      }
+
+      // Extract postcode from location query parameter
+      const locationStr = Array.isArray(location) ? location[0] : location;
+      if (locationStr && typeof locationStr === 'string' && locationStr.trim() !== '') {
+        try {
+          // Try to parse as JSON first (in case location is a JSON object)
+          const locationData = JSON.parse(locationStr);
+          if (locationData.postcode) {
+            apiParams.postcode = locationData.postcode;
+          }
+        } catch {
+          // If not JSON, treat location as postcode directly or try to extract postcode pattern
+          const postcodeMatch = locationStr.match(/\b[A-Z]{1,2}[0-9][A-Z0-9]?\s?[0-9][A-Z]{2}\b/i);
+          if (postcodeMatch) {
+            apiParams.postcode = postcodeMatch[0].trim();
+          } else {
+            // If no pattern match, use the location string as postcode
+            apiParams.postcode = locationStr.trim();
+          }
+        }
+      }
+
       // Make API call to fetch all properties (public endpoint)
+      console.log('API params being sent:', apiParams);
       const response = await axiosInstance.get('/api/agent/properties/all', {
-        params: {
-          page: page,
-          limit: 12, // Match backend limit
-        },
+        params: apiParams,
       });
 
       if (response.data.success) {
-        const fetchedProperties = response.data.data.properties || [];
+        let fetchedProperties = response.data.data.properties || [];
         const pagination = response.data.data.pagination || {};
+        
+        // Apply location filtering on frontend
+        const locationStr = Array.isArray(location) ? location[0] : location;
+        if (locationStr && typeof locationStr === 'string' && locationStr.trim() !== '') {
+          fetchedProperties = filterPropertiesByLocation(fetchedProperties, locationStr);
+        }
         
         setProperties(fetchedProperties);
         setDisplayProperties(fetchedProperties);
-        // Update currentPage from API response to keep it in sync
+        // Update pagination from API response to keep it in sync
         setCurrentPage(pagination.current_page || page);
         setTotalPages(pagination.total_pages || 1);
-        setTotalCount(pagination.total_documents || 0);
+        setTotalCount(pagination.total_documents || 0); // Use API total count
       } else {
         throw new Error(response.data.message || 'Failed to load properties');
       }
@@ -228,6 +349,14 @@ const AllPropertiesPage: React.FC = () => {
       fetchFavorites();
     }
   }, []);
+
+  // Re-fetch properties when query parameters change
+  useEffect(() => {
+    if (router.isReady) {
+      setIsAreaFiltered(false); // Reset area filter when query params change
+      fetchProperty(1);
+    }
+  }, [router.query.location, router.query.forSale, router.query.toLet]);
 
   return (
     <PageContainer>

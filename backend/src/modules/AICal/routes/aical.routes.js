@@ -112,4 +112,14 @@ router.get(
   aicalController.getReportById.bind(aicalController)
 );
 
+/**
+ * @route   GET /api/aical/business-rates
+ * @desc    Get HMRC Business Rates data (proxied through backend to avoid CORS)
+ * @access  Public
+ */
+router.get(
+  '/business-rates',
+  aicalController.getBusinessRates.bind(aicalController)
+);
+
 export default router;

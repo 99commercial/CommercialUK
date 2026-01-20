@@ -908,9 +908,6 @@ const ReportDetailedPage: React.FC = () => {
   const [loanTerm, setLoanTerm] = useState<number>(25);
   const lat = Number(report?.propertyDetails?.latitude);
   const lng = Number(report?.propertyDetails?.longitude);
-  
-  // Property yield state for sales valuation
-  const [selectedYield, setSelectedYield] = useState<number>(5);
 
   // Unit selection state (sqft or sqm)
   const [unitSelection, setUnitSelection] = useState<'sqft' | 'sqm'>('sqft');
@@ -927,7 +924,7 @@ const ReportDetailedPage: React.FC = () => {
 
   const [streetImage, setStreetImage] = useState<string | null>(null);
   const sectionRefs = useRef<Map<string, HTMLDivElement>>(new Map());
-  const SCROLL_DAMPING = 0.35; // lower = heavier/slower scroll
+  const SCROLL_DAMPING = 0.35; // lower = heavier/slower scroll 
 
   useEffect(() => {
     if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
@@ -1264,7 +1261,7 @@ const ReportDetailedPage: React.FC = () => {
                 {report.location?.address ? (
                   <Box
                     component="iframe"
-                    src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(report.location.address)}&zoom=15&maptype=satellite`}
+                    src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(report.location.address)}&zoom=20&maptype=satellite`}
                     sx={{
                       width: '100%',
                       height: '100%',
@@ -2301,375 +2298,6 @@ const ReportDetailedPage: React.FC = () => {
             </SectionTitle>
             
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-              {/* Introduction Card */}
-              <Box
-                sx={{
-                  p: 4,
-                  borderRadius: '16px',
-                  background: 'linear-gradient(135deg, rgba(242, 197, 20, 0.1) 0%, rgba(251, 191, 36, 0.05) 100%)',
-                  border: '2px solid #f2c514',
-                  boxShadow: '0 4px 16px rgba(242, 197, 20, 0.15)',
-                }}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-                  <Box
-                    sx={{
-                      width: 48,
-                      height: 48,
-                      borderRadius: '12px',
-                      background: 'linear-gradient(135deg, #f2c514 0%, #fbbf24 100%)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: '0 4px 12px rgba(242, 197, 20, 0.3)',
-                    }}
-                  >
-                    <DescriptionIcon sx={{ color: '#000000', fontSize: '28px' }} />
-                  </Box>
-                  <Typography
-                    sx={{
-                      fontSize: '22px',
-                      fontWeight: 700,
-                      color: '#111827',
-                      fontFamily: '"Poppins", "Montserrat", sans-serif',
-                    }}
-                  >
-                    Legal Information & Documentation
-                  </Typography>
-                </Box>
-                <Typography
-                  sx={{
-                    fontSize: '16px',
-                    color: '#4b5563',
-                    lineHeight: 1.8,
-                    fontFamily: '"Inter", sans-serif',
-                  }}
-                >
-                  Important legal information, documentation requirements, and regulatory compliance details for this property.
-                </Typography>
-              </Box>
-
-              {/* Legal Documents Section */}
-              <Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
-                  <Box
-                    sx={{
-                      width: 8,
-                      height: 8,
-                      backgroundColor: '#f2c514',
-                      borderRadius: '50%',
-                    }}
-                  />
-                  <Typography
-                    sx={{
-                      fontSize: '20px',
-                      fontWeight: 700,
-                      color: '#111827',
-                      fontFamily: '"Poppins", "Montserrat", sans-serif',
-                    }}
-                  >
-                    Required Legal Documents
-                  </Typography>
-                </Box>
-
-                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' }, gap: 3 }}>
-                  {/* Title Deeds */}
-                  <Box
-                    sx={{
-                      p: 3,
-                      borderRadius: '12px',
-                      backgroundColor: '#ffffff',
-                      border: '2px solid #e5e7eb',
-                      transition: 'all 0.3s ease',
-                      '&:hover': {
-                        borderColor: '#f2c514',
-                        transform: 'translateY(-4px)',
-                        boxShadow: '0 8px 20px rgba(242, 197, 20, 0.2)',
-                      },
-                    }}
-                  >
-                    <Typography
-                      sx={{
-                        fontSize: '18px',
-                        fontWeight: 700,
-                        color: '#111827',
-                        fontFamily: '"Poppins", sans-serif',
-                        mb: 2,
-                      }}
-                    >
-                      📜 Title Deeds
-                    </Typography>
-                    <Typography
-                      sx={{
-                        fontSize: '15px',
-                        color: '#6b7280',
-                        lineHeight: 1.7,
-                        fontFamily: '"Inter", sans-serif',
-                      }}
-                    >
-                      Official proof of ownership and property boundaries. Essential for all property transactions.
-                    </Typography>
-                  </Box>
-
-                  {/* Property Survey */}
-                  <Box
-                    sx={{
-                      p: 3,
-                      borderRadius: '12px',
-                      backgroundColor: '#ffffff',
-                      border: '2px solid #e5e7eb',
-                      transition: 'all 0.3s ease',
-                      '&:hover': {
-                        borderColor: '#f2c514',
-                        transform: 'translateY(-4px)',
-                        boxShadow: '0 8px 20px rgba(242, 197, 20, 0.2)',
-                      },
-                    }}
-                  >
-                    <Typography
-                      sx={{
-                        fontSize: '18px',
-                        fontWeight: 700,
-                        color: '#111827',
-                        fontFamily: '"Poppins", sans-serif',
-                        mb: 2,
-                      }}
-                    >
-                      🏗️ Property Survey
-                    </Typography>
-                    <Typography
-                      sx={{
-                        fontSize: '15px',
-                        color: '#6b7280',
-                        lineHeight: 1.7,
-                        fontFamily: '"Inter", sans-serif',
-                      }}
-                    >
-                      Professional assessment of property condition, highlighting any structural issues or defects.
-                    </Typography>
-                  </Box>
-
-                  {/* Planning Permissions */}
-                  <Box
-                    sx={{
-                      p: 3,
-                      borderRadius: '12px',
-                      backgroundColor: '#ffffff',
-                      border: '2px solid #e5e7eb',
-                      transition: 'all 0.3s ease',
-                      '&:hover': {
-                        borderColor: '#f2c514',
-                        transform: 'translateY(-4px)',
-                        boxShadow: '0 8px 20px rgba(242, 197, 20, 0.2)',
-                      },
-                    }}
-                  >
-                    <Typography
-                      sx={{
-                        fontSize: '18px',
-                        fontWeight: 700,
-                        color: '#111827',
-                        fontFamily: '"Poppins", sans-serif',
-                        mb: 2,
-                      }}
-                    >
-                      📋 Planning Permissions
-                    </Typography>
-                    <Typography
-                      sx={{
-                        fontSize: '15px',
-                        color: '#6b7280',
-                        lineHeight: 1.7,
-                        fontFamily: '"Inter", sans-serif',
-                      }}
-                    >
-                      Documentation of approved alterations, extensions, or changes of use for the property.
-                    </Typography>
-                  </Box>
-
-                  {/* Building Regulations */}
-                  <Box
-                    sx={{
-                      p: 3,
-                      borderRadius: '12px',
-                      backgroundColor: '#ffffff',
-                      border: '2px solid #e5e7eb',
-                      transition: 'all 0.3s ease',
-                      '&:hover': {
-                        borderColor: '#f2c514',
-                        transform: 'translateY(-4px)',
-                        boxShadow: '0 8px 20px rgba(242, 197, 20, 0.2)',
-                      },
-                    }}
-                  >
-                    <Typography
-                      sx={{
-                        fontSize: '18px',
-                        fontWeight: 700,
-                        color: '#111827',
-                        fontFamily: '"Poppins", sans-serif',
-                        mb: 2,
-                      }}
-                    >
-                      ⚖️ Building Regulations
-                    </Typography>
-                    <Typography
-                      sx={{
-                        fontSize: '15px',
-                        color: '#6b7280',
-                        lineHeight: 1.7,
-                        fontFamily: '"Inter", sans-serif',
-                      }}
-                    >
-                      Certificates confirming compliance with building regulations for any construction work.
-                    </Typography>
-                  </Box>
-                </Box>
-              </Box>
-
-              {/* Legal Considerations */}
-              <Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
-                  <Box
-                    sx={{
-                      width: 8,
-                      height: 8,
-                      backgroundColor: '#f2c514',
-                      borderRadius: '50%',
-                    }}
-                  />
-                  <Typography
-                    sx={{
-                      fontSize: '20px',
-                      fontWeight: 700,
-                      color: '#111827',
-                      fontFamily: '"Poppins", "Montserrat", sans-serif',
-                    }}
-                  >
-                    Key Legal Considerations
-                  </Typography>
-                </Box>
-
-                <Box
-                  sx={{
-                    p: 4,
-                    borderRadius: '16px',
-                    backgroundColor: '#fffbf0',
-                    border: '2px solid #fbbf24',
-                  }}
-                >
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
-                    <Box sx={{ display: 'flex', gap: 2 }}>
-                      <Typography sx={{ fontSize: '20px', flexShrink: 0 }}>✓</Typography>
-                      <Box>
-                        <Typography
-                          sx={{
-                            fontSize: '16px',
-                            fontWeight: 600,
-                            color: '#92400e',
-                            fontFamily: '"Poppins", sans-serif',
-                            mb: 0.5,
-                          }}
-                        >
-                          Freehold vs Leasehold
-                        </Typography>
-                        <Typography
-                          sx={{
-                            fontSize: '15px',
-                            color: '#78350f',
-                            lineHeight: 1.7,
-                            fontFamily: '"Inter", sans-serif',
-                          }}
-                        >
-                          Understand the ownership structure and any ground rent or service charges that may apply.
-                        </Typography>
-                      </Box>
-                    </Box>
-
-                    <Box sx={{ display: 'flex', gap: 2 }}>
-                      <Typography sx={{ fontSize: '20px', flexShrink: 0 }}>✓</Typography>
-                      <Box>
-                        <Typography
-                          sx={{
-                            fontSize: '16px',
-                            fontWeight: 600,
-                            color: '#92400e',
-                            fontFamily: '"Poppins", sans-serif',
-                            mb: 0.5,
-                          }}
-                        >
-                          Local Searches
-                        </Typography>
-                        <Typography
-                          sx={{
-                            fontSize: '15px',
-                            color: '#78350f',
-                            lineHeight: 1.7,
-                            fontFamily: '"Inter", sans-serif',
-                          }}
-                        >
-                          Local authority searches reveal planning applications, building control, and environmental issues.
-                        </Typography>
-                      </Box>
-                    </Box>
-
-                    <Box sx={{ display: 'flex', gap: 2 }}>
-                      <Typography sx={{ fontSize: '20px', flexShrink: 0 }}>✓</Typography>
-                      <Box>
-                        <Typography
-                          sx={{
-                            fontSize: '16px',
-                            fontWeight: 600,
-                            color: '#92400e',
-                            fontFamily: '"Poppins", sans-serif',
-                            mb: 0.5,
-                          }}
-                        >
-                          Restrictive Covenants
-                        </Typography>
-                        <Typography
-                          sx={{
-                            fontSize: '15px',
-                            color: '#78350f',
-                            lineHeight: 1.7,
-                            fontFamily: '"Inter", sans-serif',
-                          }}
-                        >
-                          Check for any legal restrictions on how the property can be used or modified.
-                        </Typography>
-                      </Box>
-                    </Box>
-
-                    <Box sx={{ display: 'flex', gap: 2 }}>
-                      <Typography sx={{ fontSize: '20px', flexShrink: 0 }}>✓</Typography>
-                      <Box>
-                        <Typography
-                          sx={{
-                            fontSize: '16px',
-                            fontWeight: 600,
-                            color: '#92400e',
-                            fontFamily: '"Poppins", sans-serif',
-                            mb: 0.5,
-                          }}
-                        >
-                          Rights of Way
-                        </Typography>
-                        <Typography
-                          sx={{
-                            fontSize: '15px',
-                            color: '#78350f',
-                            lineHeight: 1.7,
-                            fontFamily: '"Inter", sans-serif',
-                          }}
-                        >
-                          Verify any access rights that may affect the property or benefit neighboring properties.
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Box>
-                </Box>
-              </Box>
-
               {/* Land Registry Transaction History */}
               <Box>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
@@ -2798,7 +2426,9 @@ const ReportDetailedPage: React.FC = () => {
                               </Box>
                             </Box>
 
-                            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' }, gap: 2, mt: 2 }}>
+                            {/* Transaction Details Grid */}
+                            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' }, gap: 2.5, mt: 3 }}>
+                              {/* Transaction ID */}
                               <Box>
                                 <Typography
                                   sx={{
@@ -2811,46 +2441,22 @@ const ReportDetailedPage: React.FC = () => {
                                     fontWeight: 600,
                                   }}
                                 >
-                                  Property Type
+                                  Transaction ID
                                 </Typography>
                                 <Typography
                                   sx={{
-                                    fontSize: '14px',
-                                    fontWeight: 600,
+                                    fontSize: '13px',
+                                    fontWeight: 500,
                                     color: '#111827',
-                                    fontFamily: '"Inter", sans-serif',
+                                    fontFamily: '"Courier New", monospace',
+                                    wordBreak: 'break-all',
                                   }}
                                 >
-                                  {transaction.propertyType.label[0]._value}
+                                  {transaction.transactionId}
                                 </Typography>
                               </Box>
 
-                              <Box>
-                                <Typography
-                                  sx={{
-                                    fontSize: '11px',
-                                    color: '#9ca3af',
-                                    fontFamily: '"Inter", sans-serif',
-                                    mb: 0.5,
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '0.5px',
-                                    fontWeight: 600,
-                                  }}
-                                >
-                                  Estate Type
-                                </Typography>
-                                <Typography
-                                  sx={{
-                                    fontSize: '14px',
-                                    fontWeight: 600,
-                                    color: '#111827',
-                                    fontFamily: '"Inter", sans-serif',
-                                  }}
-                                >
-                                  {transaction.estateType.label[0]._value}
-                                </Typography>
-                              </Box>
-
+                              {/* New Build */}
                               <Box>
                                 <Typography
                                   sx={{
@@ -2877,6 +2483,7 @@ const ReportDetailedPage: React.FC = () => {
                                 </Typography>
                               </Box>
 
+                              {/* Transaction Date */}
                               <Box>
                                 <Typography
                                   sx={{
@@ -2889,7 +2496,7 @@ const ReportDetailedPage: React.FC = () => {
                                     fontWeight: 600,
                                   }}
                                 >
-                                  Transaction Type
+                                  Transaction Date
                                 </Typography>
                                 <Typography
                                   sx={{
@@ -2899,7 +2506,384 @@ const ReportDetailedPage: React.FC = () => {
                                     fontFamily: '"Inter", sans-serif',
                                   }}
                                 >
-                                  {transaction.transactionCategory.label[0]._value === 'Standard price paid transaction' ? 'Standard' : 'Additional'}
+                                  {new Date(transaction.transactionDate).toLocaleDateString('en-GB', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: 'numeric',
+                                  })}
+                                </Typography>
+                              </Box>
+
+                              {/* Price Paid */}
+                              <Box>
+                                <Typography
+                                  sx={{
+                                    fontSize: '11px',
+                                    color: '#9ca3af',
+                                    fontFamily: '"Inter", sans-serif',
+                                    mb: 0.5,
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.5px',
+                                    fontWeight: 600,
+                                  }}
+                                >
+                                  Price Paid
+                                </Typography>
+                                <Typography
+                                  sx={{
+                                    fontSize: '14px',
+                                    fontWeight: 600,
+                                    color: '#111827',
+                                    fontFamily: '"Inter", sans-serif',
+                                  }}
+                                >
+                                  £{transaction.pricePaid.toLocaleString()}
+                                </Typography>
+                              </Box>
+
+                              {/* Type */}
+                              <Box>
+                                <Typography
+                                  sx={{
+                                    fontSize: '11px',
+                                    color: '#9ca3af',
+                                    fontFamily: '"Inter", sans-serif',
+                                    mb: 0.5,
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.5px',
+                                    fontWeight: 600,
+                                  }}
+                                >
+                                  Type
+                                </Typography>
+                                <Typography
+                                  sx={{
+                                    fontSize: '14px',
+                                    fontWeight: 600,
+                                    color: '#111827',
+                                    fontFamily: '"Inter", sans-serif',
+                                  }}
+                                >
+                                  TransactionRecord
+                                </Typography>
+                              </Box>
+
+                              {/* Estate Type */}
+                              <Box>
+                                <Typography
+                                  sx={{
+                                    fontSize: '11px',
+                                    color: '#9ca3af',
+                                    fontFamily: '"Inter", sans-serif',
+                                    mb: 0.5,
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.5px',
+                                    fontWeight: 600,
+                                  }}
+                                >
+                                  Estate Type
+                                </Typography>
+                                <Typography
+                                  sx={{
+                                    fontSize: '14px',
+                                    fontWeight: 600,
+                                    color: '#111827',
+                                    fontFamily: '"Inter", sans-serif',
+                                  }}
+                                >
+                                  {transaction.estateType.label[0]._value}
+                                </Typography>
+                              </Box>
+
+                              {/* Has Transaction */}
+                              <Box>
+                                <Typography
+                                  sx={{
+                                    fontSize: '11px',
+                                    color: '#9ca3af',
+                                    fontFamily: '"Inter", sans-serif',
+                                    mb: 0.5,
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.5px',
+                                    fontWeight: 600,
+                                  }}
+                                >
+                                  Has Transaction
+                                </Typography>
+                                <Typography
+                                  sx={{
+                                    fontSize: '13px',
+                                    fontWeight: 500,
+                                    color: '#111827',
+                                    fontFamily: '"Courier New", monospace',
+                                    wordBreak: 'break-all',
+                                  }}
+                                >
+                                  {transaction.transactionId}
+                                </Typography>
+                              </Box>
+                            </Box>
+
+                            {/* Property Address Section */}
+                            <Box sx={{ mt: 3, p: 2.5, backgroundColor: '#f9fafb', borderRadius: '8px' }}>
+                              <Typography
+                                sx={{
+                                  fontSize: '11px',
+                                  color: '#9ca3af',
+                                  fontFamily: '"Inter", sans-serif',
+                                  mb: 1.5,
+                                  textTransform: 'uppercase',
+                                  letterSpacing: '0.5px',
+                                  fontWeight: 600,
+                                }}
+                              >
+                                Property Address
+                              </Typography>
+                              <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' }, gap: 2 }}>
+                                {/* County */}
+                                <Box>
+                                  <Typography
+                                    sx={{
+                                      fontSize: '11px',
+                                      color: '#9ca3af',
+                                      fontFamily: '"Inter", sans-serif',
+                                      mb: 0.5,
+                                      textTransform: 'uppercase',
+                                      letterSpacing: '0.5px',
+                                      fontWeight: 600,
+                                    }}
+                                  >
+                                    County
+                                  </Typography>
+                                  <Typography
+                                    sx={{
+                                      fontSize: '14px',
+                                      fontWeight: 600,
+                                      color: '#111827',
+                                      fontFamily: '"Inter", sans-serif',
+                                    }}
+                                  >
+                                    {transaction.propertyAddress.county || 'N/A'}
+                                  </Typography>
+                                </Box>
+
+                                {/* District */}
+                                <Box>
+                                  <Typography
+                                    sx={{
+                                      fontSize: '11px',
+                                      color: '#9ca3af',
+                                      fontFamily: '"Inter", sans-serif',
+                                      mb: 0.5,
+                                      textTransform: 'uppercase',
+                                      letterSpacing: '0.5px',
+                                      fontWeight: 600,
+                                    }}
+                                  >
+                                    District
+                                  </Typography>
+                                  <Typography
+                                    sx={{
+                                      fontSize: '14px',
+                                      fontWeight: 600,
+                                      color: '#111827',
+                                      fontFamily: '"Inter", sans-serif',
+                                    }}
+                                  >
+                                    {transaction.propertyAddress.district || 'N/A'}
+                                  </Typography>
+                                </Box>
+
+                                {/* PAON */}
+                                <Box>
+                                  <Typography
+                                    sx={{
+                                      fontSize: '11px',
+                                      color: '#9ca3af',
+                                      fontFamily: '"Inter", sans-serif',
+                                      mb: 0.5,
+                                      textTransform: 'uppercase',
+                                      letterSpacing: '0.5px',
+                                      fontWeight: 600,
+                                    }}
+                                  >
+                                    PAON
+                                  </Typography>
+                                  <Typography
+                                    sx={{
+                                      fontSize: '14px',
+                                      fontWeight: 600,
+                                      color: '#111827',
+                                      fontFamily: '"Inter", sans-serif',
+                                    }}
+                                  >
+                                    {transaction.propertyAddress.paon}
+                                  </Typography>
+                                </Box>
+
+                                {/* Postcode */}
+                                <Box>
+                                  <Typography
+                                    sx={{
+                                      fontSize: '11px',
+                                      color: '#9ca3af',
+                                      fontFamily: '"Inter", sans-serif',
+                                      mb: 0.5,
+                                      textTransform: 'uppercase',
+                                      letterSpacing: '0.5px',
+                                      fontWeight: 600,
+                                    }}
+                                  >
+                                    Postcode
+                                  </Typography>
+                                  <Typography
+                                    sx={{
+                                      fontSize: '14px',
+                                      fontWeight: 600,
+                                      color: '#111827',
+                                      fontFamily: '"Inter", sans-serif',
+                                    }}
+                                  >
+                                    {transaction.propertyAddress.postcode}
+                                  </Typography>
+                                </Box>
+
+                                {/* Street */}
+                                <Box>
+                                  <Typography
+                                    sx={{
+                                      fontSize: '11px',
+                                      color: '#9ca3af',
+                                      fontFamily: '"Inter", sans-serif',
+                                      mb: 0.5,
+                                      textTransform: 'uppercase',
+                                      letterSpacing: '0.5px',
+                                      fontWeight: 600,
+                                    }}
+                                  >
+                                    Street
+                                  </Typography>
+                                  <Typography
+                                    sx={{
+                                      fontSize: '14px',
+                                      fontWeight: 600,
+                                      color: '#111827',
+                                      fontFamily: '"Inter", sans-serif',
+                                    }}
+                                  >
+                                    {transaction.propertyAddress.street}
+                                  </Typography>
+                                </Box>
+
+                                {/* Town */}
+                                <Box>
+                                  <Typography
+                                    sx={{
+                                      fontSize: '11px',
+                                      color: '#9ca3af',
+                                      fontFamily: '"Inter", sans-serif',
+                                      mb: 0.5,
+                                      textTransform: 'uppercase',
+                                      letterSpacing: '0.5px',
+                                      fontWeight: 600,
+                                    }}
+                                  >
+                                    Town
+                                  </Typography>
+                                  <Typography
+                                    sx={{
+                                      fontSize: '14px',
+                                      fontWeight: 600,
+                                      color: '#111827',
+                                      fontFamily: '"Inter", sans-serif',
+                                    }}
+                                  >
+                                    {transaction.propertyAddress.town}
+                                  </Typography>
+                                </Box>
+                              </Box>
+                            </Box>
+
+                            {/* Property Type, Record Status, Transaction Category */}
+                            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' }, gap: 2.5, mt: 2.5 }}>
+                              {/* Property Type */}
+                              <Box>
+                                <Typography
+                                  sx={{
+                                    fontSize: '11px',
+                                    color: '#9ca3af',
+                                    fontFamily: '"Inter", sans-serif',
+                                    mb: 0.5,
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.5px',
+                                    fontWeight: 600,
+                                  }}
+                                >
+                                  Property Type
+                                </Typography>
+                                <Typography
+                                  sx={{
+                                    fontSize: '14px',
+                                    fontWeight: 600,
+                                    color: '#111827',
+                                    fontFamily: '"Inter", sans-serif',
+                                  }}
+                                >
+                                  {transaction.propertyType.label[0]._value}
+                                </Typography>
+                              </Box>
+
+                              {/* Record Status */}
+                              <Box>
+                                <Typography
+                                  sx={{
+                                    fontSize: '11px',
+                                    color: '#9ca3af',
+                                    fontFamily: '"Inter", sans-serif',
+                                    mb: 0.5,
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.5px',
+                                    fontWeight: 600,
+                                  }}
+                                >
+                                  Record Status
+                                </Typography>
+                                <Typography
+                                  sx={{
+                                    fontSize: '14px',
+                                    fontWeight: 600,
+                                    color: '#111827',
+                                    fontFamily: '"Inter", sans-serif',
+                                  }}
+                                >
+                                  {transaction.recordStatus?.label?.[0]?._value || 'Add'}
+                                </Typography>
+                              </Box>
+
+                              {/* Transaction Category */}
+                              <Box>
+                                <Typography
+                                  sx={{
+                                    fontSize: '11px',
+                                    color: '#9ca3af',
+                                    fontFamily: '"Inter", sans-serif',
+                                    mb: 0.5,
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.5px',
+                                    fontWeight: 600,
+                                  }}
+                                >
+                                  Transaction Category
+                                </Typography>
+                                <Typography
+                                  sx={{
+                                    fontSize: '14px',
+                                    fontWeight: 600,
+                                    color: '#111827',
+                                    fontFamily: '"Inter", sans-serif',
+                                  }}
+                                >
+                                  {transaction.transactionCategory.label[0]._value}
                                 </Typography>
                               </Box>
                             </Box>
@@ -2976,6 +2960,7 @@ const ReportDetailedPage: React.FC = () => {
                   borderRadius: '16px',
                   background: 'linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%)',
                   border: '2px solid #ef4444',
+                  mt: 4,
                 }}
               >
                 <Box sx={{ display: 'flex', gap: 2.5 }}>
@@ -4204,11 +4189,27 @@ const ReportDetailedPage: React.FC = () => {
                             const annualPA = report.predictedPrice.pricingPA || 0;
                             const effectiveArea = report.predictedPrice.effectiveAreaSqft || 0;
                             
-                            // Define the three yield options: Lowest (7%), Average (5%), Highest (3%)
+                            // Generate random yields for each card (2 decimal places)
+                            // Helper function to generate random number between min and max with 2 decimal places
+                            const randomYield = (min: number, max: number) => {
+                              return Math.round((Math.random() * (max - min) + min) * 100) / 100;
+                            };
+                            
+                            // Generate random yields for each price card
+                            const highestYield = randomYield(3.00, 4.50); // Highest Price: 3% to 4.5%
+                            const averageYield = randomYield(4.50, 5.50); // Average Price: 4.5% to 5.5%
+                            const lowestYield = randomYield(5.50, 7.00); // Lowest Price: 5.5% to 7%
+                            
+                            // Calculate multipliers from yields (multiplier = 100 / yield)
+                            const highestMultiplier = 100 / highestYield;
+                            const averageMultiplier = 100 / averageYield;
+                            const lowestMultiplier = 100 / lowestYield;
+                            
+                            // Define the three yield options with random yields and calculated multipliers
                             const priceCards = [
-                              { label: 'Lowest Price', yield: 7, multiplier: 14.28, emoji: '📉' },
-                              { label: 'Average Price', yield: 5, multiplier: 20, emoji: '£' },
-                              { label: 'Highest Price', yield: 3, multiplier: 33.33, emoji: '📈' },
+                              { label: 'Lowest Price', yield: lowestYield, multiplier: lowestMultiplier, emoji: '📉' },
+                              { label: 'Average Price', yield: averageYield, multiplier: averageMultiplier, emoji: '£' },
+                              { label: 'Highest Price', yield: highestYield, multiplier: highestMultiplier, emoji: '📈' },
                             ];
 
                             return (
@@ -4224,10 +4225,10 @@ const ReportDetailedPage: React.FC = () => {
                                 {priceCards.map((card, index) => {
                                   const calculatedSalesPrice = annualPA * card.multiplier;
                                   const calculatedPricePerSqft = effectiveArea > 0 ? calculatedSalesPrice / effectiveArea : 0;
-                                  const isAverage = card.yield === 5;
+                                  const isAverage = card.label === 'Average Price';
 
                                   return (
-                                    <Box key={card.yield} sx={{ 
+                                    <Box key={card.label} sx={{ 
                                       flex: 1,
                                       '@media print': {
                                         pageBreakInside: 'avoid',

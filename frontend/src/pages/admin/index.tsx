@@ -38,30 +38,6 @@ const WelcomeCard: React.FC = () => {
             </Typography>
           </Box>
         </Box>
-        
-        <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <TrendingUpIcon sx={{ fontSize: 20, opacity: 0.8 }} />
-            <Typography variant="body2" sx={{ opacity: 0.9 }}>
-              <strong>12</strong> New Properties
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <PeopleIcon sx={{ fontSize: 20, opacity: 0.8 }} />
-            <Typography variant="body2" sx={{ opacity: 0.9 }}>
-              <strong>8</strong> Active Clients
-            </Typography>
-          </Box>
-          <Chip
-            label="Online"
-            size="small"
-            sx={{
-              bgcolor: 'rgba(16, 185, 129, 0.2)',
-              color: '#10b981',
-              fontWeight: 600,
-            }}
-          />
-        </Box>
       </CardContent>
       
       {/* Decorative elements */}

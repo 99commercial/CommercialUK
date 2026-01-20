@@ -1226,6 +1226,76 @@ class AICalService {
       throw error;
     }
   }
+
+  /**
+   * Get HMRC Business Rates data
+   * @returns {Promise<Object>} Business rates data
+   */
+  async getBusinessRates(postcode) {
+    try {
+      if (!postcode) {
+        throw new Error('Postcode is required');
+      }
+      
+      const encodedPostcode = encodeURIComponent(postcode);
+
+      console.log(encodedPostcode, "encodedPostcode shardul chaudhary");
+
+      // Step 1: Get OAuth access token using axios auth option
+      const tokenRes = await axios.post(
+        'https://test-api.service.hmrc.gov.uk/oauth/token',
+        new URLSearchParams({
+          grant_type: 'client_credentials',
+          client_id: process.env.CLIENT_API_ID,
+          client_secret: process.env.CLIENT_API_SECRET,
+        }).toString(),
+        {
+          auth: {
+            username: process.env.CLIENT_API_ID,
+            password: process.env.CLIENT_API_SECRET,
+          },
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        }
+      );
+
+      const accessToken = tokenRes.data.access_token;
+
+      console.log(accessToken, "accessToken shardul chaudhary");
+
+      if (!accessToken) {
+        throw new Error('Failed to obtain HMRC access token');
+      }
+
+      // Step 2: Call Business Rates API with the token
+      const res = await axios.get(
+        'https://test-api.service.hmrc.gov.uk/business-rates/non-domestic-rating-multiplier',
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            Accept: 'application/json',
+          },
+        }
+      );
+      
+      console.log(res.data);
+
+      return {
+        success: true,
+        data: ratesRes.data,
+        message: 'Business rates data retrieved successfully'
+      };
+    } catch (error) {
+      console.error('Error fetching HMRC business rates:', error.response?.data || error.message);
+      throw new Error(
+        error.response?.data?.message || 
+        error.response?.data?.error_description ||
+        error.message || 
+        'Failed to fetch business rates data'
+      );
+    }
+  }
 }
 
 export default AICalService;

@@ -240,6 +240,26 @@ class AICalController {
     }
   };
 
+  /**
+   * Get HMRC Business Rates data
+   * @param {Object} req - Express request object
+   * @param {Object} res - Express response object
+   * @param {Function} next - Express next middleware function
+   */
+  getBusinessRates = async (req, res, next) => {
+    try {
+
+      let { postcode } = req.query;
+
+      const result = await this.aicalService.getBusinessRates(postcode);
+      return res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+
+
 }
 
 export default AICalController;

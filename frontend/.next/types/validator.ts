@@ -111,6 +111,12 @@ type PagesPageConfig = {
   handler satisfies PagesPageConfig
 }
 
+// Validate ../../src/pages/admin/static-pages/general-page.tsx
+{
+  const handler = {} as typeof import("../../src/pages/admin/static-pages/general-page.js")
+  handler satisfies PagesPageConfig
+}
+
 // Validate ../../src/pages/advertise.tsx
 {
   const handler = {} as typeof import("../../src/pages/advertise.js")

@@ -741,12 +741,8 @@ class AgentService {
       const {
         page,
         limit,
-        property_type,
         sale_status,
-        town_city,
         postcode,
-        min_size,
-        max_size,
         sort_by = 'createdAt',
         sort_order = 'desc'
       } = queryParams;
@@ -757,31 +753,30 @@ class AgentService {
         deleted_at: null  // Exclude soft-deleted properties
       };
       
-      if (property_type) {
-        filter['general_details.property_type'] = property_type;
-      }
-      
+      // Filter by sale_status if provided (matches sale_types_id.sale_types.sale_type)
       if (sale_status) {
-        filter['general_details.sale_status'] = sale_status;
+        // First, find all sale_types documents that have the matching sale_type
+        const matchingSaleTypes = await this.SaleTypes.find({
+          'sale_types.sale_type': sale_status,
+          deleted_at: null
+        }).select('_id');
+        
+        // Get array of sale_types_id values
+        const saleTypesIds = matchingSaleTypes.map(st => st._id);
+        
+        // Filter properties where sale_types_id is in the matching list
+        if (saleTypesIds.length > 0) {
+          filter.sale_types_id = { $in: saleTypesIds };
+        } else {
+          // If no matching sale_types found, return empty result
+          filter.sale_types_id = { $in: [] };
+        }
       }
-      
-      if (town_city) {
-        filter['general_details.town_city'] = new RegExp(town_city, 'i');
-      }
-      
+
+      // Filter by postcode if provided
       if (postcode) {
         filter['general_details.postcode'] = new RegExp(postcode, 'i');
       }
-      
-      if (min_size) {
-        filter['general_details.size_minimum'] = { $gte: parseInt(min_size) };
-      }
-      
-      if (max_size) {
-        filter['general_details.size_maximum'] = { $lte: parseInt(max_size) };
-      }
-      
-
 
       // Build sort object - default to newest first (createdAt descending)
       const sort = {};
