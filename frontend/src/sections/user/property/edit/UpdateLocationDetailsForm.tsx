@@ -80,7 +80,7 @@ interface UpdateLocationDetailsFormProps {
   onDataChange?: (data: UpdateLocationDetailsFormData) => void;
   propertyId?: string;
   fetchProperty?: () => void;
-  fetchPropertyData?: () => void;
+  fetchPropertyData?: () => Promise<any> | any;
 }
 
 const UpdateLocationDetailsForm: React.FC<UpdateLocationDetailsFormProps> = ({ 
@@ -104,7 +104,7 @@ const UpdateLocationDetailsForm: React.FC<UpdateLocationDetailsFormProps> = ({
       administrative_area_level_1: initialData?.address_details?.administrative_area_level_1 || '',
       administrative_area_level_2: initialData?.address_details?.administrative_area_level_2 || '',
       postal_code: initialData?.address_details?.postal_code || '',
-      country: initialData?.address_details?.country || 'India',
+      country: initialData?.address_details?.country || 'United Kingdom',
       formatted_address: initialData?.address_details?.formatted_address || '',
     },
     geocoding_info: {
@@ -128,38 +128,40 @@ const UpdateLocationDetailsForm: React.FC<UpdateLocationDetailsFormProps> = ({
   const [hasChanges, setHasChanges] = useState(false);
   const [isGeocoding, setIsGeocoding] = useState(false);
 
+  const buildFormDataFromSource = (src: any): UpdateLocationDetailsFormData => ({
+    coordinates: {
+      latitude: src?.coordinates?.latitude || 0,
+      longitude: src?.coordinates?.longitude || 0,
+    },
+    address_details: {
+      street_number: src?.address_details?.street_number || '',
+      route: src?.address_details?.route || '',
+      locality: src?.address_details?.locality || '',
+      administrative_area_level_1: src?.address_details?.administrative_area_level_1 || '',
+      administrative_area_level_2: src?.address_details?.administrative_area_level_2 || '',
+      postal_code: src?.address_details?.postal_code || '',
+      country: src?.address_details?.country || 'United Kingdom',
+      formatted_address: src?.address_details?.formatted_address || '',
+    },
+    geocoding_info: {
+      place_id: src?.geocoding_info?.place_id || '',
+      geocoding_service: src?.geocoding_info?.geocoding_service || 'Google',
+      geocoding_accuracy: src?.geocoding_info?.geocoding_accuracy || 'ROOFTOP',
+    },
+    location_verified: src?.location_verified ?? true,
+    map_settings: {
+      disable_map_display: src?.map_settings?.disable_map_display || false,
+      map_zoom_level: src?.map_settings?.map_zoom_level || 1,
+      map_type: src?.map_settings?.map_type || 'roadmap',
+    },
+    verification_notes: src?.verification_notes || '',
+  });
+
   // Update form data when initialData changes
   React.useEffect(() => {
     if (initialData) {
-      setFormData({
-        coordinates: {
-          latitude: initialData?.coordinates?.latitude || 0,
-          longitude: initialData?.coordinates?.longitude || 0,
-        },
-        address_details: {
-          street_number: initialData?.address_details?.street_number || '',
-          route: initialData?.address_details?.route || '',
-          locality: initialData?.address_details?.locality || '',
-          administrative_area_level_1: initialData?.address_details?.administrative_area_level_1 || '',
-          administrative_area_level_2: initialData?.address_details?.administrative_area_level_2 || '',
-          postal_code: initialData?.address_details?.postal_code || '',
-          country: initialData?.address_details?.country || 'India',
-          formatted_address: initialData?.address_details?.formatted_address || '',
-        },
-        geocoding_info: {
-          place_id: initialData?.geocoding_info?.place_id || '',
-          geocoding_service: initialData?.geocoding_info?.geocoding_service || 'Google',
-          geocoding_accuracy: initialData?.geocoding_info?.geocoding_accuracy || 'ROOFTOP',
-        },
-        location_verified: initialData?.location_verified || true,
-        map_settings: {
-          disable_map_display: initialData?.map_settings?.disable_map_display || false,
-          map_zoom_level: initialData?.map_settings?.map_zoom_level || 1,
-          map_type: initialData?.map_settings?.map_type || 'roadmap',
-        },
-        verification_notes: initialData?.verification_notes || '',
-      });
-      setIsSubmitted(true); // Mark as submitted since we're editing existing data
+      setFormData(buildFormDataFromSource(initialData));
+      setIsSubmitted(true);
     }
   }, [initialData]);
 
@@ -173,35 +175,7 @@ const UpdateLocationDetailsForm: React.FC<UpdateLocationDetailsFormProps> = ({
   // Check for changes compared to initial data
   React.useEffect(() => {
     if (initialData) {
-      const initialFormData = {
-        coordinates: {
-          latitude: initialData?.coordinates?.latitude || 0,
-          longitude: initialData?.coordinates?.longitude || 0,
-        },
-        address_details: {
-          street_number: initialData?.address_details?.street_number || '',
-          route: initialData?.address_details?.route || '',
-          locality: initialData?.address_details?.locality || '',
-          administrative_area_level_1: initialData?.address_details?.administrative_area_level_1 || '',
-          administrative_area_level_2: initialData?.address_details?.administrative_area_level_2 || '',
-          postal_code: initialData?.address_details?.postal_code || '',
-          country: initialData?.address_details?.country || 'India',
-          formatted_address: initialData?.address_details?.formatted_address || '',
-        },
-        geocoding_info: {
-          place_id: initialData?.geocoding_info?.place_id || '',
-          geocoding_service: initialData?.geocoding_info?.geocoding_service || 'Google',
-          geocoding_accuracy: initialData?.geocoding_info?.geocoding_accuracy || 'ROOFTOP',
-        },
-        location_verified: initialData?.location_verified || true,
-        map_settings: {
-          disable_map_display: initialData?.map_settings?.disable_map_display || false,
-          map_zoom_level: initialData?.map_settings?.map_zoom_level || 1,
-          map_type: initialData?.map_settings?.map_type || 'roadmap',
-        },
-        verification_notes: initialData?.verification_notes || '',
-      };
-
+      const initialFormData = buildFormDataFromSource(initialData);
       const hasDataChanged = JSON.stringify(formData) !== JSON.stringify(initialFormData);
       setHasChanges(hasDataChanged);
     }
@@ -345,6 +319,7 @@ const UpdateLocationDetailsForm: React.FC<UpdateLocationDetailsFormProps> = ({
     e.preventDefault();
     
     if (!validateForm()) {
+      enqueueSnackbar('Please fix the highlighted errors before submitting.', { variant: 'error' });
       return;
     }
 
@@ -353,21 +328,40 @@ const UpdateLocationDetailsForm: React.FC<UpdateLocationDetailsFormProps> = ({
       return;
     }
 
+    if (!initialData?._id) {
+      enqueueSnackbar('Location ID is missing. Cannot update.', { variant: 'error' });
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitError(null);
 
     try {
-      const response = await axiosInstance.patch(`/api/user/property-location/${initialData?._id}`, formData);
+      const response = await axiosInstance.patch(
+        `/api/user/property-location/${initialData._id}`,
+        formData
+      );
       
       if (response.data.success) {
         setIsSubmitted(true);
-        setHasChanges(false); // Reset changes flag after successful update
+        setHasChanges(false);
+        setFieldErrors({});
         enqueueSnackbar('Location details updated successfully!', { variant: 'success' });
         
         if (onStepSubmitted) {
           onStepSubmitted(3);
         }
-        fetchPropertyData?.();
+
+        if (fetchPropertyData) {
+          try {
+            const refreshedData = await fetchPropertyData();
+            if (refreshedData?.location_id) {
+              setFormData(buildFormDataFromSource(refreshedData.location_id));
+            }
+          } catch (_) {
+            // Fetch failed silently
+          }
+        }
       } else {
         throw new Error(response.data.message || 'Failed to update location details');
       }
@@ -381,48 +375,86 @@ const UpdateLocationDetailsForm: React.FC<UpdateLocationDetailsFormProps> = ({
     }
   };
 
-  // Real geocoding function using postcode
-const handleGeocode = async () => {
-  const postcode = formData.address_details?.postal_code?.trim();
-  if (!postcode) {
-    setFieldErrors({
-      postal_code: 'Please enter a valid postal code before geocoding.',
-    });
-    enqueueSnackbar("Please enter a valid postal code before geocoding.", { variant: 'error' });
-    return;
-  }
-
-  setIsGeocoding(true);
-  try {
-    // Call OpenStreetMap's Nominatim API
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?postalcode=${encodeURIComponent(
-        postcode
-      )}&format=json&addressdetails=1&limit=1`
-    );
-    const data = await response.json();
-
-    if (data && data.length > 0) {
-      const location = data[0];
-
-      setFormData((prev) => ({
-        ...prev,
-        coordinates: {
-          ...prev.coordinates,
-          latitude: parseFloat(location.lat),
-          longitude: parseFloat(location.lon),
-        },
-      }));
-    } else {
-      enqueueSnackbar("No results found for the given postal code.", { variant: 'error' });
+  const handleGeocode = async () => {
+    const postcode = formData.address_details?.postal_code?.trim();
+    if (!postcode) {
+      setFieldErrors({ postal_code: 'Please enter a valid postal code before geocoding.' });
+      enqueueSnackbar('Please enter a valid postal code before geocoding.', { variant: 'error' });
+      return;
     }
-  } catch (error) {
-    console.error("Geocoding failed:", error);
-    enqueueSnackbar("Failed to fetch location data. Please try again.", { variant: 'error' });
-  } finally {
-    setIsGeocoding(false);
-  }
-};
+
+    setIsGeocoding(true);
+    try {
+      const normalizedPostcode = postcode.toUpperCase().replace(/\s+/g, '');
+      const postcodeResponse = await fetch(
+        `https://api.postcodes.io/postcodes/${encodeURIComponent(normalizedPostcode)}`
+      );
+
+      if (postcodeResponse.ok) {
+        const postcodePayload = await postcodeResponse.json();
+        if (postcodePayload?.status === 200 && postcodePayload?.result) {
+          const result = postcodePayload.result;
+          setFormData((prev) => ({
+            ...prev,
+            coordinates: {
+              latitude: Number(result.latitude),
+              longitude: Number(result.longitude),
+            },
+            address_details: {
+              ...prev.address_details,
+              formatted_address: [
+                result.postcode || '',
+                result.admin_ward || result.admin_district || '',
+                result.admin_county || result.region || '',
+                result.country || 'United Kingdom',
+              ].filter(Boolean).join(', '),
+              locality: result.admin_district || result.post_town || prev.address_details.locality || '',
+              administrative_area_level_1: result.region || prev.address_details.administrative_area_level_1 || '',
+              administrative_area_level_2: result.admin_county || result.admin_district || prev.address_details.administrative_area_level_2 || '',
+              country: result.country || 'United Kingdom',
+              postal_code: result.postcode || postcode,
+            },
+          }));
+          enqueueSnackbar('Location geocoded successfully.', { variant: 'success' });
+          return;
+        }
+      }
+
+      const nominatimResponse = await fetch(
+        `https://nominatim.openstreetmap.org/search?postalcode=${encodeURIComponent(postcode)}&countrycodes=gb&format=json&addressdetails=1&limit=1`
+      );
+      const data = await nominatimResponse.json();
+
+      if (data && data.length > 0) {
+        const location = data[0];
+        const addr = location.address || {};
+        setFormData((prev) => ({
+          ...prev,
+          coordinates: {
+            latitude: parseFloat(location.lat),
+            longitude: parseFloat(location.lon),
+          },
+          address_details: {
+            ...prev.address_details,
+            formatted_address: location.display_name || prev.address_details.formatted_address || '',
+            locality: addr.city || addr.town || addr.village || prev.address_details.locality || '',
+            administrative_area_level_1: addr.state || addr.region || prev.address_details.administrative_area_level_1 || '',
+            administrative_area_level_2: addr.county || prev.address_details.administrative_area_level_2 || '',
+            country: addr.country || 'United Kingdom',
+            postal_code: addr.postcode || postcode,
+          },
+        }));
+        enqueueSnackbar('Location geocoded successfully.', { variant: 'success' });
+      } else {
+        enqueueSnackbar('No results found for the given postal code.', { variant: 'error' });
+      }
+    } catch (error) {
+      console.error('Geocoding failed:', error);
+      enqueueSnackbar('Failed to fetch location data. Please try again.', { variant: 'error' });
+    } finally {
+      setIsGeocoding(false);
+    }
+  };
 
   return (
     <Box>

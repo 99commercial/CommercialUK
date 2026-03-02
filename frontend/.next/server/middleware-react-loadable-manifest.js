@@ -1,1 +1,1 @@
-self.__REACT_LOADABLE_MANIFEST="{}"
+self.__REACT_LOADABLE_MANIFEST="{\"sections/general/InteractiveMap.tsx -> react-leaflet\":{\"id\":\"sections/general/InteractiveMap.tsx -> react-leaflet\",\"files\":[\"static/chunks/_pages-dir-browser_node_modules_react-leaflet_lib_index_js.js\"]}}"

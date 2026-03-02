@@ -36,6 +36,7 @@ import {
   deleteQueryValidator
 } from '../validation/user.validation.js';
 import { validateRequest } from '../../../../middleware/error.middleware.js';
+import { createUserActivity } from '../../../../middleware/userActivity.middleware.js';
 
 const router = express.Router();
 const userController = new UserController();
@@ -45,6 +46,14 @@ router.post('/properties',
   authenticate,
   createPropertyValidator,
   validateRequest,
+  async (req, res, next) => {
+    try {
+      await createUserActivity(req, 'creating property', 'user create a property');
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
   userController.createProperty.bind(userController)
 );
 
@@ -53,6 +62,14 @@ router.put('/properties/:propertyId/business-details',
   authenticate,
   updateBusinessDetailsValidator,
   validateRequest,
+  async (req, res, next) => {
+    try {
+      await createUserActivity(req, 'creating property business details', 'user create his / her property\'s business details');
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
   userController.updateBusinessDetails.bind(userController)
 );
 
@@ -61,6 +78,14 @@ router.put('/properties/:propertyId/property-details',
   authenticate,
   updatePropertyDetailsValidator,
   validateRequest,
+  async (req, res, next) => {
+    try {
+      await createUserActivity(req, 'creating property details', 'user create his / her property\'s details');
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
   userController.updatePropertyDetails.bind(userController)
 );
 
@@ -68,6 +93,14 @@ router.put('/properties/:propertyId/property-details',
 router.put('/properties/:propertyId/images', 
   authenticate,
   uploadImages.array('files', 10),
+  async (req, res, next) => {
+    try {
+      await createUserActivity(req, 'creating property images', 'user create his / her property\'s images');
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
   userController.updatePropertyImages.bind(userController)
 );
 
@@ -75,6 +108,14 @@ router.put('/properties/:propertyId/images',
 router.put('/properties/:propertyId/documents', 
   authenticate,
   uploadDocuments.array('files', 5),
+  async (req, res, next) => {
+    try {
+      await createUserActivity(req, 'creating property documents', 'user create his / her property\'s documents');
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
   userController.updatePropertyDocuments.bind(userController)
 );
 
@@ -83,6 +124,14 @@ router.put('/properties/:propertyId/location',
   authenticate,
   updatePropertyLocationValidator,
   validateRequest,
+  async (req, res, next) => {
+    try {
+      await createUserActivity(req, 'creating property location', 'user create his / her property\'s location');
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
   userController.updatePropertyLocation.bind(userController)
 );
 
@@ -91,6 +140,14 @@ router.put('/properties/:propertyId/virtual-tours',
   authenticate,
   updatePropertyVirtualToursValidator,
   validateRequest,
+  async (req, res, next) => {
+    try {
+      await createUserActivity(req, 'creating property virtual tours', 'user create his / her property\'s virtual tours');
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
   userController.updatePropertyVirtualTours.bind(userController)
 );
 
@@ -99,6 +156,14 @@ router.put('/properties/:propertyId/features',
   authenticate,
   updatePropertyFeaturesValidator,
   validateRequest,
+  async (req, res, next) => {
+    try {
+      await createUserActivity(req, 'creating property features', 'user create his / her property\'s features');
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
   userController.updatePropertyFeatures.bind(userController)
 );
 
@@ -115,6 +180,14 @@ router.get('/properties/all',
 router.get('/agents/:agentId/properties', 
   authenticate,
   authorize(['user']),
+  async (req, res, next) => {
+    try {
+      await createUserActivity(req, 'getting properties by agent ID', 'user get his / her properties by agent ID');
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
   userController.getPropertiesByAgentId.bind(userController)
 );
 
@@ -127,6 +200,14 @@ router.get('/properties/:propertyId',
 router.delete('/properties/:propertyId', 
   authenticate,
     authorize(['user']),
+    async (req, res, next) => {
+      try {
+        await createUserActivity(req, 'deleting property', 'user delete his / her property');
+        next();
+      } catch (error) {
+        next(error);
+      }
+    },
     userController.deleteProperty.bind(userController)
 );
 
@@ -136,6 +217,14 @@ router.delete('/properties/:propertyId',
 router.patch('/properties/:propertyId/general-details', 
   authenticate,
   authorize(['user']),
+  async (req, res, next) => {
+    try {
+      await createUserActivity(req, 'updating property general details', 'user update his / her property\'s general details');
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
   userController.updatePropertyGeneralDetails.bind(userController)
 );
 
@@ -199,6 +288,14 @@ router.patch('/properties/:propertyId/general-details',
 router.patch('/business-rates/:businessRatesId', 
   authenticate,
   authorize(['user']),
+  async (req, res, next) => {
+    try {
+      await createUserActivity(req, 'updating property business rates', 'user update his / her property\'s business rates');
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
   userController.updateBusinessRatesById.bind(userController)
 );
 
@@ -206,6 +303,14 @@ router.patch('/business-rates/:businessRatesId',
 router.patch('/descriptions/:descriptionsId', 
   authenticate,
   authorize(['user']),
+  async (req, res, next) => {
+    try {
+      await createUserActivity(req, 'updating property descriptions', 'user update his / her property\'s descriptions');
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
   userController.updateDescriptionsById.bind(userController)
 );
 
@@ -213,6 +318,14 @@ router.patch('/descriptions/:descriptionsId',
 router.patch('/sale-types/:saleTypesId', 
   authenticate,
   authorize(['user']),
+  async (req, res, next) => {
+    try {
+      await createUserActivity(req, 'updating property sale types', 'user update his / her property\'s sale types');
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
   userController.updateSaleTypesById.bind(userController)
 );
 
@@ -234,6 +347,14 @@ router.patch('/sale-types/:saleTypesId',
 router.patch('/property-location/:locationId', 
   authenticate,
   authorize(['user']),
+  async (req, res, next) => {
+    try {
+      await createUserActivity(req, 'updating property location', 'user update his / her property\'s location');
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
     userController.updatePropertyLocationById.bind(userController)
 );
 
@@ -241,6 +362,14 @@ router.patch('/property-location/:locationId',
 router.patch('/property-virtual-tours/:virtualToursId', 
   authenticate,
   authorize(['user']),
+  async (req, res, next) => {
+    try {
+      await createUserActivity(req, 'updating property virtual tours', 'user update his / her property\'s virtual tours');
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
   userController.updatePropertyVirtualToursById.bind(userController)
 );
 
@@ -248,6 +377,14 @@ router.patch('/property-virtual-tours/:virtualToursId',
 router.patch('/property-features/:featuresId', 
   authenticate,
   authorize(['user']),
+  async (req, res, next) => {
+    try {
+      await createUserActivity(req, 'updating property features', 'user update his / her property\'s features');
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
   userController.updatePropertyFeaturesById.bind(userController)
 );
 
@@ -256,6 +393,14 @@ router.put('/properties/:propertyId/images/mixed',
   authenticate,
   authorize(['user']),
   uploadImages.array('files', 10),
+  async (req, res, next) => {
+    try {
+      await createUserActivity(req, 'updating property images with mixed data', 'user update his / her property\'s images with mixed data');
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
   userController.updatePropertyImagesMixed.bind(userController)
 );
 
@@ -264,12 +409,20 @@ router.put('/properties/:propertyId/documents/mixed',
   authenticate,
   authorize(['user']),
   uploadDocuments.array('files', 5),
+  async (req, res, next) => {
+    try {
+      await createUserActivity(req, 'updating property documents with mixed data', 'user update his / her property\'s documents with mixed data');
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
   userController.updatePropertyDocumentsMixed.bind(userController)
 );
 
 // ========== PROPERTY QUERY ROUTES ==========
 
-// Create property query
+// Create property query (no login required - guests can submit enquiries)
 router.post('/properties/:propertyId/queries', 
   createPropertyQueryValidator,
   validateRequest,
@@ -282,6 +435,14 @@ router.get('/agents/:agentId/queries',
   authorize(['user']),
   getQueriesByAgentIdValidator,
   validateRequest,
+  async (req, res, next) => {
+    try {
+      await createUserActivity(req, 'getting queries by agent ID', 'user get his / her queries by agent ID');
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
   userController.getQueriesByAgentId.bind(userController)
 );
 
@@ -291,6 +452,14 @@ router.get('/properties/:propertyId/queries',
   authorize(['user']),
   getQueriesByPropertyIdValidator,
   validateRequest,
+  async (req, res, next) => {
+    try {
+      await createUserActivity(req, 'getting queries by property ID', 'user get his / her queries by property ID');
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
   userController.getQueriesByPropertyId.bind(userController)
 );
 
@@ -300,6 +469,14 @@ router.get('/queries/my-queries',
   authorize(['user']),
   getQueriesByUserIdValidator,
   validateRequest,
+  async (req, res, next) => {
+    try {
+      await createUserActivity(req, 'getting queries by user ID', 'user get his / her queries by user ID');
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
   userController.getQueriesByUserId.bind(userController)
 );
 
@@ -309,6 +486,14 @@ router.get('/queries/:queryId',
   authorize(['user']),
   getQueryByIdValidator,
   validateRequest,
+  async (req, res, next) => {
+    try {
+      await createUserActivity(req, 'getting query by ID', 'user get a query by ID');
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
   userController.getQueryById.bind(userController)
 );
 
@@ -318,6 +503,14 @@ router.put('/queries/:queryId/status',
   authorize(['user']),
   updateQueryStatusValidator,
   validateRequest,
+  async (req, res, next) => {
+    try {
+      await createUserActivity(req, 'updating query status', 'user update a query status');
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
   userController.updateQueryStatus.bind(userController)
 );
 
@@ -327,6 +520,14 @@ router.delete('/queries/:queryId',
   authorize(['user']),
   deleteQueryValidator,
   validateRequest,
+  async (req, res, next) => {
+    try {
+      await createUserActivity(req, 'deleting query', 'user delete a query');
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
   userController.deleteQuery.bind(userController)
 );
 

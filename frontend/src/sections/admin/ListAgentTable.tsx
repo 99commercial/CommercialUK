@@ -46,6 +46,9 @@ import {
   Delete as DeleteIcon,
   Info as InfoIcon,
   Storage as MetadataIcon,
+  History as HistoryIcon,
+  ExpandMore as ExpandMoreIcon,
+  ExpandLess as ExpandLessIcon,
 } from '@mui/icons-material';
 import { Router, useRouter } from 'next/router';
 import axiosInstance from '../../utils/axios';
@@ -133,6 +136,11 @@ const ListAgentTable: React.FC<ListAgentTableProps> = ({ agents }) => {
   const [metadataLoading, setMetadataLoading] = useState(false);
   const [agentMetadata, setAgentMetadata] = useState<IPMetadata | null>(null);
   const [selectedAgentForMetadata, setSelectedAgentForMetadata] = useState<Agent | null>(null);
+  const [activityDialogOpen, setActivityDialogOpen] = useState(false);
+  const [activityLoading, setActivityLoading] = useState(false);
+  const [userActivity, setUserActivity] = useState<any>(null);
+  const [selectedAgentForActivity, setSelectedAgentForActivity] = useState<Agent | null>(null);
+  const [expandedSessions, setExpandedSessions] = useState<Set<string>>(new Set());
   const router = useRouter();
 
   const filteredAgents = useMemo(() => {
@@ -285,6 +293,58 @@ const ListAgentTable: React.FC<ListAgentTableProps> = ({ agents }) => {
     setSelectedAgentForMetadata(null);
   };
 
+  const handleViewUserActivity = async (agent: Agent) => {
+    setSelectedAgentForActivity(agent);
+    setActivityLoading(true);
+    setActivityDialogOpen(true);
+    
+    try {
+      const response = await axiosInstance.get(`/api/admin/user-activity/${agent._id}`);
+      setUserActivity(response.data.data);
+    } catch (err: any) {
+      console.error('Failed to fetch user activity:', err);
+      setUserActivity(null);
+      alert(err?.response?.data?.message || 'Failed to fetch user activity');
+    } finally {
+      setActivityLoading(false);
+    }
+  };
+
+  const handleCloseActivityDialog = () => {
+    setActivityDialogOpen(false);
+    setUserActivity(null);
+    setSelectedAgentForActivity(null);
+    setExpandedSessions(new Set());
+  };
+
+  const formatTime = (date: string | Date) => {
+    return new Date(date).toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+  };
+
+  const formatDuration = (milliseconds?: number | null) => {
+    if (!milliseconds) return 'N/A';
+    
+    const totalSeconds = Math.floor(milliseconds / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    
+    if (hours > 0) {
+      return `${hours}h ${minutes}m ${seconds}s`;
+    } else if (minutes > 0) {
+      return `${minutes}m ${seconds}s`;
+    } else {
+      return `${seconds}s`;
+    }
+  };
+
   return (
     <>
       <Card sx={{ p: 3, mb: 3 }}>
@@ -331,6 +391,7 @@ const ListAgentTable: React.FC<ListAgentTableProps> = ({ agents }) => {
                   </Box>
                 </TableCell>
                 <TableCell align="center">Actions</TableCell>
+                <TableCell align="center">Activity</TableCell>
                 <TableCell align="center">Metadata</TableCell>
                 <TableCell align="center">Delete</TableCell>
               </TableRow>
@@ -479,6 +540,20 @@ const ListAgentTable: React.FC<ListAgentTableProps> = ({ agents }) => {
                       </IconButton>
 
                     </Box>
+                  </TableCell>
+                  <TableCell align="center">
+                    <IconButton
+                      size="small"
+                      onClick={() => handleViewUserActivity(agent)}
+                      color="secondary"
+                      sx={{
+                        '&:hover': {
+                          backgroundColor: 'rgba(156, 39, 176, 0.1)',
+                        },
+                      }}
+                    >
+                      <HistoryIcon fontSize="small" />
+                    </IconButton>
                   </TableCell>
                   <TableCell align="center">
                     <IconButton
@@ -1582,6 +1657,538 @@ Unable to retrieve IP address information
               '&:hover': {
                 background: 'linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%)',
                 boxShadow: '0 6px 16px rgba(37,99,235,0.4)',
+              }
+            }}
+          >
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* User Activity Dialog */}
+      <Dialog
+        open={activityDialogOpen}
+        onClose={handleCloseActivityDialog}
+        maxWidth="lg"
+        fullWidth
+        fullScreen={useMediaQuery(theme.breakpoints.down('sm'))}
+        PaperProps={{
+          sx: {
+            background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #f3e8ff 100%)',
+            borderRadius: { xs: 0, sm: 3 },
+            boxShadow: { xs: 'none', sm: '0 20px 40px rgba(0,0,0,0.1)' },
+            border: { xs: 'none', sm: '1px solid rgba(255,255,255,0.2)' },
+            m: { xs: 0, sm: 2 },
+            height: { xs: '100vh', sm: '90vh' },
+            maxHeight: { xs: '100vh', sm: '90vh' },
+          }
+        }}
+      >
+        <DialogTitle sx={{ 
+          background: 'linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%)',
+          color: 'white',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          py: { xs: 2, sm: 3 },
+          mb: 0,
+          borderRadius: { xs: 0, sm: '12px 12px 0 0' },
+          fontSize: { xs: '1.2rem', sm: '1.5rem' },
+          fontWeight: 700,
+          fontFamily: '"Inter", "Roboto", sans-serif',
+          letterSpacing: { xs: '0.3px', sm: '0.5px' },
+          textShadow: '0 2px 4px rgba(0,0,0,0.3)'
+        }}>
+          <Box display="flex" alignItems="center" gap={2}>
+            <HistoryIcon sx={{ fontSize: { xs: '1.5rem', sm: '2rem' } }} />
+            User Activity Monitor
+          </Box>
+        </DialogTitle>
+        <DialogContent sx={{ p: { xs: 2, sm: 4 }, background: 'transparent', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+          {activityLoading ? (
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+              <CircularProgress />
+            </Box>
+          ) : userActivity && selectedAgentForActivity ? (
+            <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
+              {/* Header Section */}
+              <Box 
+                display="flex" 
+                alignItems="center" 
+                gap={{ xs: 2, sm: 4 }} 
+                mb={{ xs: 2, sm: 3 }}
+                flexDirection={{ xs: 'column', sm: 'row' }}
+                sx={{
+                  p: { xs: 2, sm: 3 },
+                  background: 'rgba(255,255,255,0.9)',
+                  borderRadius: 2,
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                  border: '1px solid rgba(255,255,255,0.3)'
+                }}
+              >
+                <Avatar
+                  src={selectedAgentForActivity.profile_picture}
+                  alt={`${selectedAgentForActivity.firstName} ${selectedAgentForActivity.lastName}`}
+                  sx={{ 
+                    width: { xs: 60, sm: 80 }, 
+                    height: { xs: 60, sm: 80 },
+                    border: '3px solid white',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+                  }}
+                />
+                <Box sx={{ flex: 1, textAlign: { xs: 'center', sm: 'left' } }}>
+                  <Typography 
+                    variant="h5" 
+                    sx={{ 
+                      fontWeight: 700,
+                      fontSize: { xs: '1.2rem', sm: '1.5rem' },
+                      color: '#1f2937',
+                      fontFamily: '"Inter", "Roboto", sans-serif',
+                      mb: 0.5
+                    }}
+                  >
+                    {userActivity.user?.firstName} {userActivity.user?.lastName}
+                  </Typography>
+                  <Typography 
+                    variant="body2" 
+                    sx={{ 
+                      color: '#6b7280',
+                      fontSize: { xs: '0.85rem', sm: '0.95rem' },
+                      mb: 1
+                    }}
+                  >
+                    {userActivity.user?.email}
+                  </Typography>
+                  <Box display="flex" gap={2} justifyContent={{ xs: 'center', sm: 'flex-start' }} flexWrap="wrap">
+                    <Chip 
+                      label={`Total Activities: ${userActivity.totalActivities || 0}`}
+                      color="primary"
+                      size="small"
+                    />
+                    <Chip 
+                      label={`Total Sessions: ${userActivity.totalSessions || 0}`}
+                      color="primary"
+                      size="small"
+                    />
+                    <Chip 
+                      label={`Role: ${userActivity.user?.role || 'N/A'}`}
+                      color="secondary"
+                      size="small"
+                    />
+                  </Box>
+                </Box>
+              </Box>
+
+              {/* Activities List */}
+              <Box 
+                sx={{ 
+                  flex: 1,
+                  overflow: 'auto',
+                  pr: 1,
+                  '&::-webkit-scrollbar': {
+                    width: '8px',
+                  },
+                  '&::-webkit-scrollbar-track': {
+                    background: 'rgba(0,0,0,0.05)',
+                    borderRadius: '4px',
+                  },
+                  '&::-webkit-scrollbar-thumb': {
+                    background: 'rgba(156, 39, 176, 0.3)',
+                    borderRadius: '4px',
+                    '&:hover': {
+                      background: 'rgba(156, 39, 176, 0.5)',
+                    },
+                  },
+                }}
+              >
+                {userActivity.sessions && userActivity.sessions.length > 0 ? (
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                    {userActivity.sessions.map((session: any, sessionIndex: number) => (
+                      <Box
+                        key={session.sessionId}
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 2
+                        }}
+                      >
+                        {/* Session Details Card */}
+                        <Box
+                          sx={{
+                            p: { xs: 2, sm: 3 },
+                            background: 'rgba(255,255,255,0.95)',
+                            borderRadius: 2,
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                            border: '2px solid rgba(156, 39, 176, 0.3)',
+                          }}
+                        >
+                          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 2 }}>
+                              <Box sx={{ flex: 1 }}>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
+                                  <Typography 
+                                    variant="h6" 
+                                    sx={{ 
+                                      fontWeight: 700,
+                                      fontSize: { xs: '1rem', sm: '1.2rem' },
+                                      color: '#9c27b0',
+                                    }}
+                                  >
+                                    Session
+                                  </Typography>
+                                  <IconButton
+                                    size="small"
+                                    onClick={() => {
+                                      const newExpanded = new Set(expandedSessions);
+                                      if (newExpanded.has(session.sessionId)) {
+                                        newExpanded.delete(session.sessionId);
+                                      } else {
+                                        newExpanded.add(session.sessionId);
+                                      }
+                                      setExpandedSessions(newExpanded);
+                                    }}
+                                    sx={{
+                                      color: '#9c27b0',
+                                      '&:hover': {
+                                        backgroundColor: 'rgba(156, 39, 176, 0.1)',
+                                      }
+                                    }}
+                                  >
+                                    {expandedSessions.has(session.sessionId) ? (
+                                      <ExpandLessIcon />
+                                    ) : (
+                                      <ExpandMoreIcon />
+                                    )}
+                                  </IconButton>
+                                </Box>
+                                
+                                {/* Session Details Grid */}
+                                <Box 
+                                  sx={{ 
+                                    display: 'grid',
+                                    gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' },
+                                    gap: 1.5,
+                                    mb: 1.5
+                                  }}
+                                >
+                                  {/* Session ID */}
+                                  <Box>
+                                    <Typography 
+                                      variant="caption" 
+                                      sx={{ 
+                                        fontWeight: 600,
+                                        color: '#9ca3af',
+                                        fontSize: { xs: '0.75rem', sm: '0.8rem' },
+                                        display: 'block',
+                                        mb: 0.5
+                                      }}
+                                    >
+                                      Session ID
+                                    </Typography>
+                                    <Typography 
+                                      variant="body2" 
+                                      sx={{ 
+                                        color: '#1f2937',
+                                        fontFamily: 'monospace',
+                                        fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                                        fontWeight: 500,
+                                        wordBreak: 'break-all'
+                                      }}
+                                    >
+                                      {session.sessionId || 'N/A'}
+                                    </Typography>
+                                  </Box>
+
+                                  {/* IP Address */}
+                                  <Box>
+                                    <Typography 
+                                      variant="caption" 
+                                      sx={{ 
+                                        fontWeight: 600,
+                                        color: '#9ca3af',
+                                        fontSize: { xs: '0.75rem', sm: '0.8rem' },
+                                        display: 'block',
+                                        mb: 0.5
+                                      }}
+                                    >
+                                      IP Address
+                                    </Typography>
+                                    <Typography 
+                                      variant="body2" 
+                                      sx={{ 
+                                        color: '#1f2937',
+                                        fontFamily: 'monospace',
+                                        fontSize: { xs: '0.85rem', sm: '0.95rem' },
+                                        fontWeight: 500
+                                      }}
+                                    >
+                                      {session.ipAddress || 'N/A'}
+                                    </Typography>
+                                  </Box>
+                                  
+                                  {/* Login Time */}
+                                  <Box
+                                    sx={{
+                                      p: 1,
+                                      borderRadius: 1,
+                                      background: 'rgba(156, 39, 176, 0.05)',
+                                      border: '1px solid rgba(156, 39, 176, 0.2)'
+                                    }}
+                                  >
+                                    <Typography 
+                                      variant="caption" 
+                                      sx={{ 
+                                        fontWeight: 600,
+                                        color: '#9ca3af',
+                                        fontSize: { xs: '0.75rem', sm: '0.8rem' },
+                                        display: 'block',
+                                        mb: 0.5
+                                      }}
+                                    >
+                                      Login Time
+                                    </Typography>
+                                    <Typography 
+                                      variant="body2" 
+                                      sx={{ 
+                                        color: '#9c27b0',
+                                        fontSize: { xs: '0.85rem', sm: '0.95rem' },
+                                        fontWeight: 600
+                                      }}
+                                    >
+                                      {session.loginTime ? formatTime(session.loginTime) : 'N/A'}
+                                    </Typography>
+                                  </Box>
+                                  
+                                  {/* Logout Time */}
+                                  <Box
+                                    sx={{
+                                      p: 1,
+                                      borderRadius: 1,
+                                      background: 'rgba(156, 39, 176, 0.05)',
+                                      border: '1px solid rgba(156, 39, 176, 0.2)'
+                                    }}
+                                  >
+                                    <Typography 
+                                      variant="caption" 
+                                      sx={{ 
+                                        fontWeight: 600,
+                                        color: '#9ca3af',
+                                        fontSize: { xs: '0.75rem', sm: '0.8rem' },
+                                        display: 'block',
+                                        mb: 0.5
+                                      }}
+                                    >
+                                      Logout Time
+                                    </Typography>
+                                    {session.logoutTime ? (
+                                      <Typography 
+                                        variant="body2" 
+                                        sx={{ 
+                                          color: '#9c27b0',
+                                          fontSize: { xs: '0.85rem', sm: '0.95rem' },
+                                          fontWeight: 600
+                                        }}
+                                      >
+                                        {formatTime(session.logoutTime)}
+                                      </Typography>
+                                    ) : (
+                                      <Chip
+                                        label="Active Session"
+                                        size="small"
+                                        sx={{
+                                          background: 'rgba(16, 185, 129, 0.1)',
+                                          color: '#059669',
+                                          fontWeight: 600,
+                                          fontSize: { xs: '0.7rem', sm: '0.75rem' }
+                                        }}
+                                      />
+                                    )}
+                                  </Box>
+                                  
+                                  {/* Time Spent */}
+                                  <Box
+                                    sx={{
+                                      p: 1,
+                                      borderRadius: 1,
+                                      background: 'rgba(156, 39, 176, 0.05)',
+                                      border: '1px solid rgba(156, 39, 176, 0.2)'
+                                    }}
+                                  >
+                                    <Typography 
+                                      variant="caption" 
+                                      sx={{ 
+                                        fontWeight: 600,
+                                        color: '#9ca3af',
+                                        fontSize: { xs: '0.75rem', sm: '0.8rem' },
+                                        display: 'block',
+                                        mb: 0.5
+                                      }}
+                                    >
+                                      Time Spent
+                                    </Typography>
+                                    <Typography 
+                                      variant="body2" 
+                                      sx={{ 
+                                        color: '#9c27b0',
+                                        fontSize: { xs: '0.85rem', sm: '0.95rem' },
+                                        fontWeight: 600
+                                      }}
+                                    >
+                                      {session.timeSpent ? formatDuration(session.timeSpent) : 'N/A'}
+                                    </Typography>
+                                  </Box>
+                                </Box>
+                                
+                                {/* Activity Count Chip */}
+                                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                                  <Chip
+                                    label={`${session.totalActivitiesInSession} ${session.totalActivitiesInSession === 1 ? 'activity' : 'activities'}`}
+                                    size="small"
+                                    sx={{
+                                      background: 'rgba(156, 39, 176, 0.1)',
+                                      color: '#9c27b0',
+                                      fontWeight: 600,
+                                      fontSize: { xs: '0.75rem', sm: '0.85rem' }
+                                    }}
+                                  />
+                                </Box>
+                              </Box>
+                            </Box>
+                          </Box>
+                        </Box>
+
+                        {/* Activities List - Indented to show they belong to the session above */}
+                        {expandedSessions.has(session.sessionId) && (
+                          <Box 
+                            sx={{ 
+                              display: 'flex', 
+                              flexDirection: 'column', 
+                              gap: 1.5,
+                              ml: { xs: 1, sm: 2 },
+                              pl: { xs: 2, sm: 3 },
+                              borderLeft: '2px solid rgba(156, 39, 176, 0.2)',
+                              position: 'relative',
+                              '&::before': {
+                                content: '""',
+                                position: 'absolute',
+                                left: 0,
+                                top: -8,
+                                width: '2px',
+                                height: '8px',
+                                background: 'rgba(156, 39, 176, 0.2)',
+                              }
+                            }}
+                          >
+                            {session.activities.map((activity: any, activityIndex: number) => (
+                            <Box
+                              key={activity._id}
+                              sx={{
+                                p: { xs: 1.5, sm: 2 },
+                                background: 'rgba(248, 250, 252, 0.8)',
+                                borderRadius: 1.5,
+                                boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
+                                border: '1px solid rgba(156, 39, 176, 0.15)',
+                                borderLeft: '3px solid #9c27b0',
+                                position: 'relative',
+                                transition: 'all 0.2s ease',
+                                '&:hover': {
+                                  boxShadow: '0 2px 8px rgba(156, 39, 176, 0.12)',
+                                  transform: 'translateX(2px)',
+                                }
+                              }}
+                            >
+                              {/* Activity Content */}
+                              <Box display="flex" justifyContent="space-between" alignItems="flex-start" flexWrap="wrap" gap={1}>
+                                <Box sx={{ flex: 1 }}>
+                                  {activity.action && (
+                                    <Chip
+                                      label={activity.action}
+                                      size="small"
+                                      sx={{
+                                        mb: 0.8,
+                                        background: 'rgba(156, 39, 176, 0.1)',
+                                        color: '#9c27b0',
+                                        fontWeight: 500,
+                                        fontSize: { xs: '0.65rem', sm: '0.7rem' },
+                                        height: '20px'
+                                      }}
+                                    />
+                                  )}
+                                  <Typography 
+                                    variant="body2" 
+                                    sx={{ 
+                                      color: '#1f2937',
+                                      fontSize: { xs: '0.85rem', sm: '0.95rem' },
+                                      lineHeight: 1.6,
+                                      fontWeight: 400
+                                    }}
+                                  >
+                                    {activity.description || activity.action}
+                                  </Typography>
+                                </Box>
+                                <Chip
+                                  label={formatTime(activity.lastActiveAt)}
+                                  size="small"
+                                  sx={{
+                                    background: 'linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%)',
+                                    color: 'white',
+                                    fontWeight: 600,
+                                    fontSize: { xs: '0.65rem', sm: '0.7rem' }
+                                  }}
+                                />
+                              </Box>
+                            </Box>
+                          ))}
+                          </Box>
+                        )}
+                      </Box>
+                    ))}
+                  </Box>
+                ) : (
+                  <Box sx={{ textAlign: 'center', py: 6 }}>
+                    <HistoryIcon sx={{ fontSize: 64, color: '#d1d5db', mb: 2 }} />
+                    <Typography variant="h6" color="text.secondary">
+                      No Activity Found
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                      This user has no recorded activities yet.
+                    </Typography>
+                  </Box>
+                )}
+              </Box>
+            </Box>
+          ) : selectedAgentForActivity && !activityLoading ? (
+            <Box sx={{ textAlign: 'center', py: 4 }}>
+              <Typography variant="h6" color="error">Failed to fetch user activity</Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                Unable to retrieve activity information
+              </Typography>
+            </Box>
+          ) : null}
+        </DialogContent>
+        <DialogActions sx={{ 
+          p: { xs: 2, sm: 3 }, 
+          background: 'rgba(255,255,255,0.8)',
+          borderRadius: { xs: 0, sm: '0 0 12px 12px' }
+        }}>
+          <Button 
+            onClick={handleCloseActivityDialog}
+            variant="contained"
+            fullWidth={useMediaQuery(theme.breakpoints.down('sm'))}
+            sx={{
+              background: 'linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%)',
+              color: 'white',
+              fontWeight: 600,
+              fontSize: { xs: '0.9rem', sm: '1rem' },
+              px: { xs: 3, sm: 4 },
+              py: { xs: 1.2, sm: 1.5 },
+              borderRadius: 2,
+              textTransform: 'none',
+              fontFamily: '"Inter", "Roboto", sans-serif',
+              boxShadow: '0 4px 12px rgba(156,39,176,0.3)',
+              '&:hover': {
+                background: 'linear-gradient(135deg, #7b1fa2 0%, #6a1b9a 100%)',
+                boxShadow: '0 6px 16px rgba(156,39,176,0.4)',
               }
             }}
           >

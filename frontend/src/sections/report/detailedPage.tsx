@@ -6344,11 +6344,11 @@ const ReportDetailedPage: React.FC = () => {
         <LogoSection>
           <Box
             component="img"
-            src="/images/CommercialUK2.png"
+            src="/images/CUKLogo.png"
             onClick={() => router.push('/')}
             alt="Commercial UK Logo"
             sx={{
-              height: { xs: '32px', md: '40px' },
+              height: { xs: '42px', md: '50px' },
               width: 'auto',
               objectFit: 'contain',
               cursor: 'pointer',

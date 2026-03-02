@@ -295,8 +295,9 @@ const PropertyImagesForm: React.FC<PropertyImagesFormProps> = ({ onStepSubmitted
       const currentImages = watchedValues.property_images || [];
       setValue('property_images', [...currentImages, ...uploadedImages]);
 
-    } catch (error) {
-      console.error('Upload failed:', error);
+    } catch (error: any) {
+      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to upload images. Please try again.';
+      enqueueSnackbar(errorMessage, { variant: 'error' });
     } finally {
       setUploading(false);
       setUploadProgress(0);
@@ -432,7 +433,7 @@ const PropertyImagesForm: React.FC<PropertyImagesFormProps> = ({ onStepSubmitted
       }
 
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || error.message || 'Failed to upload images. Please try again.';
+      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to upload images. Please try again.';
       enqueueSnackbar(errorMessage, { variant: 'error' });
     } finally {
       setIsSubmitting(false);
@@ -537,7 +538,7 @@ const PropertyImagesForm: React.FC<PropertyImagesFormProps> = ({ onStepSubmitted
       }
 
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || error.message || 'Failed to update images. Please try again.';
+      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to update images. Please try again.';
       enqueueSnackbar(errorMessage, { variant: 'error' });
     } finally {
       setIsSubmitting(false);

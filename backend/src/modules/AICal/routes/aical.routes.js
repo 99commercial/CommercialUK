@@ -2,6 +2,7 @@ import express from 'express';
 import AICalController from '../controller/aical.controllers.js';
 import { authenticate } from '../../../middleware/authenticate.middleware.js';
 import { authorize } from '../../../middleware/authorize.middleware.js';
+import { createUserActivity } from '../../../middleware/userActivity.middleware.js';
 
 const router = express.Router();
 const aicalController = new AICalController();
@@ -79,6 +80,18 @@ router.delete(
 );
 
 /**
+ * @route   GET /api/aical/commercial-places
+ * @desc    Get commercial places by postcode
+ * @access  Public
+ */
+router.get(
+  '/commercial-places',
+  authenticate,
+  authorize(['user','agent','admin']),
+  aicalController.getCommercialPlaces.bind(aicalController)
+);
+
+/**
  * @route   GET /api/aical/generate-report
  * @desc    Get EPC data by address
  * @access  Public
@@ -86,6 +99,14 @@ router.delete(
 router.post(
   '/generate-report',
   authenticate,
+  async (req, res, next) => {
+    try {
+      await createUserActivity(req, 'generating property evaluation report', 'user generated a property evaluation report');
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
   authorize(['user','agent','admin']),
   aicalController.generateReport.bind(aicalController)
 );
@@ -98,6 +119,14 @@ router.post(
 router.get(
   '/reports/user/:userId',
   authenticate,
+  async (req, res, next) => {
+    try {
+      await createUserActivity(req, 'getting reports by user ID', 'user got his / her reports by user ID');
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
   authorize(['user','agent','admin']),
   aicalController.getReportsByUserId.bind(aicalController)
 );

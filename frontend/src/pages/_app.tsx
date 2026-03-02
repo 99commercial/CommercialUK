@@ -68,6 +68,14 @@ type AppPropsWithLayout = AppProps & {
 };
 
 export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+  const getReadableErrorMessage = (input: any) => {
+    if (!input) return 'Something went wrong.';
+    if (typeof input === 'string') return input;
+    if (input?.response?.data?.message) return input.response.data.message;
+    if (input?.message) return input.message;
+    return 'Something went wrong.';
+  };
+
   // Set up token expiry monitor that checks every minute
   useEffect(() => {
     // Start the token expiry monitor
@@ -75,6 +83,30 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
     // Cleanup on component unmount
     return cleanup;
+  }, []);
+
+  // Global runtime error handling: prefer snackbar over browser overlays
+  // for uncaught async errors in app code.
+  useEffect(() => {
+    const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
+      const message = getReadableErrorMessage(event.reason);
+      enqueueSnackbar(message, { variant: 'error' });
+      event.preventDefault();
+    };
+
+    const handleWindowError = (event: ErrorEvent) => {
+      const message = getReadableErrorMessage(event.error || event.message);
+      enqueueSnackbar(message, { variant: 'error' });
+      event.preventDefault();
+    };
+
+    window.addEventListener('unhandledrejection', handleUnhandledRejection);
+    window.addEventListener('error', handleWindowError);
+
+    return () => {
+      window.removeEventListener('unhandledrejection', handleUnhandledRejection);
+      window.removeEventListener('error', handleWindowError);
+    };
   }, []);
 
   return (

@@ -232,18 +232,16 @@ const UpdateGeneralDetailsForm: React.FC<UpdateGeneralDetailsFormProps> = ({
       errors.size_maximum = 'Size maximum must be greater than or equal to size minimum';
     }
 
-    // Validate max_eaves_height - required
-    if (!formData.max_eaves_height || formData.max_eaves_height === 0) {
-      errors.max_eaves_height = 'Max eaves height is required';
-    } else if (formData.max_eaves_height < 0) {
-      errors.max_eaves_height = 'Max eaves height must be greater than 0';
+    // Validate max_eaves_height - optional (only validate when invalid)
+    if (formData.max_eaves_height != null && Number(formData.max_eaves_height) < 0) {
+      errors.max_eaves_height = 'Max eaves height must be 0 or greater';
     }
 
     // Validate approximate_year_of_construction - required
     if (!formData.approximate_year_of_construction || formData.approximate_year_of_construction === 0) {
       errors.approximate_year_of_construction = 'Approximate year of construction is required';
-    } else if (formData.approximate_year_of_construction < 1800 || formData.approximate_year_of_construction > new Date().getFullYear()) {
-      errors.approximate_year_of_construction = 'Year of construction must be between 1800 and current year';
+    } else if (formData.approximate_year_of_construction < 1800 || formData.approximate_year_of_construction > new Date().getFullYear() + 5) {
+      errors.approximate_year_of_construction = 'Year of construction must be between 1800 and current year + 5';
     }
 
     if (formData.expansion_capacity_percent < 0 || formData.expansion_capacity_percent > 100) {
@@ -251,6 +249,9 @@ const UpdateGeneralDetailsForm: React.FC<UpdateGeneralDetailsFormProps> = ({
     }
 
     setFieldErrors(errors);
+    if (Object.keys(errors).length > 0) {
+      enqueueSnackbar('Please fix the highlighted errors before submitting.', { variant: 'error' });
+    }
     return Object.keys(errors).length === 0;
   };
 
@@ -484,7 +485,6 @@ const UpdateGeneralDetailsForm: React.FC<UpdateGeneralDetailsFormProps> = ({
                   fullWidth
                   label="Max Eaves Height (m)"
                   type="number"
-                  required
                   value={formData.max_eaves_height}
                   onChange={(e) => handleInputChange('max_eaves_height', parseFloat(e.target.value) || 0)}
                   error={!!fieldErrors.max_eaves_height}
@@ -502,7 +502,7 @@ const UpdateGeneralDetailsForm: React.FC<UpdateGeneralDetailsFormProps> = ({
                   onChange={(e) => handleInputChange('approximate_year_of_construction', parseInt(e.target.value) || 0)}
                   error={!!fieldErrors.approximate_year_of_construction}
                   helperText={fieldErrors.approximate_year_of_construction}
-                  inputProps={{ min: 1800, max: new Date().getFullYear() }}
+                  inputProps={{ min: 1800, max: new Date().getFullYear() + 5 }}
                 />
               </FormField>
             </FormRow>

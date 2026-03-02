@@ -110,7 +110,10 @@ export class AuthController {
   logout = async (req, res, next) => {
     try {
       const token = req.headers.authorization?.split(' ')[1];
-      const result = await this.authService.logout(token);
+
+      const sessionId = req.body.sessionId;
+
+      const result = await this.authService.logout(token, sessionId);
       
       return res.status(200).json(result);
     } catch (error) {

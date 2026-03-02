@@ -81,8 +81,8 @@ export default function HomeFooter() {
   return (
     <FooterSection>
       <Container maxWidth="lg">
-        {/* Pages Section - Above all other details */}
-        <Box sx={{ mb: 4 }}>
+        {/* Pages & Plans Section - Above all other details */}
+        <Box sx={{ mb: 4, display: 'flex', flexWrap: 'wrap', gap: 4 }}>
           <Box sx={{ mb: 3 }}>
             <FooterTitle>Pages</FooterTitle>
             <Stack spacing={1}>
@@ -91,6 +91,22 @@ export default function HomeFooter() {
               </NextLink>
               <NextLink href="/property-for-sale" passHref legacyBehavior>
                 <FooterLink>Property For Sale</FooterLink>
+              </NextLink>
+            </Stack>
+          </Box>
+          <Box sx={{ mb: 3 }}>
+            <FooterTitle>Plans</FooterTitle>
+            <Stack spacing={1}>
+              <NextLink href="/commercial-seller-property-marketing" passHref legacyBehavior>
+                <FooterLink>Commercial Seller</FooterLink>
+              </NextLink>
+            </Stack>
+          </Box>
+          <Box sx={{ mb: 3 }}>
+            <FooterTitle>Legal Section</FooterTitle>
+            <Stack spacing={1}>
+              <NextLink href="/law-jurisdiction" passHref legacyBehavior>
+                <FooterLink>Law & Jurisdiction</FooterLink>
               </NextLink>
             </Stack>
           </Box>
@@ -139,7 +155,7 @@ export default function HomeFooter() {
           <Box sx={{ flex: "1 1 300px", minWidth: "300px" }}>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
               <img
-                src="/images/CommercialUKWhite2.png"
+                src="/images/CUKSquare.png"
                 alt="CommercialUK"
                 style={{ width: 200, objectFit: 'contain' }}
               />
@@ -200,26 +216,8 @@ export default function HomeFooter() {
                   mb: 1,
                 }}
               >
-                © 2025 CommercialUK
+                © 2026 CommercialUK
               </Typography>
-              <Stack
-                direction="row"
-                spacing={2}
-                justifyContent={{ xs: 'center', md: 'flex-end' }}
-              >
-                <Box
-                  component="img"
-                  src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
-                  alt="Download on the App Store"
-                  sx={{ height: 40 }}
-                />
-                <Box
-                  component="img"
-                  src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
-                  alt="Get it on Google Play"
-                  sx={{ height: 40 }}
-                />
-              </Stack>
             </Box>
           </Box>
         </Box>

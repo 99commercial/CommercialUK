@@ -70,7 +70,7 @@ const NavigationButton = styled(IconButton)(({ theme }) => ({
 const cities = [
   {
     name: 'Bedfordshire',
-    image: 'https://cdn.britannica.com/46/122346-004-C4F857EF/Market-place-Ampthill-Central-Bedfordshire-England.jpg',
+    image: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/04/aa/8c/67/wrest-park.jpg?w=1200&h=-1&s=1',
   },
   {
     name: 'Berkshire',
@@ -78,11 +78,11 @@ const cities = [
   },
   {
     name: 'Bristol',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfAG9vfRBZ2IVFtzzp4kIFCY1Y7oG-nUbWMw&s',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/1/19/Clifton_Suspension_Bridge_and_the_Observatory_in_Bristol%2C_England.jpg',
   },
   {
     name: 'Buckinghamshire',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQutv_2rvoILwMHGnbh0SMN63cltF2mvA8h-g&s',
+    image: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/08/17/21/ec/photo2jpg.jpg?w=1200&h=-1&s=1',
   },
   {
     name: 'Cambridgeshire',
@@ -90,47 +90,47 @@ const cities = [
   },
   {
     name: 'Cheshire',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiU4Ucr5tfPbmSp-rShU66WsvuB5B_GPQGlw&s',
+    image: 'https://dc-cheshire.transforms.svdcdn.com/production/misc/pages-heros/Audlem.jpg?w=768&h=768&q=90&auto=format&fit=crop&dm=1741269834&s=b17393624293749e4949c4a7290c71e0',
   },
   {
     name: 'City of London',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxqWHnhum9f6m7ww7mvk-RmS63SY_-KYD8Mw&s',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/City_of_London%2C_seen_from_Tower_Bridge.jpg/1280px-City_of_London%2C_seen_from_Tower_Bridge.jpg',
   },
   {
     name: 'Cornwall',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcOrdH2ylCzkZu9wyMjojKZaVfDVBqEPOnZQ&s',
+    image: 'https://www.cornwallhideaways.co.uk/images/cornwall/guide/cornwall-town-guide-the-best-5-towns-in-cornwall_1.jpg?1768694400078',
   },
   {
     name: 'County Durham',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyYrTJyOkvuRgQVfJYJ8EGTd7K_OCnIDtikw&s',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/d/d6/Durham_MMB_02_Cathedral.jpg',
   },
   {
     name: 'Cumbria',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTua9WYKmMsZRWvXRWbXeb-8eNN5vNvticKTA&s',
+    image: 'https://thehistorypress.co.uk/wp-content/uploads/media/4762/glenridding-_cumbria-_england_-_june_2009-wpv_1020x800_center_center.jpg',
   },
   {
     name: 'Derbyshire',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS86_jpALec788rEvrNo3DCIRwEE3yIaaT3pg&s',
+    image: 'https://darwinforest.co.uk/files/img_cache/1004/770_500_1_1632322331_bamfordls.jpg?1632323772',
   },
   {
     name: 'Devon',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnNwB10daEuh1VmQ1orsAfaCXv-W6Ikq7JIA&s',
+    image: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/28/74/b5/e6/caption.jpg?w=1400&h=1400&s=1',
   },
   {
     name: 'Dorset',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4c9Kb9nmEk-1TaWG-ktlgjxWrHtmzgF5PTA&s',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Durdle_Door_Overview.jpg/1280px-Durdle_Door_Overview.jpg',
   },
   {
     name: 'East Riding of Yorkshire',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsKb19OHnGYavw9qxRKoyAswAiBf6zQ6XdxQ&s',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/4/41/Flamborough_Head_-_geograph.org.uk_-_4010883_%28cropped%29.jpg',
   },
   {
     name: 'East Sussex',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR52Pc9LAOlv-w4Rl77jGMqIRo8nlmJUAuQEA&s',
+    image: 'https://static.independent.co.uk/2024/10/24/08/newFile-1.jpg',
   },
   {
     name: 'Essex',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSucN3SSJnAF5QzGYftj_xLRM4Ar8CoNQkTig&s',
+    image: 'https://a0.muscache.com/im/pictures/INTERNAL/INTERNAL-ImageByPlaceId-ChIJ0w2H_idW2EcReVDuRzjLV0I-large_background/original/983247d8-450c-4b45-ad80-47b01fe568c0.jpeg',
   },
   {
     name: 'Gloucestershire',
@@ -146,7 +146,7 @@ const cities = [
   },
   {
     name: 'Hampshire',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-VeO0e4TW2GG52m4PR6sbn-roC48RQXQZ_g&s',
+    image: 'https://cdn.britannica.com/96/123396-050-057F981F/Beaulieu-Palace-House-Hampshire-Eng.jpg',
   },
   {
     name: 'Herefordshire',
@@ -158,51 +158,51 @@ const cities = [
   },
   {
     name: 'Isle of Wight',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQt6h29JVIaUGPygdCGg-dh3Rni9gXRbBSYg&s',
+    image: 'https://www.doctorsrelocate.com/wp-content/uploads/2023/07/Isle-of-Wight.jpeg',
   },
   {
     name: 'Kent',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRx1hMtIg6weMWxsIIGjkinug3EipcxyUjQMg&s',
+    image: 'https://cdn.sanity.io/images/nxpteyfv/goguides/8b60cffe22a53481f7ffeddeddfa65edcfb401c0-1600x1066.jpg',
   },
   {
     name: 'Lancashire',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThEC7bIWMnPfr4Q1BakZTehLwZ2Q-7ur2yIw&s',
+    image: 'https://i2-prod.lancs.live/article33203686.ece/ALTERNATES/s1200b/0_JMP_MEN_040423NEWTONINBOWLAND_25JPG.jpg',
   },
   {
     name: 'Leicestershire',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Leicester_Clock_Tower_wide_view.jpg/330px-Leicester_Clock_Tower_wide_view.jpg',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-0iquXs6A6UbwNdPjJrO-tX5DHGt-WhxtvA&s',
   },
   {
     name: 'Lincolnshire',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgqMIx_mRYf-KmFQMM6Xtmciij9q6evKacRg&s',
+    image: 'https://www.visitlincolnshire.com/wp-content/uploads/2021/03/visit-lincolnshire-home-feature.jpg',
   },
   {
     name: 'Merseyside',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEOX64Xsuy4OIxnx30cPlxk-4ZdBhZkVBcDw&s',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/7/78/Pier_Head%2C_Liverpool_-_geograph.org.uk_-_3059094.jpg',
   },
   {
     name: 'Norfolk',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSz5liMbVwl_IxPxbIlPQ6SWkhhrYIhCUrbgw&s',
+    image: 'https://assets.simpleviewinc.com/simpleview/image/upload/c_limit,q_75,w_1200/v1/crm/virginia/Norfolk-skyline_76A27A7F-DE17-4A09-8F6EB20B6A7072F4_e44f9e5e-312b-439a-b267962dbc536bf1.jpg',
   },
   {
     name: 'Northamptonshire',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvr_EMDFxEpKWbEKDipQ7Hm08gf2T-oiVCNQ&s',
+    image: 'https://www.telegraph.co.uk/content/dam/Travel/2020/September/Oundle-in-Northamptonshire-iStock-1070591478.jpg?imwidth=640',
   },
   {
     name: 'Northumberland',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3ZiXNComy4YvnEb54XcHGjKsBb2ybZPDytw&s',
+    image: 'https://www.visitnorthumberland.com/media/rykbdu35/historic-sites-hero-credit-ournorthumberland.jpg?width=1920&height=1080&v=1db7c093f9a7a80',
   },
   {
     name: 'North Yorkshire',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDoNwdbyv-cK_JrHZmPlzaMo4ASy_rkLNR_Q&s',
+    image: 'https://cdn.britannica.com/29/100429-050-3F009E18/England-North-Yorkshire-Whitby.jpg',
   },
   {
     name: 'Nottinghamshire',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGmyyAimn36fkhD7NoEL13Qm0O-qhz-xuW4w&s',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Nottingham_Council_House_-_geograph.org.uk_-_2943238_%28cropped%29.jpg/250px-Nottingham_Council_House_-_geograph.org.uk_-_2943238_%28cropped%29.jpg',
   },
   {
     name: 'Oxfordshire',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnWOgW_v-oDhhnKtsjw12z1gB8LfqG2L0Jsg&s',
+    image: 'https://www.discoverbritain.com/_gatsby/file/f0ba492337deb89649d6a9851f307ed8/25834_Blenheim-Water-Terraces.jpg',
   },
   {
     name: 'Rutland',
@@ -210,7 +210,7 @@ const cities = [
   },
   {
     name: 'Shropshire',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWumFju_gpnjnQ1XNrK-Agb22F09f2ypNAcA&s',
+    image: 'https://www.shropshire-guide.co.uk/wp-content/uploads/2020/06/bridgnorth-v296-4-DSC_5757-1.jpg',
   },
   {
     name: 'Somerset',
@@ -222,45 +222,156 @@ const cities = [
   },
   {
     name: 'Staffordshire',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUJRvreYUsl41dknHHcKjNRcAs_OXO62njhA&s',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/8/84/Staffordshire_Shire_Hall.jpg',
   },
   {
     name: 'Suffolk',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaAqsb1G4qI3y-w2mo7CsVgk2OZlDhec-3OQ&s',
+    image: 'https://cdn.sanity.io/images/nxpteyfv/goguides/47c9c5c9c36233d8d79b7f01c0011aaa09262b35-1600x1066.jpg',
   },
   {
     name: 'Surrey',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGkRdE03NebPTDdmfwfQrl_WR7pUthHJTXdw&s',
+    image: 'https://assets.simpleviewinc.com/simpleview/image/fetch/c_fill,f_jpg,h_822,q_75,w_1220/https://tsedmsmedia.newmindmedia.com/wsimgs/Visit_Surrey_Lion_Lamb_Yard_Farnham_April_2017_2034495497.jpg',
   },
   {
     name: 'Tyne and Wear',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrQipHrKbA7futgjqN8EJeanB-gvF8yQcfSQ&s',
+    image: 'https://northeastbylines.co.uk/wp-content/uploads/2023/04/Tyne-Bridge.jpg',
   },
   {
     name: 'Warwickshire',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSVCn2SLRbUB-bRHgtBFTIkjogbmE1rGlt_DA&s',
+    image: 'https://cdn.britannica.com/96/114496-050-23A2686E/Castle-Warwick-River-Avon-England-Warwickshire.jpg',
   },
   {
     name: 'West Midlands',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3LnDSQ43qU2lgOvne-kupmIEky5DOrz1uGQ&s',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/1/1a/Dudley_Castle_-_panoramio_-_Tanya_Dedyukhina_%282%29.jpg',
   },
   {
     name: 'West Sussex',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNUNIUE0k9ZcSe2aQQ6SquPJfW4ys_IgNTtg&s',
+    image: 'https://cdn.britannica.com/48/149148-050-A08B6FA0/chalk-cliffs-Seven-Sisters-cottages-South-Downs.jpg',
   },
   {
     name: 'West Yorkshire',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIOYlZlYgbo1Co1SuoAKQPDiH-9a_p4gCX9w&s',
+    image: 'https://cdn.britannica.com/50/116150-050-70CF1DDB/Todmorden-West-Yorkshire-Eng.jpg',
   },
   {
     name: 'Wiltshire',
-    image: 'https://cdn.britannica.com/01/76501-050-16A9EDCE/Sarsen-horseshoe-Stonehenge-III-Wiltshire-Eng.jpg',
+    image: 'https://www.discoverbritain.com/_gatsby/file/a076e4dcc2d89d13ca37f996aeddaaf8/51432_FCR-496943-683x1024.jpg',
   },
   {
     name: 'Worcestershire',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/River_Severn%2C_Central_Worcester_-_geograph.org.uk_-_3185511_%28cropped%29.jpg/330px-River_Severn%2C_Central_Worcester_-_geograph.org.uk_-_3185511_%28cropped%29.jpg',
+    image: 'https://cdn.britannica.com/50/149250-050-9F3B7288/Barge-lock-Worcestershire-Canal-Staffordshire-St-Mary.jpg',
   },
 ];
+
+// const cities = [
+//   {
+//     name: 'Bedfordshire',
+//     image: 'https://images.pexels.com/photos/18251214/pexels-photo-18251214.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+//   },
+//   {
+//     name: 'Berkshire',
+//     image: 'https://images.pexels.com/photos/10363291/pexels-photo-10363291.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+//   },
+//   {
+//     name: 'Bristol',
+//     image: 'https://images.pexels.com/photos/3389531/pexels-photo-3389531.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+//   },
+//   {
+//     name: 'Buckinghamshire',
+//     image: 'https://images.pexels.com/photos/15745266/pexels-photo-15745266.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+//   },
+//   {
+//     name: 'Cambridgeshire',
+//     image: 'https://images.pexels.com/photos/1119702/pexels-photo-1119702.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+//   },
+//   {
+//     name: 'Cheshire',
+//     image: 'https://images.pexels.com/photos/10852654/pexels-photo-10852654.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+//   },
+//   {
+//     name: 'City of London',
+//     image: 'https://images.pexels.com/photos/460672/pexels-photo-460672.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+//   },
+//   {
+//     name: 'Cornwall',
+//     image: 'https://images.pexels.com/photos/3061345/pexels-photo-3061345.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+//   },
+//   {
+//     name: 'County Durham',
+//     image: 'https://images.pexels.com/photos/15745281/pexels-photo-15745281.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+//   },
+//   {
+//     name: 'Cumbria',
+//     image: 'https://images.pexels.com/photos/2723380/pexels-photo-2723380.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+//   },
+//   {
+//     name: 'Derbyshire',
+//     image: 'https://images.pexels.com/photos/3551221/pexels-photo-3551221.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+//   },
+//   {
+//     name: 'Devon',
+//     image: 'https://images.pexels.com/photos/1018512/pexels-photo-1018512.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+//   },
+//   {
+//     name: 'Dorset',
+//     image: 'https://images.pexels.com/photos/386001/pexels-photo-386001.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+//   },
+//   {
+//     name: 'East Riding of Yorkshire',
+//     image: 'https://images.pexels.com/photos/11545695/pexels-photo-11545695.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+//   },
+//   {
+//     name: 'East Sussex',
+//     image: 'https://images.pexels.com/photos/3389536/pexels-photo-3389536.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+//   },
+//   {
+//     name: 'Essex',
+//     image: 'https://images.pexels.com/photos/6604294/pexels-photo-6604294.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+//   },
+//   {
+//     name: 'Gloucestershire',
+//     image: 'https://images.pexels.com/photos/13511197/pexels-photo-13511197.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+//   },
+//   {
+//     name: 'Greater Manchester',
+//     image: 'https://images.pexels.com/photos/2042161/pexels-photo-2042161.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+//   },
+//   {
+//     name: 'Hampshire',
+//     image: 'https://images.pexels.com/photos/2676839/pexels-photo-2676839.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+//   },
+//   {
+//     name: 'Kent',
+//     image: 'https://images.pexels.com/photos/2143419/pexels-photo-2143419.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+//   },
+//   {
+//     name: 'Lancashire',
+//     image: 'https://images.pexels.com/photos/17926135/pexels-photo-17926135.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+//   },
+//   {
+//     name: 'Merseyside',
+//     image: 'https://images.pexels.com/photos/4006509/pexels-photo-4006509.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+//   },
+//   {
+//     name: 'Norfolk',
+//     image: 'https://images.pexels.com/photos/12316641/pexels-photo-12316641.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+//   },
+//   {
+//     name: 'North Yorkshire',
+//     image: 'https://images.pexels.com/photos/2673994/pexels-photo-2673994.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+//   },
+//   {
+//     name: 'Oxfordshire',
+//     image: 'https://images.pexels.com/photos/258109/pexels-photo-258109.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+//   },
+//   {
+//     name: 'Surrey',
+//     image: 'https://images.pexels.com/photos/18251205/pexels-photo-18251205.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+//   },
+//   {
+//     name: 'Warwickshire',
+//     image: 'https://images.pexels.com/photos/161947/warwick-castle-tower-england-castle-161947.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+//   }
+// ];
 
 export default function HomePopularCities() {
   const [currentIndex, setCurrentIndex] = useState(0);

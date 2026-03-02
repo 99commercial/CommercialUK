@@ -8,7 +8,10 @@ import { updateUserStatusValidation } from '../validators/userStatus.validator.j
 const router = express.Router();
 const featuresController = new FeaturesController();
 
-// All routes require admin authentication
+// Public route - no auth required (for law-jurisdiction page etc.)
+router.get('/static-pages/general-page', featuresController.getGeneralPage);
+
+// All other routes require admin authentication
 router.use(authenticate);
 router.use(authorize(['admin']));
 
@@ -53,15 +56,26 @@ router.delete('/properties/:id', featuresController.deleteProperty);
 // PATCH /api/admin/properties/:id/activate - Activate property by changing status to "Active"
 router.patch('/properties/:id/activate', featuresController.activateProperty);
 
+// ==================== DISCOUNT CODE ROUTES ====================
+
+// POST /api/admin/discount-codes/generate - Generate a 6-digit discount code for the platform
+router.post('/discount-codes/generate', featuresController.generateDiscountCode);
+
+// GET /api/admin/discount-codes - Get list of all discount codes with pagination and filters
+router.get('/discount-codes', featuresController.getDiscountCodesList);
+
+// PATCH /api/admin/discount-codes/:id - Update a discount code
+router.patch('/discount-codes/:id', featuresController.updateDiscountCode);
+
+// DELETE /api/admin/discount-codes/:id - Soft delete discount code
+router.delete('/discount-codes/:id', featuresController.deleteDiscountCode);
+
 // ==================== ADMIN DASHBOARD ROUTES ====================
 
 // GET /api/admin/dashboard - Get admin dashboard overview
 router.get('/dashboard', featuresController.getDashboardStats);
 
 // ==================== STATIC PAGES ROUTES ====================
-
-// GET /api/admin/static-pages/general-page - Get general page
-router.get('/static-pages/general-page', featuresController.getGeneralPage);
 
 // PATCH /api/admin/static-pages/general-page - Update general page
 router.patch('/static-pages/general-page', featuresController.updateGeneralPage);

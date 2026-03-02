@@ -29,7 +29,6 @@ const businessRatesSchema = new Schema({
 });
 
 // Indexes
-businessRatesSchema.index({ property_id: 1 });
 businessRatesSchema.index({ rateable_value_gbp: 1 });
 businessRatesSchema.index({ rates_payable_gbp: 1 });
 

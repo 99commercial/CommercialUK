@@ -227,6 +227,8 @@ export interface Property {
   is_featured: boolean;
   is_verified: boolean;
   property_status: 'Active' | 'Inactive' | 'Sold' | 'Let' | 'Withdrawn';
+  isExpired?: boolean;
+  expiry_date?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -467,6 +469,8 @@ const PropertiesTable: React.FC = () => {
                     {getSortIcon('createdAt')}
                   </Box>
                 </StyledTableCell>
+                <StyledTableCell align="center">Expiry Status</StyledTableCell>
+                <StyledTableCell align="center">Expiry Date</StyledTableCell>
                 <StyledTableCell align="center">Actions</StyledTableCell>
                 <StyledTableCell align="center">Delete</StyledTableCell>
               </TableRow>
@@ -475,7 +479,7 @@ const PropertiesTable: React.FC = () => {
             <TableBody>
               {loading ? (
                 <StyledTableRow>
-                  <StyledTableCell colSpan={isLargeScreen ? 9 : 8} align="center" sx={{ py: 4 }}>
+                  <StyledTableCell colSpan={isLargeScreen ? 11 : 10} align="center" sx={{ py: 4 }}>
                     <CircularProgress />
                     <Typography 
                       variant="body2" 
@@ -495,7 +499,7 @@ const PropertiesTable: React.FC = () => {
                 </StyledTableRow>
               ) : filteredProperties.length === 0 ? (
                 <StyledTableRow>
-                  <StyledTableCell colSpan={isLargeScreen ? 9 : 8} align="center" sx={{ py: 4 }}>
+                  <StyledTableCell colSpan={isLargeScreen ? 11 : 10} align="center" sx={{ py: 4 }}>
                     <Typography 
                       variant="body1" 
                       color="text.secondary"
@@ -650,6 +654,36 @@ const PropertiesTable: React.FC = () => {
                         }}
                       >
                         {new Date(property.createdAt).toLocaleDateString()}
+                      </Typography>
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      <Typography 
+                        variant="body2"
+                        sx={{
+                          fontSize: '0.9375rem',
+                          fontFamily: 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif',
+                          fontWeight: 500,
+                          color: property.isExpired ? '#d32f2f' : '#2e7d32',
+                          letterSpacing: '0.01em',
+                          lineHeight: 1.6,
+                        }}
+                      >
+                        {property.isExpired ? 'Yes' : 'No'}
+                      </Typography>
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      <Typography 
+                        variant="body2"
+                        sx={{
+                          fontSize: '0.9375rem',
+                          fontFamily: 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif',
+                          fontWeight: 400,
+                          color: 'text.primary',
+                          letterSpacing: '0.01em',
+                          lineHeight: 1.6,
+                        }}
+                      >
+                        {property.expiry_date ? new Date(property.expiry_date).toLocaleDateString() : 'N/A'}
                       </Typography>
                     </StyledTableCell>
                     <StyledTableCell align="center">

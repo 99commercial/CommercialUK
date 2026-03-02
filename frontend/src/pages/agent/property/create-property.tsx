@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
   Card,
@@ -51,6 +51,7 @@ import PropertyFeaturesForm from '../../../sections/agent/property/PropertyFeatu
 import PropertyImagesForm from '../../../sections/agent/property/PropertyImagesForm';
 import PropertyDocumentsForm from '../../../sections/agent/property/PropertyDocumentsForm';
 import HeaderCard from '../../../components/HeaderCard';
+import { ApiErrorBoundary } from '@/components/ApiErrorBoundary';
 import { enqueueSnackbar } from 'notistack';
 import axiosInstance from '@/utils/axios';
 
@@ -143,10 +144,13 @@ const CreatePropertyPage: React.FC = () => {
   const [propertyId, setPropertyId] = useState<string | null>(null);
   const [isLoadingProperty, setIsLoadingProperty] = useState(false);
   const [propertyData, setPropertyData] = useState<any>(null);
-  
+  const [propertyDataVersion, setPropertyDataVersion] = useState(0);
+  const latestFetchRequestRef = React.useRef(0);
+  const [isSubscriptionValid, setIsSubscriptionValid] = useState<boolean | null>(null);
+
   // State to store form data for each step
   const [stepData, setStepData] = useState<Record<number, any>>({});
-  
+
   // Ref to prevent rapid clicks
   const isNavigatingRef = React.useRef(false);
 
@@ -179,163 +183,221 @@ const CreatePropertyPage: React.FC = () => {
   const [importModalOpen, setImportModalOpen] = useState(false);
 
   // Fetch property data from localStorage on mount
+  const fetchPropertyData = useCallback(async (options?: { preserveActiveStep?: boolean }) => {
+    const preserveActiveStep = options?.preserveActiveStep ?? true;
+    const fetchRequestId = ++latestFetchRequestRef.current;
 
-    const fetchPropertyData = async () => {
-      try {
-        // Get newPropertyId from localStorage
-        const storedPropertyId = typeof window !== 'undefined' 
-          ? localStorage.getItem('newpropertyId') 
-          : null;
+    try {
+      const storedPropertyId = typeof window !== 'undefined' 
+        ? (localStorage.getItem('newpropertyId') || localStorage.getItem('propertyId') || propertyId)
+        : null;
 
-        if (storedPropertyId) {
-          setIsLoadingProperty(true);
-          setPropertyId(storedPropertyId);
+      if (storedPropertyId) {
+        setIsLoadingProperty(true);
+        setPropertyId(storedPropertyId);
 
-          // Fetch property data from API
-          const response = await axiosInstance.get(`/api/agent/properties/${storedPropertyId}`);
-          const data = response.data.data;
-          setPropertyData(data);
+        const response = await axiosInstance.get(`/api/agent/properties/${storedPropertyId}`, {
+          params: { _ts: Date.now() }
+        });
 
-          // Determine which steps have data and mark them as completed
-          const stepsWithData = new Set<number>();
-          
-          // Step 0: General Details
-          if (data.general_details) {
-            stepsWithData.add(0);
-            setStepData(prev => ({ ...prev, 0: data.general_details }));
+        if (fetchRequestId !== latestFetchRequestRef.current) {
+          return;
+        }
+
+        const data = response.data.data;
+        setPropertyData(data);
+        setPropertyDataVersion(prev => prev + 1);
+
+        const stepsWithData = new Set<number>();
+        
+        if (data.general_details) {
+          stepsWithData.add(0);
+          setStepData(prev => ({ ...prev, 0: data.general_details }));
+        }
+
+        if (data.business_rates_id || data.descriptions_id || (data.sale_types_id?.sale_types && Array.isArray(data.sale_types_id.sale_types) && data.sale_types_id.sale_types.length > 0)) {
+          stepsWithData.add(1);
+          setStepData(prev => ({
+            ...prev,
+            1: {
+              business_rates: data.business_rates_id,
+              descriptions: data.descriptions_id,
+              sale_types: (data.sale_types_id?.sale_types && Array.isArray(data.sale_types_id.sale_types))
+                ? data.sale_types_id.sale_types.map((st: any) => ({
+                    sale_type: st.sale_type || '',
+                    price_currency: st.price_currency || 'GBP',
+                    price_value: st.price_value || '',
+                    price_unit: st.price_unit || '',
+                  }))
+                : [],
+            }
+          }));
+        }
+
+        if (data.epc || data.council_tax || data.rateable_value || data.planning) {
+          stepsWithData.add(2);
+          setStepData(prev => ({
+            ...prev,
+            2: {
+              epc: data.epc,
+              council_tax: data.council_tax,
+              rateable_value: data.rateable_value,
+              planning: data.planning,
+            }
+          }));
+        }
+
+        if (data.location_id) {
+          stepsWithData.add(3);
+          setStepData(prev => ({
+            ...prev,
+            3: {
+              coordinates: data.location_id.coordinates,
+              address_details: data.location_id,
+            }
+          }));
+          if (data.location_id.coordinates) {
+            methods.setValue('coordinates', data.location_id.coordinates);
           }
-
-          // Step 1: Business Details
-          if (data.business_rates_id || data.descriptions_id || (data.sale_types_id?.sale_types && Array.isArray(data.sale_types_id.sale_types) && data.sale_types_id.sale_types.length > 0)) {
-            stepsWithData.add(1);
-            setStepData(prev => ({
-              ...prev,
-              1: {
-                business_rates: data.business_rates_id,
-                descriptions: data.descriptions_id,
-                sale_types: (data.sale_types_id?.sale_types && Array.isArray(data.sale_types_id.sale_types))
-                  ? data.sale_types_id.sale_types.map((st: any) => ({
-                      sale_type: st.sale_type || '',
-                      price_currency: st.price_currency || 'GBP',
-                      price_value: st.price_value || '',
-                      price_unit: st.price_unit || '',
-                    }))
-                  : [],
-              }
-            }));
-          }
-
-          // Step 2: Property Details
-          if (data.epc || data.council_tax || data.rateable_value || data.planning) {
-            stepsWithData.add(2);
-            setStepData(prev => ({
-              ...prev,
-              2: {
-                epc: data.epc,
-                council_tax: data.council_tax,
-                rateable_value: data.rateable_value,
-                planning: data.planning,
-              }
-            }));
-          }
-
-          // Step 3: Location
           if (data.location_id) {
-            stepsWithData.add(3);
-            setStepData(prev => ({
-              ...prev,
-              3: {
-                coordinates: data.location_id.coordinates,
-                address_details: data.location_id,
-              }
-            }));
-            // Set form values for location
-            if (data.location_id.coordinates) {
-              methods.setValue('coordinates', data.location_id.coordinates);
+            methods.setValue('address_details', data.location_id);
+          }
+        }
+
+        if (data.virtual_tours_id?._id) {
+          const virtualToursArray = Array.isArray(data.virtual_tours_id.virtual_tours) 
+            ? data.virtual_tours_id.virtual_tours 
+            : [];
+          
+          stepsWithData.add(4);
+          setStepData(prev => ({
+            ...prev,
+            4: { virtual_tours: virtualToursArray }
+          }));
+          methods.setValue('virtual_tours', virtualToursArray);
+        }
+
+        if (data.features_id) {
+          stepsWithData.add(5);
+          setStepData(prev => ({
+            ...prev,
+            5: {
+              features: data.features_id,
+              additional_features: data.features_id.additional_features || [],
+              feature_notes: data.features_id.feature_notes || '',
             }
-            if (data.location_id) {
-              methods.setValue('address_details', data.location_id);
-            }
-          }
+          }));
+          methods.setValue('features', data.features_id);
+          methods.setValue('additional_features', data.features_id.additional_features || []);
+          methods.setValue('feature_notes', data.features_id.feature_notes || '');
+        }
 
-          // Step 4: Virtual Tours
-          // virtual_tours_id is an object with _id and virtual_tours array inside
-          if (data.virtual_tours_id?._id) {
-            // Get the virtual_tours array from inside the virtual_tours_id object
-            const virtualToursArray = Array.isArray(data.virtual_tours_id.virtual_tours) 
-              ? data.virtual_tours_id.virtual_tours 
-              : [];
-            
-            // Mark as completed if virtual_tours_id object exists (even if virtual_tours array is empty)
-            stepsWithData.add(4);
-            setStepData(prev => ({
-              ...prev,
-              4: { virtual_tours: virtualToursArray }
-            }));
-            methods.setValue('virtual_tours', virtualToursArray);
-          }
+        if (data.images_id && data.images_id.images && data.images_id.images.length > 0) {
+          stepsWithData.add(6);
+          setStepData(prev => ({
+            ...prev,
+            6: { property_images: data.images_id.images }
+          }));
+          methods.setValue('property_images', data.images_id.images);
+        }
 
-          // Step 5: Features
-          if (data.features_id) {
-            stepsWithData.add(5);
-            setStepData(prev => ({
-              ...prev,
-              5: {
-                features: data.features_id,
-                additional_features: data.features_id.additional_features || [],
-                feature_notes: data.features_id.feature_notes || '',
-              }
-            }));
-            methods.setValue('features', data.features_id);
-            methods.setValue('additional_features', data.features_id.additional_features || []);
-            methods.setValue('feature_notes', data.features_id.feature_notes || '');
-          }
+        if (data.documents_id && data.documents_id.documents && data.documents_id.documents.length > 0) {
+          stepsWithData.add(7);
+          setStepData(prev => ({
+            ...prev,
+            7: { property_documents: data.documents_id.documents }
+          }));
+          methods.setValue('property_documents', data.documents_id.documents);
+        }
 
-          // Step 6: Images
-          if (data.images_id && data.images_id.images && data.images_id.images.length > 0) {
-            stepsWithData.add(6);
-            setStepData(prev => ({
-              ...prev,
-              6: { property_images: data.images_id.images }
-            }));
-            methods.setValue('property_images', data.images_id.images);
-          }
+        setCompletedSteps(stepsWithData);
+        setSubmittedSteps(stepsWithData);
 
-          // Step 7: Documents
-          if (data.documents_id && data.documents_id.documents && data.documents_id.documents.length > 0) {
-            stepsWithData.add(7);
-            setStepData(prev => ({
-              ...prev,
-              7: { property_documents: data.documents_id.documents }
-            }));
-            methods.setValue('property_documents', data.documents_id.documents);
-          }
-
-          // Mark all steps with data as completed and submitted
-          setCompletedSteps(stepsWithData);
-          setSubmittedSteps(stepsWithData);
-
-          // Set active step to the first incomplete step, or the last completed step if all are complete
+        if (!preserveActiveStep) {
           const allSteps = Array.from({ length: tabs.length }, (_, i) => i);
           const firstIncompleteStep = allSteps.find(step => !stepsWithData.has(step));
           if (firstIncompleteStep !== undefined) {
             setActiveStep(firstIncompleteStep);
           } else {
-            // All steps are complete, go to the last step
             setActiveStep(tabs.length - 1);
           }
         }
-      } catch (error: any) {
-        console.error('Error fetching property data:', error);
-        enqueueSnackbar('Failed to load property data', { variant: 'error' });
-      } finally {
-        setIsLoadingProperty(false);
       }
-    };
+    } catch (error: any) {
+      console.error('Error fetching property data:', error);
+      enqueueSnackbar('Failed to load property data', { variant: 'error' });
+    } finally {
+      setIsLoadingProperty(false);
+    }
+  }, [propertyId, methods]);
 
   useEffect(() => {
-    fetchPropertyData();
+    fetchPropertyData({ preserveActiveStep: false });
   }, []);
+
+  // Subscription validation: get user from localStorage, check subscription
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    try {
+      const userString = localStorage.getItem('user');
+      if (!userString) {
+        enqueueSnackbar('Please subscribe to a plan', { variant: 'error' });
+        router.replace('/agent');
+        return;
+      }
+
+      const user = JSON.parse(userString);
+      const subscription = user?.subscription ?? null;
+
+      // If subscription is null, don't allow
+      if (subscription === null) {
+        enqueueSnackbar('Please subscribe to a plan', { variant: 'error' });
+        router.replace('/agent');
+        return;
+      }
+
+      // If isExpired is true, redirect to /agent
+      if (subscription.isExpired === true) {
+        enqueueSnackbar('Please subscribe to a plan', { variant: 'error' });
+        router.replace('/agent');
+        return;
+      }
+
+      // Check endDate
+      const endDate = subscription.endDate ? new Date(subscription.endDate) : null;
+      if (!endDate || isNaN(endDate.getTime())) {
+        enqueueSnackbar('Please subscribe to a plan', { variant: 'error' });
+        router.replace('/agent');
+        return;
+      }
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      endDate.setHours(0, 0, 0, 0);
+
+      // If endDate is equal to today, redirect to /agent
+      if (today.getTime() === endDate.getTime()) {
+        enqueueSnackbar('Please subscribe to a plan', { variant: 'error' });
+        router.replace('/agent');
+        return;
+      }
+
+      // Allow only if endDate is ahead of today AND isExpired is false
+      if (endDate.getTime() > today.getTime() && subscription.isExpired === false) {
+        setIsSubscriptionValid(true);
+        return;
+      }
+
+      // endDate in the past or any other case — redirect
+      enqueueSnackbar('Please subscribe to a plan', { variant: 'error' });
+      router.replace('/agent');
+    } catch (error) {
+      console.error('Error checking subscription:', error);
+      enqueueSnackbar('Please subscribe to a plan', { variant: 'error' });
+      router.replace('/agent');
+    }
+  }, [router]);
 
   // Update resolver when step changes
   React.useEffect(() => {
@@ -422,6 +484,14 @@ const CreatePropertyPage: React.FC = () => {
   const handleStepSubmission = (step: number) => {
     setSubmittedSteps(prev => new Set(Array.from(prev).concat(step)));
     setCompletedSteps(prev => new Set(Array.from(prev).concat(step)));
+
+    // After every successful create/update, move to the latest step page.
+    setActiveStep(prevActiveStep => (
+      prevActiveStep < tabs.length - 1 ? prevActiveStep + 1 : prevActiveStep
+    ));
+
+    // Refresh latest backend data without forcing step reset.
+    fetchPropertyData({ preserveActiveStep: true });
   };
 
   // Handle data changes from child components with useCallback to prevent infinite loops
@@ -511,6 +581,8 @@ const CreatePropertyPage: React.FC = () => {
       enqueueSnackbar('Property created successfully!', { variant: 'success' });
       localStorage.removeItem('propertyId');
       router.push('/agent/property/my-properties');
+
+      
       
       // Optional: redirect to property list
       // router.push('/agent/properties');
@@ -627,6 +699,9 @@ const CreatePropertyPage: React.FC = () => {
         return (
           <PropertyDocumentsForm 
             onStepSubmitted={handleStepSubmission}
+            propertyData={propertyData}
+            hasExistingData={hasExistingData}
+            fetchPropertyData={fetchPropertyData}
           />
         );
       default:
@@ -639,6 +714,19 @@ const CreatePropertyPage: React.FC = () => {
       
       <HeaderCard title="Create Property" subtitle='(Provide full property details, else property will not be listed to others)' breadcrumbs={['Home', 'Property' ,'Create Property']} />
 
+      {isSubscriptionValid === null && (
+        <Card sx={{ mb: 4 }}>
+          <CardContent sx={{ textAlign: 'center', py: 4 }}>
+            <CircularProgress />
+            <Typography variant="body1" sx={{ mt: 2 }}>
+              Checking subscription...
+            </Typography>
+          </CardContent>
+        </Card>
+      )}
+
+      {isSubscriptionValid === true && (
+      <>
       {/* Progress Stepper */}
       <Card sx={{ mb: 4 }}>
         <CardContent sx={{ p: 0 }}>
@@ -786,6 +874,7 @@ const CreatePropertyPage: React.FC = () => {
 
       {/* Form Content */}
       {!isLoadingProperty && (
+        <ApiErrorBoundary onError={(err) => enqueueSnackbar(err?.message || 'Something went wrong. Please try again.', { variant: 'error' })}>
         <FormProvider {...methods}>
           <Card>
             <CardContent>
@@ -866,6 +955,7 @@ const CreatePropertyPage: React.FC = () => {
           </CardContent>
         </Card>
       </FormProvider>
+        </ApiErrorBoundary>
       )}
 
       {/* Progress Summary */}
@@ -908,6 +998,8 @@ const CreatePropertyPage: React.FC = () => {
             </Box>
           </CardContent>
         </Card>
+      )}
+      </>
       )}
     </Box>
   );

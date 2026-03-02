@@ -35,6 +35,7 @@ import {
   PhotoLibrary,
   Description as DocumentIcon,
   FileUpload,
+  Payment,
 } from '@mui/icons-material';
 import { useRouter } from 'next/router';
 import { useForm, FormProvider } from 'react-hook-form';
@@ -51,8 +52,10 @@ import PropertyFeaturesForm from '../../../sections/user/property/PropertyFeatur
 import PropertyImagesForm from '../../../sections/user/property/PropertyImagesForm';
 import PropertyDocumentsForm from '../../../sections/user/property/PropertyDocumentsForm';
 import HeaderCard from '../../../components/HeaderCard';
+import { ApiErrorBoundary } from '@/components/ApiErrorBoundary';
 import { enqueueSnackbar } from 'notistack';
 import axiosInstance from '@/utils/axios';
+import PropertyListingPaymentForm from '@/components/payment/PropertyListingPaymentForm';
 
 // Tab configuration
 const tabs = [
@@ -143,6 +146,8 @@ const CreatePropertyPage: React.FC = () => {
   const [propertyId, setPropertyId] = useState<string | null>(null);
   const [isLoadingProperty, setIsLoadingProperty] = useState(false);
   const [propertyData, setPropertyData] = useState<any>(null);
+  const [propertyDataVersion, setPropertyDataVersion] = useState(0);
+  const latestFetchRequestRef = React.useRef(0);
   
   // State to store form data for each step
   const [stepData, setStepData] = useState<Record<number, any>>({});
@@ -174,14 +179,21 @@ const CreatePropertyPage: React.FC = () => {
   const [importError, setImportError] = useState<string | null>(null);
   const [importedData, setImportedData] = useState<any>(null);
   const [importModalOpen, setImportModalOpen] = useState(false);
+  const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
 
   // Fetch property data from localStorage on mount
+  const fetchPropertyData = React.useCallback(async (options?: { preserveActiveStep?: boolean }) => {
+      const preserveActiveStep = options?.preserveActiveStep ?? false;
+      const fetchRequestId = ++latestFetchRequestRef.current;
 
-    const fetchPropertyData = async () => {
       try {
-        // Get newPropertyId from localStorage
+        // Resolve property ID from localStorage/state (supports both create and update flows)
         const storedPropertyId = typeof window !== 'undefined' 
-          ? localStorage.getItem('newpropertyId') 
+          ? (
+              localStorage.getItem('newpropertyId') ||
+              localStorage.getItem('propertyId') ||
+              propertyId
+            )
           : null;
 
         if (storedPropertyId) {
@@ -189,9 +201,18 @@ const CreatePropertyPage: React.FC = () => {
           setPropertyId(storedPropertyId);
 
           // Fetch property data from API
-          const response = await axiosInstance.get(`/api/user/properties/${storedPropertyId}`);
+          const response = await axiosInstance.get(`/api/user/properties/${storedPropertyId}`, {
+            params: { _ts: Date.now() }
+          });
+
+          // Ignore stale/out-of-order responses when multiple fetches are in flight.
+          if (fetchRequestId !== latestFetchRequestRef.current) {
+            return;
+          }
+
           const data = response.data.data;
           setPropertyData(data);
+          setPropertyDataVersion(prev => prev + 1);
 
           // Determine which steps have data and mark them as completed
           const stepsWithData = new Set<number>();
@@ -313,26 +334,34 @@ const CreatePropertyPage: React.FC = () => {
           setSubmittedSteps(stepsWithData);
 
           // Set active step to the first incomplete step, or the last completed step if all are complete
-          const allSteps = Array.from({ length: tabs.length }, (_, i) => i);
-          const firstIncompleteStep = allSteps.find(step => !stepsWithData.has(step));
-          if (firstIncompleteStep !== undefined) {
-            setActiveStep(firstIncompleteStep);
-          } else {
-            // All steps are complete, go to the last step
-            setActiveStep(tabs.length - 1);
+          if (!preserveActiveStep) {
+            const allSteps = Array.from({ length: tabs.length }, (_, i) => i);
+            const firstIncompleteStep = allSteps.find(step => !stepsWithData.has(step));
+            if (firstIncompleteStep !== undefined) {
+              setActiveStep(firstIncompleteStep);
+            } else {
+              // All steps are complete, go to the last step
+              setActiveStep(tabs.length - 1);
+            }
           }
         }
       } catch (error: any) {
-        console.error('Error fetching property data:', error);
-        enqueueSnackbar('Failed to load property data', { variant: 'error' });
+        if (fetchRequestId !== latestFetchRequestRef.current) {
+          return;
+        }
+        // Fetch failures should not block the create flow.
+        // This can happen with stale IDs or partially-created records.
+        console.warn('Property data fetch skipped:', error?.response?.status || error?.message);
       } finally {
-        setIsLoadingProperty(false);
+        if (fetchRequestId === latestFetchRequestRef.current) {
+          setIsLoadingProperty(false);
+        }
       }
-    };
+    }, [methods, propertyId]);
 
   useEffect(() => {
     fetchPropertyData();
-  }, []);
+  }, [fetchPropertyData]);
 
   // Update resolver when step changes
   React.useEffect(() => {
@@ -403,6 +432,16 @@ const CreatePropertyPage: React.FC = () => {
   const handleStepSubmission = (step: number) => {
     setSubmittedSteps(prev => new Set(Array.from(prev).concat(step)));
     setCompletedSteps(prev => new Set(Array.from(prev).concat(step)));
+
+    // Always advance from current visible step after a successful submit.
+    // This avoids getting stuck if child components send an unexpected step index.
+    setActiveStep(prevActiveStep => (
+      prevActiveStep < tabs.length - 1 ? prevActiveStep + 1 : prevActiveStep
+    ));
+
+    // Always refresh property data after successful create/update so all steps
+    // reflect latest backend state.
+    fetchPropertyData({ preserveActiveStep: true });
   };
 
   // Handle data changes from child components with useCallback to prevent infinite loops
@@ -524,7 +563,7 @@ const CreatePropertyPage: React.FC = () => {
       case 6:
         return !!(propertyData.images_id && propertyData.images_id.images && propertyData.images_id.images.length > 0);
       case 7:
-        return !!(propertyData.documents_id && propertyData.documents_id.documents && propertyData.documents_id.documents.length > 0);
+        return !!propertyData.documents_id?._id;
       default:
         return false;
     }
@@ -533,11 +572,13 @@ const CreatePropertyPage: React.FC = () => {
   // Render form for current step
   const renderStepContent = () => {
     const hasExistingData = hasDataForStep(activeStep);
+    const stepFormKey = `${activeStep}-${propertyData?._id || 'new'}-${propertyDataVersion}`;
     
     switch (activeStep) {
       case 0:
         return (
           <GeneralDetailsForm 
+            key={stepFormKey}
             onStepSubmitted={handleStepSubmission}
             initialData={stepData[0]}
             onDataChange={(data) => handleStepDataChange(0, data)}
@@ -549,6 +590,7 @@ const CreatePropertyPage: React.FC = () => {
       case 1:
         return (
           <BusinessDetailsForm 
+            key={stepFormKey}
             onStepSubmitted={handleStepSubmission}
             initialData={stepData[1]}
             onDataChange={(data) => handleStepDataChange(1, data)}
@@ -560,6 +602,7 @@ const CreatePropertyPage: React.FC = () => {
       case 2:
         return (
           <PropertyDetailsForm 
+            key={stepFormKey}
             onStepSubmitted={handleStepSubmission}
             initialData={stepData[2]}
             onDataChange={(data) => handleStepDataChange(2, data)}
@@ -571,6 +614,7 @@ const CreatePropertyPage: React.FC = () => {
       case 3:
         return (
           <LocationDetailsForm
+            key={stepFormKey}
             onStepSubmitted={handleStepSubmission}
             propertyData={propertyData}
             hasExistingData={hasExistingData}
@@ -580,6 +624,7 @@ const CreatePropertyPage: React.FC = () => {
       case 4:
         return (
           <VirtualToursForm
+            key={stepFormKey}
             onStepSubmitted={handleStepSubmission}
             propertyData={propertyData}
             hasExistingData={hasExistingData}
@@ -589,6 +634,7 @@ const CreatePropertyPage: React.FC = () => {
       case 5:
         return (
           <PropertyFeaturesForm
+            key={stepFormKey}
             onStepSubmitted={handleStepSubmission}
             propertyData={propertyData}
             hasExistingData={hasExistingData}
@@ -598,6 +644,7 @@ const CreatePropertyPage: React.FC = () => {
       case 6:
         return (
           <PropertyImagesForm 
+            key={stepFormKey}
             onStepSubmitted={handleStepSubmission}
             propertyData={propertyData}
             fetchPropertyData={fetchPropertyData}
@@ -607,7 +654,11 @@ const CreatePropertyPage: React.FC = () => {
       case 7:
         return (
           <PropertyDocumentsForm 
+            key={stepFormKey}
             onStepSubmitted={handleStepSubmission}
+            propertyData={propertyData}
+            hasExistingData={hasExistingData}
+            fetchPropertyData={fetchPropertyData}
           />
         );
       default:
@@ -767,6 +818,7 @@ const CreatePropertyPage: React.FC = () => {
 
       {/* Form Content */}
       {!isLoadingProperty && (
+        <ApiErrorBoundary onError={(err) => enqueueSnackbar(err?.message || 'Something went wrong. Please try again.', { variant: 'error' })}>
         <FormProvider {...methods}>
           <Card>
             <CardContent>
@@ -828,13 +880,13 @@ const CreatePropertyPage: React.FC = () => {
                   </Button>
                 ) : (
                   <Button
-                    startIcon={isSubmitting ? <CircularProgress size={20} /> : <Save />}
-                    onClick={onSubmit}
+                    startIcon={<Payment />}
+                    onClick={() => setPaymentDialogOpen(true)}
                     variant="contained"
                     sx={{ color: 'black' }}
-                    disabled={isSubmitting || !isCurrentStepValid()}
+                    disabled={!isCurrentStepValid()}
                   >
-                    {isSubmitting ? 'Creating Property...' : 'Create Property'}
+                    Pay for Property
                   </Button>
                 )}
               </Box>
@@ -842,6 +894,7 @@ const CreatePropertyPage: React.FC = () => {
           </CardContent>
         </Card>
       </FormProvider>
+        </ApiErrorBoundary>
       )}
 
       {/* Progress Summary */}
@@ -885,6 +938,15 @@ const CreatePropertyPage: React.FC = () => {
           </CardContent>
         </Card>
       )}
+
+      <PropertyListingPaymentForm
+        open={paymentDialogOpen}
+        onClose={() => setPaymentDialogOpen(false)}
+        onSuccess={() => {
+          localStorage.removeItem('newpropertyId');
+          router.push('/user/property/my-properties');
+        }}
+      />
     </Box>
   );
 };

@@ -21,6 +21,7 @@ import { Add, Delete, Build, CheckCircle, Cancel, Help, Save } from '@mui/icons-
 import { useFormContext } from 'react-hook-form';
 import axiosInstance from '../../../utils/axios';
 import { enqueueSnackbar } from 'notistack';
+import { extractFieldErrorsFromApiError, getApiErrorMessage } from '@/utils/apiError';
 
 const featureOptions = ['Yes', 'No', 'Unknown'];
 
@@ -298,27 +299,13 @@ const PropertyFeaturesForm: React.FC<PropertyFeaturesFormProps> = ({ onStepSubmi
         onStepSubmitted(5);
       }
     } catch (error: any) {
-      // Handle field-specific validation errors
-      if (error.errors && Array.isArray(error.errors) && error.errors.length > 0) {
-        const fieldErrorMap: Record<string, string> = {};
-        
-        error.errors.forEach((err: any) => {
-          if (err.path) {
-            let fieldPath = err.path.replace(/\[(\d+)\]/g, '.$1');
-            fieldErrorMap[fieldPath] = err.msg;
-          }
-        });
-        
+      const fieldErrorMap = extractFieldErrorsFromApiError(error);
+      if (Object.keys(fieldErrorMap).length > 0) {
         setFieldErrors(fieldErrorMap);
-        
-        const errorMessage = 'Please fix the validation errors below.';
-        setSaveError(errorMessage);
-        enqueueSnackbar(errorMessage, { variant: 'error' });
-      } else {
-        const errorMessage = 'Failed to save property features. Please try again.';
-        setSaveError(errorMessage);
-        enqueueSnackbar(errorMessage, { variant: 'error' });
       }
+      const errorMessage = getApiErrorMessage(error, 'Failed to save property features. Please try again.');
+      setSaveError(errorMessage);
+      enqueueSnackbar(errorMessage, { variant: 'error' });
     } finally {
       setIsSaving(false);
     }
@@ -329,6 +316,7 @@ const PropertyFeaturesForm: React.FC<PropertyFeaturesFormProps> = ({ onStepSubmi
     
     if (!featuresId) {
       setSaveError('Features ID not found. Please save features first.');
+      enqueueSnackbar('Features ID not found. Please save features first.', { variant: 'error' });
       return;
     }
 
@@ -352,9 +340,7 @@ const PropertyFeaturesForm: React.FC<PropertyFeaturesFormProps> = ({ onStepSubmi
         setSaveSuccess(true);
         setIsSubmitted(false); // Allow multiple updates
         
-        // Refresh property data if callback is provided
-
-          fetchPropertyData();
+        fetchPropertyData?.();
         
         setTimeout(() => setSaveSuccess(false), 3000);
       } else {
@@ -362,27 +348,13 @@ const PropertyFeaturesForm: React.FC<PropertyFeaturesFormProps> = ({ onStepSubmi
       }
       
     } catch (error: any) {
-      // Handle field-specific validation errors
-      if (error.errors && Array.isArray(error.errors) && error.errors.length > 0) {
-        const fieldErrorMap: Record<string, string> = {};
-        
-        error.errors.forEach((err: any) => {
-          if (err.path) {
-            let fieldPath = err.path.replace(/\[(\d+)\]/g, '.$1');
-            fieldErrorMap[fieldPath] = err.msg;
-          }
-        });
-        
+      const fieldErrorMap = extractFieldErrorsFromApiError(error);
+      if (Object.keys(fieldErrorMap).length > 0) {
         setFieldErrors(fieldErrorMap);
-        
-        const errorMessage = 'Please fix the validation errors below.';
-        setSaveError(errorMessage);
-        enqueueSnackbar(errorMessage, { variant: 'error' });
-      } else {
-        const errorMessage = 'Failed to update property features. Please try again.';
-        setSaveError(errorMessage);
-        enqueueSnackbar(errorMessage, { variant: 'error' });
       }
+      const errorMessage = getApiErrorMessage(error, 'Failed to update property features. Please try again.');
+      setSaveError(errorMessage);
+      enqueueSnackbar(errorMessage, { variant: 'error' });
     } finally {
       setIsSaving(false);
     }

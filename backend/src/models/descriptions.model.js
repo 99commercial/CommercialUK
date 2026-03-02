@@ -44,7 +44,6 @@ const descriptionsSchema = new Schema({
 });
 
 // Indexes
-descriptionsSchema.index({ property_id: 1 });
 descriptionsSchema.index({ general: 'text', location: 'text', accommodation: 'text' });
 
 export default model('descriptions', descriptionsSchema);

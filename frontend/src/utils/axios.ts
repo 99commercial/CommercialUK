@@ -18,13 +18,20 @@ const axiosInstance: AxiosInstance = axios.create({
   timeout: 10000, // 10 second timeout
 });
   
-  // Request Interceptor: Adds Authorization header
+  // Request Interceptor: Adds Authorization header and sessionId
   axiosInstance.interceptors.request.use(
     (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
       if (typeof window !== 'undefined') {
         const token = localStorage.getItem('accessToken');
-        if (token && config.headers) {
-          config.headers['Authorization'] = `Bearer ${token}`;
+        const sessionId = localStorage.getItem('sessionId');
+        
+        if (config.headers) {
+          if (token) {
+            config.headers['Authorization'] = `Bearer ${token}`;
+          }
+          if (sessionId) {
+            config.headers['X-Session-Id'] = sessionId;
+          }
         }
       }
       // Don't override timeout if it's explicitly set in request config
@@ -37,10 +44,7 @@ const axiosInstance: AxiosInstance = axios.create({
   // Response Interceptor: Handles error responses
   axiosInstance.interceptors.response.use(
     (response: AxiosResponse): AxiosResponse => response,
-    (error: AxiosError) =>
-      Promise.reject(
-        (error.response && error.response.data) || 'Something went wrong'
-      )
+    (error: AxiosError) => Promise.reject(error)
   );
   
   export default axiosInstance;

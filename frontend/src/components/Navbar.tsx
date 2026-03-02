@@ -409,7 +409,7 @@ export default function Navbar({ onAdvertise, onLanguageChange }: NavbarProps) {
           {/* Logo */}
           <LogoContainer onClick={()=>router.push('/')} sx={{ py: 2 }}>
               <img
-                src="/images/CommercialUK2.png"
+                src="/images/CUKLogo.png"
                 alt="CommercialUK"
                 style={{ width: 200, objectFit: 'contain' }}
               />
@@ -449,9 +449,9 @@ export default function Navbar({ onAdvertise, onLanguageChange }: NavbarProps) {
             <LoginButton onClick={handleLogin}>
               Login
             </LoginButton>
-            <AdvertiseButton onClick={handleAdvertise}>
+            {/* <AdvertiseButton onClick={handleAdvertise}>
               Advertise
-            </AdvertiseButton>
+            </AdvertiseButton> */}
           </MobileActionButtons>
         </Toolbar>
       </StyledAppBar>

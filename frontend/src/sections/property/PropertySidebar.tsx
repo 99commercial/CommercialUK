@@ -122,6 +122,8 @@ const PropertySidebar: React.FC<PropertySidebarProps> = ({ property }) => {
     message: '',
   });
 
+  const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof QueryForm, string>>>({});
+
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
@@ -169,6 +171,12 @@ const PropertySidebar: React.FC<PropertySidebarProps> = ({ property }) => {
       ...prev,
       [field]: value,
     }));
+    // Clear field error when user edits
+    setFieldErrors(prev => {
+      const next = { ...prev };
+      delete next[field];
+      return next;
+    });
   };
 
   const submitPropertyQuery = async (formData: QueryForm) => {
@@ -229,26 +237,65 @@ const PropertySidebar: React.FC<PropertySidebarProps> = ({ property }) => {
     return response.data;
   };
 
+  type ValidationError = { path?: string; param?: string; msg?: string };
+  const getValidationErrors = (error: unknown): Partial<Record<keyof QueryForm, string>> | null => {
+    if (error && typeof error === 'object' && 'response' in error) {
+      const axiosError = error as { response?: { status?: number; data?: { errors?: ValidationError[] } } };
+      const errors = axiosError.response?.data?.errors;
+      if (Array.isArray(errors) && errors.length > 0) {
+        const fieldErrorsMap: Partial<Record<keyof QueryForm, string>> = {};
+        const validFields: (keyof QueryForm)[] = ['title', 'first_name', 'last_name', 'email', 'phone', 'message'];
+        errors.forEach((err) => {
+          const path = (err.path || err.param) as keyof QueryForm | undefined;
+          if (path && err.msg && validFields.includes(path)) {
+            fieldErrorsMap[path] = err.msg;
+          }
+        });
+        return Object.keys(fieldErrorsMap).length > 0 ? fieldErrorsMap : null;
+      }
+    }
+    return null;
+  };
+
+  const getErrorMessage = (error: unknown): string => {
+    if (error && typeof error === 'object' && 'response' in error) {
+      const axiosError = error as { response?: { status?: number; data?: { message?: string; error?: string } } };
+      const backendMessage = axiosError.response?.data?.message || axiosError.response?.data?.error;
+      if (typeof backendMessage === 'string') return backendMessage;
+      if (axiosError.response?.status === 500) return 'Server error. Please try again later.';
+      if (axiosError.response?.status && axiosError.response.status >= 400) return 'Request failed. Please try again.';
+    }
+    if (error instanceof Error) return error.message;
+    return 'Failed to submit enquiry. Please try again.';
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setFieldErrors({});
     try {
       const result = await submitPropertyQuery(queryForm);
       enqueueSnackbar(result.message || 'Enquiry submitted successfully!', { variant: 'success' });
       setIsFormModalOpen(false);
-    } catch (error: any) {
-      console.error('Error submitting enquiry:', error);
-      enqueueSnackbar(error?.message || 'Failed to submit enquiry. Please try again.', { variant: 'error' });
+    } catch (error: unknown) {
+      const validationErrors = getValidationErrors(error);
+      if (validationErrors) {
+        setFieldErrors(validationErrors);
+      } else {
+        enqueueSnackbar(getErrorMessage(error), { variant: 'error' });
+      }
     } finally {
       setLoading(false);
     }
   };
 
   const handleOpenFormModal = () => {
+    setFieldErrors({});
     setIsFormModalOpen(true);
   };
 
   const handleCloseFormModal = () => {
+    setFieldErrors({});
     setIsFormModalOpen(false);
   };
 
@@ -621,9 +668,9 @@ const PropertySidebar: React.FC<PropertySidebarProps> = ({ property }) => {
                 </Typography>
               </Box>
               
-              <Box component="form" onSubmit={handleSubmit}>
+              <Box component="form" onSubmit={(e) => { handleSubmit(e).catch(() => {}); }}>
                 <Stack spacing={2.5}>
-                  <FormControl fullWidth required>
+                  <FormControl fullWidth required error={!!fieldErrors.title}>
                     <InputLabel
                       sx={{
                         fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
@@ -654,6 +701,11 @@ const PropertySidebar: React.FC<PropertySidebarProps> = ({ property }) => {
                       <MenuItem value="MS" sx={{ fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif' }}>Ms</MenuItem>
                       <MenuItem value="MISS" sx={{ fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif' }}>Miss</MenuItem>
                     </Select>
+                    {fieldErrors.title && (
+                      <Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 1.5 }}>
+                        {fieldErrors.title}
+                      </Typography>
+                    )}
                   </FormControl>
                   
                   <Box sx={{ display: 'flex', gap: 2 }}>
@@ -663,6 +715,8 @@ const PropertySidebar: React.FC<PropertySidebarProps> = ({ property }) => {
                       value={queryForm.first_name}
                       onChange={(e) => handleInputChange('first_name', e.target.value)}
                       required
+                      error={!!fieldErrors.first_name}
+                      helperText={fieldErrors.first_name}
                       inputProps={{ maxLength: 50 }}
                       sx={{
                         '& .MuiOutlinedInput-root': {
@@ -686,6 +740,8 @@ const PropertySidebar: React.FC<PropertySidebarProps> = ({ property }) => {
                       value={queryForm.last_name}
                       onChange={(e) => handleInputChange('last_name', e.target.value)}
                       required
+                      error={!!fieldErrors.last_name}
+                      helperText={fieldErrors.last_name}
                       inputProps={{ maxLength: 50 }}
                       sx={{
                         '& .MuiOutlinedInput-root': {
@@ -711,6 +767,8 @@ const PropertySidebar: React.FC<PropertySidebarProps> = ({ property }) => {
                     value={queryForm.email}
                     onChange={(e) => handleInputChange('email', e.target.value)}
                     required
+                    error={!!fieldErrors.email}
+                    helperText={fieldErrors.email}
                     inputProps={{ maxLength: 100 }}
                     sx={{
                       '& .MuiOutlinedInput-root': {
@@ -734,6 +792,8 @@ const PropertySidebar: React.FC<PropertySidebarProps> = ({ property }) => {
                     value={queryForm.phone}
                     onChange={(e) => handleInputChange('phone', e.target.value)}
                     required
+                    error={!!fieldErrors.phone}
+                    helperText={fieldErrors.phone}
                     inputProps={{ maxLength: 20 }}
                     sx={{
                       '& .MuiOutlinedInput-root': {
@@ -759,6 +819,8 @@ const PropertySidebar: React.FC<PropertySidebarProps> = ({ property }) => {
                     value={queryForm.message}
                     onChange={(e) => handleInputChange('message', e.target.value)}
                     required
+                    error={!!fieldErrors.message}
+                    helperText={fieldErrors.message}
                     placeholder="Tell us about your requirements..."
                     inputProps={{ maxLength: 1000 }}
                     sx={{

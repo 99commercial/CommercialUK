@@ -25,6 +25,7 @@ import {
   useTheme,
   styled,
   alpha,
+  Tooltip,
 } from '@mui/material';
 import {
   Search as SearchIcon,
@@ -33,6 +34,7 @@ import {
   Delete as DeleteIcon,
   Edit as EditIcon,
   Warning as IncompleteIcon,
+  Payment as PaymentIcon,
 } from '@mui/icons-material';
 import axiosInstance from '../../../utils/axios';
 import { enqueueSnackbar } from 'notistack';
@@ -227,6 +229,8 @@ export interface Property {
   is_featured: boolean;
   is_verified: boolean;
   property_status: 'Active' | 'Inactive' | 'Sold' | 'Let' | 'Withdrawn';
+  isExpired?: boolean;
+  expiry_date?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -357,11 +361,30 @@ const PropertiesTable: React.FC = () => {
   };
 
   const handleEditOrComplete = (property: Property) => {
-    if (property.property_status === 'Active') {
-      router.push(`/user/property/edit/${property._id}`);
-    } else {
+    // If isExpired doesn't exist, navigate to create-property (Incomplete)
+    if (property.isExpired === undefined || property.isExpired === null) {
       localStorage.setItem('newpropertyId', property._id);
       router.push(`/user/property/create-property`);
+      return;
+    }
+    
+    // If isExpired is true, navigate to create-property (Pay Again)
+    if (property.isExpired === true) {
+      localStorage.setItem('newpropertyId', property._id);
+      router.push(`/user/property/create-property`);
+      return;
+    }
+    
+    // If isExpired is false, check property_status
+    if (property.isExpired === false) {
+      // If Active, navigate to edit page
+      if (property.property_status === 'Active') {
+        router.push(`/user/property/edit/${property._id}`);
+        return;
+      }
+      // If Inactive, button is disabled, so this shouldn't be called
+      // But handle it gracefully just in case
+      return;
     }
   };
 
@@ -462,6 +485,8 @@ const PropertiesTable: React.FC = () => {
                     {getSortIcon('createdAt')}
                   </Box>
                 </StyledTableCell>
+                <StyledTableCell align="center">Expiry Status</StyledTableCell>
+                <StyledTableCell align="center">Expiry Date</StyledTableCell>
                 <StyledTableCell align="center">Actions</StyledTableCell>
                 <StyledTableCell align="center">Delete</StyledTableCell>
               </TableRow>
@@ -469,7 +494,7 @@ const PropertiesTable: React.FC = () => {
             <TableBody>
               {loading ? (
                 <StyledTableRow>
-                  <StyledTableCell colSpan={isLargeScreen ? 9 : 8} align="center" sx={{ py: 4 }}>
+                  <StyledTableCell colSpan={isLargeScreen ? 11 : 10} align="center" sx={{ py: 4 }}>
                     <CircularProgress />
                     <Typography 
                       variant="body2" 
@@ -489,7 +514,7 @@ const PropertiesTable: React.FC = () => {
                 </StyledTableRow>
               ) : filteredProperties.length === 0 ? (
                 <StyledTableRow>
-                  <StyledTableCell colSpan={isLargeScreen ? 9 : 8} align="center" sx={{ py: 4 }}>
+                  <StyledTableCell colSpan={isLargeScreen ? 11 : 10} align="center" sx={{ py: 4 }}>
                     <Typography 
                       variant="body1" 
                       color="text.secondary"
@@ -647,36 +672,162 @@ const PropertiesTable: React.FC = () => {
                       </Typography>
                     </StyledTableCell>
                     <StyledTableCell align="center">
-                      <Button
-                        variant={property.property_status === 'Active' ? 'outlined' : 'contained'}
-                        color={property.property_status === 'Active' ? 'error' : 'warning'}
-                        startIcon={property.property_status === 'Active' ? <EditIcon /> : <IncompleteIcon />}
-                        onClick={() => handleEditOrComplete(property)}
-                        size="medium"
+                      <Typography 
+                        variant="body2"
                         sx={{
+                          fontSize: '0.9375rem',
                           fontFamily: 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif',
                           fontWeight: 500,
-                          fontSize: '0.875rem',
-                          letterSpacing: '0.02em',
-                          textTransform: 'none',
-                          borderRadius: '8px',
-                          px: 2.5,
-                          py: 1,
-                          transition: 'all 0.2s ease',
-                          ...(property.property_status !== 'Active' && {
-                            backgroundColor: '#ff9800',
-                            '&:hover': {
-                              backgroundColor: '#f57c00',
-                            },
-                          }),
-                          '&:hover': {
-                            transform: 'translateY(-2px)',
-                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-                          },
+                          color: property.isExpired ? '#d32f2f' : '#2e7d32',
+                          letterSpacing: '0.01em',
+                          lineHeight: 1.6,
                         }}
                       >
-                        {property.property_status === 'Active' ? 'Edit' : 'Incomplete'}
-                      </Button>
+                        {property.isExpired ? 'Yes' : 'No'}
+                      </Typography>
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      <Typography 
+                        variant="body2"
+                        sx={{
+                          fontSize: '0.9375rem',
+                          fontFamily: 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif',
+                          fontWeight: 400,
+                          color: 'text.primary',
+                          letterSpacing: '0.01em',
+                          lineHeight: 1.6,
+                        }}
+                      >
+                        {property.expiry_date ? new Date(property.expiry_date).toLocaleDateString() : 'N/A'}
+                      </Typography>
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {(() => {
+                        // If isExpired doesn't exist, show Incomplete
+                        if (property.isExpired === undefined || property.isExpired === null) {
+                          return (
+                            <Button
+                              variant="contained"
+                              color="warning"
+                              startIcon={<IncompleteIcon />}
+                              onClick={() => handleEditOrComplete(property)}
+                              size="medium"
+                              sx={{
+                                fontFamily: 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif',
+                                fontWeight: 500,
+                                fontSize: '0.875rem',
+                                letterSpacing: '0.02em',
+                                textTransform: 'none',
+                                borderRadius: '8px',
+                                px: 2.5,
+                                py: 1,
+                                transition: 'all 0.2s ease',
+                                backgroundColor: '#ff9800',
+                                '&:hover': {
+                                  backgroundColor: '#f57c00',
+                                  transform: 'translateY(-2px)',
+                                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                                },
+                              }}
+                            >
+                              Incomplete
+                            </Button>
+                          );
+                        }
+                        
+                        // If isExpired is true, show Pay Again
+                        if (property.isExpired === true) {
+                          return (
+                            <Button
+                              variant="contained"
+                              color="warning"
+                              startIcon={<PaymentIcon />}
+                              onClick={() => handleEditOrComplete(property)}
+                              size="medium"
+                              sx={{
+                                fontFamily: 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif',
+                                fontWeight: 500,
+                                fontSize: '0.875rem',
+                                letterSpacing: '0.02em',
+                                textTransform: 'none',
+                                borderRadius: '8px',
+                                px: 2.5,
+                                py: 1,
+                                transition: 'all 0.2s ease',
+                                backgroundColor: '#ff9800',
+                                '&:hover': {
+                                  backgroundColor: '#f57c00',
+                                  transform: 'translateY(-2px)',
+                                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                                },
+                              }}
+                            >
+                              Pay Now
+                            </Button>
+                          );
+                        }
+                        
+                        // If isExpired is false, check property_status
+                        if (property.property_status === 'Active') {
+                          return (
+                            <Button
+                              variant="outlined"
+                              color="error"
+                              startIcon={<EditIcon />}
+                              onClick={() => handleEditOrComplete(property)}
+                              size="medium"
+                              sx={{
+                                fontFamily: 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif',
+                                fontWeight: 500,
+                                fontSize: '0.875rem',
+                                letterSpacing: '0.02em',
+                                textTransform: 'none',
+                                borderRadius: '8px',
+                                px: 2.5,
+                                py: 1,
+                                transition: 'all 0.2s ease',
+                                '&:hover': {
+                                  transform: 'translateY(-2px)',
+                                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                                },
+                              }}
+                            >
+                              Edit
+                            </Button>
+                          );
+                        }
+                        
+                        // If property_status is Inactive, show Pending Verification (disabled)
+                        return (
+                          <Tooltip 
+                            title="Your property is pending verification. Please wait for admin approval."
+                            arrow
+                            placement="top"
+                          >
+                            <span>
+                              <Button
+                                variant="outlined"
+                                color="warning"
+                                disabled
+                                size="medium"
+                                sx={{
+                                  fontFamily: 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif',
+                                  fontWeight: 500,
+                                  fontSize: '0.875rem',
+                                  letterSpacing: '0.02em',
+                                  textTransform: 'none',
+                                  borderRadius: '8px',
+                                  px: 2.5,
+                                  py: 1,
+                                  transition: 'all 0.2s ease',
+                                }}
+                              >
+                                Pending Verification
+                              </Button>
+                            </span>
+                          </Tooltip>
+                        );
+                      })()}
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       <IconButton

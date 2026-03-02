@@ -214,6 +214,21 @@ const UserBadge = styled(Chip)(({ theme }) => ({
   fontWeight: 500,
 }));
 
+const ReportCountText = styled(Typography)(({ theme }) => ({
+  fontSize: '0.875rem',
+  color: '#000000',
+  marginTop: theme.spacing(1.5),
+  fontWeight: 600,
+  fontFamily: '"Inter", sans-serif',
+  backgroundColor: '#f2c514',
+  padding: theme.spacing(0.5, 1),
+  borderRadius: theme.spacing(1),
+  display: 'block',
+  boxShadow: '0 2px 4px rgba(242, 197, 20, 0.2)',
+  letterSpacing: '0.02em',
+  width: 'fit-content',
+}));
+
 const SectionTitle = styled(Typography)(({ theme }) => ({
   fontWeight: 700,
   fontSize: '0.75rem',
@@ -235,11 +250,15 @@ const StyledListItemButton = styled(ListItemButton, {
   minHeight: 48, // Increased for better touch targets
   transition: 'all 0.2s ease-in-out',
   transform: 'translateX(0)',
+  position: 'relative',
+  zIndex: 12,
+  cursor: 'pointer',
   '&:hover': {
     background: active
       ? 'linear-gradient(90deg, #dcfce7 0%, rgba(220, 252, 231, 0) 100%)'
       : '#f3f4f6',
     transform: 'translateX(2px)',
+    zIndex: 13,
   },
   '&:active': {
     transform: 'translateX(0) scale(0.98)',
@@ -248,12 +267,14 @@ const StyledListItemButton = styled(ListItemButton, {
     color: active ? '#10b981' : '#6b7280',
     minWidth: 40,
     transition: 'color 0.2s ease-in-out',
+    pointerEvents: 'none',
   },
   '& .MuiListItemText-primary': {
     color: active ? '#10b981' : '#374151',
     fontWeight: active ? 600 : 400,
     fontSize: '0.875rem',
     transition: 'all 0.2s ease-in-out',
+    pointerEvents: 'none',
   },
   [theme.breakpoints.down('md')]: {
     minHeight: 52, // Larger touch targets on mobile
@@ -414,9 +435,9 @@ const SideBar: React.FC<SideBarProps> = ({ open, onToggle, onClose }) => {
       return;
     }
 
-    const normalizedAgent = normalize('/user');
+    const normalizedUser = normalize('/user');
     const currentNormalized = normalize(router.pathname || router.asPath || '');
-    if (currentNormalized === normalizedAgent) {
+    if (currentNormalized === normalizedUser) {
       setActiveItem('dashboard');
       setAllActive(false);
       return;
@@ -489,11 +510,11 @@ const SideBar: React.FC<SideBarProps> = ({ open, onToggle, onClose }) => {
 
 
     return (
-      <ListItem key={item.id} disablePadding>
+      <ListItem key={item.id} disablePadding sx={{ position: 'relative', zIndex: 10 }}>
         <Link 
           href={item.path} 
           prefetch 
-          style={{ width: '100%', textDecoration: 'none', display: 'block' }}
+          style={{ width: '100%', textDecoration: 'none', display: 'block', position: 'relative', zIndex: 11 }}
           onClick={(e) => {
             handleSetActive(item.id);
             handleAfterNavigate();
@@ -504,11 +525,14 @@ const SideBar: React.FC<SideBarProps> = ({ open, onToggle, onClose }) => {
             sx={{
               transition: 'all 0.2s ease-in-out',
               width: '100%',
+              position: 'relative',
+              zIndex: 12,
               '&:hover': {
                 background: isActive
                   ? 'linear-gradient(90deg, #dcfce7 0%, rgba(220, 252, 231, 0) 100%)'
                   : '#f3f4f6',
                 transform: 'translateX(2px)',
+                zIndex: 13,
               },
             }}
           >
@@ -547,21 +571,16 @@ const SideBar: React.FC<SideBarProps> = ({ open, onToggle, onClose }) => {
         }}
       >
         {/* Header with Logo and Toggle */}
-        <LogoContainer onClick={() => {
-          router.push('/');
-        }}>
+        <LogoContainer>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <img
-              src="/images/CommercialUK2.png"
+              src="/images/CUKLogo.png"
               alt="CommercialUK"
-              style={{ width: 180, objectFit: 'contain' }}
+              style={{ width: 220, objectFit: 'contain' }}
             />
           </Box>
           <IconButton
-            onClick={(e) => {
-              e.stopPropagation(); // Prevent logo click when clicking close button
-              onClose();
-            }}
+            onClick={onClose}
             sx={{
               color: '#6b7280',
               '&:hover': {
@@ -579,6 +598,9 @@ const SideBar: React.FC<SideBarProps> = ({ open, onToggle, onClose }) => {
           <UserInfo>
             <UserName>{user?.firstName || user?.first_name || 'User'} {user?.lastName || user?.last_name || ''}</UserName>
             <UserBadge label={user?.role || 'N/A'} size="small" />
+            <ReportCountText>
+              Reports: {user?.report_count ?? 0}
+            </ReportCountText>
           </UserInfo>
         </UserProfileCard>
 
@@ -621,76 +643,73 @@ const SideBar: React.FC<SideBarProps> = ({ open, onToggle, onClose }) => {
       )}
       
       <StyledDrawer
-          variant="permanent"
-          open={open}
-          onClose={onClose}
-          isMobile={isMobile}
-          isTablet={isTablet}
-          sx={{
-            '& .MuiDrawer-paper': {
-              position: 'relative',
-              height: '100vh',
-            },
-          }}
-        >
-        {/* Header with Logo and Toggle */}
-        <LogoContainer onClick={() => {
-          console.log('Logo clicked, navigating to home');
-          router.push('/');
-        }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-            {open && (
-              <img
-              src="/images/CommercialUK2.png"
-              alt="CommercialUK"
-              style={{ width: 180, objectFit: 'contain' }}
-            />
-            )}
-          </Box>
-          {isMobile && (
-            <IconButton
-              onClick={(e) => {
-                e.stopPropagation(); // Prevent logo click when clicking close button
-                onClose();
-              }}
-              sx={{
-                color: '#6b7280',
-                '&:hover': {
-                  backgroundColor: '#f3f4f6',
-                },
-              }}
-            >
-              <CloseIcon />
-            </IconButton>
+        variant="permanent"
+        open={open}
+        onClose={onClose}
+        isMobile={isMobile}
+        isTablet={isTablet}
+        sx={{
+          '& .MuiDrawer-paper': {
+            position: 'relative',
+            height: '100vh',
+          },
+        }}
+      >
+      {/* Header with Logo and Toggle */}
+      <LogoContainer onClick={() => router.push('/')}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+          {open && (
+                          <img
+                          src="/images/CUKLogo.png"
+                          alt="CommercialUK"
+                          style={{ width: 220, objectFit: 'contain' }}
+                        />
           )}
-        </LogoContainer>
-
-        {/* User Profile Section */}
-        {open && (
-          <UserProfileCard>
-            <UserAvatar src={user?.photo || ""} alt="User" />
-            <UserInfo>
-              <UserName>{user?.firstName || user?.first_name || 'User'} {user?.lastName || user?.last_name || ''}</UserName>
-              <UserBadge label={user?.role || 'N/A'} size="small" />
-            </UserInfo>
-          </UserProfileCard>
-        )}
-
-        {/* Navigation Menu */}
-        <Box sx={{ flex: 1, overflow: 'auto' }}>
-          {menuItems.map((section) => (
-            <Box key={section.section}>
-              {open && <SectionTitle>{section.section}</SectionTitle>}
-              <List disablePadding>
-                {section.items.map((item, index) => renderMenuItem(item, index))}
-              </List>
-            </Box>
-          ))}
         </Box>
+        {isMobile && (
+          <IconButton
+            onClick={onClose}
+            sx={{
+              color: '#6b7280',
+              '&:hover': {
+                backgroundColor: '#f3f4f6',
+              },
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        )}
+      </LogoContainer>
 
-        {/* Decorative Element */}
-        {open && <DecorativeElement />}
-      </StyledDrawer>
+      {/* User Profile Section */}
+      {open && (
+        <UserProfileCard>
+          <UserAvatar src={user?.photo || user?.profile_picture} alt="User" />
+          <UserInfo>
+            <UserName>{user?.firstName || user?.first_name || 'User'} {user?.lastName || user?.last_name || ''}</UserName>
+            <UserBadge label={user?.role || 'N/A'} size="small" />
+            <ReportCountText>
+              Reports: {user?.report_count ?? 0}
+            </ReportCountText>
+          </UserInfo>
+        </UserProfileCard>
+      )}
+
+      {/* Navigation Menu */}
+      <Box sx={{ flex: 1, overflow: 'auto' }}>
+        {menuItems.map((section) => (
+          <Box key={section.section}>
+            {open && <SectionTitle>{section.section}</SectionTitle>}
+            <List disablePadding>
+              {section.items.map((item, index) => renderMenuItem(item, index))}
+            </List>
+          </Box>
+        ))}
+      </Box>
+
+      {/* Decorative Element */}
+      {open && <DecorativeElement />}
+    </StyledDrawer>
     </>
   );
 };

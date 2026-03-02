@@ -110,28 +110,32 @@ const EditPropertyPage: React.FC = () => {
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
   const [formData, setFormData] = useState<any>({});
 
+  // Fetch property data from API
+  const fetchPropertyData = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const response = await axiosInstance.get(`/api/user/properties/${id}`, {
+        params: { _ts: Date.now() },
+      });
+      const latestData = response.data.data;
+      setPropertyData(latestData);
+      return latestData;
+
+    } catch (error) {
+      console.error('Error fetching property data:', error);
+      enqueueSnackbar('Failed to load property data', { variant: 'error' });
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [id]);
+
   // Fetch property data on component mount
   useEffect(() => {
     if (id) {
       fetchPropertyData();
     }
-  }, [id]);
-
-  // Fetch property data from API
-  const fetchPropertyData = async () => {
-    try {
-      setIsLoading(true);
-      // Mock API call - replace with actual API endpoint
-      const response = await axiosInstance.get(`/api/user/properties/${id}`);
-      setPropertyData(response.data.data);
-
-    } catch (error) {
-      console.error('Error fetching property data:', error);
-      enqueueSnackbar('Failed to load property data', { variant: 'error' });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  }, [id, fetchPropertyData]);
 
 
   // Handle step click for navigation

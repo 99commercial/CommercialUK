@@ -91,7 +91,6 @@ const propertyFeaturesSchema = new Schema(
 );
 
 // Indexes
-propertyFeaturesSchema.index({ property_id: 1 });
 propertyFeaturesSchema.index({ 'features.air_conditioning': 1 });
 propertyFeaturesSchema.index({ 'features.loading_bay': 1 });
 propertyFeaturesSchema.index({ 'features.secure_yard': 1 });

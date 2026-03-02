@@ -30,6 +30,7 @@ const epcRatings = [
   'G',
   'Exempt',
   'Not Required',
+  'Unknown',
 ];
 
 const councilTaxBands = [
@@ -43,6 +44,7 @@ const councilTaxBands = [
   'H',
   'Exempt',
   'Not Applicable',
+  'Unknown',
 ];
 
 const planningStatuses = [
@@ -77,7 +79,7 @@ interface UpdatePropertyDetailsFormProps {
   onDataChange?: (data: UpdatePropertyDetailsFormData) => void;
   propertyId?: string;
   fetchProperty?: () => void;
-  fetchPropertyData?: () => void;
+  fetchPropertyData?: () => Promise<any> | any;
 }
 
 const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({ 
@@ -200,10 +202,10 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
   const validateForm = (): boolean => {
     const errors: Record<string, string> = {};
 
-    // Check if EPC fields should be validated (not Exempt or Not Required)
     const shouldValidateEPC = formData.epc.rating && 
       formData.epc.rating !== 'Exempt' && 
-      formData.epc.rating !== 'Not Required';
+      formData.epc.rating !== 'Not Required' &&
+      formData.epc.rating !== 'Unknown';
 
     // Validate EPC score (only if rating is not Exempt or Not Required)
     if (shouldValidateEPC && formData.epc.score && (formData.epc.score < 0 || formData.epc.score > 100)) {
@@ -249,8 +251,7 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
         [field]: value
       };
       
-      // If rating is "Exempt" or "Not Required", clear related fields
-      if (field === 'rating' && (value === 'Exempt' || value === 'Not Required')) {
+      if (field === 'rating' && (value === 'Exempt' || value === 'Not Required' || value === 'Unknown')) {
         newEpc.score = 0;
         newEpc.certificate_number = '';
         newEpc.expiry_date = '';
@@ -270,8 +271,7 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
         [field]: value
       };
       
-      // If band is "Exempt" or "Not Applicable", clear authority field
-      if (field === 'band' && (value === 'Exempt' || value === 'Not Applicable')) {
+      if (field === 'band' && (value === 'Exempt' || value === 'Not Applicable' || value === 'Unknown')) {
         newCouncilTax.authority = '';
       }
       
@@ -306,6 +306,7 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
     e.preventDefault();
     
     if (!validateForm()) {
+      enqueueSnackbar('Please fix the highlighted errors before submitting.', { variant: 'error' });
       return;
     }
 
@@ -318,17 +319,67 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
     setSubmitError(null);
 
     try {
-      const response = await axiosInstance.patch(`/api/user/properties/${propertyId}/general-details`, formData);
+      const sanitizedData = {
+        epc: {
+          ...formData.epc,
+          expiry_date: formData.epc.expiry_date || null,
+          score: formData.epc.score || 0,
+          certificate_number: formData.epc.certificate_number || null,
+        },
+        council_tax: {
+          ...formData.council_tax,
+          authority: formData.council_tax.authority || null,
+        },
+        rateable_value: formData.rateable_value || 0,
+        planning: {
+          ...formData.planning,
+          decision_date: formData.planning.decision_date || null,
+          application_number: formData.planning.application_number || null,
+        },
+      };
+
+      const response = await axiosInstance.put(
+        `/api/user/properties/${propertyId}/property-details`,
+        sanitizedData
+      );
       
       if (response.data.success) {
         setIsSubmitted(true);
-        setHasChanges(false); // Reset changes flag after successful update
+        setHasChanges(false);
+        setFieldErrors({});
         enqueueSnackbar('Property details updated successfully!', { variant: 'success' });
         
         if (onStepSubmitted) {
           onStepSubmitted(2);
         }
-        fetchPropertyData?.();
+
+        if (fetchPropertyData) {
+          try {
+            const refreshedData = await fetchPropertyData();
+            if (refreshedData) {
+              setFormData({
+                epc: {
+                  rating: (refreshedData as any).epc?.rating || '',
+                  score: (refreshedData as any).epc?.score || 0,
+                  certificate_number: (refreshedData as any).epc?.certificate_number || '',
+                  expiry_date: formatDateForInput((refreshedData as any).epc?.expiry_date),
+                },
+                council_tax: {
+                  band: (refreshedData as any).council_tax?.band || '',
+                  authority: (refreshedData as any).council_tax?.authority || '',
+                },
+                rateable_value: (refreshedData as any).rateable_value || 0,
+                planning: {
+                  status: (refreshedData as any).planning?.status || '',
+                  application_number: (refreshedData as any).planning?.application_number || '',
+                  decision_date: formatDateForInput((refreshedData as any).planning?.decision_date),
+                },
+              });
+            }
+          } catch (_) {
+            // Fetch failed silently
+          }
+        }
       } else {
         throw new Error(response.data.message || 'Failed to update property details');
       }
@@ -373,10 +424,10 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
                 </Select>
               </FormControl>
 
-              {/* Only show EPC fields if rating is not "Exempt" or "Not Required" */}
               {formData.epc.rating && 
                formData.epc.rating !== 'Exempt' && 
-               formData.epc.rating !== 'Not Required' && (
+               formData.epc.rating !== 'Not Required' &&
+               formData.epc.rating !== 'Unknown' && (
                 <>
                   <TextField
                     label="EPC Score"
@@ -434,10 +485,10 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
                 </Select>
               </FormControl>
 
-              {/* Only show Council Authority if band is not "Exempt" or "Not Applicable" */}
               {formData.council_tax.band && 
                formData.council_tax.band !== 'Exempt' && 
-               formData.council_tax.band !== 'Not Applicable' && (
+               formData.council_tax.band !== 'Not Applicable' &&
+               formData.council_tax.band !== 'Unknown' && (
                 <TextField
                   label="Council Authority"
                   value={formData.council_tax.authority || ''}

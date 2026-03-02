@@ -20,6 +20,7 @@ import { Save } from '@mui/icons-material';
 import { useFormContext, FieldErrors } from 'react-hook-form';
 import axiosInstance from '../../../utils/axios';
 import { enqueueSnackbar } from 'notistack';
+import { extractFieldErrorsFromApiError, getApiErrorMessage } from '@/utils/apiError';
 
 const epcRatings = [
   'A',
@@ -81,15 +82,6 @@ const PropertyDetailsForm: React.FC<PropertyDetailsFormProps> = ({
   const [originalData, setOriginalData] = useState<any>(null);
   const lastPropertyIdRef = React.useRef<string | null>(null);
   const hasInitializedRef = React.useRef<boolean>(false);
-
-  // Debug: Track fieldErrors changes
-  useEffect(() => {
-    console.log('fieldErrors state changed:', fieldErrors);
-    console.log('fieldErrors keys:', Object.keys(fieldErrors));
-    Object.keys(fieldErrors).forEach(key => {
-      console.log(`  ${key}: "${fieldErrors[key]}"`);
-    });
-  }, [fieldErrors]);
 
   // Watch specific nested fields to ensure changes are detected
   const epcRating = watch('epc.rating');
@@ -302,84 +294,124 @@ const PropertyDetailsForm: React.FC<PropertyDetailsFormProps> = ({
     }
   };
 
+  const validatePropertyDetails = (): Record<string, string> => {
+    const errors: Record<string, string> = {};
+    const epc = watchedValues.epc || {};
+    const council = watchedValues.council_tax || {};
+    const plan = watchedValues.planning || {};
+
+    // Always-visible fields: show error if empty
+    if (!epc.rating || (typeof epc.rating === 'string' && epc.rating.trim() === '')) {
+      errors['epc.rating'] = 'EPC rating is required';
+    }
+    if (!council.band || (typeof council.band === 'string' && council.band.trim() === '')) {
+      errors['council_tax.band'] = 'Council tax band is required';
+    }
+    if (rateableValue === undefined || rateableValue === null || rateableValue === '') {
+      errors['rateable_value'] = 'Rateable value is required';
+    }
+    if (!plan.status || (typeof plan.status === 'string' && plan.status.trim() === '')) {
+      errors['planning.status'] = 'Planning status is required';
+    }
+
+    // Conditionally visible fields: only validate when visible
+    const isEpcDetailsVisible = epc.rating && !['Exempt', 'Not Required', 'Unknown'].includes(epc.rating);
+    if (isEpcDetailsVisible) {
+      if (!epc.score && epc.score !== 0) {
+        errors['epc.score'] = 'EPC score is required';
+      }
+      if (!epc.certificate_number || (typeof epc.certificate_number === 'string' && epc.certificate_number.trim() === '')) {
+        errors['epc.certificate_number'] = 'Certificate number is required';
+      }
+      if (!epc.expiry_date || (typeof epc.expiry_date === 'string' && epc.expiry_date.trim() === '')) {
+        errors['epc.expiry_date'] = 'Expiry date is required';
+      }
+    }
+
+    const isCouncilAuthorityVisible = council.band && !['Exempt', 'Not Applicable', 'Unknown'].includes(council.band);
+    if (isCouncilAuthorityVisible && (!council.authority || council.authority.trim() === '')) {
+      errors['council_tax.authority'] = 'Council authority is required';
+    }
+
+    const isPlanningDetailsVisible = plan.status && !['Unknown', 'No Planning Required'].includes(plan.status);
+    if (isPlanningDetailsVisible) {
+      if (!plan.application_number || plan.application_number.trim() === '') {
+        errors['planning.application_number'] = 'Application number is required';
+      }
+      if (!plan.decision_date || (typeof plan.decision_date === 'string' && plan.decision_date.trim() === '')) {
+        errors['planning.decision_date'] = 'Decision date is required';
+      }
+    }
+
+    return errors;
+  };
+
+  const sanitizeFormData = () => {
+    const epc = { ...(watchedValues.epc || {}) };
+    const council_tax = { ...(watchedValues.council_tax || {}) };
+    const planning = { ...(watchedValues.planning || {}) };
+
+    if (epc.expiry_date === '') epc.expiry_date = null;
+    if (epc.score === '' || epc.score === undefined) epc.score = 0;
+    if (planning.decision_date === '') planning.decision_date = null;
+
+    return {
+      epc,
+      council_tax,
+      rateable_value: watchedValues.rateable_value || 0,
+      planning,
+    };
+  };
+
   const handleSave = async () => {
     const propertyId = getPropertyId();
     
     if (!propertyId) {
       setSaveError('Property ID not found. Please complete the previous steps first.');
+      enqueueSnackbar('Property ID not found. Please complete the previous steps first.', { variant: 'error' });
       return;
     }
 
-    setIsSaving(true);
     setSaveError(null);
     setSaveSuccess(false);
     setFieldErrors({});
 
+    const validationErrors = validatePropertyDetails();
+    if (Object.keys(validationErrors).length > 0) {
+      setFieldErrors(validationErrors);
+      enqueueSnackbar('Please fix the highlighted errors before submitting.', { variant: 'error' });
+      return;
+    }
+
+    setIsSaving(true);
+
     try {
-      const formData = {
-        epc: watchedValues.epc,
-        council_tax: watchedValues.council_tax,
-        rateable_value: watchedValues.rateable_value,
-        planning: watchedValues.planning,
-      };
+      const formData = sanitizeFormData();
 
       let response = await axiosInstance.put(`/api/agent/properties/${propertyId}/property-details`, formData);
-
-      // console.log(response.data , 'shardul is smart');
       
       enqueueSnackbar(response.data.message, { variant: 'success' });
       
       setSaveSuccess(true);
       setIsSubmitted(true);
       
-      // Update original data after successful save
-      setOriginalData({
-        epc: watchedValues.epc,
-        council_tax: watchedValues.council_tax,
-        rateable_value: watchedValues.rateable_value,
-        planning: watchedValues.planning,
-      });
+      setOriginalData({ ...formData });
       
-      setTimeout(() => setSaveSuccess(false), 3000); // Hide success message after 3 seconds
-
+      setTimeout(() => setSaveSuccess(false), 3000);
 
       fetchPropertyData?.();
       
-      // Notify parent component that step 2 has been successfully submitted
       if (onStepSubmitted) {
         onStepSubmitted(2);
       }
     } catch (error: any) {
-      console.error('Error saving property details:', error);
-      
-      // Handle field-specific validation errors
-      const errorData = error.errors;
-      
-      if (errorData && Array.isArray(errorData) && errorData.length > 0) {
-        const fieldErrorMap: Record<string, string> = {};
-        errorData.forEach((err: any, index: number) => {
-
-          if (err.path && err.msg) {
-            let fieldPath = String(err.path).replace(/\[(\d+)\]/g, '.$1');
-            fieldErrorMap[fieldPath] = err.msg;
-          }
-        });
-        
-        // Set field errors - this will trigger re-render
+      const fieldErrorMap = extractFieldErrorsFromApiError(error);
+      if (Object.keys(fieldErrorMap).length > 0) {
         setFieldErrors(fieldErrorMap);
-        
-        // Show general error message
-        const errorMessage = 'Please fix the validation errors below.';
-        setSaveError(errorMessage);
-        enqueueSnackbar(errorMessage, { variant: 'error' });
-      } else {
-        console.log('No errors array or empty array');
-        // Handle general errors
-        const errorMessage = errorData?.message || error.message || 'Failed to save property details. Please try again.';
-        setSaveError(errorMessage);
-        enqueueSnackbar(errorMessage, { variant: 'error' });
-        setFieldErrors({});
       }
+      const errorMessage = getApiErrorMessage(error, 'Failed to save property details. Please try again.');
+      setSaveError(errorMessage);
+      enqueueSnackbar(errorMessage, { variant: 'error' });
     } finally {
       setIsSaving(false);
     }
@@ -390,72 +422,51 @@ const PropertyDetailsForm: React.FC<PropertyDetailsFormProps> = ({
     
     if (!propertyId) {
       setSaveError('Property ID not found. Please complete the previous steps first.');
+      enqueueSnackbar('Property ID not found. Please complete the previous steps first.', { variant: 'error' });
       return;
     }
 
-    setIsSaving(true);
     setSaveError(null);
     setSaveSuccess(false);
     setFieldErrors({});
 
-    try {
-      const formData = {
-        epc: watchedValues.epc,
-        council_tax: watchedValues.council_tax,
-        rateable_value: watchedValues.rateable_value,
-        planning: watchedValues.planning,
-      };
+    const validationErrors = validatePropertyDetails();
+    if (Object.keys(validationErrors).length > 0) {
+      setFieldErrors(validationErrors);
+      enqueueSnackbar('Please fix the highlighted errors before submitting.', { variant: 'error' });
+      return;
+    }
 
-      // Use PATCH endpoint for updating property details
-      const response = await axiosInstance.patch(
-        `/api/agent/properties/${propertyId}/general-details`,
+    setIsSaving(true);
+
+    try {
+      const formData = sanitizeFormData();
+
+      const response = await axiosInstance.put(
+        `/api/agent/properties/${propertyId}/property-details`,
         formData
       );
       
       enqueueSnackbar(response.data.message || 'Property details updated successfully!', { variant: 'success' });
       
-      // Update original data after successful update
-      setOriginalData({
-        epc: watchedValues.epc,
-        council_tax: watchedValues.council_tax,
-        rateable_value: watchedValues.rateable_value,
-        planning: watchedValues.planning,
-      });
+      setOriginalData({ ...formData });
       
       setSaveSuccess(true);
-      setIsSubmitted(false); // Allow multiple updates
+      setIsSubmitted(false);
       
-      // Refresh property data if callback is provided
-      if (fetchPropertyData) {
-        fetchPropertyData();
-      }
+      fetchPropertyData?.();
+      onStepSubmitted?.(2);
       
       setTimeout(() => setSaveSuccess(false), 3000);
       
     } catch (error: any) {
-      console.error('Error updating property details:', error);
-      
-      // Handle field-specific validation errors
-      if (error.response?.data?.errors && Array.isArray(error.response.data.errors)) {
-        const fieldErrorMap: Record<string, string> = {};
-        
-        error.response.data.errors.forEach((err: any) => {
-          if (err.path) {
-            let fieldPath = err.path.replace(/\[(\d+)\]/g, '.$1');
-            fieldErrorMap[fieldPath] = err.msg;
-          }
-        });
-        
+      const fieldErrorMap = extractFieldErrorsFromApiError(error);
+      if (Object.keys(fieldErrorMap).length > 0) {
         setFieldErrors(fieldErrorMap);
-        
-        const errorMessage = error.response?.data?.message || error.message || 'Please fix the validation errors below.';
-        setSaveError(errorMessage);
-        enqueueSnackbar(errorMessage, { variant: 'error' });
-      } else {
-        const errorMessage = error.response?.data?.message || error.message || 'Failed to update property details. Please try again.';
-        setSaveError(errorMessage);
-        enqueueSnackbar(errorMessage, { variant: 'error' });
       }
+      const errorMessage = getApiErrorMessage(error, 'Failed to update property details. Please try again.');
+      setSaveError(errorMessage);
+      enqueueSnackbar(errorMessage, { variant: 'error' });
     } finally {
       setIsSaving(false);
     }

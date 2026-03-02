@@ -165,6 +165,9 @@ const UpdatePropertyFeaturesForm: React.FC<UpdatePropertyFeaturesFormProps> = ({
     });
 
     setFieldErrors(errors);
+    if (Object.keys(errors).length > 0) {
+      enqueueSnackbar('Please fix the highlighted errors before submitting.', { variant: 'error' });
+    }
     return Object.keys(errors).length === 0;
   };
 

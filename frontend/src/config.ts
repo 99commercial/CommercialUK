@@ -1,1 +1,2 @@
-export const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
+export const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+export const STRIPE_PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '';

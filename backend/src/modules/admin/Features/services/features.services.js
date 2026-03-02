@@ -2,10 +2,13 @@ import { MESSAGES, USER_STATUS } from '../../../../config/constant.config.js';
 import User from '../../../../models/user.model.js';
 import Property from '../../../../models/property.model.js';
 import GeneralPage from '../../../../models/general.page.model.js';
+import DiscountCode from '../../../../models/discount.code.model.js';
+import { emailService } from '../../../../emails/auth.email.js';
 import mongoose from 'mongoose';
 
 export class FeaturesService {
   constructor() {
+    this.emailService = new emailService();
   }
 
   // ==================== USER MANAGEMENT SERVICES ====================
@@ -394,6 +397,7 @@ export class FeaturesService {
     try {
       const query = { 
         deleted_at: null,
+        isExpired: false,
         property_status: 'Inactive'
       };
 
@@ -452,6 +456,32 @@ export class FeaturesService {
 
       if (!property) {
         throw new Error('Property not found or already active');
+      }
+
+      // Send approval email to the property owner
+      if (property.listed_by && property.listed_by.email) {
+        try {
+          const propertyName = property.general_details?.building_name || 'Your Property';
+          const propertyAddress = property.general_details?.address || '';
+          const propertyType = property.general_details?.property_type || null;
+          const propertySize = property.general_details?.size_minimum 
+            ? `${property.general_details.size_minimum}${property.general_details.size_maximum ? ` - ${property.general_details.size_maximum}` : ''} sq ft`
+            : null;
+
+          await this.emailService.sendPropertyApprovalEmail(
+            property.listed_by.email,
+            property.listed_by.firstName,
+            property.listed_by.lastName,
+            property._id.toString(),
+            propertyName,
+            propertyAddress,
+            propertyType,
+            propertySize
+          );
+        } catch (emailError) {
+          // Log email error but don't fail the activation
+          console.error('Failed to send property approval email:', emailError);
+        }
       }
 
       return {
@@ -600,6 +630,211 @@ export class FeaturesService {
       }
     } catch (error) {
       throw new Error(`Failed to create or update general page: ${error.message}`);
+    }
+  }
+
+  // ==================== DISCOUNT CODE SERVICES ====================
+
+  /**
+   * Generate a unique 6-digit discount code for the platform
+   */
+  async generateDiscountCode(discountCodeData, adminId) {
+    try {
+      const { discount_percentage, expiry_date, max_usage } = discountCodeData;
+
+      // Validate discount percentage
+      if (!discount_percentage || discount_percentage < 0 || discount_percentage > 100) {
+        throw new Error('Discount percentage must be between 0 and 100');
+      }
+
+      // Generate a unique 6-digit code
+      let code;
+      let isUnique = false;
+      let attempts = 0;
+      const maxAttempts = 100;
+
+      while (!isUnique && attempts < maxAttempts) {
+        // Generate a random 6-digit code (numbers only)
+        code = Math.floor(100000 + Math.random() * 900000).toString();
+        
+        // Check if code already exists
+        const existingCode = await DiscountCode.findOne({ 
+          code, 
+          deleted_at: null 
+        });
+        
+        if (!existingCode) {
+          isUnique = true;
+        }
+        
+        attempts++;
+      }
+
+      if (!isUnique) {
+        throw new Error('Failed to generate unique discount code after multiple attempts');
+      }
+
+      // Create the discount code
+      const discountCode = new DiscountCode({
+        code,
+        discount_percentage,
+        expiry_date: expiry_date || null,
+        max_usage: max_usage || null,
+        created_by: adminId,
+        is_active: true,
+        usage_count: 0,
+      });
+
+      await discountCode.save();
+
+      return {
+        _id: discountCode._id,
+        code: discountCode.code,
+        discount_percentage: discountCode.discount_percentage,
+        expiry_date: discountCode.expiry_date,
+        max_usage: discountCode.max_usage,
+        is_active: discountCode.is_active,
+        usage_count: discountCode.usage_count,
+        createdAt: discountCode.createdAt,
+      };
+    } catch (error) {
+      throw new Error(`Failed to generate discount code: ${error.message}`);
+    }
+  }
+
+  /**
+   * Get list of all discount codes with pagination and filters
+   */
+  async getDiscountCodesList({ page, limit, filters, sortOptions }) {
+    try {
+      const query = { deleted_at: null };
+
+      // Apply filters
+      if (filters.is_active !== undefined) {
+        query.is_active = filters.is_active;
+      }
+
+      if (filters.search) {
+        query.$or = [
+          { code: { $regex: filters.search, $options: 'i' } },
+        ];
+      }
+
+      const options = {
+        page,
+        limit,
+        sort: sortOptions,
+        populate: [
+          { path: 'created_by', select: 'firstName lastName email' }
+        ],
+      };
+
+      const result = await DiscountCode.paginate(query, options);
+      
+      return {
+        discountCodes: result.docs,
+        pagination: {
+          currentPage: result.page,
+          totalPages: result.totalPages,
+          totalDiscountCodes: result.totalDocs,
+          hasNextPage: result.hasNextPage,
+          hasPrevPage: result.hasPrevPage,
+          limit: result.limit
+        }
+      };
+    } catch (error) {
+      throw new Error(`Failed to fetch discount codes: ${error.message}`);
+    }
+  }
+
+  /**
+   * Update a discount code
+   */
+  async updateDiscountCode(discountCodeId, updateData) {
+    try {
+      if (!mongoose.Types.ObjectId.isValid(discountCodeId)) {
+        throw new Error('Invalid discount code ID format');
+      }
+
+      const { discount_percentage, expiry_date, max_usage, is_active } = updateData;
+
+      // Build update object with only provided fields
+      const updateFields = {};
+      
+      if (discount_percentage !== undefined) {
+        if (discount_percentage < 0 || discount_percentage > 100) {
+          throw new Error('Discount percentage must be between 0 and 100');
+        }
+        updateFields.discount_percentage = discount_percentage;
+      }
+
+      if (expiry_date !== undefined) {
+        updateFields.expiry_date = expiry_date ? new Date(expiry_date) : null;
+      }
+
+      if (max_usage !== undefined) {
+        updateFields.max_usage = max_usage;
+      }
+
+      if (is_active !== undefined) {
+        updateFields.is_active = is_active;
+      }
+
+      const discountCode = await DiscountCode.findOneAndUpdate(
+        { _id: discountCodeId, deleted_at: null },
+        { $set: updateFields },
+        { new: true }
+      )
+      .populate('created_by', 'firstName lastName email');
+
+      if (!discountCode) {
+        throw new Error('Discount code not found');
+      }
+
+      return {
+        _id: discountCode._id,
+        code: discountCode.code,
+        discount_percentage: discountCode.discount_percentage,
+        expiry_date: discountCode.expiry_date,
+        max_usage: discountCode.max_usage,
+        is_active: discountCode.is_active,
+        usage_count: discountCode.usage_count,
+        created_by: discountCode.created_by,
+        createdAt: discountCode.createdAt,
+        updatedAt: discountCode.updatedAt,
+      };
+    } catch (error) {
+      throw new Error(`Failed to update discount code: ${error.message}`);
+    }
+  }
+
+  /**
+   * Soft delete discount code
+   */
+  async deleteDiscountCode(discountCodeId) {
+    try {
+      if (!mongoose.Types.ObjectId.isValid(discountCodeId)) {
+        throw new Error('Invalid discount code ID format');
+      }
+
+      const discountCode = await DiscountCode.findOneAndUpdate(
+        { _id: discountCodeId, deleted_at: null },
+        { 
+          $set: { 
+            deleted_at: new Date(),
+            is_active: false 
+          } 
+        },
+        { new: true }
+      );
+
+      if (!discountCode) {
+        throw new Error('Discount code not found');
+      }
+
+      return { message: 'Discount code deleted successfully' };
+    } catch (error) {
+      throw new Error(`Failed to delete discount code: ${error.message}`);
     }
   }
 }

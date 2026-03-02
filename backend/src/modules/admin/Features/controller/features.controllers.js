@@ -412,5 +412,111 @@ export class FeaturesController {
     }
   };
 
+  // ==================== DISCOUNT CODE CONTROLLERS ====================
+
+  /**
+   * Generate a 6-digit discount code for the platform
+   */
+  generateDiscountCode = async (req, res, next) => {
+    try {
+      const { discount_percentage, expiry_date, max_usage } = req.body;
+      const adminId = req.user.id;
+      
+      const discountCodeData = {
+        discount_percentage,
+        expiry_date: expiry_date ? new Date(expiry_date) : null,
+        max_usage: max_usage || null,
+      };
+      
+      const discountCode = await this.featuresService.generateDiscountCode(discountCodeData, adminId);
+      
+      res.status(201).json({
+        status: true,
+        message: MESSAGES.DISCOUNT_CODE_GENERATED_SUCCESSFULLY || 'Discount code generated successfully',
+        data: discountCode
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
+   * Get list of all discount codes with pagination and filters
+   */
+  getDiscountCodesList = async (req, res, next) => {
+    try {
+      const { page = 1, limit = 10, is_active, search, sort_by = 'createdAt', sort_order = 'desc' } = req.query;
+      
+      const filters = {
+        is_active: is_active !== undefined ? is_active === 'true' : undefined,
+        search,
+      };
+
+      const sortOptions = {
+        [sort_by]: sort_order === 'desc' ? -1 : 1
+      };
+
+      const result = await this.featuresService.getDiscountCodesList({
+        page: parseInt(page),
+        limit: parseInt(limit),
+        filters,
+        sortOptions
+      });
+
+      res.status(200).json({
+        status: true,
+        message: MESSAGES.DISCOUNT_CODES_FETCHED_SUCCESSFULLY || 'Discount codes fetched successfully',
+        data: result
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
+   * Update a discount code
+   */
+  updateDiscountCode = async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const { discount_percentage, expiry_date, max_usage, is_active } = req.body;
+      
+      const updateData = {
+        discount_percentage,
+        expiry_date: expiry_date ? new Date(expiry_date) : undefined,
+        max_usage,
+        is_active,
+      };
+      
+      const updatedDiscountCode = await this.featuresService.updateDiscountCode(id, updateData);
+      
+      res.status(200).json({
+        status: true,
+        message: MESSAGES.DISCOUNT_CODE_UPDATED_SUCCESSFULLY || 'Discount code updated successfully',
+        data: updatedDiscountCode
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
+   * Soft delete discount code
+   */
+  deleteDiscountCode = async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      
+      await this.featuresService.deleteDiscountCode(id);
+      
+      res.status(200).json({
+        status: true,
+        message: MESSAGES.DISCOUNT_CODE_DELETED_SUCCESSFULLY || 'Discount code deleted successfully'
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
 
 }

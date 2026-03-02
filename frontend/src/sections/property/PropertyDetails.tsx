@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -7,6 +7,10 @@ import {
   Chip,
   Button,
   Avatar,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  IconButton,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import {
@@ -28,6 +32,8 @@ import {
   Assessment as AssessmentIcon,
   LocalTaxi as LocalTaxiIcon,
   EnergySavingsLeaf as EcoIcon,
+  Close as CloseIcon,
+  Visibility as VisibilityIcon,
 } from '@mui/icons-material';
 import { Property } from '../../components/PropertyCard';
 
@@ -39,6 +45,7 @@ const MainContent = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   gap: theme.spacing(3),
   width: '100%',
+  minWidth: 0,
 }));
 
 const PropertyCard = styled(Card)(({ theme }) => ({
@@ -61,6 +68,17 @@ interface PropertyDetailsProps {
 }
 
 const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
+  // Document viewer state
+  const [documentViewer, setDocumentViewer] = useState<{
+    open: boolean;
+    url: string | null;
+    name: string | null;
+  }>({
+    open: false,
+    url: null,
+    name: null,
+  });
+
   // Format size
   const formatSize = () => {
     if (property?.general_details) {
@@ -71,6 +89,24 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
       return `${size_minimum} - ${size_maximum} sq ft`;
     }
     return '';
+  };
+
+  // Handle document view
+  const handleViewDocument = (url: string, name: string) => {
+    setDocumentViewer({
+      open: true,
+      url,
+      name,
+    });
+  };
+
+  // Handle close document viewer
+  const handleCloseDocumentViewer = () => {
+    setDocumentViewer({
+      open: false,
+      url: null,
+      name: null,
+    });
   };
 
   // Check if documents exist and have items
@@ -361,10 +397,10 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
               Property Overview
             </Typography>
 
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4, width: '100%', minWidth: 0 }}>
               {/* General Description - Main Overview */}
                 {property.descriptions_id.general && (
-                      <Box>
+                      <Box sx={{ width: '100%', minWidth: 0, maxWidth: '100%' }}>
                   <Typography 
                     variant="body1" 
                     sx={{ 
@@ -376,7 +412,9 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
                       overflowWrap: 'break-word',
                       hyphens: 'auto',
                       fontWeight: 400,
-                      letterSpacing: '0.01em'
+                      letterSpacing: '0.01em',
+                      width: '100%',
+                      maxWidth: '100%'
                     }}
                   >
                       {property.descriptions_id.general}
@@ -399,6 +437,10 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
                     borderRadius: 2,
                     backgroundColor: '#ffffff',
                       transition: 'all 0.3s ease',
+                      minWidth: 0,
+                      width: '100%',
+                      maxWidth: '100%',
+                      overflow: 'hidden',
                       '&:hover': {
                         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
                         borderColor: '#f2c514'
@@ -411,7 +453,10 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
                           mb: 2, 
                           color: '#1a1a1a',
                           fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-                          fontSize: '1.0625rem'
+                          fontSize: '1.0625rem',
+                          wordWrap: 'break-word',
+                          overflowWrap: 'break-word',
+                          overflow: 'hidden'
                         }}
                       >
                       Location Description
@@ -424,7 +469,9 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
                       color: '#555',
                       wordWrap: 'break-word',
                       overflowWrap: 'break-word',
-                          fontSize: '1rem'
+                          fontSize: '1rem',
+                          width: '100%',
+                          maxWidth: '100%'
                         }}
                       >
                       {property.descriptions_id.location}
@@ -439,6 +486,10 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
                     borderRadius: 2,
                     backgroundColor: '#ffffff',
                       transition: 'all 0.3s ease',
+                      minWidth: 0,
+                      width: '100%',
+                      maxWidth: '100%',
+                      overflow: 'hidden',
                       '&:hover': {
                         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
                         borderColor: '#f2c514'
@@ -451,7 +502,10 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
                           mb: 2, 
                           color: '#1a1a1a',
                           fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-                          fontSize: '1.0625rem'
+                          fontSize: '1.0625rem',
+                          wordWrap: 'break-word',
+                          overflowWrap: 'break-word',
+                          overflow: 'hidden'
                         }}
                       >
                       Accommodation Details
@@ -464,7 +518,9 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
                       color: '#555',
                       wordWrap: 'break-word',
                       overflowWrap: 'break-word',
-                          fontSize: '1rem'
+                          fontSize: '1rem',
+                          width: '100%',
+                          maxWidth: '100%'
                         }}
                       >
                       {property.descriptions_id.accommodation}
@@ -479,6 +535,10 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
                     borderRadius: 2,
                     backgroundColor: '#ffffff',
                       transition: 'all 0.3s ease',
+                      minWidth: 0,
+                      width: '100%',
+                      maxWidth: '100%',
+                      overflow: 'hidden',
                       '&:hover': {
                         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
                         borderColor: '#f2c514'
@@ -491,7 +551,10 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
                           mb: 2, 
                           color: '#1a1a1a',
                           fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-                          fontSize: '1.0625rem'
+                          fontSize: '1.0625rem',
+                          wordWrap: 'break-word',
+                          overflowWrap: 'break-word',
+                          overflow: 'hidden'
                         }}
                       >
                       Terms & Conditions
@@ -504,7 +567,9 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
                       color: '#555',
                       wordWrap: 'break-word',
                       overflowWrap: 'break-word',
-                          fontSize: '1rem'
+                          fontSize: '1rem',
+                          width: '100%',
+                          maxWidth: '100%'
                         }}
                       >
                       {property.descriptions_id.terms}
@@ -519,6 +584,10 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
                     borderRadius: 2,
                     backgroundColor: '#ffffff',
                       transition: 'all 0.3s ease',
+                      minWidth: 0,
+                      width: '100%',
+                      maxWidth: '100%',
+                      overflow: 'hidden',
                       '&:hover': {
                         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
                         borderColor: '#f2c514'
@@ -531,7 +600,10 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
                           mb: 2, 
                           color: '#1a1a1a',
                           fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-                          fontSize: '1.0625rem'
+                          fontSize: '1.0625rem',
+                          wordWrap: 'break-word',
+                          overflowWrap: 'break-word',
+                          overflow: 'hidden'
                         }}
                       >
                       Specifications
@@ -544,7 +616,9 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
                       color: '#555',
                       wordWrap: 'break-word',
                       overflowWrap: 'break-word',
-                          fontSize: '1rem'
+                          fontSize: '1rem',
+                          width: '100%',
+                          maxWidth: '100%'
                         }}
                       >
                       {property.descriptions_id.specifications}
@@ -2016,34 +2090,69 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
                         </Box>
                       </Box>
                       
-                      <Button
-                        variant="contained"
-                        startIcon={<DownloadIcon />}
-                    sx={{
-                          backgroundColor: '#f2c514',
-                          fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-                          fontWeight: 600,
-                          textTransform: 'none',
-                          borderRadius: 2,
-                          px: 3,
-                          py: 1.5,
-                          '&:hover': {
-                            backgroundColor: '#dfb612',
-                            transform: 'translateY(-2px)',
-                            boxShadow: '0 4px 12px rgba(25, 118, 210, 0.3)'
-                          },
-                          minWidth: { xs: '100%', sm: '140px' },
-                          width: { xs: '100%', sm: 'auto' },
-                          mt: { xs: 2, sm: 0 }
-                        }}
-                        onClick={() => {
-                          if (document.file_url) {
-                            window.open(document.file_url, '_blank');
-                          }
-                        }}
-                      >
-                        Download
-                      </Button>
+                      <Box sx={{ 
+                        display: 'flex', 
+                        gap: 2,
+                        flexDirection: { xs: 'column', sm: 'row' },
+                        width: { xs: '100%', sm: 'auto' },
+                        mt: { xs: 2, sm: 0 }
+                      }}>
+                        {document.mime_type === 'application/pdf' && (
+                          <Button
+                            variant="outlined"
+                            startIcon={<VisibilityIcon />}
+                            sx={{
+                              borderColor: '#f2c514',
+                              color: '#f2c514',
+                              fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                              fontWeight: 600,
+                              textTransform: 'none',
+                              borderRadius: 2,
+                              px: 3,
+                              py: 1.5,
+                              '&:hover': {
+                                borderColor: '#dfb612',
+                                backgroundColor: 'rgba(242, 197, 20, 0.1)',
+                                transform: 'translateY(-2px)',
+                              },
+                              minWidth: { xs: '100%', sm: '140px' },
+                            }}
+                            onClick={() => {
+                              if (document.file_url) {
+                                handleViewDocument(document.file_url, document.document_name);
+                              }
+                            }}
+                          >
+                            View
+                          </Button>
+                        )}
+                        <Button
+                          variant="contained"
+                          startIcon={<DownloadIcon />}
+                          sx={{
+                            backgroundColor: '#f2c514',
+                            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+                            fontWeight: 600,
+                            textTransform: 'none',
+                            borderRadius: 2,
+                            px: 3,
+                            py: 1.5,
+                            '&:hover': {
+                              backgroundColor: '#dfb612',
+                              transform: 'translateY(-2px)',
+                              boxShadow: '0 4px 12px rgba(25, 118, 210, 0.3)'
+                            },
+                            minWidth: { xs: '100%', sm: '140px' },
+                          }}
+                          onClick={() => {
+                            if (document.file_url) {
+                              window.open(document.file_url, '_blank');
+                            }
+                          }}
+                        >
+                          Download
+                        </Button>
+                      </Box>
                     </Box>
                   </Box>
                 ))}
@@ -2298,6 +2407,81 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
           </CardContent>
         </PropertyCard>
       )}
+
+      {/* Document Viewer Dialog */}
+      <Dialog
+        open={documentViewer.open}
+        onClose={handleCloseDocumentViewer}
+        maxWidth="lg"
+        fullWidth
+        PaperProps={{
+          sx: {
+            height: '90vh',
+            maxHeight: '90vh',
+          }
+        }}
+      >
+        <DialogTitle
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            backgroundColor: '#f2c514',
+            color: '#1a1a1a',
+            fontWeight: 600,
+            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+          }}
+        >
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 600,
+              fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              flex: 1,
+              mr: 2,
+            }}
+          >
+            {documentViewer.name || 'Document Viewer'}
+          </Typography>
+          <IconButton
+            onClick={handleCloseDocumentViewer}
+            sx={{
+              color: '#1a1a1a',
+              '&:hover': {
+                backgroundColor: 'rgba(0, 0, 0, 0.1)',
+              },
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent
+          sx={{
+            p: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            height: 'calc(90vh - 64px)',
+            overflow: 'hidden',
+          }}
+        >
+          {documentViewer.url && (
+            <Box
+              component="iframe"
+              src={documentViewer.url}
+              sx={{
+                width: '100%',
+                height: '100%',
+                border: 'none',
+                flex: 1,
+              }}
+              title={documentViewer.name || 'Document'}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
 
     </MainContent>
   );

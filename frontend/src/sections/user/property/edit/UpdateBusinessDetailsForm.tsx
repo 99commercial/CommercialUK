@@ -65,7 +65,7 @@ interface UpdateBusinessDetailsFormProps {
   onDataChange?: (data: any) => void;
   propertyId?: string;
   fetchProperty?: () => void;
-  fetchPropertyData?: () => void;
+  fetchPropertyData?: () => Promise<any> | any;
 }
 
 const UpdateBusinessDetailsForm: React.FC<UpdateBusinessDetailsFormProps> = ({ 
@@ -225,11 +225,21 @@ const UpdateBusinessDetailsForm: React.FC<UpdateBusinessDetailsFormProps> = ({
       newErrors.specifications = 'Specifications description is required';
     }
 
-    // Validate sale types
+    // Validate sale types - all fields required if a sale type row exists
     (formData.sale_types || []).forEach((saleType, index) => {
-      if (saleType.price_value && 
-          (isNaN(Number(saleType.price_value)) || Number(saleType.price_value) < 0)) {
+      if (!saleType.sale_type || saleType.sale_type.trim() === '') {
+        newErrors[`sale_type_${index}_sale_type`] = 'Sale type is required';
+      }
+      if (!saleType.price_currency || saleType.price_currency.trim() === '') {
+        newErrors[`sale_type_${index}_price_currency`] = 'Currency is required';
+      }
+      if (saleType.price_value === '' || saleType.price_value === undefined || saleType.price_value === null) {
+        newErrors[`sale_type_${index}_price`] = 'Price is required';
+      } else if (isNaN(Number(saleType.price_value)) || Number(saleType.price_value) < 0) {
         newErrors[`sale_type_${index}_price`] = 'Price must be a valid positive number';
+      }
+      if (!saleType.price_unit || saleType.price_unit.trim() === '') {
+        newErrors[`sale_type_${index}_price_unit`] = 'Price unit is required';
       }
     });
 
@@ -395,6 +405,7 @@ const UpdateBusinessDetailsForm: React.FC<UpdateBusinessDetailsFormProps> = ({
     e.preventDefault();
     
     if (!validateForm()) {
+      enqueueSnackbar('Please fix the highlighted errors before submitting.', { variant: 'error' });
       return;
     }
 
@@ -489,10 +500,10 @@ const UpdateBusinessDetailsForm: React.FC<UpdateBusinessDetailsFormProps> = ({
       // All updates successful
       setIsSubmitted(true);
       setSubmitSuccess(true);
-      setHasChanges(false); // Reset changes flag after successful update
-      setErrors({}); // Clear any errors
+      setHasChanges(false);
+      setErrors({});
       
-      enqueueSnackbar(`Business Details updated successfully!`, { variant: 'success' });
+      enqueueSnackbar('Business Details updated successfully!', { variant: 'success' });
 
       if (fetchProperty) {
         fetchProperty();
@@ -501,7 +512,32 @@ const UpdateBusinessDetailsForm: React.FC<UpdateBusinessDetailsFormProps> = ({
       if (onStepSubmitted) {
         onStepSubmitted(1);
       }
-      fetchPropertyData?.();
+
+      if (fetchPropertyData) {
+        try {
+          const refreshedData = await fetchPropertyData();
+          if (refreshedData) {
+            setFormData({
+              business_rates: (refreshedData as any).business_rates_id || {
+                rateable_value_gbp: '',
+                rates_payable_gbp: '',
+              },
+              descriptions: (refreshedData as any).descriptions_id || {
+                general: '',
+                location: '',
+                accommodation: '',
+                terms: '',
+                specifications: '',
+              },
+              sale_types: Array.isArray((refreshedData as any).sale_types_id?.sale_types)
+                ? (refreshedData as any).sale_types_id.sale_types
+                : [],
+            });
+          }
+        } catch (_) {
+          // Fetch failed silently - data will refresh on next load
+        }
+      }
     } catch (error: any) {
       console.error('Error updating business details:', error);
       const errorMessage = error.response?.data?.message || error.message || 'Failed to update business details';
@@ -642,7 +678,7 @@ const UpdateBusinessDetailsForm: React.FC<UpdateBusinessDetailsFormProps> = ({
             {(formData.sale_types || []).map((saleType, index) => (
               <Card key={index} sx={{ mb: 2, p: 2, backgroundColor: '#f8f9fa' }}>
                 <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', width: '100%' }}>
-                  <FormControl sx={{ flex: 1, minWidth: 120 }} error={!!errors[`sale_type_${index}_sale_type`]}>
+                  <FormControl sx={{ flex: 1, minWidth: 120 }} error={!!errors[`sale_type_${index}_sale_type`]} required>
                     <InputLabel>Sale Type</InputLabel>
                     <Select
                       value={saleType.sale_type || ''}
@@ -678,6 +714,7 @@ const UpdateBusinessDetailsForm: React.FC<UpdateBusinessDetailsFormProps> = ({
 
                   <TextField
                     label="Price"
+                    required
                     value={saleType.price_value || ''}
                     onChange={(e) => handleSaleTypeChange(index, 'price_value', e.target.value)}
                     error={!!errors[`sale_type_${index}_price`] || !!errors[`sale_type_${index}_price_value`]}
@@ -685,7 +722,7 @@ const UpdateBusinessDetailsForm: React.FC<UpdateBusinessDetailsFormProps> = ({
                     sx={{ flex: 1, minWidth: 120 }}
                   />
 
-                  <FormControl sx={{ flex: 1, minWidth: 120 }} error={!!errors[`sale_type_${index}_price_unit`]}>
+                  <FormControl sx={{ flex: 1, minWidth: 120 }} error={!!errors[`sale_type_${index}_price_unit`]} required>
                     <InputLabel>Unit</InputLabel>
                     <Select
                       value={saleType.price_unit || 'per sq ft'}

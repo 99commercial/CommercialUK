@@ -4,7 +4,7 @@ import Report from '../../../models/report.model.js';
 import User from '../../../models/user.model.js';
 import {emailService} from '../../../emails/auth.email.js';
 import { FRONTEND_URL } from '../../../config/env.config.js';
-import { PATMA_API_TOKEN } from '../../../config/env.config.js';
+import { PATMA_API_TOKEN, OPENROUTERAPIKEY, OPENPOSTCODES_API_KEY, OPENPOSTCODES_URL , PATMA_URL , OPENROUTER_URL } from '../../../config/env.config.js';
 
 class AICalService {
   constructor() {
@@ -101,8 +101,8 @@ class AICalService {
    */
   async getAllCommercialProperties(options = {}) {
     try {
-      const page = parseInt(options.page) || 1;
-      const limit = parseInt(options.limit) || 10;
+      const page = Number.isFinite(parseInt(options.page, 10)) ? parseInt(options.page, 10) : 1;
+      const limit = Number.isFinite(parseInt(options.limit, 10)) ? parseInt(options.limit, 10) : 10;
       const search = options.search || '';
       
       // Build search query
@@ -121,7 +121,9 @@ class AICalService {
       const result = await this.CommercialProperty.paginate(query, {
         page,
         limit,
-        sort: { createdAt: -1 }
+        sort: { createdAt: -1 },
+        lean: true,
+        leanWithId: false
       });
 
       return {
@@ -149,7 +151,7 @@ class AICalService {
    */
   async getCommercialPropertyById(propertyId) {
     try {
-      const property = await this.CommercialProperty.findById(propertyId);
+      const property = await this.CommercialProperty.findById(propertyId).lean();
       
       if (!property) {
         const error = new Error('Commercial property not found');
@@ -250,20 +252,58 @@ class AICalService {
   }
 
   /**
+   * Get commercial places by postcode
+   * @param {string} postcode - Postcode
+   * @returns {Promise<Object>} Commercial places object
+   */
+  async getCommercialPlaces(postcode) {
+    try {
+      if (!postcode || !postcode.trim()) {
+        return {
+          success: true,
+          suggestions: [],
+          message: 'No postcode provided'
+        };
+      }
+      const inputPostcode = String(postcode).trim().toUpperCase();
+      const url = `${OPENPOSTCODES_URL}/${inputPostcode}?api_key=${OPENPOSTCODES_API_KEY}`;
+      const response = await axios.get(url);
+      const data = response.data;
+      const suggestions = data?.result ?? [];
+      return {
+        success: true,
+        suggestions,
+        message: suggestions.length > 0 ? 'Commercial places retrieved successfully' : 'No addresses found for this postcode'
+      };
+    } catch (error) {
+      console.error('Error fetching commercial places:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Generate a report of commercial properties
    * @returns {Promise<Object>} Report object
    */
   async generateReport(formData,userId) {
     try {
 
-      const { postcode, address, propertyType, input , valuationType , id , epcData } = formData;
+      const user = await this.User.findById(userId);
+
+      if(user.report_count < 0) {
+        return {
+          success: false,
+          message: 'No credits left for the user to generate a report'
+        };
+      }
+
+      const { postcode, address, addressDetails, propertyType, input , valuationType , id , epcData } = formData;
 
       const formattedPostcode = postcode.trim().split(/\s+/).slice(0,1).join('').toUpperCase();
       console.log(formattedPostcode, "formattedPostcode shardul chaudhary");
 
       const properties = await this.CommercialProperty.find({ postcode: formattedPostcode });
 
-      console.log(properties, "properties shardul chaudhary");
 
       if(properties.length === 0) {
         return {
@@ -277,13 +317,9 @@ class AICalService {
       /////////////////////////////////////////////////////////////////
 
       let detailPropertyData = null;
-      try {
-        const url = `https://api.getAddress.io/get/${id}?api-key=Sy8w71kY8UCbOPT16f8Vsw49379`;
-        const response = await axios.get(url);
-        detailPropertyData = response.data;
-      } catch (error) {
-        console.error('Error fetching property details:', error);
-        detailPropertyData = null;
+      if (addressDetails && typeof addressDetails === 'object') {
+        // Use address object from frontend directly (from OpenPostcodes API)
+        detailPropertyData = addressDetails;
       }
 
 
@@ -307,11 +343,7 @@ class AICalService {
       try {
         // OpenRouter API call to get property benefits analysis
         // const openRouterApiKey = "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";
-        const openRouterUrl = `https://openrouter.ai/api/v1/chat/completions`;
-
-        console.log(`Bearer ${process.env.OPENROUTERAPIKEY}`);
-        
-        
+        const openRouterUrl = `${OPENROUTER_URL}`;
         
         const openRouterResponse = await axios.post(
           openRouterUrl,
@@ -343,9 +375,9 @@ class AICalService {
           },
           {
             headers: {
-              'Authorization': `Bearer ${process.env.OPENROUTERAPIKEY}`,
-              'HTTP-Referer': 'https://99commercial.co.uk',
-              'X-Title': '99 Commercial',
+              'Authorization': `Bearer ${OPENROUTERAPIKEY}`,
+              'HTTP-Referer': 'https://commercialuk.co.uk',
+              'X-Title': 'Commercial UK',
               'Content-Type': 'application/json'
             }
           }
@@ -607,7 +639,7 @@ class AICalService {
       let psychographicsAnalysis = [];
       try {
         // OpenRouter API call to get psychographics analysis
-        const openRouterUrl = `https://openrouter.ai/api/v1/chat/completions`;
+        const openRouterUrl = `${OPENROUTER_URL}`;
 
         // Calculate property dimensions from input
         const areaSqft = input.areaSqft !== undefined ? input.areaSqft : input;
@@ -625,8 +657,6 @@ class AICalService {
             dimensionsText = `maximum ${max} sq ft`;
           }
         }
-
-        console.log(`Generating psychographics analysis for postcode: ${postcode}, propertyType: ${propertyType}, dimensions: ${dimensionsText}`);
         
         const psychographicsResponse = await axios.post(
           openRouterUrl,
@@ -676,9 +706,9 @@ class AICalService {
           },
           {
             headers: {
-              'Authorization': `Bearer ${process.env.OPENROUTERAPIKEY}`,
-              'HTTP-Referer': 'https://99commercial.co.uk',
-              'X-Title': '99 Commercial',
+              'Authorization': `Bearer ${OPENROUTERAPIKEY}`,
+              'HTTP-Referer': 'https://commercialuk.co.uk',
+              'X-Title': 'Commercial UK',
               'Content-Type': 'application/json'
             }
           }
@@ -1026,7 +1056,7 @@ class AICalService {
       let crimeData = null;
       try {
         const crimeResponse = await axios.get(
-          `https://app.patma.co.uk/api/prospector/v1/crime/?postcode=${encodedPostcode}&token=${patmaToken}`
+          `${PATMA_URL}/v1/crime/?postcode=${encodedPostcode}&token=${patmaToken}`
         );
         const data = crimeResponse.data;
         // Check if data is valid (not null/empty)
@@ -1046,7 +1076,7 @@ class AICalService {
       let article4Data = null;
       try {
         const article4Response = await axios.get(
-          `https://app.patma.co.uk/api/prospector/v1/article4/?postcode=${encodedPostcode}&token=${patmaToken}`
+          `${PATMA_URL}/v1/article4/?postcode=${encodedPostcode}&token=${patmaToken}`
         );
         const data = article4Response.data;
         if (data.status === 'success') {
@@ -1060,7 +1090,7 @@ class AICalService {
       let brmaLhaData = null;
       try {
         const brmaLhaResponse = await axios.get(
-          `https://app.patma.co.uk/api/prospector/v1/brma-lha-lookup/?postcode=${encodedPostcode}&token=${patmaToken}`
+          `${PATMA_URL}/v1/brma-lha-lookup/?postcode=${encodedPostcode}&token=${patmaToken}`
         );
         const data = brmaLhaResponse.data;
         if (data.status === 'success' && data.data?.brma_name) {
@@ -1074,7 +1104,7 @@ class AICalService {
       let demographicsData = null;
       try {
         const demographicsResponse = await axios.get(
-          `https://app.patma.co.uk/api/prospector/v2/demographics/?postcode=${encodedPostcode}&token=${patmaToken}`
+          `${PATMA_URL}/v2/demographics/?postcode=${encodedPostcode}&token=${patmaToken}`
         );
         const data = demographicsResponse.data;
         if (data.status === 'success' && data.data) {
@@ -1115,13 +1145,15 @@ class AICalService {
 
       const savedReport = await report.save();
 
-      console.log(savedReport, "savedReport shardul chaudhary");
-
       const reportLink = `${FRONTEND_URL}/report/${savedReport._id}`;
-      const user = await this.User.findById(userId);
       const email = user.email;
       const firstName = user.firstName;
       const lastName = user.lastName;
+
+      if(user.role === 'user') {
+        user.report_count = user.report_count - 1;
+        await user.save();
+      }
 
       await this.emailService.sendEvaluatedReportEmail(email, reportLink, firstName, lastName);
 
@@ -1151,8 +1183,8 @@ class AICalService {
    */
   async getReportsByUserId(userId, options = {}) {
     try {
-      const page = parseInt(options.page) || 1;
-      const limit = parseInt(options.limit) || 10;
+      const page = Number.isFinite(parseInt(options.page, 10)) ? parseInt(options.page, 10) : 1;
+      const limit = Number.isFinite(parseInt(options.limit, 10)) ? parseInt(options.limit, 10) : 10;
 
       const result = await this.Report.paginate(
         { reportOwner: userId },
@@ -1160,9 +1192,12 @@ class AICalService {
           page,
           limit,
           sort: { createdAt: -1 },
+          lean: true,
+          leanWithId: false,
           populate: {
             path: 'reportOwner',
-            select: 'name email'
+            select: 'name email',
+            options: { lean: true }
           }
         }
       );
@@ -1199,8 +1234,9 @@ class AICalService {
     try {
       const report = await this.Report.findById(reportId).populate({
         path: 'reportOwner',
-        select: 'name email'
-      });
+        select: 'name email',
+        options: { lean: true }
+      }).lean();
 
       if (!report) {
         const error = new Error('Report not found');

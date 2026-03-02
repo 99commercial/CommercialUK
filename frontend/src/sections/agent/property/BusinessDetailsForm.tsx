@@ -20,6 +20,7 @@ import {
 import { Add, Delete, Save } from '@mui/icons-material';
 import axiosInstance from '../../../utils/axios';
 import { enqueueSnackbar } from 'notistack';
+import { extractFieldErrorsFromApiError, getApiErrorMessage } from '@/utils/apiError';
 
 const saleTypes = [
   'Freehold',
@@ -256,11 +257,6 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
 
   // Add sale type
   const addSaleType = () => {
-    const saleTypes = Array.isArray(formData.sale_types) ? formData.sale_types : [];
-    if (saleTypes.length >= 1) {
-      enqueueSnackbar('Only one sale type is allowed.', { variant: 'error' });
-      return;
-    }
     setFormData(prev => ({
       ...prev,
       sale_types: [
@@ -322,21 +318,32 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
       validationErrors['descriptions.specifications'] = 'Specifications description is required';
     }
 
+    // Validate sale type fields if a sale type row exists
+    const saleTypesArr = Array.isArray(formData.sale_types) ? formData.sale_types : [];
+    saleTypesArr.forEach((st, index) => {
+      if (!st.sale_type || (typeof st.sale_type === 'string' && st.sale_type.trim() === '')) {
+        validationErrors[`sale_types.${index}.sale_type`] = 'Sale type is required';
+      }
+      if (!st.price_value || st.price_value === '' || (typeof st.price_value === 'string' && st.price_value.trim() === '')) {
+        validationErrors[`sale_types.${index}.price_value`] = 'Price value is required';
+      }
+      if (!st.price_unit || (typeof st.price_unit === 'string' && st.price_unit.trim() === '')) {
+        validationErrors[`sale_types.${index}.price_unit`] = 'Price unit is required';
+      }
+    });
+
     // If there are validation errors, set them and return
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
+      enqueueSnackbar('Please fix the highlighted errors before submitting.', { variant: 'error' });
       return;
     }
 
-    // Validate that exactly one sale type is added
+    // Validate that at least one sale type is added
     const saleTypes = Array.isArray(formData.sale_types) ? formData.sale_types : [];
     if (!saleTypes || saleTypes.length === 0) {
-      enqueueSnackbar('Please add exactly one sale type before submitting.', { variant: 'error' });
-      return;
-    }
-    
-    if (saleTypes.length > 1) {
-      enqueueSnackbar('Only one sale type is allowed. Please remove extra sale types.', { variant: 'error' });
+      setErrors(prev => ({ ...prev, sale_types: 'Please add at least one sale type' }));
+      enqueueSnackbar('Please add at least one sale type before submitting.', { variant: 'error' });
       return;
     }
 
@@ -374,35 +381,13 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
 
     
     } catch (error: any) {
-      console.error('Error saving business details:', error);
-      
-      if (error.errors && Array.isArray(error.errors)) {
-        // Handle multiple field errors
-        const fieldErrors: Record<string, string> = {};
-        console.log('Processing errors:', error.errors);
-        error.errors.forEach((err: any) => {
-          if (err.path && err.msg) {
-            // Convert array notation to dot notation for consistency
-            const normalizedPath = err.path.replace(/\[(\d+)\]/g, '.$1');
-            console.log(`Error path: ${err.path} -> normalized: ${normalizedPath}, msg: ${err.msg}`);
-            fieldErrors[normalizedPath] = err.msg;
-          }
-        });
-        console.log('Final field errors:', fieldErrors);
+      const fieldErrors = extractFieldErrorsFromApiError(error);
+      if (Object.keys(fieldErrors).length > 0) {
         setErrors(fieldErrors);
-        
-        // Clear any previous general error
-        setSubmitError(null);
-      } else {
-        // Handle general error
-        const errorMessage = error.response?.data?.message || error.message || 'Failed to save business details';
-        setSubmitError(errorMessage);
-
-        enqueueSnackbar(errorMessage, { variant: 'error' });
-        
-        // Clear field errors for general errors
-        setErrors({});
       }
+      const errorMessage = getApiErrorMessage(error, 'Failed to save business details. Please try again.');
+      setSubmitError(errorMessage);
+      enqueueSnackbar(errorMessage, { variant: 'error' });
     } finally {
       setIsSubmitting(false);
     }
@@ -446,14 +431,10 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
 
   // Update sale types
   const updateSaleTypes = async () => {
-    // Validate that exactly one sale type is added
+    // Validate that at least one sale type is added
     const saleTypes = Array.isArray(formData.sale_types) ? formData.sale_types : [];
     if (!saleTypes || saleTypes.length === 0) {
-      throw new Error('Please add exactly one sale type before submitting.');
-    }
-    
-    if (saleTypes.length > 1) {
-      throw new Error('Only one sale type is allowed. Please remove extra sale types.');
+      throw new Error('Please add at least one sale type before submitting.');
     }
 
     const saleTypesId = propertyData?.sale_types_id?._id;
@@ -478,6 +459,58 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
     // Clear previous errors
     setSubmitError(null);
     setErrors({});
+
+    // Validate all required fields (same as handleSubmit)
+    const validationErrors: Record<string, string> = {};
+
+    // Validate business rates
+    if (!formData.business_rates?.rateable_value_gbp || formData.business_rates.rateable_value_gbp === '' || (typeof formData.business_rates.rateable_value_gbp === 'string' && formData.business_rates.rateable_value_gbp.trim() === '')) {
+      validationErrors['business_rates.rateable_value_gbp'] = 'Rateable value is required';
+    }
+    if (!formData.business_rates?.rates_payable_gbp || formData.business_rates.rates_payable_gbp === '' || (typeof formData.business_rates.rates_payable_gbp === 'string' && formData.business_rates.rates_payable_gbp.trim() === '')) {
+      validationErrors['business_rates.rates_payable_gbp'] = 'Rates payable is required';
+    }
+
+    // Validate descriptions
+    if (!formData.descriptions?.general || formData.descriptions.general.trim() === '') {
+      validationErrors['descriptions.general'] = 'General description is required';
+    }
+    if (!formData.descriptions?.location || formData.descriptions.location.trim() === '') {
+      validationErrors['descriptions.location'] = 'Location description is required';
+    }
+    if (!formData.descriptions?.accommodation || formData.descriptions.accommodation.trim() === '') {
+      validationErrors['descriptions.accommodation'] = 'Accommodation description is required';
+    }
+    if (!formData.descriptions?.terms || formData.descriptions.terms.trim() === '') {
+      validationErrors['descriptions.terms'] = 'Terms description is required';
+    }
+    if (!formData.descriptions?.specifications || formData.descriptions.specifications.trim() === '') {
+      validationErrors['descriptions.specifications'] = 'Specifications description is required';
+    }
+
+    // Validate sale types
+    const saleTypesArr = Array.isArray(formData.sale_types) ? formData.sale_types : [];
+    if (saleTypesArr.length === 0) {
+      validationErrors['sale_types'] = 'Please add at least one sale type';
+    } else {
+      saleTypesArr.forEach((st, index) => {
+        if (!st.sale_type || (typeof st.sale_type === 'string' && st.sale_type.trim() === '')) {
+          validationErrors[`sale_types.${index}.sale_type`] = 'Sale type is required';
+        }
+        if (!st.price_value || st.price_value === '' || (typeof st.price_value === 'string' && st.price_value.trim() === '')) {
+          validationErrors[`sale_types.${index}.price_value`] = 'Price value is required';
+        }
+        if (!st.price_unit || (typeof st.price_unit === 'string' && st.price_unit.trim() === '')) {
+          validationErrors[`sale_types.${index}.price_unit`] = 'Price unit is required';
+        }
+      });
+    }
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      enqueueSnackbar('Please fix the highlighted errors before submitting.', { variant: 'error' });
+      return;
+    }
 
     setIsSubmitting(true);
 
@@ -522,26 +555,13 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
       }
 
     } catch (error: any) {
-      console.error('Error updating business details:', error);
-      
-      // Handle validation errors
-      if (error.response?.data?.errors && Array.isArray(error.response.data.errors)) {
-        const fieldErrors: Record<string, string> = {};
-        error.response.data.errors.forEach((err: any) => {
-          if (err.path && err.msg) {
-            const normalizedPath = err.path.replace(/\[(\d+)\]/g, '.$1');
-            fieldErrors[normalizedPath] = err.msg;
-          }
-        });
+      const fieldErrors = extractFieldErrorsFromApiError(error);
+      if (Object.keys(fieldErrors).length > 0) {
         setErrors(fieldErrors);
-        setSubmitError(null);
-      } else {
-        // Handle general error
-        const errorMessage = error.response?.data?.message || error.message || 'Failed to update business details. Please try again.';
-        setSubmitError(errorMessage);
-        enqueueSnackbar(errorMessage, { variant: 'error' });
-        setErrors({});
       }
+      const errorMessage = getApiErrorMessage(error, 'Failed to update business details. Please try again.');
+      setSubmitError(errorMessage);
+      enqueueSnackbar(errorMessage, { variant: 'error' });
     } finally {
       setIsSubmitting(false);
     }
@@ -875,14 +895,16 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
               onClick={addSaleType}
               variant="outlined"
               size="small"
-              disabled={(Array.isArray(formData.sale_types) ? formData.sale_types : []).length >= 1}
             >
               Add Sale Type
             </Button>
           </Box>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            Add one sale type and pricing option for this property.
+            Add one or more sale types and pricing options for this property.
           </Typography>
+          {getFieldError('sale_types') && (
+            <FormHelperText error sx={{ mb: 1 }}>{getFieldError('sale_types')}</FormHelperText>
+          )}
         </Box>
 
         {(Array.isArray(formData.sale_types) ? formData.sale_types : []).map((saleType, index) => (

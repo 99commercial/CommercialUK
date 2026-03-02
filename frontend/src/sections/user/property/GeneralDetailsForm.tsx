@@ -17,6 +17,7 @@ import {
 import { Save } from '@mui/icons-material';
 import axiosInstance from '../../../utils/axios';
 import { enqueueSnackbar } from 'notistack';
+import { extractFieldErrorsFromApiError, getApiErrorMessage } from '@/utils/apiError';
 
 const propertyTypes = [
   'Office',
@@ -67,10 +68,9 @@ interface GeneralDetailsFormProps {
   onDataChange?: (data: GeneralDetailsFormData) => void;
   propertyData?: any;
   hasExistingData?: boolean;
-  fetchPropertyData?: () => void;
 }
 
-const GeneralDetailsForm: React.FC<GeneralDetailsFormProps> = ({ onStepSubmitted, initialData, onDataChange, propertyData, hasExistingData = false , fetchPropertyData }) => {
+const GeneralDetailsForm: React.FC<GeneralDetailsFormProps> = ({ onStepSubmitted, initialData, onDataChange, propertyData, hasExistingData = false }) => {
 
   const [formData, setFormData] = useState<GeneralDetailsFormData>(initialData || {
     building_name: '',
@@ -186,41 +186,14 @@ const GeneralDetailsForm: React.FC<GeneralDetailsFormProps> = ({ onStepSubmitted
 
       localStorage.setItem('newpropertyId', response.data.data._id);
 
-      fetchPropertyData?.();
-
     } catch (error: any) {
-      // Handle field-specific validation errors
-      if (error.errors && Array.isArray(error.errors)) {
-        const fieldErrorMap: Record<string, string> = {};
-        
-        console.log('Processing validation errors:', error.errors);
-        
-        error.errors.forEach((err: any) => {
-          console.log('Processing error:', err);
-          if (err.path) {
-            // Extract field name from path (e.g., "general_details.postcode" -> "postcode")
-            const fieldName = err.path.split('.').pop();
-            console.log('Field name extracted:', fieldName, 'from path:', err.path);
-            if (fieldName) {
-              fieldErrorMap[fieldName] = err.msg;
-            }
-          }
-        });
-        
-        console.log('Field error map created:', fieldErrorMap);
+      const fieldErrorMap = extractFieldErrorsFromApiError(error);
+      if (Object.keys(fieldErrorMap).length > 0) {
         setFieldErrors(fieldErrorMap);
-        
-        // Show general error message
-        const errorMessage = error.message || 'Please fix the validation errors below.';
-        setSubmitError(errorMessage);
-        enqueueSnackbar(errorMessage, { variant: 'error' });
-      } else {
-        // Handle general errors
-        const errorMessage = error.message || 'Failed to save general details. Please try again.';
-        setSubmitError(errorMessage);
-        enqueueSnackbar(errorMessage, { variant: 'error' });
       }
-      
+      const errorMessage = getApiErrorMessage(error, 'Failed to save general details. Please try again.');
+      setSubmitError(errorMessage);
+      enqueueSnackbar(errorMessage, { variant: 'error' });
     } finally {
       setIsSubmitting(false);
     }
@@ -259,46 +232,19 @@ const GeneralDetailsForm: React.FC<GeneralDetailsFormProps> = ({ onStepSubmitted
       // Set submitted state
       setIsSubmitted(true);
 
-      fetchPropertyData?.();
-      
       // Notify parent component that step 0 has been successfully submitted
       if (onStepSubmitted) {
         onStepSubmitted(0);
       }
 
     } catch (error: any) {
-      // Handle field-specific validation errors
-      if (error.errors && Array.isArray(error.errors) && error.errors.length > 0) {
-        const fieldErrorMap: Record<string, string> = {};
-        
-        console.log('Processing validation errors:', error.errors);
-        
-        error.errors.forEach((err: any) => {
-          console.log('Processing error:', err);
-          if (err.path) {
-            // Extract field name from path (e.g., "general_details.postcode" -> "postcode")
-            const fieldName = err.path.split('.').pop();
-            console.log('Field name extracted:', fieldName, 'from path:', err.path);
-            if (fieldName) {
-              fieldErrorMap[fieldName] = err.msg;
-            }
-          }
-        });
-        
-        console.log('Field error map created:', fieldErrorMap);
+      const fieldErrorMap = extractFieldErrorsFromApiError(error);
+      if (Object.keys(fieldErrorMap).length > 0) {
         setFieldErrors(fieldErrorMap);
-        
-        // Show general error message
-        const errorMessage = 'Please fix the validation errors below.';
-        setSubmitError(errorMessage);
-        enqueueSnackbar(errorMessage, { variant: 'error' });
-      } else {
-        // Handle general errors
-        const errorMessage = 'Failed to update general details. Please try again.';
-        setSubmitError(errorMessage);
-        enqueueSnackbar(errorMessage, { variant: 'error' });
       }
-      
+      const errorMessage = getApiErrorMessage(error, 'Failed to update general details. Please try again.');
+      setSubmitError(errorMessage);
+      enqueueSnackbar(errorMessage, { variant: 'error' });
     } finally {
       setIsSubmitting(false);
     }

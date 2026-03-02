@@ -327,7 +327,7 @@ export default function LoginPage() {
                     </Typography> */}
                     <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
                       <img
-                        src="/images/CommercialUKWhite2.png"
+                        src="/images/CUKSquare.png"
                         alt="CommercialUK"
                         style={{ width: 200, objectFit: 'contain' }}
                       />

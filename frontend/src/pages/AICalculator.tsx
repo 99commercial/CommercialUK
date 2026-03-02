@@ -76,6 +76,30 @@ const LoginCard = styled(Card)(({ theme }) => ({
   transform: 'translateY(-70%)',
 }));
 
+const SubscriptionCard = styled(Card)(({ theme }) => ({
+  padding: theme.spacing(4),
+  maxWidth: '600px',
+  width: '90%',
+  textAlign: 'center',
+  borderRadius: '16px',
+  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+  backgroundColor: '#ffffff',
+  zIndex: 1001,
+  transform: 'translateY(-70%)',
+}));
+
+const CreditsCard = styled(Card)(({ theme }) => ({
+  padding: theme.spacing(4),
+  maxWidth: '600px',
+  width: '90%',
+  textAlign: 'center',
+  borderRadius: '16px',
+  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+  backgroundColor: '#ffffff',
+  zIndex: 1001,
+  transform: 'translateY(-70%)',
+}));
+
 const LoginButton = styled(Button)(({ theme }) => ({
   marginTop: theme.spacing(3),
   padding: theme.spacing(1.5, 4),
@@ -90,6 +114,20 @@ const LoginButton = styled(Button)(({ theme }) => ({
   },
 }));
 
+const PlansButton = styled(Button)(({ theme }) => ({
+  marginTop: theme.spacing(3),
+  padding: theme.spacing(1.5, 4),
+  borderRadius: '12px',
+  fontSize: '16px',
+  fontWeight: 600,
+  textTransform: 'none',
+  backgroundColor: '#f2c514',
+  color: '#000000',
+  '&:hover': {
+    backgroundColor: '#f4d03f',
+  },
+}));
+
 // ----------------------------------------------------------------------
 
 AICalculator.getLayout = function getLayout(page: React.ReactElement) {
@@ -98,33 +136,88 @@ AICalculator.getLayout = function getLayout(page: React.ReactElement) {
 
 // ----------------------------------------------------------------------
 
+type AgentSubscriptionOverlay = 'subscription_redirect' | 'subscription_required' | null;
+
 export default function AICalculator() {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [agentSubscriptionOverlay, setAgentSubscriptionOverlay] = useState<AgentSubscriptionOverlay>(null);
+  const [showUserCreditsDialog, setShowUserCreditsDialog] = useState(false);
 
   useEffect(() => {
     const checkAuthentication = () => {
       if (typeof window !== 'undefined') {
         const userString = localStorage.getItem('user');
-        if (userString) {
-          try {
-            const userData = JSON.parse(userString);
-            setIsAuthenticated(userData !== null && userData !== undefined);
-          } catch (error) {
-            setIsAuthenticated(false);
-          }
-        } else {
+        if (!userString) {
           setIsAuthenticated(false);
+          setAgentSubscriptionOverlay(null);
+          setShowUserCreditsDialog(false);
+          return;
+        }
+        try {
+          const userData = JSON.parse(userString);
+          setIsAuthenticated(userData != null);
+
+          if (!userData) {
+            setShowUserCreditsDialog(false);
+            setAgentSubscriptionOverlay(null);
+            return;
+          }
+
+          // Only for agents: check subscription
+          if (userData?.role === 'agent') {
+            const subscription = userData?.subscription ?? null;
+
+            if (subscription === null) {
+              setAgentSubscriptionOverlay('subscription_redirect');
+              return;
+            }
+
+            const endDate = subscription.endDate ? new Date(subscription.endDate) : null;
+            if (!endDate || isNaN(endDate.getTime())) {
+              setAgentSubscriptionOverlay('subscription_required');
+              return;
+            }
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            endDate.setHours(0, 0, 0, 0);
+
+            if (endDate.getTime() <= today.getTime()) {
+              setAgentSubscriptionOverlay('subscription_required');
+              return;
+            }
+            if (subscription.isExpired === true) {
+              setAgentSubscriptionOverlay('subscription_required');
+              return;
+            }
+
+            setAgentSubscriptionOverlay(null);
+            setShowUserCreditsDialog(false);
+          } else if (userData?.role === 'user') {
+            // Only for users: check report_count
+            const reportCount = userData?.report_count ?? 0;
+            if (reportCount <= 0) {
+              setShowUserCreditsDialog(true);
+            } else {
+              setShowUserCreditsDialog(false);
+            }
+            setAgentSubscriptionOverlay(null);
+          } else {
+            setAgentSubscriptionOverlay(null);
+            setShowUserCreditsDialog(false);
+          }
+        } catch (error) {
+          setIsAuthenticated(false);
+          setAgentSubscriptionOverlay(null);
+          setShowUserCreditsDialog(false);
         }
       }
     };
 
     checkAuthentication();
 
-    // Listen for storage changes (e.g., when user logs in/out in another tab)
     window.addEventListener('storage', checkAuthentication);
-    
-    // Also check periodically in case localStorage is updated in the same tab
     const interval = setInterval(checkAuthentication, 1000);
 
     return () => {
@@ -133,8 +226,17 @@ export default function AICalculator() {
     };
   }, []);
 
+  // Redirect agent to plans page when subscription is null
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+  }, [agentSubscriptionOverlay, router]);
+
   const handleLoginRedirect = () => {
     router.push('/auth/login');
+  };
+
+  const handlePlansRedirect = () => {
+    router.push('/agent/payment/plans-page');
   };
 
   // Show nothing while checking authentication
@@ -191,6 +293,39 @@ export default function AICalculator() {
                 Go to Login
               </LoginButton>
             </LoginCard>
+          </BlurOverlay>
+        )}
+
+        {(agentSubscriptionOverlay === 'subscription_redirect' || agentSubscriptionOverlay === 'subscription_required') && (
+          <BlurOverlay>
+            <SubscriptionCard>
+              <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600, mb: 2 }}>
+                Subscription Required
+              </Typography>
+              <Typography variant="body1" color="text.secondary" sx={{ mb: 1 }}>
+                Please subscribe to a plan to access the AI Calculator
+              </Typography>
+              <PlansButton
+                variant="contained"
+                fullWidth
+                onClick={handlePlansRedirect}
+              >
+                Go to Plans
+              </PlansButton>
+            </SubscriptionCard>
+          </BlurOverlay>
+        )}
+
+        {showUserCreditsDialog && (
+          <BlurOverlay>
+            <CreditsCard>
+              <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 600, mb: 2 }}>
+                Insufficient Credits
+              </Typography>
+              <Typography variant="body1" color="text.secondary" sx={{ mb: 1 }}>
+                No enough credits for evaluation report generation
+              </Typography>
+            </CreditsCard>
           </BlurOverlay>
         )}
       </Container>

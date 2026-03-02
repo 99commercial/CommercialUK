@@ -16,6 +16,8 @@ export class TokenService {
         ...payload
       };
 
+      console.log(JWT_EXPIRES_IN, "JWT_EXPIRES_IN shardul chaudhary");
+
       return jwt.sign(tokenPayload, JWT_SECRET, {
         expiresIn: JWT_EXPIRES_IN,
         issuer: '99commercial-api',

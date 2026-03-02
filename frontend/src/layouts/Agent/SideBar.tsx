@@ -36,6 +36,7 @@ import {
   Close as CloseIcon,
   Menu as MenuIcon,
   Favorite as StarIcon,
+  CreditCard as CreditCardIcon,
 } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import { useRouter } from 'next/router';
@@ -214,6 +215,51 @@ const UserBadge = styled(Chip)(({ theme }) => ({
   fontWeight: 500,
 }));
 
+const ListingCountContainer = styled(Box)(({ theme }) => ({
+  margin: `${theme.spacing(0)} ${theme.spacing(2)} ${theme.spacing(2)} ${theme.spacing(2)}`,
+  padding: `${theme.spacing(1.25)} ${theme.spacing(1.75)}`,
+  backgroundColor: '#f0f9ff',
+  borderRadius: 12,
+  border: 'none',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: theme.spacing(0.5),
+  transition: 'all 0.2s ease-in-out',
+  boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
+  [theme.breakpoints.down('md')]: {
+    margin: `${theme.spacing(0)} ${theme.spacing(1.5)} ${theme.spacing(1.5)} ${theme.spacing(1.5)}`,
+    padding: `${theme.spacing(1)} ${theme.spacing(1.5)}`,
+  },
+  '&:hover': {
+    backgroundColor: '#e0f2fe',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.08)',
+  },
+}));
+
+const ListingCountNumber = styled('span')(({ theme }) => ({
+  fontSize: '1rem',
+  color: '#0369a1',
+  fontWeight: 700,
+  fontFamily: theme.typography.fontFamily,
+  letterSpacing: '0.01em',
+  lineHeight: 1.2,
+  [theme.breakpoints.down('md')]: {
+    fontSize: '0.9375rem',
+  },
+}));
+
+const ListingCountText = styled(Typography)(({ theme }) => ({
+  fontSize: '0.875rem',
+  color: '#0369a1',
+  fontWeight: 500,
+  letterSpacing: '0.01em',
+  lineHeight: 1.2,
+  [theme.breakpoints.down('md')]: {
+    fontSize: '0.8125rem',
+  },
+}));
+
 const SectionTitle = styled(Typography)(({ theme }) => ({
   fontWeight: 700,
   fontSize: '0.75rem',
@@ -307,6 +353,8 @@ const DecorativeElement = styled(Box)(({ theme }) => ({
   height: 100,
   background: 'linear-gradient(45deg, #f3f4f6 0%, transparent 100%)',
   opacity: 0.3,
+  pointerEvents: 'none',
+  zIndex: 0,
   '&::before': {
     content: '""',
     position: 'absolute',
@@ -339,35 +387,54 @@ const SideBar: React.FC<SideBarProps> = ({ open, onToggle, onClose }) => {
   
   // Get user data from localStorage
   const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const subscription = user?.subscription || null;
+  const isExpired = subscription?.isExpired ?? false;
+  const reportCount = subscription?.reportCount ?? 0;
+  const listingCount = subscription?.listingCount ?? 0;
+
+  // Calculate disabled states based on subscription
+  // Plans: disabled if subscription exists AND isExpired is false AND reportCount > 0
+  const isPlansDisabled = subscription !== null && !isExpired && reportCount > 0;
+  const plansTooltipMessage = isPlansDisabled ? 'Currently a plan is active' : '';
+
+  // Create New: disabled if subscription is null OR isExpired is true
+  const isCreateNewDisabled = subscription === null || isExpired;
+  const createNewTooltipMessage = isCreateNewDisabled ? 'Please subscribe to a plan' : '';
 
   const menuItems = [
     {
       section: 'GENERAL',
       items: [
-        { id: 'dashboard' , path: '/agent', label: 'Dashboard', icon: DashboardIcon },
+        { id: 'dashboard' , path: '/agent', label: 'Dashboard', icon: DashboardIcon, isDisabled: false, tooltipMessage: '' },
       ],
     },
     {
       section: 'User',
       items: [
-        { id: 'My Profile', path: '/agent/account/my-profile', label: 'My Profile', icon: PersonIcon },
-        { id: 'Edit Profile', path: '/agent/account/my-account', label: 'Edit Profile', icon: EditIcon },
-        { id: 'Edit Business Details', path: '/agent/account/my-business-account', label: 'Edit Business Details', icon: BusinessIcon },
+        { id: 'My Profile', path: '/agent/account/my-profile', label: 'My Profile', icon: PersonIcon, isDisabled: false, tooltipMessage: '' },
+        { id: 'Edit Profile', path: '/agent/account/my-account', label: 'Edit Profile', icon: EditIcon, isDisabled: false, tooltipMessage: '' },
+        { id: 'Edit Business Details', path: '/agent/account/my-business-account', label: 'Edit Business Details', icon: BusinessIcon, isDisabled: false, tooltipMessage: '' },
       ],
     },
     {
       section: 'Properties',
       items: [
-        { id: 'Create New', path: '/agent/property/create-property', label: 'Create New', icon: AddIcon },
-        { id: 'My Properties' , path: '/agent/property/my-properties', label: 'My Properties', icon: HomeIcon },
-        { id: 'My Favourite Properties' , path: '/agent/property/my-favourite-list', label: 'My Favourite Properties', icon: StarIcon },
+        { id: 'Create New', path: '/agent/property/create-property', label: 'Create New', icon: AddIcon, isDisabled: isCreateNewDisabled, tooltipMessage: createNewTooltipMessage },
+        { id: 'My Properties' , path: '/agent/property/my-properties', label: 'My Properties', icon: HomeIcon, isDisabled: false, tooltipMessage: '' },
+        { id: 'My Favourite Properties' , path: '/agent/property/my-favourite-list', label: 'My Favourite Properties', icon: StarIcon, isDisabled: false, tooltipMessage: '' },
       ],
     },
     {
       section: 'Queries',
       items: [
-        { id: 'queries', path: '/agent/queries/my-property-queries', label: 'All Queries', icon: QueryBuilderIcon },
-        { id: 'My Queries' , path: '/agent/queries/my-queries-raised', label: 'My Queries', icon: QuestionAnswerIcon },
+        { id: 'queries', path: '/agent/queries/my-property-queries', label: 'All Queries', icon: QueryBuilderIcon, isDisabled: false, tooltipMessage: '' },
+        { id: 'My Queries' , path: '/agent/queries/my-queries-raised', label: 'My Queries', icon: QuestionAnswerIcon, isDisabled: false, tooltipMessage: '' },
+      ],
+    },
+    {
+      section: 'Plans',
+      items: [
+        { id: 'plans', path: '/agent/payment/plans-page', label: 'My Plans', icon: CreditCardIcon, isDisabled: isPlansDisabled, tooltipMessage: plansTooltipMessage },
       ],
     },
   ];
@@ -452,79 +519,121 @@ const SideBar: React.FC<SideBarProps> = ({ open, onToggle, onClose }) => {
   const renderMenuItem = (item: any, index: number) => {
     const IconComponent = item.icon;
     const isActive = allActive || activeItem === item.id;
+    const isDisabled = item.isDisabled || false;
+    const tooltipMessage = item.tooltipMessage || '';
 
     if (!open) {
-      return (
-        <Tooltip key={item.id} title={item.label} placement="right">
-          <CollapsedLinkWrapper
-            href={item.path}
-            prefetch
-            onClick={(e) => {
-              handleSetActive(item.id);
-              handleAfterNavigate();
-            }}
-          >
-            <CollapsedIconButton
-              sx={{
-                background: isActive
-                  ? 'linear-gradient(90deg, #dcfce7 0%, rgba(220, 252, 231, 0) 100%)'
-                  : 'transparent',
-                color: isActive ? '#10b981' : '#6b7280',
-                transition: 'all 0.2s ease-in-out',
-                width: '100%',
-                pointerEvents: 'none',
-                '&:hover': {
-                  backgroundColor: '#f3f4f6',
-                  transform: 'translateX(2px)',
-                },
-              }}
-            >
-              <IconComponent />
-            </CollapsedIconButton>
-          </CollapsedLinkWrapper>
-        </Tooltip>
+      const collapsedButton = (
+        <CollapsedIconButton
+          disabled={isDisabled}
+          sx={{
+            background: isActive && !isDisabled
+              ? 'linear-gradient(90deg, #dcfce7 0%, rgba(220, 252, 231, 0) 100%)'
+              : 'transparent',
+            color: isDisabled ? '#9ca3af' : (isActive ? '#10b981' : '#6b7280'),
+            transition: 'all 0.2s ease-in-out',
+            width: '100%',
+            pointerEvents: 'none',
+            opacity: isDisabled ? 0.5 : 1,
+            cursor: isDisabled ? 'not-allowed' : 'pointer',
+            '&:hover': {
+              backgroundColor: isDisabled ? 'transparent' : '#f3f4f6',
+              transform: isDisabled ? 'none' : 'translateX(2px)',
+            },
+          }}
+        >
+          <IconComponent />
+        </CollapsedIconButton>
       );
-    }
 
+      if (isDisabled) {
+        return (
+          <Tooltip key={item.id} title={tooltipMessage || item.label} placement="right" arrow>
+            <Box sx={{ display: 'flex', width: '100%' }}>
+              {collapsedButton}
+            </Box>
+          </Tooltip>
+        );
+      }
 
-
-    return (
-      <ListItem key={item.id} disablePadding>
-        <Link 
-          href={item.path} 
-          prefetch 
-          style={{ width: '100%', textDecoration: 'none', display: 'block' }}
+      return (
+        <CollapsedLinkWrapper
+          key={item.id}
+          href={item.path}
+          prefetch
           onClick={(e) => {
             handleSetActive(item.id);
             handleAfterNavigate();
           }}
         >
-          <StyledListItemButton
-            active={isActive}
-            sx={{
+          {collapsedButton}
+        </CollapsedLinkWrapper>
+      );
+    }
+
+    const buttonContent = (
+      <StyledListItemButton
+        active={isActive && !isDisabled}
+        disabled={isDisabled}
+        sx={{
+          transition: 'all 0.2s ease-in-out',
+          width: '100%',
+          cursor: isDisabled ? 'not-allowed' : 'pointer',
+          position: 'relative',
+          zIndex: 1,
+          opacity: isDisabled ? 0.5 : 1,
+          '&:hover': {
+            background: isDisabled 
+              ? 'transparent'
+              : (isActive
+                ? 'linear-gradient(90deg, #dcfce7 0%, rgba(220, 252, 231, 0) 100%)'
+                : '#f3f4f6'),
+            transform: isDisabled ? 'none' : 'translateX(2px)',
+          },
+          '& .MuiListItemIcon-root': {
+            color: isDisabled ? '#9ca3af' : (isActive ? '#10b981' : '#6b7280'),
+          },
+          '& .MuiListItemText-primary': {
+            color: isDisabled ? '#9ca3af' : (isActive ? '#10b981' : '#374151'),
+          },
+        }}
+        onClick={(e) => {
+          if (isDisabled) {
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+          }
+          e.stopPropagation();
+          handleSetActive(item.id);
+          router.push(item.path);
+          handleAfterNavigate();
+        }}
+      >
+        <ListItemIcon>
+          <IconComponent />
+        </ListItemIcon>
+        <ListItemText 
+          primary={item.label}
+          sx={{
+            '& .MuiListItemText-primary': {
               transition: 'all 0.2s ease-in-out',
-              width: '100%',
-              '&:hover': {
-                background: isActive
-                  ? 'linear-gradient(90deg, #dcfce7 0%, rgba(220, 252, 231, 0) 100%)'
-                  : '#f3f4f6',
-                transform: 'translateX(2px)',
-              },
-            }}
-          >
-            <ListItemIcon>
-              <IconComponent />
-            </ListItemIcon>
-            <ListItemText 
-              primary={item.label}
-              sx={{
-                '& .MuiListItemText-primary': {
-                  transition: 'all 0.2s ease-in-out',
-                },
-              }}
-            />
-          </StyledListItemButton>
-        </Link>
+            },
+          }}
+        />
+      </StyledListItemButton>
+    );
+
+    return (
+      <ListItem key={item.id} disablePadding>
+        {isDisabled && tooltipMessage ? (
+          <Tooltip title={tooltipMessage} placement="right" arrow>
+            <Box sx={{ width: '100%' }}>
+              {buttonContent}
+            </Box>
+          </Tooltip>
+        ) : (
+          buttonContent
+        )}
       </ListItem>
     );
   };
@@ -547,16 +656,21 @@ const SideBar: React.FC<SideBarProps> = ({ open, onToggle, onClose }) => {
         }}
       >
         {/* Header with Logo and Toggle */}
-        <LogoContainer>
+        <LogoContainer onClick={() => {
+          router.push('/');
+        }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <img
-              src="/images/CommercialUK2.png"
+              src="/images/CUKLogo.png"
               alt="CommercialUK"
-              style={{ width: 180, objectFit: 'contain' }}
+              style={{ width: 220, objectFit: 'contain' }}
             />
           </Box>
           <IconButton
-            onClick={onClose}
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent logo click when clicking close button
+              onClose();
+            }}
             sx={{
               color: '#6b7280',
               '&:hover': {
@@ -576,6 +690,14 @@ const SideBar: React.FC<SideBarProps> = ({ open, onToggle, onClose }) => {
             <UserBadge label={user?.role || 'N/A'} size="small" />
           </UserInfo>
         </UserProfileCard>
+        
+        {/* Listing Count Section */}
+        <ListingCountContainer>
+          <ListingCountText>
+            Remaining {listingCount === 1 ? 'Property' : 'Properties'} :
+          </ListingCountText>
+          <ListingCountNumber>{listingCount}</ListingCountNumber>
+        </ListingCountContainer>
 
         {/* Navigation Menu */}
         <Box sx={{ flex: 1, overflow: 'auto' }}>
@@ -616,70 +738,87 @@ const SideBar: React.FC<SideBarProps> = ({ open, onToggle, onClose }) => {
       )}
       
       <StyledDrawer
-        variant="permanent"
-        open={open}
-        onClose={onClose}
-        isMobile={isMobile}
-        isTablet={isTablet}
-        sx={{
-          '& .MuiDrawer-paper': {
-            position: 'relative',
-            height: '100vh',
-          },
-        }}
-      >
-      {/* Header with Logo and Toggle */}
-      <LogoContainer onClick={() => router.push('/')}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-          {open && (
-                          <img
-                          src="/images/CommercialUK2.png"
-                          alt="CommercialUK"
-                          style={{ width: 180, objectFit: 'contain' }}
-                        />
-          )}
-        </Box>
-        {isMobile && (
-          <IconButton
-            onClick={onClose}
-            sx={{
-              color: '#6b7280',
-              '&:hover': {
-                backgroundColor: '#f3f4f6',
-              },
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        )}
-      </LogoContainer>
-
-      {/* User Profile Section */}
-      {open && (
-        <UserProfileCard>
-          <UserAvatar src={user?.photo || ""} alt="User" />
-          <UserInfo>
-            <UserName>{user?.firstName || user?.first_name || 'User'} {user?.lastName || user?.last_name || ''}</UserName>
-            <UserBadge label={user?.role || 'N/A'} size="small" />
-          </UserInfo>
-        </UserProfileCard>
-      )}
-
-      {/* Navigation Menu */}
-      <Box sx={{ flex: 1, overflow: 'auto' }}>
-        {menuItems.map((section) => (
-          <Box key={section.section}>
-            {open && <SectionTitle>{section.section}</SectionTitle>}
-            <List disablePadding>
-              {section.items.map((item, index) => renderMenuItem(item, index))}
-            </List>
+          variant="permanent"
+          open={open}
+          onClose={onClose}
+          isMobile={isMobile}
+          isTablet={isTablet}
+          sx={{
+            '& .MuiDrawer-paper': {
+              position: 'relative',
+              height: '100vh',
+            },
+          }}
+        >
+        {/* Header with Logo and Toggle */}
+        <LogoContainer onClick={() => {
+          console.log('Logo clicked, navigating to home');
+          router.push('/');
+        }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            {open && (
+              <img
+              src="/images/CUKLogo.png"
+              alt="CommercialUK"
+              style={{ width: 220, objectFit: 'contain' }}
+            />
+            )}
           </Box>
-        ))}
-      </Box>
+          {isMobile && (
+            <IconButton
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent logo click when clicking close button
+                onClose();
+              }}
+              sx={{
+                color: '#6b7280',
+                '&:hover': {
+                  backgroundColor: '#f3f4f6',
+                },
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+          )}
+        </LogoContainer>
 
-      {/* Decorative Element */}
-      {open && <DecorativeElement />}
-    </StyledDrawer>
+        {/* User Profile Section */}
+        {open && (
+          <>
+            <UserProfileCard>
+              <UserAvatar src={user?.photo || user?.profile_picture} alt="User" />
+              <UserInfo>
+                <UserName>{user?.firstName || user?.first_name || 'User'} {user?.lastName || user?.last_name || ''}</UserName>
+                <UserBadge label={user?.role || 'N/A'} size="small" />
+              </UserInfo>
+            </UserProfileCard>
+            
+            {/* Listing Count Section */}
+            <ListingCountContainer>
+            <ListingCountText>
+                Remaining {listingCount === 1 ? 'Property' : 'Properties'} :
+              </ListingCountText>
+              <ListingCountNumber>{listingCount}</ListingCountNumber>
+             
+            </ListingCountContainer>
+          </>
+        )}
+
+        {/* Navigation Menu */}
+        <Box sx={{ flex: 1, overflow: 'auto', position: 'relative', zIndex: 1 }}>
+          {menuItems.map((section) => (
+            <Box key={section.section}>
+              {open && <SectionTitle>{section.section}</SectionTitle>}
+              <List disablePadding>
+                {section.items.map((item, index) => renderMenuItem(item, index))}
+              </List>
+            </Box>
+          ))}
+        </Box>
+
+        {/* Decorative Element */}
+        {open && <DecorativeElement />}
+      </StyledDrawer>
     </>
   );
 };

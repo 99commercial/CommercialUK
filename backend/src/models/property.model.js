@@ -265,6 +265,19 @@ const propertySchema = new Schema(
       default: null,
     },
 
+    // Expiry date for property listing
+    expiry_date: {
+      type: Date,
+      description: 'Expiry date for property listing based on payment subscription',
+    },
+
+    // Expiry status for property listing
+    isExpired: {
+      type: Boolean,
+      default: true,
+      description: 'Whether the property listing has expired. Defaults to false, true if today is after expiry_date',
+    },
+
     // SEO fields
     meta_title: {
       type: String,
@@ -296,7 +309,8 @@ propertySchema.index({ 'general_details.sale_status': 1 });
 propertySchema.index({ listed_by: 1 });
 propertySchema.index({ is_active: 1 });
 propertySchema.index({ is_featured: 1 });
-propertySchema.index({ created_at: -1 });
+propertySchema.index({ createdAt: -1 });
+propertySchema.index({ property_status: 1, deleted_at: 1, isExpired: 1, createdAt: -1 });
 
 // Note: invoice_details does NOT have a unique index
 // If you need uniqueness for non-empty values only, uncomment the line below:

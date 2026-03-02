@@ -132,6 +132,12 @@ const userSchema = new Schema(
       ref: 'property',
       default: [],
     },
+    report_count: {
+      type: Number,
+      default: 0,
+      min: 0,
+      description: 'Report count for users (optional field)',
+    },
   },
   {
     timestamps: true,

@@ -14,9 +14,12 @@ import accountRoutes from './src/modules/Agent/Account/routes/account.routes.js'
 import userRoutes from './src/modules/User/Property/routes/user.routes.js';
 import userAccountRoutes from './src/modules/User/Account/routes/account.routes.js';
 import adminRoutes from './src/modules/admin/Features/routes/features.routes.js';
+import userActivityRoutes from './src/modules/admin/User Activity/routes/user_activity.routes.js';
 import feedRoutes from './src/modules/Feed/routes/feed.routes.js';
 import aicalRoutes from './src/modules/AICal/routes/aical.routes.js';
+import paymentRoutes from './src/modules/payment/routes/payment.routes.js';
 import validateSecurity from './src/utils/security.validation.js';
+import { cacheByRoutePolicy, invalidateByRoutePolicy } from './src/middleware/redisCache.middleware.js';
 const app = express();
 
 /* ==========================
@@ -55,7 +58,7 @@ app.use(cors({
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin', 'X-Session-Id'],
   exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar'],
   optionsSuccessStatus: 200,
 }));
@@ -86,6 +89,10 @@ app.use(validateSecurity);
 // Parse incoming URL-encoded request bodies
 app.use(express.urlencoded({ extended: true, limit: '500mb' })); // for form data
 
+// Route-policy based Redis caching and invalidation
+app.use(invalidateByRoutePolicy());
+app.use(cacheByRoutePolicy());
+
 /* ==========================
    Routes
 ========================== */
@@ -108,11 +115,17 @@ app.use('/api/user', userAccountRoutes);
 // Admin routes
 app.use('/api/admin', adminRoutes);
 
+// Admin user activity routes
+app.use('/api/admin/user-activity', userActivityRoutes);
+
 // Feed routes
 app.use('/api/feed', feedRoutes);
 
 // AICal routes
 app.use('/api/aical', aicalRoutes);
+
+// Payment routes
+app.use('/api/payment', paymentRoutes);
 
 
 /* ==========================

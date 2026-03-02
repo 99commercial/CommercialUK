@@ -5,10 +5,14 @@ import { emailService } from '../../../emails/auth.email.js';
 import { TokenService } from '../../../services/token.service.js';
 import { MESSAGES } from '../../../config/constant.config.js';
 import bcrypt from 'bcryptjs';
+import Subscription from '../../../models/subscription.model.js';
+import Session from '../../../models/session.model.js';
 
 export class AuthService {
   constructor() {
     this.emailService = new emailService();
+    this.Subscription = new Subscription();
+    this.Session = new Session();
   }
 
   /**
@@ -116,8 +120,18 @@ export class AuthService {
       lastName: user.lastName
     });
 
-    // You might want to store this in a sessions collection
-    // For now, we'll just return the tokens
+    const subscription = await Subscription.findOne({ userId: user._id }).sort({ createdAt: -1 }).select('startDate endDate reportCount isExpired status listingCount');
+
+    // Create a new session with temporary sessionId
+    const session = new Session({
+      userId: user._id,
+      sessionId: crypto.randomBytes(16).toString('hex'), // Temporary unique value
+      ipAddress: ipAddress || 'unknown',
+      loginTime: new Date()
+    });
+
+    // Save session to get the _id
+    await session.save();
 
     return {
       status: true,
@@ -128,10 +142,13 @@ export class AuthService {
         role: user.role,
         firstName: user.firstName,
         lastName: user.lastName,
-        photo:user.profile_picture
+        photo:user.profile_picture,
+        report_count: user.report_count,
+        subscription: subscription
       },
       accessData,
-      refreshData
+      refreshData,
+      sessionId: session.sessionId
     };
   }
 
@@ -285,10 +302,18 @@ export class AuthService {
   /**
    * Logout agent
    */
-  async logout(token) {
-    // In a real implementation, you would invalidate the token
-    // by adding it to a blacklist or removing it from active sessions
-    // For now, we'll just return success
+  async logout(token , sessionId) {
+
+    const session = await Session.findOne({ sessionId: sessionId });
+    if (!session) {
+      const error = new Error('Session not found');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    session.logoutTime = new Date();
+    await session.save();
+
     return {
       status: true,
       message: MESSAGES.LOGOUT_SUCCESS,

@@ -19,8 +19,9 @@ class AccountService {
   async getUserDetails(userId) {
     try {
       const user = await this.User.findById(userId)
-        .populate('business_details')
-        .select('-password -emailVerificationToken -emailVerificationExpires -passwordResetToken -passwordResetExpires -emailChangeToken -emailChangeExpires');
+        .populate({ path: 'business_details', options: { lean: true } })
+        .select('-password -emailVerificationToken -emailVerificationExpires -passwordResetToken -passwordResetExpires -emailChangeToken -emailChangeExpires')
+        .lean();
 
       if (!user) {
         throw new Error('User not found');
@@ -307,7 +308,7 @@ class AccountService {
   async getMyFavorites(userId, queryParams = {}) {
     try {
       // Check if user exists
-      const user = await this.User.findById(userId);
+      const user = await this.User.findById(userId).select('my_favourites').lean();
       if (!user) {
         throw new Error('User not found');
       }
@@ -332,21 +333,22 @@ class AccountService {
   async getMyFavoritesDetails(userId, queryParams = {}) {
         try {
           // Check if user exists
-          const user = await this.User.findById(userId);
+          const user = await this.User.findById(userId).select('my_favourites').lean();
           if (!user) {
             throw new Error('User not found');
           }
   
           // Extract pagination parameters
-          const page = parseInt(queryParams.page) || 1;
-          const limit = parseInt(queryParams.limit) || 10;
+          const page = Number.isFinite(parseInt(queryParams.page, 10)) ? parseInt(queryParams.page, 10) : 1;
+          const limit = Number.isFinite(parseInt(queryParams.limit, 10)) ? parseInt(queryParams.limit, 10) : 10;
           const options = {
             page: page,
             limit: limit,
+            lean: true,
+            leanWithId: false,
             populate: [
-              { path: 'images_id' },
-              { path: 'descriptions_id' },
-              { path: 'property_status' }
+              { path: 'images_id', options: { lean: true } },
+              { path: 'descriptions_id', options: { lean: true } }
             ],
             select: 'general_details.building_name general_details.address images_id descriptions_id business_rates_id sale_types_id documents_id planning property_status property_type property_sub_type',
             sort: { createdAt: -1 }

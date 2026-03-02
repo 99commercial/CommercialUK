@@ -4,6 +4,7 @@ import { Menu as MenuIcon, Logout as LogoutIcon } from '@mui/icons-material';
 import { useRouter } from 'next/router';
 import SideBar from './SideBar';
 import axiosInstance from '../../utils/axios';
+import { enqueueSnackbar } from 'notistack';
 
 const collapsedDrawerWidth = 80;
 
@@ -38,20 +39,33 @@ const AgentLayout: React.FC<AgentLayoutProps> = ({ children }) => {
 
   const handleLogout = async () => {
     if (isLoggingOut) return; // Prevent multiple logout attempts
-    
+
     setIsLoggingOut(true);
 
-      // Clear all authentication data from localStorage
-      localStorage.removeItem('user');
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('newpropertyId');
+    const sessionId = localStorage.getItem('sessionId');
+
+    const result = await axiosInstance.post('/api/auth/logout', { sessionId });
+
+    if (result.status !== 200) {
+      const error = new Error('Failed to logout');
+      enqueueSnackbar(error.message, {
+        variant: 'error'
+      });
+      return;
+    }
+
+    // Clear all authentication data from localStorage
+    localStorage.removeItem('user');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('newpropertyId');      
+    localStorage.removeItem('propertyId');
+    localStorage.removeItem('sessionId');
+    // Force a small delay to ensure localStorage is cleared
+    await new Promise(resolve => setTimeout(resolve, 100));
       
-      // Force a small delay to ensure localStorage is cleared
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
-      // Redirect to login page with replace to prevent back navigation
-      router.replace('/auth/login');
+    // Redirect to login page with replace to prevent back navigation
+    router.replace('/auth/login');
   };
 
   return (

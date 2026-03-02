@@ -271,6 +271,9 @@ const UpdateLocationDetailsForm: React.FC<UpdateLocationDetailsFormProps> = ({
     }
 
     setFieldErrors(errors);
+    if (Object.keys(errors).length > 0) {
+      enqueueSnackbar('Please fix the highlighted errors before submitting.', { variant: 'error' });
+    }
     return Object.keys(errors).length === 0;
   };
 
@@ -380,7 +383,7 @@ const UpdateLocationDetailsForm: React.FC<UpdateLocationDetailsFormProps> = ({
     }
   };
 
-  // Real geocoding function using postcode
+  // Real geocoding function using postcode - updates coordinates and address fields
 const handleGeocode = async () => {
   const postcode = formData.address_details?.postal_code?.trim();
   if (!postcode) {
@@ -392,6 +395,11 @@ const handleGeocode = async () => {
   }
 
   setIsGeocoding(true);
+  setFieldErrors((prev) => {
+    const next = { ...prev };
+    delete next.postal_code;
+    return next;
+  });
   try {
     // Call OpenStreetMap's Nominatim API
     const response = await fetch(
@@ -403,15 +411,53 @@ const handleGeocode = async () => {
 
     if (data && data.length > 0) {
       const location = data[0];
+      const addr = location.address || {};
+
+      // Map Nominatim address fields to our address_details structure
+      const streetNumber = addr.house_number || addr.house_name || '';
+      const route = addr.road || addr.street || addr.footway || '';
+      const locality = addr.city || addr.town || addr.village || addr.hamlet || addr.suburb || addr.neighbourhood || addr.locality || '';
+      const adminLevel1 = addr.state || addr.state_district || addr.region || '';
+      const adminLevel2 = addr.county || addr.district || addr.municipality || addr.borough || '';
+      const postalCode = addr.postcode || postcode;
+      const country = addr.country || formData.address_details?.country || 'United Kingdom';
+      const formattedAddress = location.display_name || [
+        streetNumber,
+        route,
+        locality,
+        adminLevel2,
+        adminLevel1,
+        postalCode,
+        country,
+      ]
+        .filter(Boolean)
+        .join(', ');
 
       setFormData((prev) => ({
         ...prev,
         coordinates: {
-          ...prev.coordinates,
           latitude: parseFloat(location.lat),
           longitude: parseFloat(location.lon),
         },
+        address_details: {
+          ...prev.address_details,
+          street_number: streetNumber,
+          route: route,
+          locality: locality,
+          administrative_area_level_1: adminLevel1,
+          administrative_area_level_2: adminLevel2,
+          postal_code: postalCode,
+          country: country,
+          formatted_address: formattedAddress,
+        },
+        geocoding_info: {
+          ...prev.geocoding_info,
+          place_id: String(location.place_id || ''),
+          geocoding_service: 'OpenStreetMap',
+          geocoding_accuracy: 'APPROXIMATE',
+        },
       }));
+      enqueueSnackbar('Address and coordinates updated from geocoding.', { variant: 'success' });
     } else {
       enqueueSnackbar("No results found for the given postal code.", { variant: 'error' });
     }

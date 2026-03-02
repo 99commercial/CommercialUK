@@ -21,12 +21,41 @@ import {
   Login as LoginIcon,
 } from '@mui/icons-material';
 import { useRouter } from 'next/router';
+import axios from 'axios';
 import axiosInstance from '@/utils/axios';
 import { enqueueSnackbar } from 'notistack'; 
 
 interface LoginFormProps {
   onLogin?: (email: string, password: string) => Promise<void>;
 }
+
+const getLoginErrorMessage = (err: unknown): string => {
+  if (axios.isAxiosError(err)) {
+    const responseData = err.response?.data;
+
+    if (typeof responseData?.message === 'string' && responseData.message.trim()) {
+      return responseData.message;
+    }
+
+    if (Array.isArray(responseData?.message) && responseData.message.length > 0) {
+      return responseData.message.join(', ');
+    }
+
+    if (typeof responseData?.error === 'string' && responseData.error.trim()) {
+      return responseData.error;
+    }
+
+    if (typeof err.message === 'string' && err.message.trim()) {
+      return err.message;
+    }
+  }
+
+  if (err instanceof Error && err.message.trim()) {
+    return err.message;
+  }
+
+  return 'Login failed. Please try again.';
+};
 
 export default function LoginForm({ onLogin }: LoginFormProps) {
   const router = useRouter();
@@ -77,12 +106,13 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
       localStorage.setItem('user', JSON.stringify(res.data.user));
       localStorage.setItem('accessToken', res.data.accessData);
       localStorage.setItem('refreshToken', res.data.refreshData);
+      localStorage.setItem('sessionId', res.data.sessionId);
 
       // Redirect to appropriate dashboard
       router.push(`/${res.data.user.role}`);
 
-    } catch (err: any) {
-      const errorMessage = err.message || 'Login failed. Please try again.';
+    } catch (err: unknown) {
+      const errorMessage = getLoginErrorMessage(err);
       setError(errorMessage);
       enqueueSnackbar(errorMessage, {
         variant: 'error'

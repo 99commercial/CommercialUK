@@ -13,6 +13,29 @@ import BusinessDetails from '../../../../models/business_details.model.js';
 import { uploadMultipleToCloudinary } from '../../../../config/cloudinary.config.js';
 import mongoose from 'mongoose';
 import { emailService } from '../../../../emails/auth.email.js';
+import Subscription from '../../../../models/subscription.model.js';
+
+const PUBLIC_PROPERTY_LIST_CACHE_TTL_MS = 5000;
+const publicPropertyListCache = new Map();
+const publicPropertyListInFlight = new Map();
+
+function buildPublicPropertyListCacheKey({
+  page,
+  limit,
+  sale_status,
+  postcode,
+  sort_by,
+  sort_order,
+}) {
+  return JSON.stringify({
+    page,
+    limit,
+    sale_status: sale_status || null,
+    postcode: postcode || null,
+    sort_by,
+    sort_order,
+  });
+}
 
 class AgentService {
   constructor() {
@@ -29,6 +52,7 @@ class AgentService {
     this.User = User;
     this.BusinessDetails = BusinessDetails;
     this.emailService = new emailService();
+    this.Subscription = Subscription;
   }
 
   // Helper method to update object fields directly
@@ -49,6 +73,27 @@ class AgentService {
    */
   async createProperty(propertyData, agentId) {
     try {
+
+      const subscription = await this.Subscription.findOne({
+        userId: agentId
+      }).sort({ createdAt: -1 });
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      if (!subscription) {
+        throw new Error('No subscription found');
+      }
+
+      if ( today.getTime() >= subscription.endDate.getTime()) {
+        throw new Error('Subscription expired');
+      }
+
+      if (subscription.listingCount <= 0) {
+        throw new Error('No listings remaining in your subscription');
+      }
+
+
       // Prepare property data with agent ID
       const propertyPayload = {
         ...propertyData,
@@ -56,6 +101,8 @@ class AgentService {
         is_active: true,
         is_featured: false,
         is_verified: false,
+        expiry_date: subscription.endDate,
+        isExpired: false,
       };
 
       // Create the property
@@ -149,9 +196,33 @@ class AgentService {
    */
   async updatePropertyDetails(propertyId, updateData) {
     try {
+      const flatUpdate = {};
+
+      if (updateData.epc && typeof updateData.epc === 'object') {
+        if (updateData.epc.rating !== undefined) flatUpdate['epc.rating'] = updateData.epc.rating || null;
+        if (updateData.epc.score !== undefined) flatUpdate['epc.score'] = Number(updateData.epc.score) || 0;
+        if (updateData.epc.certificate_number !== undefined) flatUpdate['epc.certificate_number'] = updateData.epc.certificate_number || null;
+        flatUpdate['epc.expiry_date'] = updateData.epc.expiry_date ? new Date(updateData.epc.expiry_date) : null;
+      }
+
+      if (updateData.council_tax && typeof updateData.council_tax === 'object') {
+        if (updateData.council_tax.band !== undefined) flatUpdate['council_tax.band'] = updateData.council_tax.band || null;
+        if (updateData.council_tax.authority !== undefined) flatUpdate['council_tax.authority'] = updateData.council_tax.authority || null;
+      }
+
+      if (updateData.rateable_value !== undefined) {
+        flatUpdate['rateable_value'] = Number(updateData.rateable_value) || 0;
+      }
+
+      if (updateData.planning && typeof updateData.planning === 'object') {
+        if (updateData.planning.status !== undefined) flatUpdate['planning.status'] = updateData.planning.status || null;
+        if (updateData.planning.application_number !== undefined) flatUpdate['planning.application_number'] = updateData.planning.application_number || null;
+        flatUpdate['planning.decision_date'] = updateData.planning.decision_date ? new Date(updateData.planning.decision_date) : null;
+      }
+
       const updatedProperty = await this.Property.findByIdAndUpdate(
         propertyId,
-        { $set: updateData },
+        { $set: flatUpdate },
         { new: true, runValidators: true }
       );
 
@@ -467,7 +538,7 @@ class AgentService {
       // Then update the property with the reference
       const updatedProperty = await this.Property.findByIdAndUpdate(
         propertyId,
-        { $set: { documents_id: savedDocument._id, property_status: 'Active' } },
+        { $set: { documents_id: savedDocument._id, property_status: 'Active' , isExpired: false } },
         { new: true, runValidators: true }
       );
 
@@ -475,9 +546,17 @@ class AgentService {
         throw new Error('Property not found');
       }
 
+      // Update the subscription listing count
+      const subscription = await Subscription.findOne({ userId: updatedProperty.listed_by });
+      if (subscription) {
+        subscription.listingCount = subscription.listingCount - 1;
+        await subscription.save();
+      }
+
       return {
         success: true,
         data: updatedProperty,
+        listingCount: subscription?.listingCount,
         message: 'Property documents updated successfully'
       };
     } catch (error) {
@@ -747,10 +826,36 @@ class AgentService {
         sort_order = 'desc'
       } = queryParams;
 
+      const parsedPage = Number.isFinite(parseInt(page, 10)) ? parseInt(page, 10) : 1;
+      const parsedLimit = Number.isFinite(parseInt(limit, 10)) ? parseInt(limit, 10) : 10;
+      const normalizedSortBy = sort_by === 'created_at' ? 'createdAt' : sort_by;
+
+      const cacheKey = buildPublicPropertyListCacheKey({
+        page: parsedPage,
+        limit: parsedLimit,
+        sale_status,
+        postcode,
+        sort_by: normalizedSortBy,
+        sort_order,
+      });
+      const now = Date.now();
+      const cachedEntry = publicPropertyListCache.get(cacheKey);
+      if (cachedEntry && cachedEntry.expiresAt > now) {
+        return cachedEntry.payload;
+      }
+      if (cachedEntry) {
+        publicPropertyListCache.delete(cacheKey);
+      }
+      if (publicPropertyListInFlight.has(cacheKey)) {
+        return await publicPropertyListInFlight.get(cacheKey);
+      }
+
+      const queryPromise = (async () => {
       // Build filter object
       const filter = { 
         property_status: 'Active',
-        deleted_at: null  // Exclude soft-deleted properties
+        deleted_at: null,  // Exclude soft-deleted properties
+        isExpired: false
       };
       
       // Filter by sale_status if provided (matches sale_types_id.sale_types.sale_type)
@@ -759,7 +864,7 @@ class AgentService {
         const matchingSaleTypes = await this.SaleTypes.find({
           'sale_types.sale_type': sale_status,
           deleted_at: null
-        }).select('_id');
+        }).select('_id').lean();
         
         // Get array of sale_types_id values
         const saleTypesIds = matchingSaleTypes.map(st => st._id);
@@ -780,29 +885,31 @@ class AgentService {
 
       // Build sort object - default to newest first (createdAt descending)
       const sort = {};
-      sort[sort_by] = sort_order === 'desc' ? -1 : 1;
+      sort[normalizedSortBy] = sort_order === 'desc' ? -1 : 1;
 
       // Execute paginated query with population
       const options = {
-        page: parseInt(page),
-        limit: parseInt(limit),
+        page: parsedPage,
+        limit: parsedLimit,
         sort,
+        lean: true,
+        leanWithId: false,
         populate: [
-          { path: 'listed_by', select: 'first_name last_name email phone' },
-          { path: 'business_rates_id' },
-          { path: 'descriptions_id' },
-          { path: 'sale_types_id' },
-          { path: 'images_id' },
-          { path: 'documents_id' },
-          { path: 'location_id' },
-          { path: 'virtual_tours_id' },
-          { path: 'features_id' }
+          { path: 'listed_by', select: 'first_name last_name email phone', options: { lean: true } },
+          { path: 'business_rates_id', options: { lean: true } },
+          { path: 'descriptions_id', options: { lean: true } },
+          { path: 'sale_types_id', options: { lean: true } },
+          { path: 'images_id', options: { lean: true } },
+          { path: 'documents_id', options: { lean: true } },
+          { path: 'location_id', options: { lean: true } },
+          { path: 'virtual_tours_id', options: { lean: true } },
+          { path: 'features_id', options: { lean: true } }
         ]
       };
 
       const result = await this.Property.paginate(filter, options);
 
-      return {
+      const responsePayload = {
         success: true,
         data: {
           properties: result.docs,
@@ -817,6 +924,21 @@ class AgentService {
         },
         message: 'Properties retrieved successfully'
       };
+
+      publicPropertyListCache.set(cacheKey, {
+        payload: responsePayload,
+        expiresAt: Date.now() + PUBLIC_PROPERTY_LIST_CACHE_TTL_MS,
+      });
+
+      return responsePayload;
+      })();
+
+      publicPropertyListInFlight.set(cacheKey, queryPromise);
+      try {
+        return await queryPromise;
+      } finally {
+        publicPropertyListInFlight.delete(cacheKey);
+      }
     } catch (error) {
       throw new Error(`Failed to get properties: ${error.message}`);
     }
@@ -837,7 +959,7 @@ class AgentService {
         sale_status,
         is_active = true,
         is_featured,
-        sort_by = 'created_at',
+        sort_by = 'createdAt',
         sort_order = 'desc'
       } = queryParams;
 
@@ -862,22 +984,25 @@ class AgentService {
 
       // Build sort object
       const sort = {};
-      sort[sort_by] = sort_order === 'desc' ? -1 : 1;
+      const normalizedSortBy = sort_by === 'created_at' ? 'createdAt' : sort_by;
+      sort[normalizedSortBy] = sort_order === 'desc' ? -1 : 1;
 
       // Execute paginated query with population
       const options = {
-        page: parseInt(page),
-        limit: parseInt(limit),
+        page: Number.isFinite(parseInt(page, 10)) ? parseInt(page, 10) : 1,
+        limit: Number.isFinite(parseInt(limit, 10)) ? parseInt(limit, 10) : 10,
         sort,
+        lean: true,
+        leanWithId: false,
         populate: [
-          { path: 'business_rates_id' },
-          { path: 'descriptions_id' },
-          { path: 'sale_types_id' },
-          { path: 'images_id' },
-          { path: 'documents_id' },
-          { path: 'location_id' },
-          { path: 'virtual_tours_id' },
-          { path: 'features_id' }
+          { path: 'business_rates_id', options: { lean: true } },
+          { path: 'descriptions_id', options: { lean: true } },
+          { path: 'sale_types_id', options: { lean: true } },
+          { path: 'images_id', options: { lean: true } },
+          { path: 'documents_id', options: { lean: true } },
+          { path: 'location_id', options: { lean: true } },
+          { path: 'virtual_tours_id', options: { lean: true } },
+          { path: 'features_id', options: { lean: true } }
         ]
       };
 
@@ -911,15 +1036,16 @@ class AgentService {
   async getPropertyById(propertyId) {
     try {
       const property = await this.Property.findById(propertyId)
-        .populate('listed_by', 'first_name last_name email phone profile_picture company_name')
-        .populate('business_rates_id')
-        .populate('descriptions_id')
-        .populate('sale_types_id')
-        .populate('images_id')
-        .populate('documents_id')
-        .populate('location_id')
-        .populate('virtual_tours_id')
-        .populate('features_id');
+        .populate({ path: 'listed_by', select: 'first_name last_name email phone profile_picture company_name', options: { lean: true } })
+        .populate({ path: 'business_rates_id', options: { lean: true } })
+        .populate({ path: 'descriptions_id', options: { lean: true } })
+        .populate({ path: 'sale_types_id', options: { lean: true } })
+        .populate({ path: 'images_id', options: { lean: true } })
+        .populate({ path: 'documents_id', options: { lean: true } })
+        .populate({ path: 'location_id', options: { lean: true } })
+        .populate({ path: 'virtual_tours_id', options: { lean: true } })
+        .populate({ path: 'features_id', options: { lean: true } })
+        .lean();
 
       if (!property) {
         throw new Error('Property not found');
@@ -948,15 +1074,52 @@ class AgentService {
    */
   async updatePropertyGeneralDetails(propertyId, generalDetails) {
     try {
-      const property = await this.Property.findById(propertyId);
-      if (!property) {
-        throw new Error('Property not found');
+      // Accept either { general_details: {...} } or flat payload {...}
+      const incomingGeneralDetails = generalDetails?.general_details || generalDetails || {};
+      if (typeof incomingGeneralDetails !== 'object' || Array.isArray(incomingGeneralDetails)) {
+        throw new Error('Invalid general details payload');
       }
 
-      // Update only the provided fields in general_details
-      this.updateObjectFields(property, generalDetails);
-      
-      const updatedProperty = await property.save();
+      // Build $set for nested general_details - include all fields from payload
+      const setKeys = ['building_name', 'property_type', 'property_sub_type', 'sale_status', 'address', 'town_city', 'postcode', 'country_region', 'size_minimum', 'size_maximum', 'max_eaves_height', 'approximate_year_of_construction', 'expansion_capacity_percent', 'invoice_details', 'property_notes'];
+      const updateData = {};
+      for (const key of setKeys) {
+        if (incomingGeneralDetails.hasOwnProperty(key)) {
+          let value = incomingGeneralDetails[key];
+          // Match pre-save behavior: empty strings -> null for these fields
+          if ((key === 'invoice_details' || key === 'property_notes') && value === '') value = null;
+          updateData[`general_details.${key}`] = value;
+        }
+      }
+
+      if (Object.keys(updateData).length === 0) {
+        throw new Error('No valid general details fields to update');
+      }
+
+      // If building_name or postcode changed, update slug (pre-save hook doesn't run with findByIdAndUpdate)
+      const buildingName = incomingGeneralDetails.building_name;
+      const postcode = incomingGeneralDetails.postcode;
+      if (buildingName !== undefined || postcode !== undefined) {
+        const existing = await this.Property.findById(propertyId).select('general_details').lean();
+        const prev = existing?.general_details || {};
+        const prevBuilding = prev.building_name ?? 'property';
+        const prevPostcode = (prev.postcode ?? '').toString();
+        const newBuilding = (buildingName ?? prevBuilding).toString();
+        const newPostcode = (postcode ?? prevPostcode).toString().toLowerCase().replace(/\s/g, '');
+        if (newBuilding !== prevBuilding || newPostcode !== prevPostcode.toLowerCase().replace(/\s/g, '')) {
+          updateData.slug = `${newBuilding.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${newPostcode}-${Date.now()}`;
+        }
+      }
+
+      const updatedProperty = await this.Property.findByIdAndUpdate(
+        propertyId,
+        { $set: updateData },
+        { new: true, runValidators: true }
+      ).lean();
+
+      if (!updatedProperty) {
+        throw new Error('Property not found');
+      }
 
       return {
         success: true,
@@ -1144,15 +1307,14 @@ class AgentService {
    */
   async updateBusinessRatesById(businessRatesId, businessRatesData) {
     try {
-      const businessRates = await this.BusinessRates.findById(businessRatesId);
-      if (!businessRates) {
+      const updatedBusinessRates = await this.BusinessRates.findByIdAndUpdate(
+        businessRatesId,
+        { $set: businessRatesData },
+        { new: true, runValidators: true }
+      );
+      if (!updatedBusinessRates) {
         throw new Error('Business rates not found');
       }
-
-      // Update only the provided fields
-      this.updateObjectFields(businessRates, businessRatesData);
-      
-      const updatedBusinessRates = await businessRates.save();
 
       return {
         success: true,
@@ -1172,15 +1334,14 @@ class AgentService {
    */
   async updateDescriptionsById(descriptionsId, descriptionsData) {
     try {
-      const descriptions = await this.Descriptions.findById(descriptionsId);
-      if (!descriptions) {
+      const updatedDescriptions = await this.Descriptions.findByIdAndUpdate(
+        descriptionsId,
+        { $set: descriptionsData },
+        { new: true, runValidators: true }
+      );
+      if (!updatedDescriptions) {
         throw new Error('Descriptions not found');
       }
-
-      // Update only the provided fields
-      this.updateObjectFields(descriptions, descriptionsData);
-      
-      const updatedDescriptions = await descriptions.save();
 
       return {
         success: true,
@@ -1200,15 +1361,14 @@ class AgentService {
    */
   async updateSaleTypesById(saleTypesId, saleTypesData) {
     try {
-      const saleTypes = await this.SaleTypes.findById(saleTypesId);
-      if (!saleTypes) {
+      const updatedSaleTypes = await this.SaleTypes.findByIdAndUpdate(
+        saleTypesId,
+        { $set: saleTypesData },
+        { new: true, runValidators: true }
+      );
+      if (!updatedSaleTypes) {
         throw new Error('Sale types not found');
       }
-
-      // Update only the provided fields
-      this.updateObjectFields(saleTypes, saleTypesData);
-      
-      const updatedSaleTypes = await saleTypes.save();
 
       return {
         success: true,
@@ -1284,15 +1444,55 @@ class AgentService {
    */
   async updatePropertyLocationById(locationId, locationData) {
     try {
-      const location = await this.PropertyLocation.findById(locationId);
-      if (!location) {
-        throw new Error('Property location not found');
+      const flatUpdate = {};
+
+      if (locationData.coordinates && typeof locationData.coordinates === 'object') {
+        if (locationData.coordinates.latitude !== undefined) flatUpdate['coordinates.latitude'] = Number(locationData.coordinates.latitude);
+        if (locationData.coordinates.longitude !== undefined) flatUpdate['coordinates.longitude'] = Number(locationData.coordinates.longitude);
       }
 
-      // Update only the provided fields
-      this.updateObjectFields(location, locationData);
-      
-      const updatedLocation = await location.save();
+      if (locationData.address_details && typeof locationData.address_details === 'object') {
+        const addr = locationData.address_details;
+        if (addr.formatted_address !== undefined) flatUpdate['address_details.formatted_address'] = addr.formatted_address || '';
+        if (addr.street_number !== undefined) flatUpdate['address_details.street_number'] = addr.street_number || '';
+        if (addr.route !== undefined) flatUpdate['address_details.route'] = addr.route || '';
+        if (addr.locality !== undefined) flatUpdate['address_details.locality'] = addr.locality || '';
+        if (addr.administrative_area_level_1 !== undefined) flatUpdate['address_details.administrative_area_level_1'] = addr.administrative_area_level_1 || '';
+        if (addr.administrative_area_level_2 !== undefined) flatUpdate['address_details.administrative_area_level_2'] = addr.administrative_area_level_2 || '';
+        if (addr.country !== undefined) flatUpdate['address_details.country'] = addr.country || 'United Kingdom';
+        if (addr.postal_code !== undefined) flatUpdate['address_details.postal_code'] = addr.postal_code || '';
+      }
+
+      if (locationData.geocoding_info && typeof locationData.geocoding_info === 'object') {
+        const geo = locationData.geocoding_info;
+        if (geo.place_id !== undefined) flatUpdate['geocoding_info.place_id'] = geo.place_id || '';
+        if (geo.geocoding_service !== undefined) flatUpdate['geocoding_info.geocoding_service'] = geo.geocoding_service || 'Google';
+        if (geo.geocoding_accuracy !== undefined) flatUpdate['geocoding_info.geocoding_accuracy'] = geo.geocoding_accuracy || 'APPROXIMATE';
+      }
+
+      if (locationData.map_settings && typeof locationData.map_settings === 'object') {
+        const map = locationData.map_settings;
+        if (map.disable_map_display !== undefined) flatUpdate['map_settings.disable_map_display'] = !!map.disable_map_display;
+        if (map.map_zoom_level !== undefined) flatUpdate['map_settings.map_zoom_level'] = Number(map.map_zoom_level) || 15;
+        if (map.map_type !== undefined) flatUpdate['map_settings.map_type'] = map.map_type || 'roadmap';
+      }
+
+      if (locationData.location_verified !== undefined) {
+        flatUpdate['location_verified'] = !!locationData.location_verified;
+      }
+      if (locationData.verification_notes !== undefined) {
+        flatUpdate['verification_notes'] = locationData.verification_notes || '';
+      }
+
+      const updatedLocation = await this.PropertyLocation.findByIdAndUpdate(
+        locationId,
+        { $set: flatUpdate },
+        { new: true, runValidators: true }
+      );
+
+      if (!updatedLocation) {
+        throw new Error('Property location not found');
+      }
 
       return {
         success: true,
@@ -1311,19 +1511,23 @@ class AgentService {
    * @returns {Promise<Object>} Updated virtual tours object
    */
   async updatePropertyVirtualToursById(virtualToursId, virtualToursData) {
-
-    console.log(virtualToursData);
-
     try {
-      const virtualTours = await this.PropertyVirtualTours.findById(virtualToursId);
-      if (!virtualTours) {
-        throw new Error('Property virtual tours not found');
+      const updatePayload = {};
+      if (Object.prototype.hasOwnProperty.call(virtualToursData, 'virtual_tours')) {
+        updatePayload['virtual_tours'] = Array.isArray(virtualToursData.virtual_tours)
+          ? virtualToursData.virtual_tours
+          : [];
       }
 
-      // Update only the provided fields
-      this.updateObjectFields(virtualTours, virtualToursData);
-      
-      const updatedVirtualTours = await virtualTours.save();
+      const updatedVirtualTours = await this.PropertyVirtualTours.findByIdAndUpdate(
+        virtualToursId,
+        { $set: updatePayload },
+        { new: true, runValidators: true }
+      );
+
+      if (!updatedVirtualTours) {
+        throw new Error('Property virtual tours not found');
+      }
 
       return {
         success: true,
@@ -1456,16 +1660,19 @@ class AgentService {
 
       // Build sort object
       const sort = {};
-      sort[sort_by] = sort_order === 'desc' ? -1 : 1;
+      const normalizedSortBy = sort_by === 'created_at' ? 'createdAt' : sort_by;
+      sort[normalizedSortBy] = sort_order === 'desc' ? -1 : 1;
 
       // Execute paginated query with population
       const options = {
-        page: parseInt(page),
-        limit: parseInt(limit),
+        page: Number.isFinite(parseInt(page, 10)) ? parseInt(page, 10) : 1,
+        limit: Number.isFinite(parseInt(limit, 10)) ? parseInt(limit, 10) : 10,
         sort,
+        lean: true,
+        leanWithId: false,
         populate: [
-          { path: 'property_id', select: 'general_details.building_name general_details.address general_details.town_city general_details.property_type' },
-          { path: 'user_id', select: 'first_name last_name email phone' }
+          { path: 'property_id', select: 'general_details.building_name general_details.address general_details.town_city general_details.property_type', options: { lean: true } },
+          { path: 'user_id', select: 'first_name last_name email phone', options: { lean: true } }
         ]
       };
 
@@ -1514,16 +1721,19 @@ class AgentService {
 
       // Build sort object
       const sort = {};
-      sort[sort_by] = sort_order === 'desc' ? -1 : 1;
+      const normalizedSortBy = sort_by === 'created_at' ? 'createdAt' : sort_by;
+      sort[normalizedSortBy] = sort_order === 'desc' ? -1 : 1;
 
       // Execute paginated query with population
       const options = {
-        page: parseInt(page),
-        limit: parseInt(limit),
+        page: Number.isFinite(parseInt(page, 10)) ? parseInt(page, 10) : 1,
+        limit: Number.isFinite(parseInt(limit, 10)) ? parseInt(limit, 10) : 10,
         sort,
+        lean: true,
+        leanWithId: false,
         populate: [
-          { path: 'agent_id', select: 'first_name last_name email phone company_name' },
-          { path: 'user_id', select: 'first_name last_name email phone' }
+          { path: 'agent_id', select: 'first_name last_name email phone company_name', options: { lean: true } },
+          { path: 'user_id', select: 'first_name last_name email phone', options: { lean: true } }
         ]
       };
 
@@ -1572,17 +1782,20 @@ class AgentService {
 
       // Build sort object
       const sort = {};
-      sort[sort_by] = sort_order === 'desc' ? -1 : 1;
+      const normalizedSortBy = sort_by === 'created_at' ? 'createdAt' : sort_by;
+      sort[normalizedSortBy] = sort_order === 'desc' ? -1 : 1;
 
       // Execute paginated query with population
       const options = {
-        page: parseInt(page),
-        limit: parseInt(limit),
+        page: Number.isFinite(parseInt(page, 10)) ? parseInt(page, 10) : 1,
+        limit: Number.isFinite(parseInt(limit, 10)) ? parseInt(limit, 10) : 10,
         sort,
+        lean: true,
+        leanWithId: false,
         populate: [
-          { path: 'property_id', select: 'general_details.building_name general_details.address general_details.town_city general_details.property_type' },
-          { path: 'agent_id', select: 'first_name last_name email phone company_name' },
-          { path: 'user_id', select: 'first_name last_name email phone' }
+          { path: 'property_id', select: 'general_details.building_name general_details.address general_details.town_city general_details.property_type', options: { lean: true } },
+          { path: 'agent_id', select: 'first_name last_name email phone company_name', options: { lean: true } },
+          { path: 'user_id', select: 'first_name last_name email phone', options: { lean: true } }
         ]
       };
 
@@ -1616,9 +1829,10 @@ class AgentService {
   async getQueryById(queryId) {
     try {
       const query = await this.PropertyQuery.findById(queryId)
-        .populate('property_id', 'general_details.building_name general_details.address general_details.town_city general_details.property_type')
-        .populate('agent_id', 'first_name last_name email phone company_name')
-        .populate('user_id', 'first_name last_name email phone');
+        .populate({ path: 'property_id', select: 'general_details.building_name general_details.address general_details.town_city general_details.property_type', options: { lean: true } })
+        .populate({ path: 'agent_id', select: 'first_name last_name email phone company_name', options: { lean: true } })
+        .populate({ path: 'user_id', select: 'first_name last_name email phone', options: { lean: true } })
+        .lean();
 
       if (!query) {
         throw new Error('Query not found');

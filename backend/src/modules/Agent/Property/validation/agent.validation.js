@@ -44,7 +44,8 @@ export const createPropertyValidator = [
     .withMessage('Please enter a valid UK postcode'),
   
   body('general_details.sale_status')
-    .optional()
+    .notEmpty()
+    .withMessage('Sale status is required')
     .isIn(['Available', 'Under Offer', 'Sold', 'Let', 'Withdrawn'])
     .withMessage('Invalid sale status'),
   
@@ -66,12 +67,16 @@ export const createPropertyValidator = [
     .withMessage('Property sub-type must be between 2 and 100 characters'),
   
   body('general_details.size_minimum')
+    .notEmpty()
+    .withMessage('Minimum size is required')
     .isNumeric()
     .withMessage('Minimum size must be a number')
     .isFloat({ min: 0 })
     .withMessage('Minimum size must be greater than 0'),
   
   body('general_details.size_maximum')
+    .notEmpty()
+    .withMessage('Maximum size is required')
     .isNumeric()
     .withMessage('Maximum size must be a number')
     .isFloat({ min: 0 })
@@ -85,6 +90,8 @@ export const createPropertyValidator = [
     }),
   
   body('general_details.approximate_year_of_construction')
+    .notEmpty()
+    .withMessage('Year of construction is required')
     .isInt({ min: 1800, max: new Date().getFullYear() + 5 })
     .withMessage('Year of construction must be between 1800 and current year + 5'),
   
@@ -106,19 +113,22 @@ export const updatePropertyDetailsValidator = [
 
   // EPC validation
   body('epc.rating')
-    .optional()
+    .notEmpty()
+    .withMessage('EPC rating is required')
     .isIn(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'Exempt', 'Not Required','Unknown'])
     .withMessage('Invalid EPC rating'),
 
   // Council Tax validation
   body('council_tax.band')
-    .optional({ values: 'falsy' })
+    .notEmpty()
+    .withMessage('Council tax band is required')
     .isIn(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'Exempt', 'Not Applicable','Unknown'])
     .withMessage('Invalid council tax band'),
 
   // Rateable Value validation
   body('rateable_value')
-    .optional({ values: 'falsy' })
+    .notEmpty()
+    .withMessage('Rateable value is required')
     .isNumeric()
     .withMessage('Rateable value must be a number')
     .isFloat({ min: 0 })
@@ -126,7 +136,8 @@ export const updatePropertyDetailsValidator = [
 
   // Planning validation
   body('planning.status')
-    .optional({ values: 'falsy' })
+    .notEmpty()
+    .withMessage('Planning status is required')
     .isIn(['Full Planning', 'Outline Planning', 'No Planning Required', 'Unknown'])
     .withMessage('Invalid planning status'),
 ];
@@ -147,14 +158,16 @@ export const updateBusinessDetailsValidator = [
 
   // Business Rates validation
   body('business_rates.rateable_value_gbp')
-    .optional({ values: 'falsy' })
+    .exists({ values: 'falsy' })
+    .withMessage('Rateable value is required')
     .isNumeric()
     .withMessage('Rateable value must be a number')
     .isFloat({ min: 0 })
     .withMessage('Rateable value must be greater than or equal to 0'),
   
   body('business_rates.rates_payable_gbp')
-    .optional({ values: 'falsy' })
+    .exists({ values: 'falsy' })
+    .withMessage('Rates payable is required')
     .isNumeric()
     .withMessage('Rates payable must be a number')
     .isFloat({ min: 0 })
@@ -162,67 +175,77 @@ export const updateBusinessDetailsValidator = [
 
   // Descriptions validation
   body('descriptions.general')
-    .optional({ values: 'falsy' })
+    .exists({ values: 'falsy' })
+    .withMessage('General description is required')
     .trim()
     .isLength({ min: 50, max: 2000 })
     .withMessage('General description must be between 50 and 2000 characters'),
   
   body('descriptions.location')
-    .optional({ values: 'falsy' })
+    .exists({ values: 'falsy' })
+    .withMessage('Location description is required')
     .trim()
     .isLength({ min: 20, max: 1000 })
     .withMessage('Location description must be between 20 and 1000 characters'),
   
   body('descriptions.accommodation')
-    .optional({ values: 'falsy' })
+    .exists({ values: 'falsy' })
+    .withMessage('Accommodation description is required')
     .trim()
     .isLength({ min: 20, max: 1000 })
     .withMessage('Accommodation description must be between 20 and 1000 characters'),
   
   body('descriptions.terms')
-    .optional({ values: 'falsy' })
+    .exists({ values: 'falsy' })
+    .withMessage('Terms description is required')
     .trim()
     .isLength({ min: 20, max: 1000 })
     .withMessage('Terms description must be between 20 and 1000 characters'),
   
   body('descriptions.specifications')
-    .optional({ values: 'falsy' })
+    .exists({ values: 'falsy' })
+    .withMessage('Specifications description is required')
     .trim()
     .isLength({ min: 20, max: 1000 })
     .withMessage('Specifications description must be between 20 and 1000 characters'),
 
   // Sale Types validation
   body('sale_types')
-    .optional({ values: 'falsy' })
+    .notEmpty()
+    .withMessage('Sale types are required')
     .isArray()
     .withMessage('Sale types must be an array')
     .custom((value) => {
-      if (value && value.length !== 1) {
-        throw new Error('Exactly one sale type is required');
+      if (!value || value.length < 1) {
+        throw new Error('At least one sale type is required');
       }
       return true;
     })
-    .withMessage('Exactly one sale type is required'),
+    .withMessage('At least one sale type is required'),
   
   body('sale_types.*.sale_type')
-    .optional({ values: 'falsy' }   )
+    .notEmpty()
+    .withMessage('Sale type is required')
     .isIn(['Freehold', 'Leasehold', 'To Let', 'For Sale', 'Under Offer', 'Sold', 'Let'])
     .withMessage('Invalid sale type'),
   
   body('sale_types.*.price_currency')
-    .optional({ values: 'falsy' })
+    .notEmpty()
+    .withMessage('Price currency is required')
     .isIn(['GBP'])
     .withMessage('Price currency must be GBP'),
   
   body('sale_types.*.price_value')
-    .optional({ values: 'falsy' })
+    .notEmpty()
+    .withMessage('Price value is required')
     .isNumeric()
     .withMessage('Price value must be a number')
     .isFloat({ min: 0 })
     .withMessage('Price value must be greater than or equal to 0'),
   
   body('sale_types.*.price_unit')
-    .optional({ values: 'falsy' })
+    .notEmpty()
+    .withMessage('Price unit is required')
     .isIn(['per sq ft', 'per annum', 'per month', 'per unit', 'total'])
     .withMessage('Invalid price unit'),
 ];
@@ -357,6 +380,8 @@ export const updatePropertyLocationValidator = [
     .withMessage('Latitude must be between -90 and 90'),
   
   body('coordinates.longitude')
+    .notEmpty()
+    .withMessage('Longitude is required')
     .isFloat({ min: -180, max: 180 })
     .withMessage('Longitude must be between -180 and 180'),
 
@@ -411,7 +436,8 @@ export const updatePropertyLocationValidator = [
     .withMessage('Country must not exceed 100 characters'),
   
   body('address_details.postal_code')
-    .optional({ values: 'falsy' })
+    .notEmpty()
+    .withMessage('Postal code is required')
     .matches(/^[A-Z]{1,2}[0-9][A-Z0-9]? [0-9][A-Z]{2}$/i)
     .withMessage('Please enter a valid UK postcode'),
 ];

@@ -293,7 +293,7 @@ export default function RegisterPage() {
         <FloatingElement />
         <FloatingElement />
 
-        <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
+        <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 1 }}>
             <Box
               sx={{
                 display: 'flex',
@@ -310,21 +310,13 @@ export default function RegisterPage() {
               <Box sx={{ flex: 1, width: { xs: '100%', md: '10%' } }}>
                 <Fade in timeout={1000}>
                   <Box>
-                    <Typography
-                      variant="h2"
-                      component="h1"
-                      sx={{
-                        color: 'white',
-                        fontWeight: 700,
-                        mb: { xs: 1.5, sm: 2 },
-                        textShadow: '0 4px 8px rgba(0, 0, 0, 0.5), 0 0 20px rgba(220, 38, 38, 0.3)',
-                        filter: 'drop-shadow(0 0 10px rgba(220, 38, 38, 0.2))',
-                        fontSize: { xs: '1.8rem', sm: '2.2rem', md: '2.5rem' },
-                        textAlign: { xs: 'center', md: 'left' },
-                      }}
-                    >
-                      CommercialUK
-                    </Typography>
+                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                      <img
+                        src="/images/CUKSquare.png"
+                        alt="CommercialUK"
+                        style={{ width: 200, objectFit: 'contain' }}
+                      />
+                    </Box>
                     <Typography
                       variant="h5"
                       sx={{
@@ -432,7 +424,7 @@ export default function RegisterPage() {
                 </Slide>
               </Box>
             </Box>
-          </Container>
+        </Container>
 
           {/* Features Section */}
         {isMobile && (

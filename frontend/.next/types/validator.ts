@@ -105,6 +105,12 @@ type PagesPageConfig = {
   handler satisfies PagesPageConfig
 }
 
+// Validate ../../src/pages/admin/discount/list-of-discount.tsx
+{
+  const handler = {} as typeof import("../../src/pages/admin/discount/list-of-discount.js")
+  handler satisfies PagesPageConfig
+}
+
 // Validate ../../src/pages/admin/index.tsx
 {
   const handler = {} as typeof import("../../src/pages/admin/index.js")
@@ -144,6 +150,12 @@ type PagesPageConfig = {
 // Validate ../../src/pages/agent/index.tsx
 {
   const handler = {} as typeof import("../../src/pages/agent/index.js")
+  handler satisfies PagesPageConfig
+}
+
+// Validate ../../src/pages/agent/payment/plans-page.tsx
+{
+  const handler = {} as typeof import("../../src/pages/agent/payment/plans-page.js")
   handler satisfies PagesPageConfig
 }
 
@@ -219,6 +231,12 @@ type PagesPageConfig = {
   handler satisfies PagesPageConfig
 }
 
+// Validate ../../src/pages/commercial-seller-property-marketing.tsx
+{
+  const handler = {} as typeof import("../../src/pages/commercial-seller-property-marketing.js")
+  handler satisfies PagesPageConfig
+}
+
 // Validate ../../src/pages/contact-us.tsx
 {
   const handler = {} as typeof import("../../src/pages/contact-us.js")
@@ -243,9 +261,15 @@ type PagesPageConfig = {
   handler satisfies PagesPageConfig
 }
 
-// Validate ../../src/pages/payment.tsx
+// Validate ../../src/pages/law-jurisdiction.tsx
 {
-  const handler = {} as typeof import("../../src/pages/payment.js")
+  const handler = {} as typeof import("../../src/pages/law-jurisdiction.js")
+  handler satisfies PagesPageConfig
+}
+
+// Validate ../../src/pages/live.tsx
+{
+  const handler = {} as typeof import("../../src/pages/live.js")
   handler satisfies PagesPageConfig
 }
 

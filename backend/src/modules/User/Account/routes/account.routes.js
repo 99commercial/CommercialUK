@@ -3,6 +3,7 @@ import AgentController from '../controller/account.controller.js';
 import { authenticate } from '../../../../middleware/authenticate.middleware.js';
 import { authorize } from '../../../../middleware/authorize.middleware.js';
 import upload from '../../../../config/cloudinary.config.js';
+import { createUserActivity } from '../../../../middleware/userActivity.middleware.js';
 
 const router = express.Router();
 const agentController = new AgentController();
@@ -14,6 +15,14 @@ const agentController = new AgentController();
 router.get('/users/profile', 
     authenticate,
     authorize(['user']),
+    async (req, res, next) => {
+      try {
+        await createUserActivity(req, 'checking profile', 'user check his / her profile');
+        next();
+      } catch (error) {
+        next(error);
+      }
+    },
     agentController.getUserDetails.bind(agentController)
   );
   
@@ -21,6 +30,14 @@ router.get('/users/profile',
   router.put('/users/profile', 
     authenticate,
     authorize(['user']),
+    async (req, res, next) => {
+      try {
+        await createUserActivity(req, 'updating profile', 'user update his / her profile');
+        next();
+      } catch (error) {
+        next(error);
+      }
+    },
     agentController.updateUserDetails.bind(agentController)
   );
   
@@ -29,6 +46,14 @@ router.get('/users/profile',
     authenticate,
     authorize(['user']),
     upload.single('profile_photo'),
+    async (req, res, next) => {
+      try {
+        await createUserActivity(req, 'updating profile photo', 'user update his / her profile photo');
+        next();
+      } catch (error) {
+        next(error);
+      }
+    },
     agentController.updateUserProfilePhoto.bind(agentController)
   );
   
@@ -36,6 +61,14 @@ router.get('/users/profile',
   router.post('/users/business-details', 
     authenticate,
     authorize(['user']),
+    async (req, res, next) => {
+      try {
+        await createUserActivity(req, 'creating business details', 'user create his / her business details');
+        next();
+      } catch (error) {
+        next(error);
+      }
+    },
     agentController.createBusinessDetails.bind(agentController)
   );
   
@@ -43,6 +76,14 @@ router.get('/users/profile',
   router.put('/business-details/:businessDetailsId', 
     authenticate,
     authorize(['user']),
+    async (req, res, next) => {
+      try {
+        await createUserActivity(req, 'updating business details', 'user update his / her business details');
+        next();
+      } catch (error) {
+        next(error);
+      }
+    },
     agentController.updateBusinessDetailsById.bind(agentController)
   );
   
@@ -52,6 +93,14 @@ router.get('/users/profile',
   router.post('/favorites/:propertyId', 
     authenticate,
     authorize(['user']),
+    async (req, res, next) => {
+      try {
+        await createUserActivity(req, 'adding property to favorites', 'user add a property to his / her favorites');
+        next();
+      } catch (error) {
+        next(error);
+      }
+    },
     agentController.addToFavorites.bind(agentController)
   );
   
@@ -59,6 +108,14 @@ router.get('/users/profile',
   router.delete('/favorites/:propertyId', 
     authenticate,
     authorize(['user']),
+    async (req, res, next) => {
+      try {
+        await createUserActivity(req, 'removing property from favorites', 'user remove a property from his / her favorites');
+        next();
+      } catch (error) {
+        next(error);
+      }
+    },
     agentController.removeFromFavorites.bind(agentController)
   );
 
@@ -66,6 +123,14 @@ router.get('/users/profile',
   router.get('/favorites', 
       authenticate,
       authorize(['user']),
+      async (req, res, next) => {
+        try {
+          await createUserActivity(req, 'getting my favorites', 'user get his / her favorites');
+          next();
+        } catch (error) {
+          next(error);
+        }
+      },
       agentController.getMyFavorites.bind(agentController)
   );
   
@@ -73,6 +138,14 @@ router.get('/users/profile',
   router.get('/favorites/details', 
     authenticate,
     authorize(['user']),
+    async (req, res, next) => {
+      try {
+        await createUserActivity(req, 'checked my favorite property in details', 'user checked his / her favorite properties in details');
+        next();
+      } catch (error) {
+        next(error);
+      }
+    },
     agentController.getMyFavoritesDetails.bind(agentController)
   );
 

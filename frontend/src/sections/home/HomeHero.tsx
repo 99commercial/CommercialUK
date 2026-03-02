@@ -284,7 +284,7 @@ export default function HomeHero() {
           }}>
             {/* Location Input */}
             <StyledTextField
-              placeholder="Location (town or postcode)"
+              placeholder="Postcode"
               value={searchLocation}
               onChange={(e) => setSearchLocation(e.target.value)}
               InputProps={{

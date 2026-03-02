@@ -1,3 +1,4 @@
+import { enqueueSnackbar } from 'notistack';
 import axiosInstance from './axios';
 
 function decodeJWT(token: string): any | null {
@@ -97,11 +98,26 @@ const refreshAccessToken = async (refreshToken: string) => {
   }
 };
 
-const handleTokenExpiration = () => {
+const handleTokenExpiration = async () => {
+
+  const sessionId = localStorage.getItem('sessionId');
+
+  const result = await axiosInstance.post('/api/auth/logout', { sessionId });
+
+  if (result.status !== 200) {
+    const error = new Error('Failed to logout');
+    enqueueSnackbar(error.message, {
+      variant: 'error'
+    });
+    return;
+  }
+
   // Clear all authentication data
   localStorage.removeItem('user');
   localStorage.removeItem('accessToken');
   localStorage.removeItem('refreshToken');
+  localStorage.removeItem('newpropertyId');
+  localStorage.removeItem('sessionId');
   
   // Log the token expiration for debugging
   console.log('Token expired, redirecting to login');

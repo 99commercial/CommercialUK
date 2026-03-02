@@ -161,6 +161,9 @@ const ListApproveProperty: React.FC<ListApprovePropertyProps> = ({ properties })
     return sortedProperties.slice(start, start + rowsPerPage);
   }, [sortedProperties, page, rowsPerPage]);
 
+  const hasNoPropertiesForApproval = properties.length === 0;
+  const hasNoSearchResults = properties.length > 0 && filteredProperties.length === 0;
+
   const handleSort = (field: 'building_name' | 'createdAt' | 'sale_status') => {
     if (sortBy === field) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
@@ -235,216 +238,255 @@ const ListApproveProperty: React.FC<ListApprovePropertyProps> = ({ properties })
           />
         </Box>
 
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                {isLargeScreen && <TableCell>Image</TableCell>}
-                <TableCell 
-                  onClick={() => handleSort('building_name')}
-                  sx={{ cursor: 'pointer', userSelect: 'none' }}
-                >
-                  <Box display="flex" alignItems="center" gap={1}>
-                    Property Name
-                    {getSortIcon('building_name')}
-                  </Box>
-                </TableCell>
-                <TableCell>Type</TableCell>
-                <TableCell>Location</TableCell>
-                <TableCell>Size</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>Listed By</TableCell>
-                <TableCell 
-                  onClick={() => handleSort('createdAt')}
-                  sx={{ cursor: 'pointer', userSelect: 'none' }}
-                >
-                  <Box display="flex" alignItems="center" gap={1}>
-                    Submission Date
-                    {getSortIcon('createdAt')}
-                  </Box>
-                </TableCell>
-                <TableCell align="center">View</TableCell>
-                <TableCell align="center">Approve</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {paginatedProperties.map((property) => (
-                <TableRow key={property._id} hover>
-                  {isLargeScreen && (
-                    <TableCell>
-                      <Box
-                        component="img"
-                        src={getPropertyImage(property)}
-                        alt={property.general_details.building_name}
-                        sx={{
-                          width: 80,
-                          height: 80,
-                          objectFit: 'cover',
-                          borderRadius: 1,
-                        }}
-                      />
-                    </TableCell>
-                  )}
-                  <TableCell>
-                    <Box>
-                      <Typography 
-                        variant="body2" 
-                        sx={{ fontWeight: 500, cursor: 'pointer' }}
-                        onClick={() => handleViewPropertyDetails(property)}
-                      >
-                        {property.general_details.building_name}
-                      </Typography>
-                      <Box display="flex" alignItems="center" gap={1} mt={0.5}>
-                        <Box
-                          sx={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: 0.2,
-                            px: 0.8,
-                            py: 0.2,
-                            borderRadius: 1,
-                            background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-                          }}
-                        >
-                          <ApproveIcon sx={{ fontSize: '0.5rem', color: 'white' }} />
-                          <Typography sx={{ color: 'white', fontWeight: 600, fontSize: '0.6rem' }}>
-                            Pending Approval
-                          </Typography>
-                        </Box>
-                        {property.is_featured && (
-                          <Box
-                            sx={{
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: 0.2,
-                              px: 0.8,
-                              py: 0.2,
-                              borderRadius: 1,
-                              background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-                            }}
-                          >
-                            <FeaturedIcon sx={{ fontSize: '0.5rem', color: 'white' }} />
-                            <Typography sx={{ color: 'white', fontWeight: 600, fontSize: '0.5rem' }}>
-                              Featured
-                            </Typography>
-                          </Box>
-                        )}
-                        {property.is_verified && (
-                          <Box
-                            sx={{
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: 0.2,
-                              px: 0.8,
-                              py: 0.2,
-                              borderRadius: 1,
-                              background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
-                            }}
-                          >
-                            <VerifiedIcon sx={{ fontSize: '0.5rem', color: 'white' }} />
-                            <Typography sx={{ color: 'white', fontWeight: 600, fontSize: '0.5rem' }}>
-                              Verified
-                            </Typography>
-                          </Box>
-                        )}
+        {filteredProperties.length > 0 ? (
+          <>
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    {isLargeScreen && <TableCell>Image</TableCell>}
+                    <TableCell 
+                      onClick={() => handleSort('building_name')}
+                      sx={{ cursor: 'pointer', userSelect: 'none' }}
+                    >
+                      <Box display="flex" alignItems="center" gap={1}>
+                        Property Name
+                        {getSortIcon('building_name')}
                       </Box>
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="body2">
-                      {property.general_details.property_type}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {property.general_details.property_sub_type}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Box display="flex" alignItems="center" gap={1}>
-                      <LocationIcon fontSize="small" color="action" />
-                      <Typography variant="body2">
-                        {property.general_details.town_city}, {property.general_details.postcode}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="body2">
-                      {property.general_details.size_minimum}-{property.general_details.size_maximum} sq ft
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Chip
-                      label={property.general_details.sale_status}
-                      size="small"
-                      color={
-                        property.general_details.sale_status === 'Available' ? 'success' :
-                        property.general_details.sale_status === 'Under Offer' ? 'warning' :
-                        property.general_details.sale_status === 'Sold' ? 'error' : 'default'
-                      }
-                    />
-                  </TableCell>
-                  <TableCell>
-                    {property.listed_by ? (
-                      <Box>
-                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                          {property.listed_by.firstName} {property.listed_by.lastName}
+                    </TableCell>
+                    <TableCell>Type</TableCell>
+                    <TableCell>Location</TableCell>
+                    <TableCell>Size</TableCell>
+                    <TableCell>Status</TableCell>
+                    <TableCell>Listed By</TableCell>
+                    <TableCell 
+                      onClick={() => handleSort('createdAt')}
+                      sx={{ cursor: 'pointer', userSelect: 'none' }}
+                    >
+                      <Box display="flex" alignItems="center" gap={1}>
+                        Submission Date
+                        {getSortIcon('createdAt')}
+                      </Box>
+                    </TableCell>
+                    <TableCell align="center">View</TableCell>
+                    <TableCell align="center">Approve</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {paginatedProperties.map((property) => (
+                    <TableRow key={property._id} hover>
+                      {isLargeScreen && (
+                        <TableCell>
+                          <Box
+                            component="img"
+                            src={getPropertyImage(property)}
+                            alt={property.general_details.building_name}
+                            sx={{
+                              width: 80,
+                              height: 80,
+                              objectFit: 'cover',
+                              borderRadius: 1,
+                            }}
+                          />
+                        </TableCell>
+                      )}
+                      <TableCell>
+                        <Box>
+                          <Typography 
+                            variant="body2" 
+                            sx={{ fontWeight: 500, cursor: 'pointer' }}
+                            onClick={() => handleViewPropertyDetails(property)}
+                          >
+                            {property.general_details.building_name}
+                          </Typography>
+                          <Box display="flex" alignItems="center" gap={1} mt={0.5}>
+                            <Box
+                              sx={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: 0.2,
+                                px: 0.8,
+                                py: 0.2,
+                                borderRadius: 1,
+                                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                              }}
+                            >
+                              <ApproveIcon sx={{ fontSize: '0.5rem', color: 'white' }} />
+                              <Typography sx={{ color: 'white', fontWeight: 600, fontSize: '0.6rem' }}>
+                                Pending Approval
+                              </Typography>
+                            </Box>
+                            {property.is_featured && (
+                              <Box
+                                sx={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: 0.2,
+                                  px: 0.8,
+                                  py: 0.2,
+                                  borderRadius: 1,
+                                  background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                                }}
+                              >
+                                <FeaturedIcon sx={{ fontSize: '0.5rem', color: 'white' }} />
+                                <Typography sx={{ color: 'white', fontWeight: 600, fontSize: '0.5rem' }}>
+                                  Featured
+                                </Typography>
+                              </Box>
+                            )}
+                            {property.is_verified && (
+                              <Box
+                                sx={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: 0.2,
+                                  px: 0.8,
+                                  py: 0.2,
+                                  borderRadius: 1,
+                                  background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                                }}
+                              >
+                                <VerifiedIcon sx={{ fontSize: '0.5rem', color: 'white' }} />
+                                <Typography sx={{ color: 'white', fontWeight: 600, fontSize: '0.5rem' }}>
+                                  Verified
+                                </Typography>
+                              </Box>
+                            )}
+                          </Box>
+                        </Box>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2">
+                          {property.general_details.property_type}
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
-                          {property.listed_by.email}
+                          {property.general_details.property_sub_type}
                         </Typography>
-                      </Box>
-                    ) : (
-                      <Typography variant="body2" color="text.secondary">N/A</Typography>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="body2">
-                      {new Date(property.createdAt).toLocaleDateString()}
-                    </Typography>
-                  </TableCell>
-                  <TableCell align="center">
-                    <IconButton
-                      size="small"
-                      onClick={() => handleViewProperty(property)}
-                      color="primary"
-                    >
-                      <ViewIcon fontSize="small" />
-                    </IconButton>
-                  </TableCell>
-                  <TableCell align="center">
-                    <IconButton
-                      size="small"
-                      onClick={() => {
-                        setPropertyToApprove(property._id);
-                        setApproveDialogOpen(true);
-                      }}
-                      color="success"
-                      sx={{
-                        '&:hover': {
-                          backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                        },
-                      }}
-                    >
-                      <ApproveIcon fontSize="small" />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                      </TableCell>
+                      <TableCell>
+                        <Box display="flex" alignItems="center" gap={1}>
+                          <LocationIcon fontSize="small" color="action" />
+                          <Typography variant="body2">
+                            {property.general_details.town_city}, {property.general_details.postcode}
+                          </Typography>
+                        </Box>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2">
+                          {property.general_details.size_minimum}-{property.general_details.size_maximum} sq ft
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Chip
+                          label={property.general_details.sale_status}
+                          size="small"
+                          color={
+                            property.general_details.sale_status === 'Available' ? 'success' :
+                            property.general_details.sale_status === 'Under Offer' ? 'warning' :
+                            property.general_details.sale_status === 'Sold' ? 'error' : 'default'
+                          }
+                        />
+                      </TableCell>
+                      <TableCell>
+                        {property.listed_by ? (
+                          <Box>
+                            <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                              {property.listed_by.firstName} {property.listed_by.lastName}
+                            </Typography>
+                            <Typography variant="caption" color="text.secondary">
+                              {property.listed_by.email}
+                            </Typography>
+                          </Box>
+                        ) : (
+                          <Typography variant="body2" color="text.secondary">N/A</Typography>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2">
+                          {new Date(property.createdAt).toLocaleDateString()}
+                        </Typography>
+                      </TableCell>
+                      <TableCell align="center">
+                        <IconButton
+                          size="small"
+                          onClick={() => handleViewProperty(property)}
+                          color="primary"
+                        >
+                          <ViewIcon fontSize="small" />
+                        </IconButton>
+                      </TableCell>
+                      <TableCell align="center">
+                        <IconButton
+                          size="small"
+                          onClick={() => {
+                            setPropertyToApprove(property._id);
+                            setApproveDialogOpen(true);
+                          }}
+                          color="success"
+                          sx={{
+                            '&:hover': {
+                              backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            },
+                          }}
+                        >
+                          <ApproveIcon fontSize="small" />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
 
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={filteredProperties.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={(_, newPage) => setPage(newPage)}
-          onRowsPerPageChange={(e) => {
-            setRowsPerPage(parseInt(e.target.value, 10));
-            setPage(0);
-          }}
-        />
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={filteredProperties.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={(_, newPage) => setPage(newPage)}
+              onRowsPerPageChange={(e) => {
+                setRowsPerPage(parseInt(e.target.value, 10));
+                setPage(0);
+              }}
+            />
+          </>
+        ) : (
+          <Box
+            sx={{
+              py: 8,
+              px: 3,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'column',
+              textAlign: 'center',
+              borderRadius: 2,
+              border: '1px dashed',
+              borderColor: 'divider',
+              bgcolor: 'grey.50',
+            }}
+          >
+            <Avatar
+              sx={{
+                width: 72,
+                height: 72,
+                mb: 2,
+                bgcolor: 'warning.light',
+              }}
+            >
+              <ApproveIcon sx={{ color: 'warning.dark', fontSize: 36 }} />
+            </Avatar>
+            <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
+              {hasNoPropertiesForApproval ? 'No Property Available for Approval' : 'No Matching Properties Found'}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {hasNoSearchResults
+                ? 'Try changing your search term to see properties.'
+                : 'New property submissions will appear here for approval.'}
+            </Typography>
+          </Box>
+        )}
       </Card>
 
       {/* Property Details Dialog */}

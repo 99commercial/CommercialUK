@@ -17,8 +17,14 @@ export default function Layout({ children }: Props) {
   const router = useRouter();
 
   let query = router.asPath;
+  const pathname = router.pathname;
 
   let queryArray = query.split('/');
+
+  // Check if it's the index (coming soon) page - return children without any layout (no navbar)
+  if (pathname === '/') {
+    return <>{children}</>;
+  }
 
   // Check if it's a report page - return children without any layout (no navbar)
   if (queryArray.includes('report')) {

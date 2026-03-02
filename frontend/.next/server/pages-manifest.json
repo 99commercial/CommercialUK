@@ -2,8 +2,9 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/auth/login": "pages/auth/login.js",
+  "/about-us": "pages/about-us.js",
+  "/general/all-properties": "pages/general/all-properties.js",
+  "/contact-us": "pages/contact-us.js",
   "/": "pages/index.js",
-  "/admin/static-pages/general-page": "pages/admin/static-pages/general-page.js",
-  "/admin/dashboard/list-user": "pages/admin/dashboard/list-user.js"
+  "/live": "pages/live.js"
 }

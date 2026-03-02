@@ -90,7 +90,6 @@ const saleTypesSchema = new Schema({
 });
 
 // Indexes
-saleTypesSchema.index({ property_id: 1 });
 saleTypesSchema.index({ 'sale_types.sale_type': 1 });
 saleTypesSchema.index({ 'sale_types.price_value': 1 });
 saleTypesSchema.index({ 'sale_types.price_unit': 1 });

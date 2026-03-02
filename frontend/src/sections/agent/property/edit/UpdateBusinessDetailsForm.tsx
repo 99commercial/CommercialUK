@@ -224,15 +224,31 @@ const UpdateBusinessDetailsForm: React.FC<UpdateBusinessDetailsFormProps> = ({
       newErrors.specifications = 'Specifications description is required';
     }
 
-    // Validate sale types
-    (formData.sale_types || []).forEach((saleType, index) => {
-      if (saleType.price_value && 
-          (isNaN(Number(saleType.price_value)) || Number(saleType.price_value) < 0)) {
-        newErrors[`sale_type_${index}_price`] = 'Price must be a valid positive number';
-      }
-    });
+    // Validate sale types - at least one required
+    const saleTypesArr = formData.sale_types || [];
+    if (saleTypesArr.length === 0) {
+      newErrors.sale_types = 'Please add at least one sale type';
+    } else {
+      saleTypesArr.forEach((saleType, index) => {
+        if (!saleType.sale_type || String(saleType.sale_type).trim() === '') {
+          newErrors[`sale_type_${index}_sale_type`] = 'Sale type is required';
+        }
+        const priceVal = saleType.price_value;
+        if (priceVal === undefined || priceVal === null || priceVal === '' || (typeof priceVal === 'string' && String(priceVal).trim() === '')) {
+          newErrors[`sale_type_${index}_price`] = 'Price value is required';
+        } else if (isNaN(Number(priceVal)) || Number(priceVal) < 0) {
+          newErrors[`sale_type_${index}_price`] = 'Price must be a valid positive number';
+        }
+        if (!saleType.price_unit || String(saleType.price_unit).trim() === '') {
+          newErrors[`sale_type_${index}_price_unit`] = 'Price unit is required';
+        }
+      });
+    }
 
     setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) {
+      enqueueSnackbar('Please fix the highlighted errors before submitting.', { variant: 'error' });
+    }
     return Object.keys(newErrors).length === 0;
   };
 
@@ -637,6 +653,9 @@ const UpdateBusinessDetailsForm: React.FC<UpdateBusinessDetailsFormProps> = ({
                 Add Sale Type
               </Button>
             </Box>
+            {errors.sale_types && (
+              <FormHelperText error sx={{ mb: 1 }}>{errors.sale_types}</FormHelperText>
+            )}
 
             {(formData.sale_types || []).map((saleType, index) => (
               <Card key={index} sx={{ mb: 2, p: 2, backgroundColor: '#f8f9fa' }}>

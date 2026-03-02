@@ -19,7 +19,7 @@ import { Property } from '../../components/PropertyCard';
 
 const HeaderSection = styled(Box)(({ theme }) => ({
   backgroundColor: '#ffffff',
-  padding: theme.spacing(3, 3),
+  padding: theme.spacing(3, 0),
   borderBottom: '1px solid #e0e0e0',
   marginBottom: theme.spacing(3),
   width: '100%',

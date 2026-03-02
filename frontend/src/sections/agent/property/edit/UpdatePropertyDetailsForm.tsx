@@ -30,6 +30,7 @@ const epcRatings = [
   'G',
   'Exempt',
   'Not Required',
+  'Unknown',
 ];
 
 const councilTaxBands = [
@@ -43,6 +44,7 @@ const councilTaxBands = [
   'H',
   'Exempt',
   'Not Applicable',
+  'Unknown',
 ];
 
 const planningStatuses = [
@@ -199,45 +201,79 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
   const validateForm = (): boolean => {
     const errors: Record<string, string> = {};
 
-    // Check if EPC fields should be validated (not Exempt or Not Required)
-    const shouldValidateEPC = formData.epc.rating && 
-      formData.epc.rating !== 'Exempt' && 
-      formData.epc.rating !== 'Not Required';
-
-    // Validate EPC score (only if rating is not Exempt or Not Required)
-    if (shouldValidateEPC && formData.epc.score && (formData.epc.score < 0 || formData.epc.score > 100)) {
-      errors.epc_score = 'EPC score must be between 0 and 100';
+    // Always-visible required fields
+    if (!formData.epc?.rating || formData.epc.rating.trim() === '') {
+      errors.epc_rating = 'EPC rating is required';
     }
-
-    // Validate rateable value - required field
+    if (!formData.council_tax?.band || formData.council_tax.band.trim() === '') {
+      errors.council_tax_band = 'Council tax band is required';
+    }
     if (!formData.rateable_value || formData.rateable_value === 0) {
       errors.rateable_value = 'Rateable value is required';
     } else if (formData.rateable_value < 0) {
       errors.rateable_value = 'Rateable value must be greater than 0';
     }
+    if (!formData.planning?.status || formData.planning.status.trim() === '') {
+      errors.planning_status = 'Planning status is required';
+    }
 
-    // Validate expiry date (only if rating is not Exempt or Not Required)
-    if (shouldValidateEPC && formData.epc.expiry_date) {
-      const expiryDate = new Date(formData.epc.expiry_date);
-      const today = new Date();
-      if (expiryDate < today) {
-        errors.epc_expiry = 'EPC expiry date should be in the future';
+    // EPC details (when rating is not Exempt/Not Required/Unknown)
+    const shouldValidateEPC = formData.epc?.rating && 
+      formData.epc.rating !== 'Exempt' && 
+      formData.epc.rating !== 'Not Required' && 
+      formData.epc.rating !== 'Unknown';
+    if (shouldValidateEPC) {
+      if (formData.epc?.score == null) {
+        errors.epc_score = 'EPC score is required';
+      } else if (formData.epc.score < 0 || formData.epc.score > 100) {
+        errors.epc_score = 'EPC score must be between 0 and 100';
+      }
+      if (!formData.epc?.certificate_number?.trim()) {
+        errors.epc_certificate_number = 'Certificate number is required';
+      }
+      if (!formData.epc?.expiry_date?.trim()) {
+        errors.epc_expiry = 'Expiry date is required';
+      } else {
+        const expiryDate = new Date(formData.epc.expiry_date);
+        const today = new Date();
+        if (expiryDate < today) {
+          errors.epc_expiry = 'EPC expiry date should be in the future';
+        }
       }
     }
 
-    // Check if planning fields should be validated (not Unknown)
-    const shouldValidatePlanning = formData.planning.status && formData.planning.status !== 'Unknown';
+    // Council authority (when band is not Exempt/Not Applicable/Unknown)
+    const shouldValidateCouncilAuthority = formData.council_tax?.band && 
+      formData.council_tax.band !== 'Exempt' && 
+      formData.council_tax.band !== 'Not Applicable' && 
+      formData.council_tax.band !== 'Unknown';
+    if (shouldValidateCouncilAuthority && !formData.council_tax?.authority?.trim()) {
+      errors.council_tax_authority = 'Council authority is required';
+    }
 
-    // Validate decision date (only if status is not Unknown)
-    if (shouldValidatePlanning && formData.planning.decision_date) {
-      const decisionDate = new Date(formData.planning.decision_date);
-      const today = new Date();
-      if (decisionDate > today) {
-        errors.planning_decision = 'Decision date should be in the past';
+    // Planning details (when status is not Unknown/No Planning Required)
+    const shouldValidatePlanning = formData.planning?.status && 
+      formData.planning.status !== 'Unknown' && 
+      formData.planning.status !== 'No Planning Required';
+    if (shouldValidatePlanning) {
+      if (!formData.planning?.application_number?.trim()) {
+        errors.planning_application_number = 'Application number is required';
+      }
+      if (!formData.planning?.decision_date?.trim()) {
+        errors.planning_decision = 'Decision date is required';
+      } else {
+        const decisionDate = new Date(formData.planning.decision_date);
+        const today = new Date();
+        if (decisionDate > today) {
+          errors.planning_decision = 'Decision date should be in the past';
+        }
       }
     }
 
     setFieldErrors(errors);
+    if (Object.keys(errors).length > 0) {
+      enqueueSnackbar('Please fix the highlighted errors before submitting.', { variant: 'error' });
+    }
     return Object.keys(errors).length === 0;
   };
 
@@ -248,8 +284,8 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
         [field]: value
       };
       
-      // If rating is "Exempt" or "Not Required", clear related fields
-      if (field === 'rating' && (value === 'Exempt' || value === 'Not Required')) {
+      // If rating is "Exempt", "Not Required", or "Unknown", clear related fields (standalone)
+      if (field === 'rating' && (value === 'Exempt' || value === 'Not Required' || value === 'Unknown')) {
         newEpc.score = 0;
         newEpc.certificate_number = '';
         newEpc.expiry_date = '';
@@ -269,8 +305,8 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
         [field]: value
       };
       
-      // If band is "Exempt" or "Not Applicable", clear authority field
-      if (field === 'band' && (value === 'Exempt' || value === 'Not Applicable')) {
+      // If band is "Exempt", "Not Applicable", or "Unknown", clear authority (standalone)
+      if (field === 'band' && (value === 'Exempt' || value === 'Not Applicable' || value === 'Unknown')) {
         newCouncilTax.authority = '';
       }
       
@@ -288,8 +324,8 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
         [field]: value
       };
       
-      // If status is "Unknown", clear related fields
-      if (field === 'status' && value === 'Unknown') {
+      // If status is "Unknown" or "No Planning Required", clear related fields (standalone)
+      if (field === 'status' && (value === 'Unknown' || value === 'No Planning Required')) {
         newPlanning.application_number = '';
         newPlanning.decision_date = '';
       }
@@ -317,7 +353,13 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
     setSubmitError(null);
 
     try {
-      const response = await axiosInstance.patch(`/api/agent/properties/${propertyId}/general-details`, formData);
+      const payload = {
+        epc: formData.epc,
+        council_tax: formData.council_tax,
+        rateable_value: formData.rateable_value,
+        planning: formData.planning,
+      };
+      const response = await axiosInstance.put(`/api/agent/properties/${propertyId}/property-details`, payload);
       
       if (response.data.success) {
         setIsSubmitted(true);
@@ -357,7 +399,7 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
               Energy Performance Certificate (EPC)
             </Typography>
             <Box sx={{ display: 'flex', gap: 2, width: '100%', flexWrap: 'wrap' }}>
-              <FormControl sx={{ flex: 1, minWidth: 120 }}>
+              <FormControl sx={{ flex: 1, minWidth: 120 }} error={!!fieldErrors.epc_rating}>
                 <InputLabel>EPC Rating</InputLabel>
                 <Select
                   value={formData.epc.rating || ''}
@@ -370,12 +412,14 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
                     </MenuItem>
                   ))}
                 </Select>
+                {fieldErrors.epc_rating && <FormHelperText>{fieldErrors.epc_rating}</FormHelperText>}
               </FormControl>
 
-              {/* Only show EPC fields if rating is not "Exempt" or "Not Required" */}
+              {/* Only show EPC fields if rating is not "Exempt", "Not Required", or "Unknown" */}
               {formData.epc.rating && 
                formData.epc.rating !== 'Exempt' && 
-               formData.epc.rating !== 'Not Required' && (
+               formData.epc.rating !== 'Not Required' &&
+               formData.epc.rating !== 'Unknown' && (
                 <>
                   <TextField
                     label="EPC Score"
@@ -392,6 +436,8 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
                     label="Certificate Number"
                     value={formData.epc.certificate_number || ''}
                     onChange={(e) => handleEPCChange('certificate_number', e.target.value)}
+                    error={!!fieldErrors.epc_certificate_number}
+                    helperText={fieldErrors.epc_certificate_number}
                     sx={{ flex: 2, minWidth: 200 }}
                   />
 
@@ -418,7 +464,7 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
               Council Tax
             </Typography>
             <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
-              <FormControl sx={{ flex: 1, minWidth: 120 }}>
+              <FormControl sx={{ flex: 1, minWidth: 120 }} error={!!fieldErrors.council_tax_band}>
                 <InputLabel>Council Tax Band</InputLabel>
                 <Select
                   value={formData.council_tax.band || ''}
@@ -431,16 +477,20 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
                     </MenuItem>
                   ))}
                 </Select>
+                {fieldErrors.council_tax_band && <FormHelperText>{fieldErrors.council_tax_band}</FormHelperText>}
               </FormControl>
 
-              {/* Only show Council Authority if band is not "Exempt" or "Not Applicable" */}
+              {/* Only show Council Authority if band is not "Exempt", "Not Applicable", or "Unknown" */}
               {formData.council_tax.band && 
                formData.council_tax.band !== 'Exempt' && 
-               formData.council_tax.band !== 'Not Applicable' && (
+               formData.council_tax.band !== 'Not Applicable' &&
+               formData.council_tax.band !== 'Unknown' && (
                 <TextField
                   label="Council Authority"
                   value={formData.council_tax.authority || ''}
                   onChange={(e) => handleCouncilTaxChange('authority', e.target.value)}
+                  error={!!fieldErrors.council_tax_authority}
+                  helperText={fieldErrors.council_tax_authority}
                   sx={{ flex: 2, minWidth: 200 }}
                 />
               )}
@@ -488,7 +538,7 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
               Planning Information
             </Typography>
             <Box sx={{ display: 'flex', gap: 2, width: '100%', flexWrap: 'wrap' }}>
-              <FormControl sx={{ flex: 1, minWidth: 150 }}>
+              <FormControl sx={{ flex: 1, minWidth: 150 }} error={!!fieldErrors.planning_status}>
                 <InputLabel>Planning Status</InputLabel>
                 <Select
                   value={formData.planning.status || ''}
@@ -501,15 +551,18 @@ const UpdatePropertyDetailsForm: React.FC<UpdatePropertyDetailsFormProps> = ({
                     </MenuItem>
                   ))}
                 </Select>
+                {fieldErrors.planning_status && <FormHelperText>{fieldErrors.planning_status}</FormHelperText>}
               </FormControl>
 
-              {/* Only show Planning fields if status is not "Unknown" */}
-              {formData.planning.status && formData.planning.status !== 'Unknown' && (
+              {/* Only show Planning fields if status is not "Unknown" or "No Planning Required" */}
+              {formData.planning.status && formData.planning.status !== 'Unknown' && formData.planning.status !== 'No Planning Required' && (
                 <>
                   <TextField
                     label="Application Number"
                     value={formData.planning.application_number || ''}
                     onChange={(e) => handlePlanningChange('application_number', e.target.value)}
+                    error={!!fieldErrors.planning_application_number}
+                    helperText={fieldErrors.planning_application_number}
                     sx={{ flex: 2, minWidth: 200 }}
                   />
 

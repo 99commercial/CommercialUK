@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import {
   Box,
   TextField,
@@ -36,7 +36,6 @@ import {
 } from '@mui/icons-material';
 import { useFormContext, useFieldArray, FieldErrors } from 'react-hook-form';
 import axiosInstance from '../../../utils/axios';
-import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 
 const documentTypes = [
@@ -59,21 +58,34 @@ const supportedFileTypes = [
 interface PropertyDocumentsFormData {
   property_documents: Array<{
     id?: number;
+    _id?: string;
+    document_name?: string;
     file_name?: string;
     file_size?: number;
+    mime_type?: string;
     file_type?: string;
     document_type?: string;
     uploaded_at?: string;
+    file_url?: string;
     download_url?: string;
+    url?: string;
     file?: File; // Store the actual file for later upload
   }>;
 }
 
 interface PropertyDocumentsFormProps {
-  onStepSubmitted?: (data: any) => void;
+  onStepSubmitted?: (step: number) => void;
+  propertyData?: any;
+  hasExistingData?: boolean;
+  fetchPropertyData?: () => void;
 }
 
-const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({ onStepSubmitted }) => {
+const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
+  onStepSubmitted,
+  propertyData,
+  hasExistingData = false,
+  fetchPropertyData,
+}) => {
   const {
     register,
     formState: { errors },
@@ -82,23 +94,56 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({ onStepSub
     control,
   } = useFormContext<PropertyDocumentsFormData>();
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, replace } = useFieldArray({
     control,
     name: 'property_documents',
   });
-
-  const router = useRouter();
-  const { propertyId } = router.query;
 
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploaded, setIsUploaded] = useState(false);
-  const [pendingFiles, setPendingFiles] = useState<File[]>([]); // Store files separately
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { enqueueSnackbar } = useSnackbar();
+  const lastPropertyIdRef = useRef<string | null>(null);
+  const hasInitializedRef = useRef<boolean>(false);
 
   const watchedValues = watch();
+
+  useEffect(() => {
+    const currentPropertyId = propertyData?._id || null;
+    const existingDocs = propertyData?.documents_id?.documents;
+
+    if (propertyData?.documents_id?._id && Array.isArray(existingDocs)) {
+      const shouldInitialize =
+        !hasInitializedRef.current ||
+        (currentPropertyId !== null && lastPropertyIdRef.current !== currentPropertyId);
+
+      if (shouldInitialize) {
+        const mappedDocuments = existingDocs.map((doc: any, index: number) => ({
+          id: Date.now() + index,
+          _id: doc._id,
+          document_name: doc.document_name || doc.file_name || '',
+          file_name: doc.file_name || doc.document_name || '',
+          file_size: doc.file_size || 0,
+          mime_type: doc.mime_type || '',
+          file_type: doc.mime_type || '',
+          document_type: doc.document_type || 'Other',
+          uploaded_at: doc.uploaded_at || doc.createdAt || new Date().toISOString(),
+          file_url: doc.file_url || doc.url || '',
+          download_url: doc.file_url || doc.url || '',
+          url: doc.file_url || doc.url || '',
+        }));
+
+        replace(mappedDocuments as any);
+        lastPropertyIdRef.current = currentPropertyId;
+        hasInitializedRef.current = true;
+      }
+    } else if (hasInitializedRef.current && currentPropertyId !== lastPropertyIdRef.current) {
+      replace([]);
+      lastPropertyIdRef.current = currentPropertyId;
+    }
+  }, [propertyData?._id, propertyData?.documents_id?._id, propertyData?.documents_id?.documents, replace]);
 
   const handleFileUpload = async (files: FileList) => {
     // Check if adding these files would exceed the 5-file limit
@@ -115,7 +160,6 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({ onStepSub
 
     try {
       const uploadedDocuments = [];
-      const validFiles: File[] = [];
       
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
@@ -147,19 +191,19 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({ onStepSub
           document_type: 'Other',
           uploaded_at: new Date().toISOString(),
           download_url: URL.createObjectURL(file), // Mock URL
+          url: '',
+          file,
         };
 
         console.log('Created document:', uploadedDocument);
         uploadedDocuments.push(uploadedDocument);
-        validFiles.push(file);
       }
 
-      // Store files separately and add metadata to form
-      setPendingFiles(prev => [...prev, ...validFiles]);
       uploadedDocuments.forEach(doc => append(doc));
 
-    } catch (error) {
-      console.error('Upload failed:', error);
+    } catch (error: any) {
+      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to upload documents. Please try again.';
+      enqueueSnackbar(errorMessage, { variant: 'error' });
     } finally {
       setUploading(false);
       setUploadProgress(0);
@@ -186,10 +230,6 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({ onStepSub
   };
 
   const removeDocument = (index: number) => {
-    // Remove from pending files if it exists
-    if (index < pendingFiles.length) {
-      setPendingFiles(prev => prev.filter((_, i) => i !== index));
-    }
     remove(index);
   };
 
@@ -201,19 +241,103 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({ onStepSub
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
+  const getPropertyId = () => {
+    if (propertyData?._id) {
+      return propertyData._id;
+    }
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('newpropertyId') || localStorage.getItem('propertyId');
+    }
+    return null;
+  };
+
+  const handleCreateDocuments = async (propertyId: string, documents: any[]) => {
+    const newDocuments = documents.filter((doc: any) => !!doc.file);
+    if (newDocuments.length === 0) {
+      enqueueSnackbar('Please upload at least one document to continue.', { variant: 'info' });
+      return;
+    }
+
+    const formData = new FormData();
+    newDocuments.forEach((doc: any) => {
+      formData.append('files', doc.file);
+    });
+
+    const documentTypes = newDocuments.map((doc: any) => doc.document_type || 'Other');
+    formData.append('document_types', JSON.stringify(documentTypes));
+
+    return axiosInstance.put(`/api/user/properties/${propertyId}/documents`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      onUploadProgress: (progressEvent) => {
+        if (progressEvent.total) {
+          const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          setUploadProgress(progress);
+        }
+      },
+    });
+  };
+
+  const handleUpdateDocuments = async (propertyId: string, documents: any[]) => {
+    const formData = new FormData();
+    const existingDocuments = documents
+      .filter((doc: any) => !doc.file)
+      .map((doc: any, index: number) => {
+        const fileUrl = doc.file_url || doc.url || doc.download_url || '';
+        const documentName = doc.document_name || doc.file_name || `Document ${index + 1}`;
+        return {
+          _id: doc._id,
+          document_name: documentName,
+          document_type: doc.document_type || 'Other',
+          file_url: fileUrl,
+          file_name: doc.file_name || documentName,
+          file_size: doc.file_size || 0,
+          mime_type: doc.mime_type || doc.file_type || 'application/pdf',
+          download_count: doc.download_count || 0,
+          upload_status: doc.upload_status || 'Completed',
+          uploaded_at: doc.uploaded_at || doc.createdAt || new Date().toISOString(),
+        };
+      });
+
+    const newDocuments = documents.filter((doc: any) => !!doc.file);
+    if (newDocuments.length > 0) {
+      newDocuments.forEach((doc: any) => {
+        formData.append('files', doc.file);
+      });
+      // Send as repeated multipart fields so backend gets a real array:
+      // file_types=Other&file_types=Floor Plan (not a JSON string).
+      newDocuments.forEach((doc: any) => {
+        formData.append('file_types', doc.document_type || 'Other');
+      });
+    }
+
+    formData.append('existing_documents', JSON.stringify(existingDocuments));
+
+    return axiosInstance.put(`/api/user/properties/${propertyId}/documents/mixed`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      onUploadProgress: (progressEvent) => {
+        if (progressEvent.total) {
+          const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          setUploadProgress(progress);
+        }
+      },
+    });
+  };
+
   const handleSubmit = async () => {
-    const storedPropertyId = localStorage.getItem('propertyId');
-    if (!storedPropertyId) {
-      console.error('Property ID not found in localStorage');
+    const propertyId = getPropertyId();
+    if (!propertyId) {
       enqueueSnackbar('Property ID not found. Please create the property first.', { variant: 'error' });
       return;
     }
 
-    console.log('Pending files:', pendingFiles);
-    console.log('Form documents:', fields);
-
-    if (pendingFiles.length === 0) {
-      console.log('No files to upload');
+    // Merge useFieldArray fields with watched values so we keep metadata
+    // (file_url, document_name, _id) while preserving latest edited document_type.
+    const watchedDocuments = watchedValues.property_documents || [];
+    const documents = fields.map((field: any, index: number) => ({
+      ...field,
+      ...(watchedDocuments[index] || {}),
+    }));
+    if (documents.length === 0) {
       enqueueSnackbar('No documents to upload.', { variant: 'info' });
       return;
     }
@@ -221,80 +345,46 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({ onStepSub
     setIsSubmitting(true);
 
     try {
-      // Create FormData for multipart upload
-      const formData = new FormData();
-      
-      // Add files to FormData
-      pendingFiles.forEach((file) => {
-        formData.append('files', file);
-      });
+      const response = hasExistingData
+        ? await handleUpdateDocuments(propertyId, documents)
+        : await handleCreateDocuments(propertyId, documents);
 
-      // Add document types - map each pending file to its corresponding document type
-      const documentTypes = pendingFiles.map((file, index) => {
-        // Find the corresponding form field for this file
-        const correspondingField = fields[index];
-        if (correspondingField) {
-          const docType = watchedValues.property_documents?.[index]?.document_type;
-          console.log(`File ${file.name} -> Document type: ${docType}`);
-          return docType || 'Other';
-        }
-        return 'Other';
-      });
-      
-      // Add document types as JSON string to ensure it's received as array
-      formData.append('document_types', JSON.stringify(documentTypes));
-
-      // Debug FormData contents
-      console.log('pendingFiles:', pendingFiles);
-      console.log('documentTypes:', documentTypes);
-      console.log('FormData entries:');
-
-      // Upload to backend
-      const response = await axiosInstance.put(
-        `/api/user/properties/${storedPropertyId}/documents`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-          onUploadProgress: (progressEvent) => {
-            if (progressEvent.total) {
-              const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-              setUploadProgress(progress);
-            }
-          },
-        }
-      );
-
-      if (response.data.success) {
-        // Clear pending files since they're now uploaded
-        setPendingFiles([]);
+      if (response?.data?.success || response?.data?.data) {
         setIsUploaded(true);
-        
-        // Update propertyId in localStorage
-        if (response.data.data && response.data.data._id) {
-          localStorage.removeItem('propertyId');
-        }
+        enqueueSnackbar(
+          hasExistingData ? 'Documents updated successfully!' : 'Documents uploaded successfully!',
+          { variant: 'success' }
+        );
 
-        localStorage.removeItem('newpropertyId');
-        
-        // Show success message
-        enqueueSnackbar('Documents uploaded successfully!', { variant: 'success' });
-        console.log('Documents uploaded successfully');
-        
-        // Mark step as submitted to enable Next button
+        // Refresh immediately, then again after a short delay to avoid stale reads.
+        await Promise.resolve(fetchPropertyData?.());
+        setTimeout(() => {
+          fetchPropertyData?.();
+        }, 600);
+
         if (onStepSubmitted) {
-          onStepSubmitted(7); // Step 7 is the documents step
+          onStepSubmitted(7);
         }
       }
-
     } catch (error: any) {
-      console.error('Upload failed:', error);
-      enqueueSnackbar(error?.response?.data?.message || 'Failed to upload documents. Please try again.', { variant: 'error' });
+      console.error('Document request failed:', error);
+      enqueueSnackbar(error?.response?.data?.message || error?.message || 'Failed to save documents. Please try again.', {
+        variant: 'error'
+      });
     } finally {
       setIsSubmitting(false);
       setUploadProgress(0);
     }
+  };
+
+  const handleSubmitSafe = () => {
+    void handleSubmit().catch((error: any) => {
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        'Failed to save documents. Please try again.';
+      enqueueSnackbar(errorMessage, { variant: 'error' });
+    });
   };
 
   const getFileIcon = (fileType: string) => {
@@ -310,6 +400,34 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({ onStepSub
     if (fileType.includes('image')) return 'secondary';
     return 'default';
   };
+
+  const hasNewDocuments = (watchedValues.property_documents || []).some((doc: any) => !!doc?.file);
+  const originalDocumentKeys = useMemo(() => {
+    const originalDocs = propertyData?.documents_id?.documents || [];
+    return originalDocs
+      .map((doc: any) => String(doc?._id || doc?.file_url || doc?.url || doc?.file_name || ''))
+      .filter(Boolean);
+  }, [propertyData?.documents_id?.documents]);
+
+  const currentExistingDocumentKeys = useMemo(() => {
+    const watchedDocuments = watchedValues.property_documents || [];
+    const mergedDocuments = fields.map((field: any, index: number) => ({
+      ...field,
+      ...(watchedDocuments[index] || {}),
+    }));
+
+    return mergedDocuments
+      .filter((doc: any) => !doc?.file)
+      .map((doc: any) => String(doc?._id || doc?.file_url || doc?.url || doc?.file_name || ''))
+      .filter(Boolean);
+  }, [fields, watchedValues.property_documents]);
+
+  const hasRemovedExistingDocuments = useMemo(() => {
+    if (!hasExistingData) return false;
+    if (originalDocumentKeys.length === 0) return false;
+
+    return originalDocumentKeys.some((key) => !currentExistingDocumentKeys.includes(key));
+  }, [hasExistingData, originalDocumentKeys, currentExistingDocumentKeys]);
 
   return (
     <Box>
@@ -414,7 +532,7 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({ onStepSub
                               color={getFileTypeColor(document?.file_type || '') as any}
                               variant="outlined"
                             />
-                            {index < pendingFiles.length && (
+                            {document?.file && (
                               <Chip
                                 label="Pending Upload"
                                 color="warning"
@@ -513,8 +631,13 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({ onStepSub
               <Button
                 variant="contained"
                 size="large"
-                onClick={handleSubmit}
-                disabled={isSubmitting || uploading || isUploaded}
+                onClick={handleSubmitSafe}
+                disabled={
+                  isSubmitting ||
+                  uploading ||
+                  (!hasExistingData && isUploaded) ||
+                  (hasExistingData && !hasNewDocuments && !hasRemovedExistingDocuments)
+                }
                 startIcon={isSubmitting ? <CircularProgress size={20} /> : <CloudUpload />}
                 sx={{ 
                   minWidth: 200,
@@ -525,7 +648,11 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({ onStepSub
                   }
                 }}
               >
-                {isUploaded ? 'Uploaded Successfully' : isSubmitting ? 'Uploading...' : 'Update Documents'}
+                {isUploaded
+                  ? (hasExistingData ? 'Updated Successfully' : 'Uploaded Successfully')
+                  : isSubmitting
+                    ? (hasExistingData ? 'Updating...' : 'Uploading...')
+                    : (hasExistingData ? 'Update Documents' : 'Upload Documents')}
               </Button>
             </Box>
           </Box>

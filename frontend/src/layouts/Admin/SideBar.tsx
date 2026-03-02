@@ -358,6 +358,12 @@ const SideBar: React.FC<SideBarProps> = ({ open, onToggle, onClose }) => {
         { id: 'Property Data', path: '/admin/aical/listPropertyData', label: 'Property Data', icon: CheckCircleIcon },
       ],
     },
+    {
+      section: 'Static Pages',
+      items: [
+        { id: 'Law and Jurisdiction', path: '/admin/static-pages/general-page', label: 'Law and Jurisdiction', icon: HomeWorkIcon },
+      ],
+    },
   ];
 
   // Sync active item with current route
@@ -465,7 +471,7 @@ const SideBar: React.FC<SideBarProps> = ({ open, onToggle, onClose }) => {
 
 
     return (
-      <ListItem key={item.id} disablePadding>
+      <ListItem key={item.id} disablePadding sx={{ zIndex: 9999 }}>
         <Link href={item.path} prefetch onClick={handleAfterNavigate} style={{ width: '100%', textDecoration: 'none' }}>
           <StyledListItemButton
             active={isActive}
@@ -513,10 +519,11 @@ const SideBar: React.FC<SideBarProps> = ({ open, onToggle, onClose }) => {
           router.push('/');
         }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-            <LogoIcon />
-            <LogoText>
-              CommercialUK™
-            </LogoText>
+            <img
+              src="/images/CUKLogo.png"
+              alt="CommercialUK"
+              style={{ width: 220, objectFit: 'contain' }}
+            />
           </Box>
           <IconButton
             onClick={(e) => {
@@ -602,9 +609,9 @@ const SideBar: React.FC<SideBarProps> = ({ open, onToggle, onClose }) => {
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             {open && (
                             <img
-                            src="/images/CommercialUK2.png"
+                            src="/images/CUKLogo.png"
                             alt="CommercialUK"
-                            style={{ width: 180, objectFit: 'contain' }}
+                            style={{ width: 220, objectFit: 'contain' }}
                           />
             )}
           </Box>

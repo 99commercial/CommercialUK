@@ -43,24 +43,16 @@ export class emailService {
    */
   async verifyZohoConnection() {
     try {
-      console.log('🔍 Testing Zoho SMTP connection...');
-      console.log('📧 Email User:', EMAIL_USER);
-      console.log('🔑 Password length:', EMAIL_PASS ? EMAIL_PASS.length : 'undefined');
-      
       await this.transporter.verify();
-      
-      console.log('✅ Zoho SMTP connection verified successfully');
     } catch (error) {
-      console.error('❌ Zoho SMTP connection verification failed:', error.message);
-      console.error('🔍 Error details:', error);
-      console.error('📧 Please check your Zoho SMTP credentials and settings');
+      console.error('Zoho SMTP connection verification failed:', error.message);
       
       // Additional debugging for common Zoho issues
       if (error.message.includes('535')) {
-        console.error('🚨 535 Error: Authentication failed - check app-specific password');
+        console.error('535 Error: Authentication failed - check app-specific password');
       }
       if (error.message.includes('553')) {
-        console.error('🚨 553 Error: Relay not allowed - check Zoho SMTP settings');
+        console.error('553 Error: Relay not allowed - check Zoho SMTP settings');
       }
     }
   }
@@ -303,6 +295,103 @@ export class emailService {
       return result;
     } catch (error) {
       console.error('❌ Error sending new query email:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Send property approval email
+   * @param {string} email - User's email address
+   * @param {string} firstName - User's first name
+   * @param {string} lastName - User's last name
+   * @param {string} propertyId - Property ID
+   * @param {string} propertyName - Property name/building name
+   * @param {string} propertyAddress - Property address
+   * @param {string} propertyType - Property type (optional)
+   * @param {string} propertySize - Property size (optional)
+   */
+  async sendPropertyApprovalEmail(email, firstName, lastName, propertyId, propertyName, propertyAddress, propertyType = null, propertySize = null) {
+    try {
+      const propertyLink = `${FRONTEND_URL}/property/${propertyId}`;
+      
+      const mailOptions = {
+        from: `"CommercialUK" <noreply@commercialuk.co.uk>`,
+        to: email,
+        subject: 'Your Property is Live and Approved - CommercialUK',
+        template: 'property-approved',
+        context: {
+          email,
+          firstName: firstName || 'Valued Customer',
+          lastName,
+          propertyLink,
+          propertyName,
+          propertyAddress,
+          propertyType,
+          propertySize,
+          propertyDetails: propertyType || propertySize, // Show details section if we have any details
+          frontendUrl: FRONTEND_URL,
+        },
+      };
+
+      // Add timeout wrapper
+      const sendPromise = this.transporter.sendMail(mailOptions);
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Email send timeout')), 30000);
+      });
+
+      const result = await Promise.race([sendPromise, timeoutPromise]);
+      console.log('✅ Property approval email sent successfully:', result.messageId);
+      return result;
+    } catch (error) {
+      console.error('❌ Error sending property approval email:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Send email to admin(s) that a new property has come for approval
+   * @param {string} email - Admin's email address
+   * @param {string} firstName - Admin's first name
+   * @param {string} lastName - Admin's last name
+   * @param {string} propertyId - Property ID
+   * @param {string} propertyName - Property name/building name
+   * @param {string} propertyAddress - Property address
+   * @param {string} propertyType - Property type (optional)
+   * @param {string} propertySize - Property size (optional)
+   */
+  async sendNewPropertyForApprovalEmail(email, firstName, lastName, propertyId, propertyName, propertyAddress, propertyType = null, propertySize = null) {
+    try {
+      const propertyLink = `${FRONTEND_URL}/property/${propertyId}`;
+
+      const mailOptions = {
+        from: `"CommercialUK" <noreply@commercialuk.co.uk>`,
+        to: email,
+        subject: 'New Property Pending Approval - CommercialUK',
+        template: 'new-property-for-approval',
+        context: {
+          email,
+          firstName: firstName || 'Admin',
+          lastName,
+          propertyLink,
+          propertyName,
+          propertyAddress,
+          propertyType,
+          propertySize,
+          propertyDetails: propertyType || propertySize,
+          frontendUrl: FRONTEND_URL,
+        },
+      };
+
+      const sendPromise = this.transporter.sendMail(mailOptions);
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Email send timeout')), 30000);
+      });
+
+      const result = await Promise.race([sendPromise, timeoutPromise]);
+      console.log('✅ New property for approval email sent successfully:', result.messageId);
+      return result;
+    } catch (error) {
+      console.error('❌ Error sending new property for approval email:', error);
       throw error;
     }
   }

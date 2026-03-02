@@ -254,13 +254,87 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
     return '';
   };
 
+  // Extract backend validation errors from axios error shape into form field map
+  const extractFieldErrorsFromApiError = (error: any): Record<string, string> => {
+    const apiErrors = error?.response?.data?.errors || error?.errors;
+    if (!Array.isArray(apiErrors)) {
+      return {};
+    }
+
+    const fieldErrors: Record<string, string> = {};
+    apiErrors.forEach((err: any) => {
+      if (err?.path && err?.msg) {
+        // Convert array notation to dot notation for consistency in UI mapping
+        const normalizedPath = String(err.path).replace(/\[(\d+)\]/g, '.$1');
+        fieldErrors[normalizedPath] = err.msg;
+      }
+    });
+
+    return fieldErrors;
+  };
+
+  // Build a user-friendly API error message for alerts/snackbars
+  const getApiErrorMessage = (error: any, fallback: string): string => {
+    const rawMessage =
+      error?.response?.data?.message ||
+      error?.message ||
+      fallback;
+
+    const normalized = String(rawMessage || '').trim();
+    if (!normalized) {
+      return fallback;
+    }
+
+    // Handle common Mongo duplicate-key errors with a cleaner UI message
+    if (normalized.includes('E11000 duplicate key error')) {
+      if (normalized.includes('business_rates') && normalized.includes('property_id')) {
+        return 'Business rates already exist for this property. Please use Update Business Details.';
+      }
+      return 'Duplicate record detected. Please refresh and try updating existing details.';
+    }
+
+    return normalized;
+  };
+
+  // Validate sale types and return field-level errors for inline display
+  const validateSaleTypeFields = (): Record<string, string> => {
+    const validationErrors: Record<string, string> = {};
+    const currentSaleTypes = Array.isArray(formData.sale_types) ? formData.sale_types : [];
+
+    if (currentSaleTypes.length === 0) {
+      validationErrors['sale_types'] = 'Please add at least one sale type before submitting.';
+      return validationErrors;
+    }
+
+    currentSaleTypes.forEach((saleType, index) => {
+      if (!saleType?.sale_type || String(saleType.sale_type).trim() === '') {
+        validationErrors[`sale_types.${index}.sale_type`] = 'Sale type is required';
+      }
+
+      if (!saleType?.price_currency || String(saleType.price_currency).trim() === '') {
+        validationErrors[`sale_types.${index}.price_currency`] = 'Price currency is required';
+      }
+
+      const rawPriceValue = saleType?.price_value;
+      const isPriceValueMissing =
+        rawPriceValue === undefined ||
+        rawPriceValue === null ||
+        (typeof rawPriceValue === 'string' && rawPriceValue.trim() === '');
+
+      if (isPriceValueMissing) {
+        validationErrors[`sale_types.${index}.price_value`] = 'Price value is required';
+      }
+
+      if (!saleType?.price_unit || String(saleType.price_unit).trim() === '') {
+        validationErrors[`sale_types.${index}.price_unit`] = 'Price unit is required';
+      }
+    });
+
+    return validationErrors;
+  };
+
   // Add sale type
   const addSaleType = () => {
-    const saleTypes = Array.isArray(formData.sale_types) ? formData.sale_types : [];
-    if (saleTypes.length >= 1) {
-      enqueueSnackbar('Only one sale type is allowed.', { variant: 'error' });
-      return;
-    }
     setFormData(prev => ({
       ...prev,
       sale_types: [
@@ -322,21 +396,14 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
       validationErrors['descriptions.specifications'] = 'Specifications description is required';
     }
 
+    // Validate sale type fields
+    const saleTypeValidationErrors = validateSaleTypeFields();
+    Object.assign(validationErrors, saleTypeValidationErrors);
+
     // If there are validation errors, set them and return
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-      return;
-    }
-
-    // Validate that exactly one sale type is added
-    const saleTypes = Array.isArray(formData.sale_types) ? formData.sale_types : [];
-    if (!saleTypes || saleTypes.length === 0) {
-      enqueueSnackbar('Please add exactly one sale type before submitting.', { variant: 'error' });
-      return;
-    }
-    
-    if (saleTypes.length > 1) {
-      enqueueSnackbar('Only one sale type is allowed. Please remove extra sale types.', { variant: 'error' });
+      enqueueSnackbar('Please fix the highlighted errors before submitting.', { variant: 'error' });
       return;
     }
 
@@ -374,28 +441,15 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
 
     
     } catch (error: any) {
-      console.error('Error saving business details:', error);
-      
-      if (error.errors && Array.isArray(error.errors)) {
-        // Handle multiple field errors
-        const fieldErrors: Record<string, string> = {};
-        console.log('Processing errors:', error.errors);
-        error.errors.forEach((err: any) => {
-          if (err.path && err.msg) {
-            // Convert array notation to dot notation for consistency
-            const normalizedPath = err.path.replace(/\[(\d+)\]/g, '.$1');
-            console.log(`Error path: ${err.path} -> normalized: ${normalizedPath}, msg: ${err.msg}`);
-            fieldErrors[normalizedPath] = err.msg;
-          }
-        });
-        console.log('Final field errors:', fieldErrors);
+      console.warn('Error saving business details request failed');
+
+      const fieldErrors = extractFieldErrorsFromApiError(error);
+      if (Object.keys(fieldErrors).length > 0) {
         setErrors(fieldErrors);
-        
-        // Clear any previous general error
         setSubmitError(null);
       } else {
         // Handle general error
-        const errorMessage = error.response?.data?.message || error.message || 'Failed to save business details';
+        const errorMessage = getApiErrorMessage(error, 'Failed to save business details');
         setSubmitError(errorMessage);
 
         enqueueSnackbar(errorMessage, { variant: 'error' });
@@ -446,14 +500,10 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
 
   // Update sale types
   const updateSaleTypes = async () => {
-    // Validate that exactly one sale type is added
+    // Validate that at least one sale type is added
     const saleTypes = Array.isArray(formData.sale_types) ? formData.sale_types : [];
     if (!saleTypes || saleTypes.length === 0) {
-      throw new Error('Please add exactly one sale type before submitting.');
-    }
-    
-    if (saleTypes.length > 1) {
-      throw new Error('Only one sale type is allowed. Please remove extra sale types.');
+      throw new Error('Please add at least one sale type before submitting.');
     }
 
     const saleTypesId = propertyData?.sale_types_id?._id;
@@ -478,6 +528,44 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
     // Clear previous errors
     setSubmitError(null);
     setErrors({});
+
+    // Validate all required fields (same as handleSubmit)
+    const validationErrors: Record<string, string> = {};
+
+    // Validate business rates
+    if (!formData.business_rates?.rateable_value_gbp || formData.business_rates.rateable_value_gbp === '' || (typeof formData.business_rates.rateable_value_gbp === 'string' && formData.business_rates.rateable_value_gbp.trim() === '')) {
+      validationErrors['business_rates.rateable_value_gbp'] = 'Rateable value is required';
+    }
+    if (!formData.business_rates?.rates_payable_gbp || formData.business_rates.rates_payable_gbp === '' || (typeof formData.business_rates.rates_payable_gbp === 'string' && formData.business_rates.rates_payable_gbp.trim() === '')) {
+      validationErrors['business_rates.rates_payable_gbp'] = 'Rates payable is required';
+    }
+
+    // Validate descriptions
+    if (!formData.descriptions?.general || formData.descriptions.general.trim() === '') {
+      validationErrors['descriptions.general'] = 'General description is required';
+    }
+    if (!formData.descriptions?.location || formData.descriptions.location.trim() === '') {
+      validationErrors['descriptions.location'] = 'Location description is required';
+    }
+    if (!formData.descriptions?.accommodation || formData.descriptions.accommodation.trim() === '') {
+      validationErrors['descriptions.accommodation'] = 'Accommodation description is required';
+    }
+    if (!formData.descriptions?.terms || formData.descriptions.terms.trim() === '') {
+      validationErrors['descriptions.terms'] = 'Terms description is required';
+    }
+    if (!formData.descriptions?.specifications || formData.descriptions.specifications.trim() === '') {
+      validationErrors['descriptions.specifications'] = 'Specifications description is required';
+    }
+
+    // Validate sale types
+    const saleTypeValidationErrors = validateSaleTypeFields();
+    Object.assign(validationErrors, saleTypeValidationErrors);
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      enqueueSnackbar('Please fix the highlighted errors before submitting.', { variant: 'error' });
+      return;
+    }
 
     setIsSubmitting(true);
 
@@ -522,22 +610,15 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
       }
 
     } catch (error: any) {
-      console.error('Error updating business details:', error);
-      
-      // Handle validation errors
-      if (error.response?.data?.errors && Array.isArray(error.response.data.errors)) {
-        const fieldErrors: Record<string, string> = {};
-        error.response.data.errors.forEach((err: any) => {
-          if (err.path && err.msg) {
-            const normalizedPath = err.path.replace(/\[(\d+)\]/g, '.$1');
-            fieldErrors[normalizedPath] = err.msg;
-          }
-        });
+      console.warn('Error updating business details request failed');
+
+      const fieldErrors = extractFieldErrorsFromApiError(error);
+      if (Object.keys(fieldErrors).length > 0) {
         setErrors(fieldErrors);
         setSubmitError(null);
       } else {
         // Handle general error
-        const errorMessage = error.response?.data?.message || error.message || 'Failed to update business details. Please try again.';
+        const errorMessage = getApiErrorMessage(error, 'Failed to update business details. Please try again.');
         setSubmitError(errorMessage);
         enqueueSnackbar(errorMessage, { variant: 'error' });
         setErrors({});
@@ -701,7 +782,10 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
     // Check if we have any existing data (business_rates, descriptions, or sale_types)
     const hasBusinessRates = propertyData?.business_rates_id?._id;
     const hasDescriptions = propertyData?.descriptions_id?._id;
-    const hasSaleTypes = propertyData?.sale_types_id && Array.isArray(propertyData.sale_types_id) && propertyData.sale_types_id.length > 0;
+    const hasSaleTypes = propertyData?.sale_types_id?._id || (
+      Array.isArray(propertyData?.sale_types_id?.sale_types) &&
+      propertyData.sale_types_id.sale_types.length > 0
+    );
     
     if (hasExistingData && (hasBusinessRates || hasDescriptions || hasSaleTypes)) {
       handleFormUpdate();
@@ -875,14 +959,16 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
               onClick={addSaleType}
               variant="outlined"
               size="small"
-              disabled={(Array.isArray(formData.sale_types) ? formData.sale_types : []).length >= 1}
             >
               Add Sale Type
             </Button>
           </Box>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            Add one sale type and pricing option for this property.
+            Add one or more sale types and pricing options for this property.
           </Typography>
+          {getFieldError('sale_types') && (
+            <FormHelperText error sx={{ mb: 1 }}>{getFieldError('sale_types')}</FormHelperText>
+          )}
         </Box>
 
         {(Array.isArray(formData.sale_types) ? formData.sale_types : []).map((saleType, index) => (
@@ -960,7 +1046,7 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
                   </Box>
 
                   <Box sx={{ flex: '1 1 200px', minWidth: '200px' }}>
-                    <FormControl fullWidth>
+                    <FormControl fullWidth error={!!getFieldError(`sale_types.${index}.price_currency`)}>
                       <InputLabel>Currency</InputLabel>
                       <Select
                         value={saleType.price_currency || 'GBP'}
@@ -969,6 +1055,9 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
                       >
                         <MenuItem value="GBP">GBP (£)</MenuItem>
                       </Select>
+                      {getFieldError(`sale_types.${index}.price_currency`) && (
+                        <FormHelperText>{getFieldError(`sale_types.${index}.price_currency`)}</FormHelperText>
+                      )}
                     </FormControl>
                   </Box>
                 </Box>
@@ -1044,7 +1133,7 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
             <Button
               variant="contained"
               startIcon={isSubmitting ? <CircularProgress size={20} /> : <Save />}
-              onClick={handleSubmit}
+              onClick={handleSubmitWrapper}
               disabled={isSubmitting || isSubmitted}
               sx={{
                 minWidth: 200,

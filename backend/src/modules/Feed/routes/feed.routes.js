@@ -1,6 +1,7 @@
 import express from 'express';
 import FeedController from '../controllers/feed.controllers.js';
 import { authenticate } from '../../../middleware/authenticate.middleware.js';
+import { createUserActivity } from '../../../middleware/userActivity.middleware.js';
 
 const router = express.Router();
 const feedController = new FeedController();

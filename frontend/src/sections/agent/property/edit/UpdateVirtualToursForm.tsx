@@ -8,18 +8,16 @@ import {
   MenuItem,
   FormHelperText,
   Typography,
-  Divider,
   Card,
   CardContent,
   Button,
   IconButton,
   Switch,
   FormControlLabel,
-  InputAdornment,
   Alert,
   CircularProgress,
 } from '@mui/material';
-import { Add, Delete, VideoLibrary, Link, Image, Schedule, Save } from '@mui/icons-material';
+import { Add, Delete, VideoLibrary, Save } from '@mui/icons-material';
 import axiosInstance from '../../../../utils/axios';
 import { enqueueSnackbar } from 'notistack';
 
@@ -41,9 +39,6 @@ interface VirtualTour {
   link_type?: string;
   description?: string;
   thumbnail_url?: string;
-  duration?: number;
-  is_featured?: boolean;
-  display_order?: number;
   is_active?: boolean;
 }
 
@@ -138,9 +133,6 @@ const UpdateVirtualToursForm: React.FC<UpdateVirtualToursFormProps> = ({
     link_type: (tour.link_type || '').trim(),
     description: (tour.description || '').trim(),
     thumbnail_url: (tour.thumbnail_url || '').trim(),
-    duration: tour.duration || 0,
-    is_featured: tour.is_featured || false,
-    display_order: tour.display_order ?? undefined,
     is_active: tour.is_active !== false,
   });
 
@@ -181,8 +173,13 @@ const UpdateVirtualToursForm: React.FC<UpdateVirtualToursFormProps> = ({
       if (!tour.link_type) {
         errors[`tour_${index}_type`] = 'Link type is required';
       }
-      if (tour.duration && tour.duration < 0) {
-        errors[`tour_${index}_duration`] = 'Duration must be 0 or greater';
+      if (!tour.description?.trim()) {
+        errors[`tour_${index}_description`] = 'Description is required';
+      }
+      if (!tour.thumbnail_url?.trim()) {
+        errors[`tour_${index}_thumbnail`] = 'Thumbnail URL is required';
+      } else if (!isValidUrl(tour.thumbnail_url)) {
+        errors[`tour_${index}_thumbnail`] = 'Please enter a valid URL';
       }
     });
 
@@ -199,6 +196,18 @@ const UpdateVirtualToursForm: React.FC<UpdateVirtualToursFormProps> = ({
     }
   };
 
+  const getErrorKey = (index: number, field: keyof VirtualTour): string | null => {
+    const map: Record<string, string> = {
+      tour_name: 'name',
+      tour_url: 'url',
+      link_type: 'type',
+      description: 'description',
+      thumbnail_url: 'thumbnail',
+    };
+    const suffix = map[field];
+    return suffix ? `tour_${index}_${suffix}` : null;
+  };
+
   const handleTourChange = (index: number, field: keyof VirtualTour, value: any) => {
     setFormData(prev => ({
       ...prev,
@@ -206,6 +215,14 @@ const UpdateVirtualToursForm: React.FC<UpdateVirtualToursFormProps> = ({
         i === index ? { ...tour, [field]: value } : tour
       )
     }));
+    const errorKey = getErrorKey(index, field);
+    if (errorKey && fieldErrors[errorKey]) {
+      setFieldErrors(prev => {
+        const next = { ...prev };
+        delete next[errorKey];
+        return next;
+      });
+    }
   };
 
   const addTour = () => {
@@ -215,9 +232,6 @@ const UpdateVirtualToursForm: React.FC<UpdateVirtualToursFormProps> = ({
       link_type: '',
       description: '',
       thumbnail_url: '',
-      duration: 0,
-      is_featured: false,
-      display_order: formData.virtual_tours?.length || 0,
       is_active: true,
     };
     setFormData(prev => ({
@@ -341,13 +355,12 @@ const UpdateVirtualToursForm: React.FC<UpdateVirtualToursFormProps> = ({
                       required
                     />
 
-                    <FormControl sx={{ minWidth: 150 }} required>
+                    <FormControl sx={{ minWidth: 150 }} required error={!!fieldErrors[`tour_${index}_type`]}>
                       <InputLabel>Link Type</InputLabel>
                       <Select
                         value={tour.link_type || ''}
                         onChange={(e) => handleTourChange(index, 'link_type', e.target.value)}
                         label="Link Type"
-                        error={!!fieldErrors[`tour_${index}_type`]}
                       >
                         {linkTypes.map((type) => (
                           <MenuItem key={type} value={type}>
@@ -359,26 +372,6 @@ const UpdateVirtualToursForm: React.FC<UpdateVirtualToursFormProps> = ({
                         <FormHelperText>{fieldErrors[`tour_${index}_type`]}</FormHelperText>
                       )}
                     </FormControl>
-
-                    <TextField
-                      label="Duration (seconds)"
-                      type="number"
-                      value={tour.duration || ''}
-                      onChange={(e) => handleTourChange(index, 'duration', parseInt(e.target.value) || 0)}
-                      error={!!fieldErrors[`tour_${index}_duration`]}
-                      helperText={fieldErrors[`tour_${index}_duration`]}
-                      inputProps={{ min: 0 }}
-                      sx={{ minWidth: 150 }}
-                    />
-
-                    <TextField
-                      label="Display Order"
-                      type="number"
-                      value={tour.display_order || index}
-                      onChange={(e) => handleTourChange(index, 'display_order', parseInt(e.target.value) || index)}
-                      inputProps={{ min: 0 }}
-                      sx={{ minWidth: 120 }}
-                    />
                   </Box>
 
                   <TextField
@@ -396,31 +389,27 @@ const UpdateVirtualToursForm: React.FC<UpdateVirtualToursFormProps> = ({
                     label="Description"
                     value={tour.description || ''}
                     onChange={(e) => handleTourChange(index, 'description', e.target.value)}
+                    error={!!fieldErrors[`tour_${index}_description`]}
+                    helperText={fieldErrors[`tour_${index}_description`]}
                     multiline
                     rows={2}
                     fullWidth
                     placeholder="Brief description of the virtual tour"
+                    required
                   />
 
                   <TextField
                     label="Thumbnail URL"
                     value={tour.thumbnail_url || ''}
                     onChange={(e) => handleTourChange(index, 'thumbnail_url', e.target.value)}
+                    error={!!fieldErrors[`tour_${index}_thumbnail`]}
+                    helperText={fieldErrors[`tour_${index}_thumbnail`]}
                     fullWidth
                     placeholder="https://example.com/thumbnail.jpg"
+                    required
                   />
 
                   <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={tour.is_featured || false}
-                          onChange={(e) => handleTourChange(index, 'is_featured', e.target.checked)}
-                        />
-                      }
-                      label="Featured Tour"
-                    />
-
                     <FormControlLabel
                       control={
                         <Switch

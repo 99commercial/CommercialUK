@@ -57,6 +57,14 @@ class AICalController {
         return { minimum: 0, maximum: maxValue };
       };
 
+      // Helper function to normalize any value into a string
+      const parseString = (value) => {
+        if (value === null || value === undefined) {
+          return '';
+        }
+        return String(value).trim();
+      };
+
       // Helper function to convert value to number (handles strings with currency symbols, commas, etc.)
       const parseNumber = (value) => {
         if (value === null || value === undefined || value === '') {
@@ -98,20 +106,20 @@ class AICalController {
         const sqftParsed = parseSQFT(property.SQFT);
 
         return {
-          property_type: validatePropertyType(property.PropertyType),
-          property_link: property.PropertyLink || undefined,
-          postcode: property.PostCode,
+          property_type: parseString(validatePropertyType(property.PropertyType)),
+          property_link: parseString(property.PropertyLink),
+          postcode: parseString(property.PostCode),
           pricingPCM: parseNumber(property.PricingPCM),
           pricingPA: parseNumber(property.PricingPA),
           sizeSQFT: {
-            minimum: sqftParsed.minimum,
-            maximum: sqftParsed.maximum,
+            minimum: parseNumber(sqftParsed.minimum),
+            maximum: parseNumber(sqftParsed.maximum),
           },
-          latitude: property.latitude,
-          longitude: property.longitude,
+          latitude: parseNumber(property.latitude || property.Latitude),
+          longitude: parseNumber(property.longitude || property.Longitude),
           pricePerSqftPA: parseNumber(property.PricePerSqftPA),
           pricePerSqftPCM: parseNumber(property.PricePerSqftPCM),
-          comments: property.Comments || '',
+          comments: parseString(property.Comments),
         };
       });
 
@@ -182,6 +190,22 @@ class AICalController {
     try {
       const { id } = req.params;
       const result = await this.aicalService.deleteCommercialProperty(id);
+      return res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
+   * Get commercial places by postcode
+   * @param {Object} req - Express request object
+   * @param {Object} res - Express response object
+   * @param {Function} next - Express next middleware function
+   */
+  getCommercialPlaces = async (req, res, next) => {
+    try {
+      const { postcode } = req.query;
+      const result = await this.aicalService.getCommercialPlaces(postcode);
       return res.status(200).json(result);
     } catch (error) {
       next(error);

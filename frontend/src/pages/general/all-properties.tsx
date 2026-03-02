@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Box,
   Typography,
@@ -53,6 +53,7 @@ const AllPropertiesPage: React.FC = () => {
   const [favoriteProperties, setFavoriteProperties] = useState<string[]>([]);
   const [user, setUser] = useState<any>(null);
   const [isAreaFiltered, setIsAreaFiltered] = useState(false);
+  const latestRequestRef = useRef(0);
 
   // Check user authentication
   const checkUserAuth = () => {
@@ -203,6 +204,7 @@ const AllPropertiesPage: React.FC = () => {
 
   // fetchProperty function that fetches ALL properties
   const fetchProperty = async (page: number = currentPage) => {
+    const requestId = ++latestRequestRef.current;
     setLoading(true);
     setError(null);
 
@@ -270,7 +272,10 @@ const AllPropertiesPage: React.FC = () => {
       console.log('API params being sent:', apiParams);
       const response = await axiosInstance.get('/api/agent/properties/all', {
         params: apiParams,
+        timeout: 30000,
       });
+
+      if (requestId !== latestRequestRef.current) return;
 
       if (response.data.success) {
         let fetchedProperties = response.data.data.properties || [];
@@ -292,11 +297,16 @@ const AllPropertiesPage: React.FC = () => {
         throw new Error(response.data.message || 'Failed to load properties');
       }
     } catch (error: any) {
+      if (requestId !== latestRequestRef.current) return;
       console.error('Error fetching properties:', error);
-      const errorMessage = error.response?.data?.message || error.message || 'Failed to load properties';
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        (error?.code === 'ECONNABORTED' ? 'Request timed out while loading properties' : 'Failed to load properties');
       setError(errorMessage);
       enqueueSnackbar(errorMessage, { variant: 'error' });
     } finally {
+      if (requestId !== latestRequestRef.current) return;
       setLoading(false);
     }
   };
@@ -343,7 +353,6 @@ const AllPropertiesPage: React.FC = () => {
 
   // Load properties and check user auth on component mount
   useEffect(() => {
-    fetchProperty(1);
     const currentUser = checkUserAuth();
     if (currentUser) {
       fetchFavorites();
@@ -356,7 +365,7 @@ const AllPropertiesPage: React.FC = () => {
       setIsAreaFiltered(false); // Reset area filter when query params change
       fetchProperty(1);
     }
-  }, [router.query.location, router.query.forSale, router.query.toLet]);
+  }, [router.isReady, router.query.location, router.query.forSale, router.query.toLet]);
 
   return (
     <PageContainer>

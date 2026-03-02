@@ -23,6 +23,7 @@ import { Add, Delete, VideoLibrary, Link, Image, Save } from '@mui/icons-materia
 import { useFormContext } from 'react-hook-form';
 import axiosInstance from '../../../utils/axios';
 import { enqueueSnackbar } from 'notistack';
+import { extractFieldErrorsFromApiError, getApiErrorMessage } from '@/utils/apiError';
 
 const linkTypes = [
   'Virtual Tour',
@@ -267,6 +268,41 @@ const VirtualToursForm: React.FC<VirtualToursFormProps> = ({ onStepSubmitted, pr
     }));
   };
 
+  const isValidUrl = (url: string) => {
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const validateVirtualTours = (): Record<string, string> => {
+    const validationErrors: Record<string, string> = {};
+    formData.virtual_tours.forEach((tour, index) => {
+      if (!tour.tour_name?.trim()) {
+        validationErrors[`virtual_tours.${index}.tour_name`] = 'Tour name is required';
+      }
+      if (!tour.link_type?.trim()) {
+        validationErrors[`virtual_tours.${index}.link_type`] = 'Link type is required';
+      }
+      if (!tour.tour_url?.trim()) {
+        validationErrors[`virtual_tours.${index}.tour_url`] = 'Tour URL is required';
+      } else if (!isValidUrl(tour.tour_url)) {
+        validationErrors[`virtual_tours.${index}.tour_url`] = 'Please enter a valid URL';
+      }
+      if (!tour.description?.trim()) {
+        validationErrors[`virtual_tours.${index}.description`] = 'Description is required';
+      }
+      if (!tour.thumbnail_url?.trim()) {
+        validationErrors[`virtual_tours.${index}.thumbnail_url`] = 'Thumbnail URL is required';
+      } else if (!isValidUrl(tour.thumbnail_url)) {
+        validationErrors[`virtual_tours.${index}.thumbnail_url`] = 'Please enter a valid URL';
+      }
+    });
+    return validationErrors;
+  };
+
   const handleSave = async () => {
     const propertyId = getPropertyId();
     
@@ -275,10 +311,20 @@ const VirtualToursForm: React.FC<VirtualToursFormProps> = ({ onStepSubmitted, pr
       return;
     }
 
-    setIsSaving(true);
     setSaveError(null);
     setSaveSuccess(false);
     setFieldErrors({});
+
+    if (formData.virtual_tours.length > 0) {
+      const requiredFieldErrors = validateVirtualTours();
+      if (Object.keys(requiredFieldErrors).length > 0) {
+        setFieldErrors(requiredFieldErrors);
+        enqueueSnackbar('Please fix the highlighted errors before submitting.', { variant: 'error' });
+        return;
+      }
+    }
+
+    setIsSaving(true);
 
     try {
       let response = await axiosInstance.put(`/api/agent/properties/${propertyId}/virtual-tours`, formData);
@@ -290,80 +336,62 @@ const VirtualToursForm: React.FC<VirtualToursFormProps> = ({ onStepSubmitted, pr
       setSaveSuccess(true);
       setIsSubmitted(true);
       
-      // Update original data after successful save
       setOriginalData({ ...formData });
       
-      setTimeout(() => setSaveSuccess(false), 3000); // Hide success message after 3 seconds
+      setTimeout(() => setSaveSuccess(false), 3000);
 
       fetchPropertyData?.();
       
-      // Notify parent component that step 4 has been successfully submitted
       if (onStepSubmitted) {
         onStepSubmitted(4);
       }
     } catch (error: any) {
-      // Handle field-specific validation errors
-      if (error.errors && Array.isArray(error.errors) && error.errors.length > 0) {
-        const fieldErrorMap: Record<string, string> = {};
-        
-        error.errors.forEach((err: any) => {
-          if (err.path) {
-            let fieldPath = err.path.replace(/\[(\d+)\]/g, '.$1');
-            fieldErrorMap[fieldPath] = err.msg;
-          }
-        });
-        
+      const fieldErrorMap = extractFieldErrorsFromApiError(error);
+      if (Object.keys(fieldErrorMap).length > 0) {
         setFieldErrors(fieldErrorMap);
-        
-        const errorMessage = 'Please fix the validation errors below.';
-        setSaveError(errorMessage);
-        enqueueSnackbar(errorMessage, { variant: 'error' });
-      } else {
-        const errorMessage = 'Failed to save virtual tours. Please try again.';
-        setSaveError(errorMessage);
-        enqueueSnackbar(errorMessage, { variant: 'error' });
       }
+      const errorMessage = getApiErrorMessage(error, 'Failed to save virtual tours. Please try again.');
+      setSaveError(errorMessage);
+      enqueueSnackbar(errorMessage, { variant: 'error' });
     } finally {
       setIsSaving(false);
     }
   };
 
   const handleUpdateVirtualTour = async () => {
-    // Get virtual_tours_id._id (the object's _id)
     const virtualToursId = propertyData?.virtual_tours_id?._id;
     
     if (!virtualToursId) {
       setSaveError('Virtual tours ID not found. Please save virtual tours first.');
+      enqueueSnackbar('Virtual tours ID not found. Please save virtual tours first.', { variant: 'error' });
       return;
     }
 
-    setIsSaving(true);
     setSaveError(null);
     setSaveSuccess(false);
     setFieldErrors({});
 
+    if (formData.virtual_tours.length > 0) {
+      const requiredFieldErrors = validateVirtualTours();
+      if (Object.keys(requiredFieldErrors).length > 0) {
+        setFieldErrors(requiredFieldErrors);
+        enqueueSnackbar('Please fix the highlighted errors before submitting.', { variant: 'error' });
+        return;
+      }
+    }
+
+    setIsSaving(true);
+
     try {
-      // Ensure all required fields are present and non-empty as backend validation requires
-      const virtualToursToSend = formData.virtual_tours.map(tour => {
-        // Ensure all required string fields are trimmed and non-empty
-        const tour_name = (tour.tour_name || '').trim();
-        const tour_url = (tour.tour_url || '').trim();
-        const link_type = (tour.link_type || '').trim();
-        const description = (tour.description || '').trim();
-        const thumbnail_url = (tour.thumbnail_url || '').trim();
+      const virtualToursToSend = formData.virtual_tours.map(tour => ({
+        tour_name: (tour.tour_name || '').trim(),
+        tour_url: (tour.tour_url || '').trim(),
+        link_type: (tour.link_type || '').trim(),
+        description: (tour.description || '').trim(),
+        thumbnail_url: (tour.thumbnail_url || '').trim(),
+        is_active: tour.is_active !== undefined ? Boolean(tour.is_active) : true,
+      }));
 
-        return {
-          tour_name,
-          tour_url,
-          link_type,
-          description,
-          thumbnail_url,
-          is_active: tour.is_active !== undefined ? Boolean(tour.is_active) : true,
-        };
-      });
-
-      // Use PATCH endpoint for updating virtual tours
-      // Send only virtual_tours array, exactly like UpdateVirtualToursForm.tsx
       const response = await axiosInstance.patch(
         `/api/agent/property-virtual-tours/${virtualToursId}`, {
           _id: virtualToursId,  
@@ -372,45 +400,26 @@ const VirtualToursForm: React.FC<VirtualToursFormProps> = ({ onStepSubmitted, pr
         }
       );
       
-      if (response.data.success) {
-        enqueueSnackbar(response.data.message || 'Virtual tours updated successfully!', { variant: 'success' });
-        
-        // Update original data after successful update
-        setOriginalData({ ...formData });
-        
-        setSaveSuccess(true);
-        setIsSubmitted(false); // Allow multiple updates
-        
-        // Refresh property data if callback is provided
-          fetchPropertyData();
-        
-        setTimeout(() => setSaveSuccess(false), 3000);
-      } else {
-        throw new Error(response.data.message || 'Failed to update virtual tours');
-      }
+      enqueueSnackbar(response.data.message || 'Virtual tours updated successfully!', { variant: 'success' });
+      
+      setOriginalData({ ...formData });
+      
+      setSaveSuccess(true);
+      setIsSubmitted(false);
+      
+      fetchPropertyData?.();
+      onStepSubmitted?.(4);
+      
+      setTimeout(() => setSaveSuccess(false), 3000);
       
     } catch (error: any) {
-      // Handle field-specific validation errors
-      if (error.errors && Array.isArray(error.errors) && error.errors.length > 0) {
-        const fieldErrorMap: Record<string, string> = {};
-        
-        error.errors.forEach((err: any) => {
-          if (err.path) {
-            let fieldPath = err.path.replace(/\[(\d+)\]/g, '.$1');
-            fieldErrorMap[fieldPath] = err.msg;
-          }
-        });
-        
+      const fieldErrorMap = extractFieldErrorsFromApiError(error);
+      if (Object.keys(fieldErrorMap).length > 0) {
         setFieldErrors(fieldErrorMap);
-        
-        const errorMessage = 'Please fix the validation errors below.';
-        setSaveError(errorMessage);
-        enqueueSnackbar(errorMessage, { variant: 'error' });
-      } else {
-        const errorMessage = 'Failed to update virtual tours. Please try again.';
-        setSaveError(errorMessage);
-        enqueueSnackbar(errorMessage, { variant: 'error' });
       }
+      const errorMessage = getApiErrorMessage(error, 'Failed to update virtual tours. Please try again.');
+      setSaveError(errorMessage);
+      enqueueSnackbar(errorMessage, { variant: 'error' });
     } finally {
       setIsSaving(false);
     }
@@ -471,6 +480,7 @@ const VirtualToursForm: React.FC<VirtualToursFormProps> = ({ onStepSubmitted, pr
                       <TextField
                         label="Tour Name"
                         fullWidth
+                        required
                         value={tour.tour_name || ''}
                         error={!!getFieldError(`virtual_tours.${index}.tour_name`)}
                         helperText={getFieldError(`virtual_tours.${index}.tour_name`)}
@@ -514,6 +524,7 @@ const VirtualToursForm: React.FC<VirtualToursFormProps> = ({ onStepSubmitted, pr
                     <TextField
                       label="Tour URL"
                       fullWidth
+                      required
                       value={tour.tour_url || ''}
                       error={!!getFieldError(`virtual_tours.${index}.tour_url`)}
                       helperText={getFieldError(`virtual_tours.${index}.tour_url`)}
@@ -533,6 +544,7 @@ const VirtualToursForm: React.FC<VirtualToursFormProps> = ({ onStepSubmitted, pr
                     <TextField
                       label="Description"
                       fullWidth
+                      required
                       multiline
                       rows={2}
                       value={tour.description || ''}
@@ -551,6 +563,7 @@ const VirtualToursForm: React.FC<VirtualToursFormProps> = ({ onStepSubmitted, pr
                     <TextField
                       label="Thumbnail URL"
                       fullWidth
+                      required
                       value={tour.thumbnail_url || ''}
                       error={!!getFieldError(`virtual_tours.${index}.thumbnail_url`)}
                       helperText={getFieldError(`virtual_tours.${index}.thumbnail_url`)}

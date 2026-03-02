@@ -62,7 +62,7 @@ interface UpdateVirtualToursFormProps {
   onDataChange?: (data: VirtualToursData) => void;
   propertyId?: string;
   fetchProperty?: () => void;
-  fetchPropertyData?: () => void;
+  fetchPropertyData?: () => Promise<any> | any;
 }
 
 const UpdateVirtualToursForm: React.FC<UpdateVirtualToursFormProps> = ({ 
@@ -141,8 +141,18 @@ const UpdateVirtualToursForm: React.FC<UpdateVirtualToursFormProps> = ({
       if (!tour.link_type) {
         errors[`tour_${index}_type`] = 'Link type is required';
       }
-      if (tour.duration && tour.duration < 0) {
+      if (!tour.duration && tour.duration !== 0) {
+        errors[`tour_${index}_duration`] = 'Duration is required';
+      } else if (tour.duration !== undefined && tour.duration < 0) {
         errors[`tour_${index}_duration`] = 'Duration must be 0 or greater';
+      }
+      if (!tour.description?.trim()) {
+        errors[`tour_${index}_description`] = 'Description is required';
+      }
+      if (!tour.thumbnail_url?.trim()) {
+        errors[`tour_${index}_thumbnail`] = 'Thumbnail URL is required';
+      } else if (tour.thumbnail_url && !isValidUrl(tour.thumbnail_url)) {
+        errors[`tour_${index}_thumbnail`] = 'Please enter a valid URL';
       }
     });
 
@@ -197,6 +207,7 @@ const UpdateVirtualToursForm: React.FC<UpdateVirtualToursFormProps> = ({
     e.preventDefault();
     
     if (!validateForm()) {
+      enqueueSnackbar('Please fix the highlighted errors before submitting.', { variant: 'error' });
       return;
     }
 
@@ -205,23 +216,48 @@ const UpdateVirtualToursForm: React.FC<UpdateVirtualToursFormProps> = ({
       return;
     }
 
+    if (!initialData?._id) {
+      enqueueSnackbar('Virtual tours ID is missing. Cannot update.', { variant: 'error' });
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitError(null);
 
     try {
-      const response = await axiosInstance.patch(`/api/user/property-virtual-tours/${initialData?._id}`, {
-        virtual_tours: formData.virtual_tours
-      });
+      const response = await axiosInstance.patch(
+        `/api/user/property-virtual-tours/${initialData._id}`,
+        { virtual_tours: formData.virtual_tours }
+      );
       
       if (response.data.success) {
         setIsSubmitted(true);
-        setHasChanges(false); // Reset changes flag after successful update
+        setHasChanges(false);
+        setFieldErrors({});
         enqueueSnackbar('Virtual tours updated successfully!', { variant: 'success' });
         
         if (onStepSubmitted) {
           onStepSubmitted(4);
         }
-        fetchPropertyData?.();
+
+        if (fetchPropertyData) {
+          try {
+            const refreshedData = await fetchPropertyData();
+            if (refreshedData?.virtual_tours_id) {
+              const vt = refreshedData.virtual_tours_id;
+              setFormData({
+                _id: vt._id || '',
+                property_id: vt.property_id || '',
+                virtual_tours: vt.virtual_tours || [],
+                createdAt: vt.createdAt || '',
+                updatedAt: vt.updatedAt || '',
+                __v: vt.__v || 0,
+              });
+            }
+          } catch (_) {
+            // Fetch failed silently
+          }
+        }
       } else {
         throw new Error(response.data.message || 'Failed to update virtual tours');
       }
@@ -310,21 +346,13 @@ const UpdateVirtualToursForm: React.FC<UpdateVirtualToursFormProps> = ({
                     <TextField
                       label="Duration (seconds)"
                       type="number"
+                      required
                       value={tour.duration || ''}
                       onChange={(e) => handleTourChange(index, 'duration', parseInt(e.target.value) || 0)}
                       error={!!fieldErrors[`tour_${index}_duration`]}
                       helperText={fieldErrors[`tour_${index}_duration`]}
                       inputProps={{ min: 0 }}
                       sx={{ minWidth: 150 }}
-                    />
-
-                    <TextField
-                      label="Display Order"
-                      type="number"
-                      value={tour.display_order || index}
-                      onChange={(e) => handleTourChange(index, 'display_order', parseInt(e.target.value) || index)}
-                      inputProps={{ min: 0 }}
-                      sx={{ minWidth: 120 }}
                     />
                   </Box>
 
@@ -341,8 +369,11 @@ const UpdateVirtualToursForm: React.FC<UpdateVirtualToursFormProps> = ({
 
                   <TextField
                     label="Description"
+                    required
                     value={tour.description || ''}
                     onChange={(e) => handleTourChange(index, 'description', e.target.value)}
+                    error={!!fieldErrors[`tour_${index}_description`]}
+                    helperText={fieldErrors[`tour_${index}_description`]}
                     multiline
                     rows={2}
                     fullWidth
@@ -351,33 +382,24 @@ const UpdateVirtualToursForm: React.FC<UpdateVirtualToursFormProps> = ({
 
                   <TextField
                     label="Thumbnail URL"
+                    required
                     value={tour.thumbnail_url || ''}
                     onChange={(e) => handleTourChange(index, 'thumbnail_url', e.target.value)}
+                    error={!!fieldErrors[`tour_${index}_thumbnail`]}
+                    helperText={fieldErrors[`tour_${index}_thumbnail`]}
                     fullWidth
                     placeholder="https://example.com/thumbnail.jpg"
                   />
 
-                  <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={tour.is_featured || false}
-                          onChange={(e) => handleTourChange(index, 'is_featured', e.target.checked)}
-                        />
-                      }
-                      label="Featured Tour"
-                    />
-
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={tour.is_active !== false}
-                          onChange={(e) => handleTourChange(index, 'is_active', e.target.checked)}
-                        />
-                      }
-                      label="Active"
-                    />
-                  </Box>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={tour.is_active !== false}
+                        onChange={(e) => handleTourChange(index, 'is_active', e.target.checked)}
+                      />
+                    }
+                    label="Active"
+                  />
                 </Box>
               </Card>
             ))}

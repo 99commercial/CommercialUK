@@ -38,7 +38,13 @@ export const MESSAGES = {
     PROPERTY_FEATURED_STATUS_UPDATED_SUCCESSFULLY: 'Property featured status updated successfully',
     PROPERTY_VERIFIED_STATUS_UPDATED_SUCCESSFULLY: 'Property verified status updated successfully',
     PROPERTY_STATS_FETCHED_SUCCESSFULLY: 'Property statistics fetched successfully',
+    PROPERTY_ACTIVATED_SUCCESSFULLY: 'Property activated successfully',
     DASHBOARD_STATS_FETCHED_SUCCESSFULLY: 'Dashboard statistics fetched successfully',
+    DISCOUNT_CODE_GENERATED_SUCCESSFULLY: 'Discount code generated successfully',
+    DISCOUNT_CODES_FETCHED_SUCCESSFULLY: 'Discount codes fetched successfully',
+    DISCOUNT_CODE_UPDATED_SUCCESSFULLY: 'Discount code updated successfully',
+    DISCOUNT_CODE_DELETED_SUCCESSFULLY: 'Discount code deleted successfully',
+    USER_ACTIVITY_FETCHED_SUCCESSFULLY: 'User activity fetched successfully',
 };
 
 // User Status Constants

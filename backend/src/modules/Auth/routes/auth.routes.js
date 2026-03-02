@@ -4,6 +4,7 @@ import { authenticate } from '../../../middleware/authenticate.middleware.js';
 import { authorize } from '../../../middleware/authorize.middleware.js';
 import { validateRequest } from '../../../middleware/error.middleware.js';
 import { registerUserValidator , loginValidation , emailVerifyValidator , resendVerificationValidator , forgetPasswordValidation , resetPasswordValidation , updatePasswordValidator , refreshTokenValidation } from '../validation/auth.validation.js';
+import { createUserActivity } from '../../../middleware/userActivity.middleware.js';
 
 const router = express.Router();
 const authController = new AuthController();
@@ -87,25 +88,30 @@ router.post(
 /**
  * @route   POST /api/auth/update-password
  * @desc    Update password (requires current password)
- * @access  Private (Agent)
  */
 router.post(
   '/update-password',
   updatePasswordValidator,
   validateRequest,
   authenticate,
+  async (req, res, next) => {
+    try {
+      await createUserActivity(req, 'updating password', 'user updated his / her password');
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
   authController.updatePassword
 );
 
 
 /**
- * @route   POST /api/auth/agent/logout
- * @desc    Logout agent
- * @access  Private (Agent)
+ * @route   POST /api/auth/logout
+ * @desc    Logout user
  */
 router.post(
   '/logout',
-  authenticate,
   authController.logout
 );
 

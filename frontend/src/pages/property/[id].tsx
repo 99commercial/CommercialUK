@@ -31,7 +31,7 @@ import { HomeFooter } from '@/sections/home';
 const PageContainer = styled(Box)(({ theme }) => ({
   minHeight: '100vh',
   backgroundColor: '#f8f9fa',
-  padding: theme.spacing(2, 0),
+  padding: 0,
   width: '100%',
 }));
 
@@ -39,10 +39,8 @@ const ContentSection = styled(Box)(({ theme }) => ({
   display: 'flex',
   gap: theme.spacing(3),
   width: '100%',
-  padding: theme.spacing(0, 3),
   [theme.breakpoints.down('md')]: {
     flexDirection: 'column',
-    padding: theme.spacing(0, 2),
   },
 }));
 

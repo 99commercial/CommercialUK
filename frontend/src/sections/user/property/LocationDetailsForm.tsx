@@ -298,44 +298,176 @@ const LocationDetailsForm: React.FC<LocationDetailsFormProps> = ({ onStepSubmitt
     }
   };
 
+  // Validate required fields and return field-level errors for inline display
+  const validateRequiredFields = (): Record<string, string> => {
+    const validationErrors: Record<string, string> = {};
+
+    if (formData.coordinates?.latitude === undefined || formData.coordinates?.latitude === null || Number.isNaN(formData.coordinates?.latitude)) {
+      validationErrors['coordinates.latitude'] = 'Latitude is required';
+    }
+
+    if (formData.coordinates?.longitude === undefined || formData.coordinates?.longitude === null || Number.isNaN(formData.coordinates?.longitude)) {
+      validationErrors['coordinates.longitude'] = 'Longitude is required';
+    }
+
+    if (!formData.address_details?.formatted_address || formData.address_details.formatted_address.trim() === '') {
+      validationErrors['address_details.formatted_address'] = 'Formatted address is required';
+    }
+
+    if (!formData.address_details?.street_number || formData.address_details.street_number.trim() === '') {
+      validationErrors['address_details.street_number'] = 'Street number is required';
+    }
+
+    if (!formData.address_details?.route || formData.address_details.route.trim() === '') {
+      validationErrors['address_details.route'] = 'Route is required';
+    }
+
+    if (!formData.address_details?.locality || formData.address_details.locality.trim() === '') {
+      validationErrors['address_details.locality'] = 'Locality is required';
+    }
+
+    if (!formData.address_details?.administrative_area_level_1 || formData.address_details.administrative_area_level_1.trim() === '') {
+      validationErrors['address_details.administrative_area_level_1'] = 'Administrative area level 1 is required';
+    }
+
+    if (!formData.address_details?.administrative_area_level_2 || formData.address_details.administrative_area_level_2.trim() === '') {
+      validationErrors['address_details.administrative_area_level_2'] = 'Administrative area level 2 is required';
+    }
+
+    if (!formData.address_details?.country || formData.address_details.country.trim() === '') {
+      validationErrors['address_details.country'] = 'Country is required';
+    }
+
+    if (!formData.address_details?.postal_code || formData.address_details.postal_code.trim() === '') {
+      validationErrors['address_details.postal_code'] = 'Postal code is required';
+    }
+
+    return validationErrors;
+  };
+
+  // Extract backend validation errors from axios error shape into field map
+  const extractFieldErrorsFromApiError = (error: any): Record<string, string> => {
+    const apiErrors = error?.response?.data?.errors || error?.errors;
+    if (!Array.isArray(apiErrors)) {
+      return {};
+    }
+
+    const mappedErrors: Record<string, string> = {};
+    apiErrors.forEach((err: any) => {
+      if (err?.path && err?.msg) {
+        const normalizedPath = String(err.path).replace(/\[(\d+)\]/g, '.$1');
+        mappedErrors[normalizedPath] = err.msg;
+      }
+    });
+
+    return mappedErrors;
+  };
+
   // Real geocoding function using postcode
   const handleGeocode = async () => {
     const postcode = formData.address_details?.postal_code?.trim();
     if (!postcode) {
+      const errorMessage = 'Please enter a valid postal code before geocoding.';
       setFieldErrors({
-        'address_details.postal_code': 'Please enter a valid postal code before geocoding.',
+        'address_details.postal_code': errorMessage,
       });
-      enqueueSnackbar("Please enter a valid postal code before geocoding.", { variant: 'error' });
+      enqueueSnackbar(errorMessage, { variant: 'error' });
       return;
     }
 
     setIsGeocoding(true);
     try {
-      // Call OpenStreetMap's Nominatim API
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?postalcode=${encodeURIComponent(
-          postcode
-        )}&format=json&addressdetails=1&limit=1`
-      );
-      const data = await response.json();
+      // First try UK postcode API (reliable for UK postcodes).
+      const normalizedPostcode = postcode.toUpperCase().replace(/\s+/g, '');
+      const postcodeResponse = await fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(normalizedPostcode)}`);
 
-      if (data && data.length > 0) {
-        const location = data[0];
+      if (postcodeResponse.ok) {
+        const postcodePayload = await postcodeResponse.json();
+        if (postcodePayload?.status === 200 && postcodePayload?.result) {
+          const result = postcodePayload.result;
 
-        setFormData((prev) => ({
-          ...prev,
-          coordinates: {
-            ...prev.coordinates,
-            latitude: parseFloat(location.lat),
-            longitude: parseFloat(location.lon),
-          },
-        }));
-      } else {
-        alert("No results found for the given postal code.");
+          setSaveError(null);
+          setFormData((prev) => ({
+            ...prev,
+            coordinates: {
+              ...prev.coordinates,
+              latitude: Number(result.latitude),
+              longitude: Number(result.longitude),
+            },
+            address_details: {
+              formatted_address: [
+                result.postcode || '',
+                result.admin_ward || result.admin_district || '',
+                result.admin_county || result.region || '',
+                result.country || 'United Kingdom',
+              ].filter(Boolean).join(', '),
+              street_number: '',
+              route: '',
+              locality: result.admin_district || result.post_town || '',
+              administrative_area_level_1: result.region || '',
+              administrative_area_level_2: result.admin_county || result.admin_district || '',
+              country: result.country || 'United Kingdom',
+              postal_code: result.postcode || postcode,
+            },
+          }));
+
+          enqueueSnackbar('Location geocoded successfully.', { variant: 'success' });
+          return;
+        }
       }
-    } catch (error) {
-      console.error("Geocoding failed:", error);
-      alert("Failed to fetch location data. Please try again.");
+
+      // Fallback to OpenStreetMap's Nominatim when postcode API does not resolve.
+      const query = new URLSearchParams({
+        q: postcode,
+        format: 'jsonv2',
+        addressdetails: '1',
+        limit: '1',
+        countrycodes: 'gb',
+      });
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?${query.toString()}`);
+
+      if (!response.ok) {
+        throw new Error(response.statusText || `Geocoding request failed (${response.status})`);
+      }
+
+      const data = await response.json();
+      if (!Array.isArray(data) || data.length === 0) {
+        throw new Error('No results found for the given postal code.');
+      }
+
+      const location = data[0];
+      const nominatimAddress = location?.address || {};
+      setSaveError(null);
+      setFormData((prev) => ({
+        ...prev,
+        coordinates: {
+          ...prev.coordinates,
+          latitude: parseFloat(location.lat),
+          longitude: parseFloat(location.lon),
+        },
+        address_details: {
+          formatted_address: location.display_name || '',
+          street_number: nominatimAddress.house_number || '',
+          route: nominatimAddress.road || '',
+          locality:
+            nominatimAddress.city ||
+            nominatimAddress.town ||
+            nominatimAddress.village ||
+            nominatimAddress.suburb ||
+            '',
+          administrative_area_level_1: nominatimAddress.state || '',
+          administrative_area_level_2: nominatimAddress.county || '',
+          country: nominatimAddress.country || 'United Kingdom',
+          postal_code: nominatimAddress.postcode || postcode,
+        },
+      }));
+      enqueueSnackbar('Location geocoded successfully.', { variant: 'success' });
+    } catch (error: any) {
+      const networkError = String(error?.message || '').toLowerCase().includes('failed to fetch');
+      const errorMessage = networkError
+        ? 'Unable to reach geocoding service right now. Please try again.'
+        : (error?.response?.data?.message || error?.message || 'Geocoding failed.');
+      enqueueSnackbar(errorMessage, { variant: 'error' });
     } finally {
       setIsGeocoding(false);
     }
@@ -391,7 +523,9 @@ const LocationDetailsForm: React.FC<LocationDetailsFormProps> = ({ onStepSubmitt
       const propertyId = getPropertyId();
       
       if (!propertyId) {
-        setSaveError('Property ID not found. Please complete the previous steps first.');
+        const errorMessage = 'Property ID not found. Please complete the previous steps first.';
+        setSaveError(errorMessage);
+        enqueueSnackbar(errorMessage, { variant: 'error' });
         return;
       }
 
@@ -400,12 +534,20 @@ const LocationDetailsForm: React.FC<LocationDetailsFormProps> = ({ onStepSubmitt
       setSaveSuccess(false);
       setFieldErrors({});
 
+      const requiredFieldErrors = validateRequiredFields();
+      if (Object.keys(requiredFieldErrors).length > 0) {
+        const errorMessage = 'Please fill all required fields.';
+        setFieldErrors(requiredFieldErrors);
+        setSaveError(errorMessage);
+        enqueueSnackbar(errorMessage, { variant: 'error' });
+        setIsSaving(false);
+        return;
+      }
+
       try {
         const cleanedData = cleanLocationData(formData);
         
         let response = await axiosInstance.put(`/api/user/properties/${propertyId}/location`, cleanedData);
-        
-        console.log(response.data.data._id);
         
         enqueueSnackbar(response.data.message, { variant: 'success' });
         
@@ -425,21 +567,12 @@ const LocationDetailsForm: React.FC<LocationDetailsFormProps> = ({ onStepSubmitt
         }
       } catch (error: any) {
         console.error('Error saving location details:', error);
-        
+
         // Handle field-specific validation errors
-        if (error.errors && Array.isArray(error.errors) && error.errors.length > 0) {
-          const fieldErrorMap: Record<string, string> = {};
-          
-          error.errors.forEach((err: any) => {
-            if (err.path) {
-              let fieldPath = err.path.replace(/\[(\d+)\]/g, '.$1');
-              fieldErrorMap[fieldPath] = err.msg;
-            }
-          });
-          
+        const fieldErrorMap = extractFieldErrorsFromApiError(error);
+        if (Object.keys(fieldErrorMap).length > 0) {
           setFieldErrors(fieldErrorMap);
-          
-          const errorMessage =  'Please fix the validation errors below.';
+          const errorMessage = error.response?.data?.message || error.message || 'Validation failed.';
           setSaveError(errorMessage);
           enqueueSnackbar(errorMessage, { variant: 'error' });
         } else {
@@ -456,7 +589,9 @@ const LocationDetailsForm: React.FC<LocationDetailsFormProps> = ({ onStepSubmitt
     const locationId = propertyData?.location_id?._id;
     
     if (!locationId) {
-      setSaveError('Location ID not found. Please save location details first.');
+      const errorMessage = 'Location ID not found. Please save location details first.';
+      setSaveError(errorMessage);
+      enqueueSnackbar(errorMessage, { variant: 'error' });
       return;
     }
 
@@ -464,6 +599,16 @@ const LocationDetailsForm: React.FC<LocationDetailsFormProps> = ({ onStepSubmitt
     setSaveError(null);
     setSaveSuccess(false);
     setFieldErrors({});
+
+    const requiredFieldErrors = validateRequiredFields();
+    if (Object.keys(requiredFieldErrors).length > 0) {
+      const errorMessage = 'Please fill all required fields.';
+      setFieldErrors(requiredFieldErrors);
+      setSaveError(errorMessage);
+      enqueueSnackbar(errorMessage, { variant: 'error' });
+      setIsSaving(false);
+      return;
+    }
 
     try {
       const cleanedData = cleanLocationData(formData);
@@ -482,29 +627,19 @@ const LocationDetailsForm: React.FC<LocationDetailsFormProps> = ({ onStepSubmitt
       setSaveSuccess(true);
       setIsSubmitted(false); // Allow multiple updates
       
-      // Refresh property data if callback is provided
       if (fetchPropertyData) {
         fetchPropertyData();
       }
+      onStepSubmitted?.(3);
       
       setTimeout(() => setSaveSuccess(false), 3000);
-
-      fetchPropertyData();
       
     } catch (error: any) {
       console.error('Error updating location details:', error);
       
       // Handle field-specific validation errors
-      if (error.response?.data?.errors && Array.isArray(error.response.data.errors)) {
-        const fieldErrorMap: Record<string, string> = {};
-        
-        error.response.data.errors.forEach((err: any) => {
-          if (err.path) {
-            let fieldPath = err.path.replace(/\[(\d+)\]/g, '.$1');
-            fieldErrorMap[fieldPath] = err.msg;
-          }
-        });
-        
+      const fieldErrorMap = extractFieldErrorsFromApiError(error);
+      if (Object.keys(fieldErrorMap).length > 0) {
         setFieldErrors(fieldErrorMap);
         
         const errorMessage = error.response?.data?.message || error.message || 'Please fix the validation errors below.';
@@ -588,11 +723,12 @@ const LocationDetailsForm: React.FC<LocationDetailsFormProps> = ({ onStepSubmitt
                     placeholder="e.g., 51.5074"
                     inputProps={{ step: 0.000001, min: -90, max: 90 }}
                     onChange={(e) => {
+                      const parsedLatitude = e.target.value === '' ? undefined : parseFloat(e.target.value);
                       setFormData(prev => ({
                         ...prev,
                         coordinates: {
                           ...prev.coordinates,
-                          latitude: parseFloat(e.target.value) || undefined
+                          latitude: parsedLatitude
                         }
                       }));
                       clearFieldError('coordinates.latitude');
@@ -612,11 +748,12 @@ const LocationDetailsForm: React.FC<LocationDetailsFormProps> = ({ onStepSubmitt
                     placeholder="e.g., -0.1278"
                     inputProps={{ step: 0.000001, min: -180, max: 180 }}
                     onChange={(e) => {
+                      const parsedLongitude = e.target.value === '' ? undefined : parseFloat(e.target.value);
                       setFormData(prev => ({
                         ...prev,
                         coordinates: {
                           ...prev.coordinates,
-                          longitude: parseFloat(e.target.value) || undefined
+                          longitude: parsedLongitude
                         }
                       }));
                       clearFieldError('coordinates.longitude');

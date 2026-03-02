@@ -144,7 +144,6 @@ const propertyLocationSchema = new Schema(
 
 // Indexes for geospatial queries
 propertyLocationSchema.index({ 'coordinates.latitude': 1, 'coordinates.longitude': 1 });
-propertyLocationSchema.index({ property_id: 1 });
 propertyLocationSchema.index({ 'address_details.postal_code': 1 });
 propertyLocationSchema.index({ 'address_details.locality': 1 });
 propertyLocationSchema.index({ 'address_details.administrative_area_level_1': 1 });

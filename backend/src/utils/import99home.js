@@ -195,6 +195,8 @@ export default async function importFirstFeedProperty(properties, userId, index)
     is_active: true,
     is_featured: false,
     is_verified: false,
+    isExpired: false,
+    expiry_date: new Date(Date.now() + 100 * 12 * 30 * 24 * 60 * 60 * 1000),  // 100 years from now
   };
 
   const propertyDocument = new Property(propertyPayload);
