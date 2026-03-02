@@ -68,9 +68,10 @@ interface GeneralDetailsFormProps {
   onDataChange?: (data: GeneralDetailsFormData) => void;
   propertyData?: any;
   hasExistingData?: boolean;
+  fetchPropertyData?: (options?: { preserveActiveStep?: boolean }) => Promise<void>;
 }
 
-const GeneralDetailsForm: React.FC<GeneralDetailsFormProps> = ({ onStepSubmitted, initialData, onDataChange, propertyData, hasExistingData = false }) => {
+const GeneralDetailsForm: React.FC<GeneralDetailsFormProps> = ({ onStepSubmitted, initialData, onDataChange, propertyData, hasExistingData = false, fetchPropertyData }) => {
 
   const [formData, setFormData] = useState<GeneralDetailsFormData>(initialData || {
     building_name: '',
