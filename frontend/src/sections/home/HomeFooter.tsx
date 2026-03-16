@@ -151,18 +151,9 @@ export default function HomeFooter() {
         <Divider sx={{ backgroundColor: '#333', mb: 4 }} /> */}
 
         {/* Bottom Footer */}
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 4 }}>
-          <Box sx={{ flex: "1 1 300px", minWidth: "300px" }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              <img
-                src="/images/CUKSquare.png"
-                alt="CommercialUK"
-                style={{ width: 200, objectFit: 'contain' }}
-              />
-            </Box>
-          </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 4 }}>
 
-          <Box sx={{ flex: "1 1 300px", minWidth: "300px" }}>
+          <Box>
             <Stack direction="row" spacing={2} justifyContent="center">
               <IconButton
                 sx={{
@@ -207,7 +198,7 @@ export default function HomeFooter() {
             </Stack>
           </Box>
 
-          <Box sx={{ flex: "1 1 300px", minWidth: "300px" }}>
+          <Box>
             <Box sx={{ textAlign: { xs: 'center', md: 'right' } }}>
               <Typography
                 variant="body2"

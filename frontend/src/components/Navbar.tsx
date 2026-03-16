@@ -409,9 +409,9 @@ export default function Navbar({ onAdvertise, onLanguageChange }: NavbarProps) {
           {/* Logo */}
           <LogoContainer onClick={()=>router.push('/')} sx={{ py: 2 }}>
               <img
-                src="/images/CUKLogo.png"
+                src="/images/CUKSquare.png"
                 alt="CommercialUK"
-                style={{ width: 200, objectFit: 'contain' }}
+                style={{ width: 110, objectFit: 'contain' }}
               />
           </LogoContainer>
 

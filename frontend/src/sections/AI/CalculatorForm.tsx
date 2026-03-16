@@ -898,6 +898,14 @@ const PROPERTY_TYPES = [
   'Other',
 ];
 
+// Prompt template for AI to infer property type and sqft from address (placeholder: {{ADDRESS}})
+const PROPERTY_DETAILS_PROMPT_TEMPLATE = `For this UK commercial property address: {{ADDRESS}}
+
+Reply with exactly three lines, nothing else:
+Property Type: [use exactly one of: Office, Retail, Industrial, Warehouse, Land, Leisure, Healthcare, Education, Hotel, Restaurant, Student Accommodation, Car Park, Data Centre, Other]
+Min Sqft: [approximate minimum square footage]
+Max Sqft: [approximate maximum square footage]`;
+
 const VALUATION_TYPES = [
   { label: 'Sales', value: 'Sales' },
   { label: 'Letting', value: 'Letting' },
@@ -1024,6 +1032,7 @@ export default function CalculatorForm() {
   });
   const [addresses, setAddresses] = useState<AddressSuggestion[]>([]);
   const [loadingAddresses, setLoadingAddresses] = useState(false);
+  const [loadingPropertyDetails, setLoadingPropertyDetails] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentCommandIndex, setCurrentCommandIndex] = useState(0);
   const [commandState, setCommandState] = useState<'entering' | 'active' | 'exiting'>('entering');
@@ -1053,6 +1062,54 @@ export default function CalculatorForm() {
       setAddresses([]);
     } finally {
       setLoadingAddresses(false);
+    }
+  }, []);
+
+  // Fetch property type and sqft from AI chat when address is selected
+  const fetchPropertyDetailsFromAddress = useCallback(async (fullAddress: string) => {
+    if (!fullAddress.trim()) return;
+    const prompt = PROPERTY_DETAILS_PROMPT_TEMPLATE.replace(/\{\{ADDRESS\}\}/g, fullAddress.trim());
+    setLoadingPropertyDetails(true);
+    try {
+      const { data } = await axiosInstance.post<{ success: boolean; reply: string }>('/api/aical/chat', {
+        messages: [{ role: 'user', content: prompt }],
+      });
+      const reply = data?.reply ?? '';
+      let propertyType = '';
+      let minSqft = 0;
+      let maxSqft = 0;
+      const typeMatch = reply.match(/Property Type:\s*([^\n,]+)/i);
+      if (typeMatch) {
+        const raw = typeMatch[1].trim();
+        const matched = PROPERTY_TYPES.find((t) => t.toLowerCase() === raw.toLowerCase());
+        propertyType = matched ?? (PROPERTY_TYPES.includes(raw) ? raw : 'Other');
+      }
+      const minMatch = reply.match(/Min Sqft:\s*([\d,]+)/i);
+      if (minMatch) {
+        const rawMin = minMatch[1].replace(/,/g, '');
+        minSqft = Math.max(0, parseInt(rawMin, 10));
+      }
+      const maxMatch = reply.match(/Max Sqft:\s*([\d,]+)/i);
+      if (maxMatch) {
+        const rawMax = maxMatch[1].replace(/,/g, '');
+        maxSqft = Math.max(0, parseInt(rawMax, 10));
+      }
+      if (minSqft > 0 && maxSqft > 0 && minSqft > maxSqft) [minSqft, maxSqft] = [maxSqft, minSqft];
+      else if (maxSqft > 0 && minSqft === 0) minSqft = maxSqft;
+      else if (minSqft > 0 && maxSqft === 0) maxSqft = minSqft;
+      setFormData((prev) => ({
+        ...prev,
+        ...(propertyType && { propertyType }),
+        ...((minSqft > 0 || maxSqft > 0) && { input: { ...prev.input, minimum: minSqft, maximum: maxSqft } }),
+      }));
+      if (propertyType || minSqft > 0 || maxSqft > 0) {
+        enqueueSnackbar('Property details updated from address.', { variant: 'success' });
+      }
+    } catch (err) {
+      console.error('Error fetching property details from chat:', err);
+      enqueueSnackbar('Could not fetch property details. You can enter them manually.', { variant: 'info' });
+    } finally {
+      setLoadingPropertyDetails(false);
     }
   }, []);
 
@@ -1518,14 +1575,16 @@ export default function CalculatorForm() {
                               ? formData.address?.udprn === addr.udprn
                               : false
                           }
-                          onClick={() =>
+                          onClick={() => {
+                            const fullAddress = getAddressString(addr);
                             setFormData({
                               ...formData,
                               address: addr,
                               addressDetails: addr,
                               id: String(addr.udprn ?? ''),
-                            })
-                          }
+                            });
+                            fetchPropertyDetailsFromAddress(fullAddress);
+                          }}
                           disableRipple
                         >
                           <AddressText>{formatAddress(addr)}</AddressText>
@@ -1534,13 +1593,22 @@ export default function CalculatorForm() {
                     ))}
                   </List>
                 </AddressListContainer>
-              ) : (
+              ) : null}
+              {loadingPropertyDetails && (
+                <Box display="flex" alignItems="center" gap={1} py={1} px={0}>
+                  <CircularProgress size={16} />
+                  <Typography variant="body2" color="text.secondary">
+                    Fetching property type and size…
+                  </Typography>
+                </Box>
+              )}
+              {!loadingAddresses && addresses.length === 0 ? (
                 <EmptyState>
                   <Typography variant="body1" color="text.secondary">
                     No addresses found for this postcode. Please try a different postcode.
                   </Typography>
                 </EmptyState>
-              )}
+              ) : null}
 
               <ActionButtons>
                 {/* <SecondaryButton onClick={handleBack}>

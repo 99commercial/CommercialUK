@@ -7,7 +7,7 @@ const connectDB = async () => {
     await mongoose.connect(MONGO_URI, {
       // 🔥 MOST IMPORTANT for load stability
       maxPoolSize: 50,          // Max DB connections
-      minPoolSize: 10,          // Keep warm connections (reduces cold latency)
+      autoIndex: false,
       
       // ⏱ Prevent long hanging requests (fixes 5-10s spikes)
       serverSelectionTimeoutMS: 5000, // Fail fast if DB not reachable

@@ -2,9 +2,7 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/about-us": "pages/about-us.js",
-  "/general/all-properties": "pages/general/all-properties.js",
-  "/contact-us": "pages/contact-us.js",
   "/": "pages/index.js",
-  "/live": "pages/live.js"
+  "/live": "pages/live.js",
+  "/contact-us": "pages/contact-us.js"
 }

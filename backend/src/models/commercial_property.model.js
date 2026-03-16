@@ -30,7 +30,7 @@ const commercialPropertySchema = new Schema(
       type: String,
       required: true,
       trim: true,
-      match: [/^[A-Z]{1,2}[0-9A-Z]{1,2}$/i, 'Please enter a valid postcode area (3-4 characters)'],
+      match: [/^[A-Z]{1,2}\d[A-Z\d]?$/i, 'Please enter a valid UK postcode area']
     },
 
     pricingPCM: {

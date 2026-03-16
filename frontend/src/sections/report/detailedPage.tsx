@@ -17,6 +17,7 @@ import {
   CardContent,
   Divider,
   TextField,
+  InputBase,
   Slider,
   Select,
   MenuItem,
@@ -50,7 +51,12 @@ import ShowChartIcon from '@mui/icons-material/ShowChart';
 import InfoIcon from '@mui/icons-material/Info';
 import DataUsageIcon from '@mui/icons-material/DataUsage';
 import BoltIcon from '@mui/icons-material/Bolt';
+import CheckIcon from '@mui/icons-material/Check';
 import axiosInstance from '../../utils/axios';
+
+// Two-font system: titles = Plus Jakarta Sans, text = Inter (straight, modern)
+const FONT_TITLE = '"Plus Jakarta Sans", sans-serif';
+const FONT_TEXT = '"Inter", sans-serif';
 
 // ----------------------------------------------------------------------
 
@@ -59,7 +65,7 @@ const PageContainer = styled(Box)(({ theme }) => ({
   backgroundColor: '#ffffff',
   display: 'flex',
   flexDirection: 'column',
-  fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+  fontFamily: FONT_TEXT,
   width: '100%',
   overflowX: 'hidden',
   overflowY: 'visible',
@@ -107,7 +113,7 @@ const Header = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2.5, 4),
   borderBottom: '2px solid #e8ebed',
   backgroundColor: '#ffffff',
-  fontFamily: '"Inter", sans-serif',
+  fontFamily: FONT_TEXT,
   position: 'fixed',
   top: 0,
   left: 0,
@@ -171,7 +177,7 @@ const PropertyDetails = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   gap: theme.spacing(1),
   marginTop: theme.spacing(0.5),
-  fontSize: '14px',
+  fontSize: '16px',
   color: '#6b7280',
   [theme.breakpoints.down('md')]: {
     flexWrap: 'wrap',
@@ -191,8 +197,8 @@ const ActionButtonsGroup = styled(Box)(({ theme }) => ({
 
 const ActionButton = styled(Button)(({ theme }) => ({
   textTransform: 'none',
-  fontSize: '14px',
-  fontFamily: '"Inter", sans-serif',
+  fontSize: '16px',
+  fontFamily: FONT_TEXT,
   fontWeight: 600,
   padding: theme.spacing(1, 2.5),
   borderRadius: '8px',
@@ -254,9 +260,9 @@ const ContentWrapper = styled(Box)(({ theme }) => ({
 
 const Sidebar = styled(Box)(({ theme }) => ({
   width: 360,
-  minWidth: 280,
+  minWidth: 360,
   backgroundColor: '#ffffff',
-  borderRight: '1px solid #e5e7eb',
+  border: '2px solid #0a0a0a',
   padding: 0,
   position: 'fixed',
   top: '73px',
@@ -267,7 +273,7 @@ const Sidebar = styled(Box)(({ theme }) => ({
   zIndex: 999,
   display: 'flex',
   flexDirection: 'column',
-  boxShadow: '2px 0 10px rgba(0, 0, 0, 0.05)',
+  boxShadow: 'none',
   '&::-webkit-scrollbar': {
     width: '6px',
   },
@@ -286,15 +292,15 @@ const Sidebar = styled(Box)(({ theme }) => ({
   },
   [theme.breakpoints.down('md')]: {
     position: 'fixed',
-    top:'195px',
+    top: '195px',
     left: 0,
     right: 0,
     width: '100%',
     height: 'auto',
     minHeight: '77px',
     maxHeight: '77px',
-    borderRight: 'none',
-    borderBottom: '1px solid #e5e7eb',
+    border: '2px solid #0a0a0a',
+    borderTop: 'none',
     padding: theme.spacing(2, 0),
     overflowX: 'auto',
     overflowY: 'hidden',
@@ -314,7 +320,7 @@ const Sidebar = styled(Box)(({ theme }) => ({
     },
   },
   [theme.breakpoints.down('sm')]: {
-    top:'205px',
+    top: '205px',
     minHeight: '87px',
     maxHeight: '87px',
   },
@@ -348,20 +354,18 @@ const SidebarHeader = styled(Box)(({ theme }) => ({
 }));
 
 const SidebarTitle = styled(Typography)(({ theme }) => ({
-  fontSize: '24px',
-  fontWeight: 900,
+  fontSize: '22px',
+  fontWeight: 800,
   color: '#000000',
   textAlign: 'center',
-  fontFamily: '"Poppins", "Montserrat", sans-serif',
-  letterSpacing: '1px',
+  fontFamily: FONT_TITLE,
+  letterSpacing: '0.02em',
   textTransform: 'uppercase',
   lineHeight: 1.3,
   position: 'relative',
   zIndex: 1,
-  textShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
   [theme.breakpoints.down('md')]: {
-    fontSize: '16px',
-    letterSpacing: '0.5px',
+    fontSize: '19px',
   },
 }));
 
@@ -458,13 +462,13 @@ const SidebarButton = styled(ListItemButton)(({ theme }) => ({
 const SidebarText = styled(ListItemText)(({ theme }) => ({
   margin: 0,
   '& .MuiListItemText-primary': {
-    fontSize: '14.5px',
+    fontSize: '16px',
     color: '#374151',
     fontWeight: 500,
-    fontFamily: '"Inter", sans-serif',
+    fontFamily: FONT_TEXT,
     letterSpacing: '0.01em',
     transition: 'all 0.3s ease',
-    lineHeight: 1.4,
+    lineHeight: 1.45,
   },
 }));
 
@@ -492,29 +496,29 @@ const PreparedByLabel = styled(Typography)(({ theme }) => ({
   fontSize: '12px',
   color: '#6b7280',
   textTransform: 'uppercase',
-  letterSpacing: '0.5px',
+  letterSpacing: '0.08em',
   marginBottom: theme.spacing(1),
-  fontFamily: '"Montserrat", "Inter", sans-serif',
-  fontWeight: 500,
+  fontFamily: FONT_TEXT,
+  fontWeight: 600,
 }));
 
 const PreparedByName = styled(Typography)(({ theme }) => ({
   fontSize: '16px',
-  fontWeight: 600,
+  fontWeight: 700,
   color: '#000000',
   marginBottom: theme.spacing(2),
-  fontFamily: '"Montserrat", "Inter", sans-serif',
+  fontFamily: FONT_TITLE,
 }));
 
 const ContactLink = styled(Box)(({ theme }) => ({
-  fontSize: '14px',
+  fontSize: '16px',
   color: '#000000',
   cursor: 'pointer',
   marginBottom: theme.spacing(1),
   display: 'flex',
   alignItems: 'center',
   gap: theme.spacing(0.5),
-  fontFamily: '"Inter", "Roboto", sans-serif',
+  fontFamily: FONT_TEXT,
   '&:hover': {
     textDecoration: 'underline',
   },
@@ -542,10 +546,10 @@ const MainContent = styled(Box)(({ theme }) => ({
     overflowX: 'hidden',
     overflowY: 'visible',
     paddingBottom: theme.spacing(3),
-    marginTop: '77px', // Space for fixed sidebar
+    marginTop: '115px', // Space for fixed sidebar and progress
   },
   [theme.breakpoints.down('sm')]: {
-    marginTop: '87px', // Space for fixed sidebar on smaller screens
+    marginTop: '135px', // Extra space for sidebar on smaller screens
   },
 }));
 
@@ -587,18 +591,18 @@ const CoverImageOverlay = styled(Box)(({ theme }) => ({
 const AddressText = styled(Typography)(({ theme }) => ({
   fontSize: '16px',
   color: '#000000',
-  fontWeight: 500,
-  fontFamily: '"Inter", "Roboto", sans-serif',
+  fontWeight: 600,
+  fontFamily: FONT_TEXT,
 }));
 
 const ContactInfo = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   gap: theme.spacing(0.5),
-  fontSize: '14px',
+  fontSize: '16px',
   color: '#6b7280',
   textAlign: 'right',
-  fontFamily: '"Inter", "Roboto", sans-serif',
+  fontFamily: FONT_TEXT,
   [theme.breakpoints.down('md')]: {
     textAlign: 'left',
   },
@@ -626,14 +630,15 @@ const ContentSection = styled(Box)(({ theme }) => ({
 
 const SectionTitle = styled(Typography)(({ theme }) => ({
   fontSize: '28px',
-  fontWeight: 700,
+  fontWeight: 800,
   color: '#000000',
   marginBottom: theme.spacing(3),
-  fontFamily: '"Montserrat", "Inter", "Roboto", sans-serif',
+  fontFamily: FONT_TITLE,
+  letterSpacing: '-0.02em',
   '@media print': {
     pageBreakAfter: 'avoid',
     breakAfter: 'avoid',
-    fontSize: '24px',
+    fontSize: '26px',
     marginBottom: theme.spacing(2),
   },
 }));
@@ -668,15 +673,15 @@ const InfoLabel = styled(Typography)(({ theme }) => ({
   fontSize: '16px',
   color: '#374151',
   fontWeight: 500,
-  fontFamily: '"Inter", "Roboto", sans-serif',
+  fontFamily: FONT_TEXT,
   flex: '0 0 40%',
 }));
 
 const InfoValue = styled(Typography)(({ theme }) => ({
   fontSize: '16px',
   color: '#000000',
-  fontWeight: 400,
-  fontFamily: '"Inter", "Roboto", sans-serif',
+  fontWeight: 500,
+  fontFamily: FONT_TEXT,
   textAlign: 'right',
   flex: '1 1 60%',
 }));
@@ -691,22 +696,22 @@ const TableHeader = styled(Box)(({ theme }) => ({
 }));
 
 const HeaderLabel = styled(Typography)(({ theme }) => ({
-  fontSize: '14px',
+  fontSize: '16px',
   color: '#6b7280',
   fontWeight: 600,
-  fontFamily: '"Inter", "Roboto", sans-serif',
+  fontFamily: FONT_TEXT,
   textTransform: 'uppercase',
-  letterSpacing: '0.5px',
+  letterSpacing: '0.06em',
   flex: '0 0 40%',
 }));
 
 const HeaderValue = styled(Typography)(({ theme }) => ({
-  fontSize: '14px',
+  fontSize: '16px',
   color: '#6b7280',
   fontWeight: 600,
-  fontFamily: '"Inter", "Roboto", sans-serif',
+  fontFamily: FONT_TEXT,
   textTransform: 'uppercase',
-  letterSpacing: '0.5px',
+  letterSpacing: '0.06em',
   textAlign: 'right',
   flex: '1 1 60%',
 }));
@@ -746,9 +751,9 @@ const TimelineMarker = styled(Box)<{ active?: boolean; $position: number }>(({ t
 }));
 
 const TimelineLabel = styled(Typography)(({ theme }) => ({
-  fontSize: '12px',
+  fontSize: '16px',
   color: '#6b7280',
-  fontFamily: '"Inter", "Roboto", sans-serif',
+  fontFamily: FONT_TEXT,
   marginTop: theme.spacing(0.5),
   textAlign: 'center',
 }));
@@ -791,6 +796,8 @@ const navigationIcons: Record<string, React.ReactNode> = {
 
 interface ReportData {
   _id: string;
+  id?: string;
+  createdAt?: string;
   location: {
     postcode: string;
     address: string;
@@ -1158,1109 +1165,936 @@ const ReportDetailedPage: React.FC = () => {
   };
 
   const renderSectionContent = (sectionName: string) => {
-    // Debug log
-    console.log('Rendering section:', sectionName);
-    
     switch (sectionName) {
       case 'Cover':
+        const reportDate = report?.createdAt
+          ? new Date(report.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+          : new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+        const reportRef = report?.id || report?._id || (typeof id === 'string' ? id : '');
+        const refDisplay = reportRef
+          ? `REF: PVR-${new Date(report?.createdAt || Date.now()).getFullYear()}-${String(new Date(report?.createdAt || Date.now()).getMonth() + 1).padStart(2, '0')}${String(new Date(report?.createdAt || Date.now()).getDate()).padStart(2, '0')}`
+          : 'REF: PVR';
         return (
-          <ContentSection>
+          <Box sx={{ background: '#f7f6f2', minHeight: '100vh' }}>
+            {/* Top stripe */}
+            <Box sx={{ background: '#0a0a0a', height: 6, width: '100%' }} />
+            {/* Header — black */}
             <Box
-              sx={(theme) => ({
+              sx={{
+                background: '#0a0a0a',
+                padding: { xs: '32px 24px 28px', md: '48px 64px 40px' },
                 display: 'flex',
-                flexDirection: 'column',
-                gap: theme.spacing(5),
-              })}
+                justifyContent: 'space-between',
+                alignItems: 'flex-end',
+                gap: 2,
+                flexWrap: 'wrap',
+              }}
             >
-              {/* Title Section with Golden Accent */}
-              <Box
-                sx={{
-                  position: 'relative',
-                  paddingLeft: 3,
-                  '&::before': {
-                    content: '""',
-                    position: 'absolute',
-                    left: 0,
-                    top: 0,
-                    bottom: 0,
-                    width: '6px',
-                    backgroundColor: '#f2c514',
-                    borderRadius: '3px',
-                  },
-                }}
-              >
-                <Typography
-                  variant="h3"
-                  sx={(theme) => ({
-                    fontSize: { xs: '32px', md: '42px' },
-                    fontWeight: 700,
-                    color: '#000000',
-                    marginBottom: theme.spacing(2),
-                    fontFamily: '"Montserrat", "Inter", "Roboto", sans-serif',
-                    lineHeight: 1.2,
-                  })}
-                >
-                  Property Valuation Report
-                </Typography>
-                {report.location.postcode && (
-                  <Box sx={(theme) => ({ display: 'flex', alignItems: 'center', gap: 1, marginTop: theme.spacing(1) })}>
-                    <LocationOnIcon sx={{ color: '#f2c514', fontSize: '20px' }} />
-                    <Typography
-                      variant="body1"
-                      sx={{
-                        fontSize: '16px',
-                        color: '#6b7280',
-                        fontWeight: 500,
-                        fontFamily: '"Inter", "Roboto", sans-serif',
-                      }}
-                    >
-                      {report.location.postcode}
-                    </Typography>
-                  </Box>
-                )}
-              </Box>
-
-              {/* Street View Image */}
-          {/* <CoverImageContainer
-            sx={{
-              backgroundColor: '#e5e7eb',
-              overflow: 'hidden',
-                  borderRadius: '12px',
-                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-            }}
-          >
-              <Box
-                component="img"
-                  src={`https://maps.googleapis.com/maps/api/streetview?location=${report.propertyDetails?.latitude || ''}%2C${report.propertyDetails?.longitude || ''}&size=800x450&key=AIzaSyBwVM50vU8h-LVENkagwscJbeyT7wC5i4g`}
-                alt="Street View"
-                sx={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                }}
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = 'none';
-                }}
-              />
-          </CoverImageContainer> */}
-
-              <CoverImageContainer
-                sx={{
-                  height: 450,
-                  position: 'relative',
-                  overflow: 'hidden',
-                  borderRadius: 2,
-                  backgroundColor: '#e5e7eb',
-                  border: '3px solid #f2c514',
-                  boxShadow: '0 4px 20px rgba(242, 197, 20, 0.2)',
-                }}
-              >
-                {report.location?.address ? (
-                  <Box
-                    component="iframe"
-                    src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(report.location.address)}&zoom=20&maptype=satellite`}
-                    sx={{
-                      width: '100%',
-                      height: '100%',
-                      border: 0,
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                    }}
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                  />
-                ) : streetImage ? (
-                  <Box
-                    component="img"
-                    src={streetImage}
-                    alt="Street view"
-                    sx={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                    }}
-                  />
-                ) : (
-                  <Box
-                    sx={{
-                      width: '100%',
-                      height: '100%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      backgroundColor: '#f3f4f6',
-                    }}
-                  >
-                    <Typography sx={{ color: '#6b7280', fontFamily: '"Inter", sans-serif' }}>
-                      Map not available
-                    </Typography>
-                  </Box>
-                )}
-              </CoverImageContainer>
-
-              {/* Property Information Cards */}
-              <Box
-                sx={(theme) => ({
-                  display: 'grid',
-                  gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' },
-                  gap: theme.spacing(3),
-                })}
-              >
-                {/* Property Type */}
-                <Paper
-                  elevation={2}
-                  sx={(theme) => ({
-                    p: theme.spacing(3),
-                    borderRadius: '12px',
+              <Box sx={{ flex: 1 }}>
+                <Box
+                  sx={{
+                    fontFamily: FONT_TEXT,
+                    fontSize: 14,
+                    letterSpacing: '0.18em',
+                    textTransform: 'uppercase',
+                    color: '#f2c514',
+                    mb: 1.75,
                     display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'flex-start',
-                    gap: theme.spacing(1.5),
-                    backgroundColor: '#ffffff',
-                    border: '2px solid #f2c514',
-                    transition: 'all 0.3s ease',
-                    '&:hover': {
-                      boxShadow: '0 8px 24px rgba(242, 197, 20, 0.3)',
-                      transform: 'translateY(-2px)',
-                    },
-                  })}
+                    alignItems: 'center',
+                    gap: 1.25,
+                  }}
                 >
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                  <Box sx={{ width: 28, height: 2, background: '#f2c514' }} />
+                  Confidential Document
+                </Box>
+                <Typography
+                  component="h1"
+                  sx={{
+                    fontFamily: FONT_TITLE,
+                    fontSize: { xs: 'clamp(34px, 5.5vw, 44px)', md: 'clamp(38px, 5vw, 56px)' },
+                    fontWeight: 800,
+                    color: '#ffffff',
+                    lineHeight: 1.08,
+                    letterSpacing: '-0.02em',
+                  }}
+                >
+                  Property
+                  <br />
+                  Valuation <Box component="span" sx={{ color: '#f2c514' }}>Report</Box>
+                </Typography>
+              </Box>
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
+                <Typography
+                  sx={{
+                    fontFamily: FONT_TEXT,
+                    fontSize: 14,
+                    color: '#888',
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  {reportDate}
+                </Typography>
+                {/* <Box
+                  sx={{
+                    fontFamily: FONT_TEXT,
+                    fontSize: 13,
+                    color: '#ffffff',
+                    background: 'rgba(255,255,255,0.08)',
+                    padding: '6px 14px',
+                    border: '1px solid rgba(255,255,255,0.12)',
+                  }}
+                >
+                  {refDisplay}
+                </Box> */}
+              </Box>
+            </Box>
+            {/* Address bar — gold */}
+            <Box
+              sx={{
+                background: '#f2c514',
+                padding: { xs: '12px 24px', md: '16px 64px' },
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1.5,
+                flexWrap: 'wrap',
+              }}
+            >
+              <LocationOnIcon sx={{ width: 18, height: 18, color: '#0a0a0a', flexShrink: 0 }} />
+              <Typography
+                component="span"
+                sx={{
+                  fontFamily: FONT_TEXT,
+                  fontSize: 14,
+                  fontWeight: 500,
+                  color: '#0a0a0a',
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                }}
+              >
+                {report.location?.postcode || '—'}
+              </Typography>
+              <Typography
+                component="span"
+                sx={{
+                  fontFamily: FONT_TEXT,
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: '#0a0a0a',
+                  ml: 'auto',
+                  opacity: 0.6,
+                }}
+              >
+                {report.location?.address || ''}
+              </Typography>
+            </Box>
+            {/* Main content */}
+            <ContentSection sx={{ padding: { xs: 3, md: '56px 64px' }, maxWidth: 1200, margin: '0 auto' }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+                {/* Location Overview label */}
+                <Box
+                  sx={{
+                    fontFamily: FONT_TEXT,
+                    fontSize: 13,
+                    letterSpacing: '0.2em',
+                    textTransform: 'uppercase',
+                    color: '#888',
+                    mb: 2,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1.25,
+                  }}
+                >
+                  Location Overview
+                  <Box sx={{ flex: 1, height: 1, background: '#e8e6df' }} />
+                </Box>
+                {/* Map frame */}
+                <Box
+                  sx={{
+                    position: 'relative',
+                    border: '3px solid #0a0a0a',
+                    overflow: 'hidden',
+                    background: '#d4cfc5',
+                    height: { xs: 280, sm: 360 },
+                    mb: { xs: 4, md: 6.5 },
+                  }}
+                >
+                  {report.location?.address ? (
+                    <Box
+                      component="iframe"
+                      src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(report.location.address)}&zoom=20&maptype=satellite`}
+                      sx={{
+                        width: '100%',
+                        height: '100%',
+                        border: 0,
+                        display: 'block',
+                      }}
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    />
+                  ) : streetImage ? (
+                    <Box
+                      component="img"
+                      src={streetImage}
+                      alt="Street view"
+                      sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                  ) : (
                     <Box
                       sx={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: '8px',
-                        backgroundColor: 'rgba(242, 197, 20, 0.15)',
+                        width: '100%',
+                        height: '100%',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
+                        background: 'linear-gradient(135deg, #c8c3b5 0%, #b8b2a5 40%, #a8a298 100%)',
                       }}
                     >
-                      <HomeIcon sx={{ color: '#f2c514', fontSize: '24px' }} />
+                      <Typography sx={{ color: '#666', fontFamily: FONT_TEXT }}>
+                        Map not available
+                      </Typography>
                     </Box>
-                    <Typography
-                      sx={{
-                        fontSize: '14px',
-                        color: '#6b7280',
-                        fontWeight: 500,
-                        fontFamily: '"Inter", "Roboto", sans-serif',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.5px',
-                      }}
-                    >
-                      Property Type
-                    </Typography>
-                  </Box>
-                  <Typography
+                  )}
+                  {/* <Box
                     sx={{
-                      fontSize: '20px',
-                      color: '#000000',
-                      fontWeight: 700,
-                      fontFamily: '"Montserrat", "Inter", sans-serif',
+                      position: 'absolute',
+                      top: 20,
+                      left: 20,
+                      background: '#0a0a0a',
+                      color: '#f2c514',
+                      fontFamily: FONT_TEXT,
+                      fontSize: 14,
+                      letterSpacing: '0.12em',
+                      padding: '8px 14px',
+                      textTransform: 'uppercase',
                     }}
                   >
-                    {report.location.propertyType || 'N/A'}
-                  </Typography>
-                </Paper>
-
-                {/* Area Size */}
-                {report.location.input?.minimum && report.location.input?.maximum && (
-                  <Paper
-                    elevation={2}
-                    sx={(theme) => ({
-                      p: theme.spacing(3),
-                      borderRadius: '12px',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'flex-start',
-                      gap: theme.spacing(1.5),
-                      backgroundColor: '#ffffff',
-                      border: '2px solid #f2c514',
-                      transition: 'all 0.3s ease',
-                      '&:hover': {
-                        boxShadow: '0 8px 24px rgba(242, 197, 20, 0.3)',
-                        transform: 'translateY(-2px)',
-                      },
-                    })}
-                  >
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                    {report.location?.postcode || '—'} · {report.location?.address?.split(',')[0] || 'UK'}
+                  </Box> */}
+                </Box>
+                {/* Stats grid — 3 cards */}
+                <Box
+                  sx={{
+                    display: 'grid',
+                    gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' },
+                    border: '3px solid #0a0a0a',
+                    mb: { xs: 4, md: 6.5 },
+                  }}
+                >
+                  {[
+                    {
+                      icon: <HomeIcon sx={{ width: 18, height: 18, color: '#0a0a0a' }} />,
+                      label: 'Property Type',
+                      value: report.location?.propertyType || 'N/A',
+                    },
+                    {
+                      icon: <SquareFootIcon sx={{ width: 18, height: 18, color: '#0a0a0a' }} />,
+                      label: 'Area Size',
+                      value:
+                        report.location?.input?.minimum != null && report.location?.input?.maximum != null
+                          ? `${report.location.input.minimum}–${report.location.input.maximum} sqft`
+                          : 'N/A',
+                    },
+                    {
+                      icon: <DescriptionIcon sx={{ width: 18, height: 18, color: '#0a0a0a' }} />,
+                      label: 'Valuation Type',
+                      value: report.location?.valuationType || 'N/A',
+                    },
+                  ].map((stat, index) => (
+                    <Box
+                      key={stat.label}
+                      sx={(theme) => ({
+                        p: theme.spacing(3, 3.5, 3.5),
+                        borderRight: { xs: 'none', sm: index < 2 ? '2px solid #0a0a0a' : 'none' },
+                        borderBottom: { xs: '2px solid #0a0a0a', sm: 'none' },
+                        background: '#ffffff',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        transition: 'background 0.2s',
+                        '&::before': {
+                          content: '""',
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          height: 4,
+                          background: '#f2c514',
+                          transform: 'scaleX(0)',
+                          transformOrigin: 'left',
+                          transition: 'transform 0.3s ease',
+                        },
+                        '&:hover': { background: '#fafaf7', '&::before': { transform: 'scaleX(1)' } },
+                        '&:last-of-type': { borderRight: 'none', borderBottom: 'none' },
+                      })}
+                    >
                       <Box
                         sx={{
-                          width: 40,
-                          height: 40,
-                          borderRadius: '8px',
-                          backgroundColor: 'rgba(242, 197, 20, 0.15)',
+                          width: 36,
+                          height: 36,
+                          background: '#f2c514',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
+                          mb: 2.25,
                         }}
                       >
-                        <SquareFootIcon sx={{ color: '#f2c514', fontSize: '24px' }} />
+                        {stat.icon}
                       </Box>
                       <Typography
                         sx={{
-                          fontSize: '14px',
-                          color: '#6b7280',
-                          fontWeight: 500,
-                          fontFamily: '"Inter", "Roboto", sans-serif',
+                          fontFamily: FONT_TEXT,
+                          fontSize: 9,
+                          letterSpacing: '0.2em',
                           textTransform: 'uppercase',
-                          letterSpacing: '0.5px',
+                          color: '#888',
+                          mb: 1.25,
                         }}
                       >
-                        Area Size
+                        {stat.label}
+                      </Typography>
+                      <Typography
+                        sx={{
+                          fontFamily: FONT_TITLE,
+                          fontSize: 26,
+                          fontWeight: 700,
+                          color: '#0a0a0a',
+                          lineHeight: 1.1,
+                        }}
+                      >
+                        {stat.value}
                       </Typography>
                     </Box>
-                    <Typography
-                      sx={{
-                        fontSize: '20px',
-                        color: '#000000',
-                        fontWeight: 700,
-                        fontFamily: '"Montserrat", "Inter", sans-serif',
-                      }}
-                    >
-                      {report.location.input.minimum} - {report.location.input.maximum} sqft
-                    </Typography>
-                  </Paper>
-                )}
-
-                {/* Valuation Type */}
-                <Paper
-                  elevation={2}
-                  sx={(theme) => ({
-                    p: theme.spacing(3),
-                    borderRadius: '12px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'flex-start',
-                    gap: theme.spacing(1.5),
-                    backgroundColor: '#ffffff',
-                    border: '2px solid #f2c514',
-                    transition: 'all 0.3s ease',
-                    '&:hover': {
-                      boxShadow: '0 8px 24px rgba(242, 197, 20, 0.3)',
-                      transform: 'translateY(-2px)',
-                    },
-                  })}
-                >
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                    <Box
-                      sx={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: '8px',
-                        backgroundColor: 'rgba(242, 197, 20, 0.15)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      <DescriptionIcon sx={{ color: '#f2c514', fontSize: '24px' }} />
-                    </Box>
-                    <Typography
-                      sx={{
-                        fontSize: '14px',
-                        color: '#6b7280',
-                        fontWeight: 500,
-                        fontFamily: '"Inter", "Roboto", sans-serif',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.5px',
-                      }}
-                    >
-                      Valuation Type
-                    </Typography>
-                  </Box>
-                  <Typography
+                  ))}
+                </Box>
+                {/* Summary — notes block */}
+                {report.aiAnalysis?.summary && (
+                  <Box
                     sx={{
-                      fontSize: '20px',
-                      color: '#000000',
-                      fontWeight: 700,
-                      fontFamily: '"Montserrat", "Inter", sans-serif',
+                      background: '#ffffff',
+                      border: '2px solid #0a0a0a',
+                      borderLeft: '6px solid #f2c514',
+                      padding: '28px 32px',
+                      mb: 0,
                     }}
                   >
-                    {report.location.valuationType || 'N/A'}
-                  </Typography>
-                </Paper>
-              </Box>
-
-              {/* Summary Section */}
-              {report.aiAnalysis?.summary && (
-                <Paper
-                  elevation={1}
-                  sx={(theme) => ({
-                    p: theme.spacing(4),
-                    borderRadius: '12px',
-                    backgroundColor: '#fffbf0',
-                    border: '2px solid #f2c514',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    '&::before': {
-                      content: '""',
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      height: '4px',
-                      background: 'linear-gradient(90deg, #f2c514 0%, #fbbf24 100%)',
-                    },
-                  })}
-                >
-                  <Box sx={(theme) => ({ display: 'flex', alignItems: 'center', gap: 1.5, marginBottom: theme.spacing(2) })}>
-                    <Box
-                      sx={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: '8px',
-                        backgroundColor: 'rgba(242, 197, 20, 0.2)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    >
-                    <DescriptionIcon sx={{ color: '#f2c514', fontSize: '24px' }} />
-                    </Box>
                     <Typography
+                      component="h3"
                       sx={{
-                        fontSize: '20px',
-                        color: '#000000',
+                        fontFamily: FONT_TITLE,
+                        fontSize: 20,
                         fontWeight: 700,
-                        fontFamily: '"Montserrat", "Inter", sans-serif',
+                        mb: 1.75,
                       }}
                     >
                       Property Summary
                     </Typography>
+                    <Typography
+                      sx={{
+                        fontSize: 16,
+                        lineHeight: 1.75,
+                        color: '#333',
+                        fontWeight: 500,
+                        fontFamily: FONT_TEXT,
+                      }}
+                    >
+                      {report.aiAnalysis.summary
+                        ? (() => {
+                            const text = report.aiAnalysis.summary.slice(2);
+                            return text.charAt(0).toUpperCase() + text.slice(1);
+                          })()
+                        : ''}
+                    </Typography>
                   </Box>
-                  <Typography
-                    variant="body1"
-                    sx={{
-                      fontSize: '16px',
-                      color: '#374151',
-                      fontWeight: 400,
-                      lineHeight: 1.8,
-                      fontFamily: '"Inter", "Roboto", sans-serif',
-                    }}
-                  >
-                    {report.aiAnalysis.summary 
-                      ? (() => {
-                          const text = report.aiAnalysis.summary.slice(2);
-                          return text.charAt(0).toUpperCase() + text.slice(1);
-                        })()
-                      : ''}
-                  </Typography>
-                </Paper>
-              )}
-            </Box>
-
-          </ContentSection>
+                )}
+              </Box>
+            </ContentSection>
+          </Box>
         );
 
-      case 'Property Details':
+      case 'Property Details': {
+        const pd = report.propertyDetails || {};
+        const epcRating = report.epcData?.data?.current_energy_rating || report.epcData?.current_energy_rating;
+        const epcScore = report.epcData?.data?.current_energy_efficiency || report.epcData?.current_energy_efficiency;
+        const detailRows: Array<{ key: string; value: React.ReactNode; isBadge?: boolean }> = [];
+        if (report.location?.address) detailRows.push({ key: 'Address', value: report.location.address });
+        if (pd.postcode || report.location?.postcode) detailRows.push({ key: 'Postcode', value: pd.postcode || report.location?.postcode || '' });
+        if (pd.thoroughfare) detailRows.push({ key: 'Street', value: pd.thoroughfare });
+        if (pd.town_or_city) detailRows.push({ key: 'Town / City', value: pd.town_or_city });
+        if (pd.county) detailRows.push({ key: 'County', value: pd.county });
+        if (pd.district) detailRows.push({ key: 'District', value: pd.district });
+        if (pd.country) detailRows.push({ key: 'Country', value: pd.country });
+        if (pd.residential !== undefined) detailRows.push({ key: 'Property Type', value: pd.residential ? 'Residential' : 'Commercial' });
+        detailRows.push({ key: 'Status', value: 'Active Listing', isBadge: true });
+        if (pd.tenure) detailRows.push({ key: 'Tenure', value: pd.tenure });
+        if (pd.year_built != null) detailRows.push({ key: 'Year Built', value: String(pd.year_built) });
+        if (pd.floors != null) detailRows.push({ key: 'Floors', value: pd.floors });
+        if (pd.car_parking) detailRows.push({ key: 'Car Parking', value: pd.car_parking });
+        if (epcRating != null) detailRows.push({ key: 'EPC Rating', value: epcScore != null ? `${epcRating} (${epcScore})` : String(epcRating) });
+        if (pd.latitude != null && pd.longitude != null) {
+          detailRows.push({ key: 'Latitude', value: String(pd.latitude) });
+          detailRows.push({ key: 'Longitude', value: String(pd.longitude) });
+        }
         return (
           <ContentSection>
-            <SectionTitle
+            <Box
               sx={{
-                position: 'relative',
-                paddingLeft: 3,
-                '&::before': {
-                  content: '""',
-                  position: 'absolute',
-                  left: 0,
-                  top: 0,
-                  bottom: 0,
-                  width: '6px',
-                  backgroundColor: '#f2c514',
-                  borderRadius: '10px',
-                },
+                background: '#ffffff',
+                border: '2px solid #0a0a0a',
+                padding: 3,
               }}
             >
-              Property Details
-            </SectionTitle>
-            
-                {report.propertyDetails && (
-              <Box>
-                {/* Featured Address Card */}
+              <Typography
+                component="h3"
+                sx={{
+                  fontFamily: FONT_TITLE,
+                  fontSize: 24,
+                  fontWeight: 700,
+                  marginBottom: 3,
+                  paddingBottom: 1.75,
+                  borderBottom: '2px solid #e8e6df',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1.25,
+                }}
+              >
+                <Box sx={{ width: 8, height: 8, background: '#f2c514', flexShrink: 0 }} />
+                Property Details
+              </Typography>
+              {detailRows.map((row, index) => (
                 <Box
+                  key={row.key}
                   sx={{
-                    background: 'linear-gradient(135deg, rgba(242, 197, 20, 0.1) 0%, rgba(251, 191, 36, 0.05) 100%)',
-                    borderRadius: '16px',
-                    p: 4,
-                    mb: 4,
-                    border: '2px solid #f2c514',
-                    position: 'relative',
-                    overflow: 'hidden',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-start',
+                    padding: '12px 0',
+                    borderBottom: index < detailRows.length - 1 ? '1px solid #e8e6df' : 'none',
+                    gap: 2,
                   }}
                 >
-                  <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2.5 }}>
+                  <Typography
+                    component="span"
+                    sx={{
+                      fontFamily: FONT_TEXT,
+                      fontSize: 13,
+                      letterSpacing: '0.06em',
+                      textTransform: 'uppercase',
+                      color: '#888',
+                      fontWeight: 600,
+                      flexShrink: 0,
+                    }}
+                  >
+                    {row.key}
+                  </Typography>
+                  <Typography
+                    component="span"
+                    sx={{
+                      fontSize: 16,
+                      fontWeight: 600,
+                      color: '#0a0a0a',
+                      textAlign: 'right',
+                      fontFamily: FONT_TEXT,
+                    }}
+                  >
+                    {row.isBadge ? (
+                      <Box
+                        component="span"
+                        sx={{
+                          display: 'inline-block',
+                          background: '#f2c514',
+                          color: '#0a0a0a',
+                          fontFamily: FONT_TEXT,
+                          fontSize: 13,
+                          letterSpacing: '0.08em',
+                          padding: '5px 12px',
+                          textTransform: 'uppercase',
+                          fontWeight: 600,
+                        }}
+                      >
+                        {row.value}
+                      </Box>
+                    ) : (
+                      row.value
+                    )}
+                  </Typography>
+                </Box>
+              ))}
+            </Box>
+          </ContentSection>
+        );
+      }
+
+      case 'EPC': {
+        const epc = report.epcData?.data || report.epcData;
+        const grade = epc?.['asset-rating-band'] || epc?.current_energy_rating || report.epcData?.['asset-rating-band'];
+        const score = epc?.['asset-rating'] ?? epc?.current_energy_efficiency ?? report.epcData?.['asset-rating'];
+        const EPC_BARS = [
+          { letter: 'A', w: 40, c: '#2d9a4e', range: '1–25' },
+          { letter: 'B', w: 55, c: '#6abf44', range: '26–50' },
+          { letter: 'C', w: 65, c: '#b5d334', range: '51–75' },
+          { letter: 'D', w: 75, c: '#f2c514', range: '76–100' },
+          { letter: 'E', w: 82, c: '#f4973a', range: '101–125' },
+          { letter: 'F', w: 90, c: '#e8502a', range: '126–150' },
+          { letter: 'G', w: 100, c: '#c0392b', range: '150+' },
+        ];
+        const currentGrade = (typeof grade === 'string' ? grade.toUpperCase() : String(grade)).charAt(0);
+        return (
+          <ContentSection>
+            <Box sx={{ mt: 1 }}>
+              <Box
+                sx={{
+                  fontFamily: FONT_TEXT,
+                  fontSize: 13,
+                  letterSpacing: '0.12em',
+                  textTransform: 'uppercase',
+                  color: '#888',
+                  fontWeight: 600,
+                  mb: 2,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1.25,
+                }}
+              >
+                Energy Performance Certificate
+                <Box sx={{ flex: 1, height: 1, background: '#e8e6df' }} />
+              </Box>
+            </Box>
+            {report.epcData || grade ? (
+              <Box>
+                {/* EPC banner — black with grade + bar stack */}
+                <Box
+                  sx={{
+                    background: '#0a0a0a',
+                    border: '2px solid #0a0a0a',
+                    display: 'flex',
+                    alignItems: 'stretch',
+                    overflow: 'hidden',
+                    minHeight: 180,
+                    flexDirection: { xs: 'column', sm: 'row' },
+                  }}
+                >
+                  <Box
+                    sx={{
+                      padding: '32px 36px',
+                      flexShrink: 0,
+                      borderRight: { xs: 'none', sm: '2px solid rgba(255,255,255,0.1)' },
+                      borderBottom: { xs: '2px solid rgba(255,255,255,0.1)', sm: 'none' },
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 0.75,
+                      minWidth: { sm: 180 },
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        fontFamily: FONT_TEXT,
+                        fontSize: 12,
+                        letterSpacing: '0.12em',
+                        textTransform: 'uppercase',
+                        color: '#f2c514',
+                        fontWeight: 600,
+                      }}
+                    >
+                      Energy Rating
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontFamily: FONT_TITLE,
+                        fontSize: 80,
+                        fontWeight: 900,
+                        color: '#ffffff',
+                        lineHeight: 1,
+                        margin: '4px 0',
+                      }}
+                    >
+                      {currentGrade || '—'}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontFamily: FONT_TEXT,
+                        fontSize: 14,
+                        color: 'rgba(255,255,255,0.5)',
+                        letterSpacing: '0.06em',
+                        fontWeight: 500,
+                      }}
+                    >
+                      {score != null ? `Score: ${score}` : '—'}
+                    </Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      flex: 1,
+                      padding: '24px 32px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 3,
+                      flexWrap: 'wrap',
+                    }}
+                  >
                     <Box
                       sx={{
                         width: 56,
                         height: 56,
-                        borderRadius: '12px',
-                        background: 'linear-gradient(135deg, #f2c514 0%, #fbbf24 100%)',
+                        background: '#f2c514',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         flexShrink: 0,
-                        boxShadow: '0 4px 12px rgba(242, 197, 20, 0.3)',
                       }}
                     >
-                      <HomeIcon sx={{ color: '#000000', fontSize: '32px' }} />
+                      <BoltIcon sx={{ width: 28, height: 28, color: '#0a0a0a' }} />
                     </Box>
-                    <Box sx={{ flex: 1 }}>
+                    <Box sx={{ flex: 1, minWidth: 200, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                      {EPC_BARS.map((bar, idx) => (
+                        <Box
+                          key={bar.letter}
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 1,
+                            fontFamily: FONT_TEXT,
+                            fontSize: 13,
+                            color: 'rgba(255,255,255,0.6)',
+                            fontWeight: 500,
+                          }}
+                        >
+                          <Box component="span" sx={{ width: 14, textAlign: 'center', flexShrink: 0, fontWeight: 600 }}>
+                            {bar.letter}
+                          </Box>
+                          <Box
+                            sx={{
+                              height: 14,
+                              width: `${bar.w}%`,
+                              background: bar.c,
+                              opacity: currentGrade === bar.letter ? 1 : 0.35,
+                              flex: '0 0 auto',
+                              maxWidth: '100%',
+                            }}
+                          />
+                          <Box
+                            component="span"
+                            sx={{
+                              fontSize: 12,
+                              color: currentGrade === bar.letter ? '#f2c514' : 'rgba(255,255,255,0.4)',
+                              fontWeight: currentGrade === bar.letter ? 500 : 400,
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            {bar.range}
+                            {currentGrade === bar.letter ? ' ◀' : ''}
+                          </Box>
+                        </Box>
+                      ))}
+                    </Box>
+                  </Box>
+                </Box>
+
+                {/* Property Information */}
+                <Typography
+                  sx={{
+                    fontFamily: FONT_TITLE,
+                    fontSize: 19,
+                    fontWeight: 700,
+                    color: '#0a0a0a',
+                    margin: '28px 0 14px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1,
+                  }}
+                >
+                  <Box sx={{ width: 8, height: 8, background: '#f2c514', flexShrink: 0 }} />
+                  Property Information
+                </Typography>
+                <Box
+                  sx={{
+                    display: 'grid',
+                    gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+                    border: '2px solid #0a0a0a',
+                    background: '#ffffff',
+                    mb: 3.5,
+                  }}
+                >
+                  {(epc?.address ?? report.epcData?.address ?? report.location?.address) && (
+                    <Box
+                      sx={{
+                        padding: '20px 24px',
+                        borderRight: { md: '1px solid #e8e6df' },
+                        borderBottom: '1px solid #e8e6df',
+                        borderLeft: '4px solid #f2c514',
+                        gridColumn: { md: 'span 2' },
+                      }}
+                    >
                       <Typography
                         sx={{
-                          fontSize: '13px',
-                          fontWeight: 600,
-                          color: '#9ca3af',
-                          fontFamily: '"Inter", sans-serif',
+                          fontFamily: FONT_TEXT,
+                          fontSize: 12,
+                          letterSpacing: '0.12em',
                           textTransform: 'uppercase',
-                          letterSpacing: '1px',
+                          color: '#888',
+                          fontWeight: 600,
+                          mb: 0.75,
+                        }}
+                      >
+                        Address
+                      </Typography>
+                      <Typography sx={{ fontSize: 16, fontWeight: 600, color: '#0a0a0a', fontFamily: FONT_TEXT }}>
+                        {epc?.address || report.epcData?.address || report.location?.address}
+                      </Typography>
+                    </Box>
+                  )}
+                  {(epc?.['property-type'] ?? report.epcData?.['property-type']) && (
+                    <Box
+                      sx={{
+                        padding: '20px 24px',
+                        borderRight: '1px solid #e8e6df',
+                        borderBottom: '1px solid #e8e6df',
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          fontFamily: FONT_TEXT,
+                          fontSize: 12,
+                          letterSpacing: '0.12em',
+                          textTransform: 'uppercase',
+                          color: '#888',
+                          fontWeight: 600,
+                          mb: 0.75,
+                        }}
+                      >
+                        Property Type
+                      </Typography>
+                      <Typography sx={{ fontSize: 16, fontWeight: 600, color: '#0a0a0a', fontFamily: FONT_TEXT }}>
+                        {epc?.['property-type'] || report.epcData?.['property-type']}
+                      </Typography>
+                    </Box>
+                  )}
+                  {(epc?.['floor-area'] ?? report.epcData?.['floor-area']) && (
+                    <Box
+                      sx={{
+                        padding: '20px 24px',
+                        borderRight: '1px solid #e8e6df',
+                        borderBottom: '1px solid #e8e6df',
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          fontFamily: FONT_TEXT,
+                          fontSize: 12,
+                          letterSpacing: '0.12em',
+                          textTransform: 'uppercase',
+                          color: '#888',
+                          fontWeight: 600,
+                          mb: 0.75,
+                        }}
+                      >
+                        Floor Area
+                      </Typography>
+                      <Typography sx={{ fontSize: 16, fontWeight: 600, color: '#0a0a0a', fontFamily: FONT_TEXT }}>
+                        {epc?.['floor-area'] || report.epcData?.['floor-area']} m²
+                      </Typography>
+                    </Box>
+                  )}
+                  {(epc?.['building-environment'] ?? report.epcData?.['building-environment']) && (
+                    <Box
+                      sx={{
+                        padding: '20px 24px',
+                        borderRight: '1px solid #e8e6df',
+                        borderBottom: '1px solid #e8e6df',
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          fontFamily: FONT_TEXT,
+                          fontSize: 12,
+                          letterSpacing: '0.12em',
+                          textTransform: 'uppercase',
+                          color: '#888',
+                          fontWeight: 600,
+                          mb: 0.75,
+                        }}
+                      >
+                        Building Environment
+                      </Typography>
+                      <Typography sx={{ fontSize: 16, fontWeight: 600, color: '#0a0a0a', fontFamily: FONT_TEXT }}>
+                        {epc?.['building-environment'] || report.epcData?.['building-environment']}
+                      </Typography>
+                    </Box>
+                  )}
+                </Box>
+
+                {/* Energy & Environmental Performance */}
+                <Box
+                  sx={{
+                    background: '#fffde8',
+                    border: '2px solid #0a0a0a',
+                    overflow: 'hidden',
+                    mb: 1,
+                    '@media print': { pageBreakInside: 'avoid', breakInside: 'avoid' },
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1.75,
+                    padding: '18px 24px',
+                    borderBottom: '2px solid #0a0a0a',
+                    fontFamily: FONT_TITLE,
+                    fontSize: 19,
+                    fontWeight: 700,
+                    color: '#0a0a0a',
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: 34,
+                      height: 34,
+                      background: '#f2c514',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                    }}
+                  >
+                    <BoltIcon sx={{ width: 17, height: 17, color: '#0a0a0a' }} />
+                  </Box>
+                  Energy & Environmental Performance
+                </Box>
+                  <Box
+                    sx={{
+                      display: 'grid',
+                      gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' },
+                    }}
+                  >
+                    {(epc?.['main-heating-fuel'] ?? report.epcData?.['main-heating-fuel']) && (
+                      <Box
+                        sx={{
+                          padding: '20px 24px',
+                          borderRight: '1px solid rgba(0,0,0,0.08)',
+                          borderBottom: '1px solid rgba(0,0,0,0.08)',
+                          background: '#ffffff',
+                        }}
+                      >
+                        <Typography
+                          sx={{
+                          fontFamily: FONT_TEXT,
+                          fontSize: 12,
+                          letterSpacing: '0.12em',
+                          textTransform: 'uppercase',
+                          color: '#888',
+                          fontWeight: 600,
                           mb: 1,
                         }}
                       >
-                        Property Address
-                      </Typography>
-                      <Typography
-                        sx={{
-                          fontSize: '22px',
-                          fontWeight: 700,
-                          color: '#111827',
-                          fontFamily: '"Poppins", sans-serif',
-                          lineHeight: 1.4,
-                        }}
-                      >
-                        {report.location.address}
-                      </Typography>
-                      {(report.propertyDetails.postcode || report.location.postcode) && (
-                        <Box
-                          sx={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: 1,
-                            backgroundColor: '#ffffff',
-                            borderRadius: '8px',
-                            px: 2,
-                            py: 1,
-                            mt: 2,
-                            border: '1px solid #f2c514',
-                          }}
-                        >
-                          <LocationOnIcon sx={{ color: '#f2c514', fontSize: '18px' }} />
-                          <Typography sx={{ fontSize: '15px', fontWeight: 600, color: '#111827', fontFamily: '"Inter", sans-serif' }}>
-                            {report.propertyDetails.postcode || report.location.postcode}
-                          </Typography>
-                        </Box>
-                      )}
-                    </Box>
-                  </Box>
-                </Box>
-
-                {/* Location Details Grid */}
-                <Box sx={{ mb: 4 }}>
-                  <Typography
-                    sx={{
-                      fontSize: '18px',
-                      fontWeight: 700,
-                      color: '#111827',
-                      fontFamily: '"Poppins", sans-serif',
-                      mb: 3,
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 1,
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        width: 8,
-                        height: 8,
-                        backgroundColor: '#f2c514',
-                        borderRadius: '50%',
-                      }}
-                    />
-                    Location Information
-                  </Typography>
-                  
-                  <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' }, gap: 2 }}>
-                    {report.propertyDetails.thoroughfare && (
-                      <Box
-                        sx={{
-                          background: '#ffffff',
-                          borderRadius: '12px',
-                          p: 2.5,
-                          border: '1px solid #e5e7eb',
-                          borderLeft: '4px solid #f2c514',
-                          transition: 'all 0.3s ease',
-                          '&:hover': {
-                            boxShadow: '0 4px 12px rgba(242, 197, 20, 0.2)',
-                            transform: 'translateX(4px)',
-                          },
-                        }}
-                      >
-                        <Typography sx={{ fontSize: '12px', fontWeight: 600, color: '#9ca3af', fontFamily: '"Inter", sans-serif', mb: 0.5, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                          Street
+                        Main Heating Fuel
                         </Typography>
-                        <Typography sx={{ fontSize: '16px', fontWeight: 600, color: '#111827', fontFamily: '"Inter", sans-serif' }}>
-                          {report.propertyDetails.thoroughfare}
+                        <Typography sx={{ fontSize: 19, fontWeight: 700, color: '#0a0a0a', fontFamily: FONT_TITLE }}>
+                          {epc?.['main-heating-fuel'] || report.epcData?.['main-heating-fuel']}
                         </Typography>
                       </Box>
                     )}
-
-                    {report.propertyDetails.town_or_city && (
+                    {(epc?.['primary-energy-value'] ?? report.epcData?.['primary-energy-value']) && (
                       <Box
                         sx={{
+                          padding: '20px 24px',
+                          borderRight: '1px solid rgba(0,0,0,0.08)',
+                          borderBottom: '1px solid rgba(0,0,0,0.08)',
                           background: '#ffffff',
-                          borderRadius: '12px',
-                          p: 2.5,
-                          border: '1px solid #e5e7eb',
-                          borderLeft: '4px solid #f2c514',
-                          transition: 'all 0.3s ease',
-                          '&:hover': {
-                            boxShadow: '0 4px 12px rgba(242, 197, 20, 0.2)',
-                            transform: 'translateX(4px)',
-                          },
                         }}
                       >
-                        <Typography sx={{ fontSize: '12px', fontWeight: 600, color: '#9ca3af', fontFamily: '"Inter", sans-serif', mb: 0.5, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                          Town/City
-                        </Typography>
-                        <Typography sx={{ fontSize: '16px', fontWeight: 600, color: '#111827', fontFamily: '"Inter", sans-serif' }}>
-                          {report.propertyDetails.town_or_city}
-                        </Typography>
-                      </Box>
-                    )}
-
-                    {report.propertyDetails.county && (
-                      <Box
-                        sx={{
-                          background: '#ffffff',
-                          borderRadius: '12px',
-                          p: 2.5,
-                          border: '1px solid #e5e7eb',
-                          borderLeft: '4px solid #f2c514',
-                          transition: 'all 0.3s ease',
-                          '&:hover': {
-                            boxShadow: '0 4px 12px rgba(242, 197, 20, 0.2)',
-                            transform: 'translateX(4px)',
-                          },
-                        }}
-                      >
-                        <Typography sx={{ fontSize: '12px', fontWeight: 600, color: '#9ca3af', fontFamily: '"Inter", sans-serif', mb: 0.5, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                          County
-                        </Typography>
-                        <Typography sx={{ fontSize: '16px', fontWeight: 600, color: '#111827', fontFamily: '"Inter", sans-serif' }}>
-                          {report.propertyDetails.county}
-                        </Typography>
-                      </Box>
-                    )}
-
-                    {report.propertyDetails.district && (
-                      <Box
-                        sx={{
-                          background: '#ffffff',
-                          borderRadius: '12px',
-                          p: 2.5,
-                          border: '1px solid #e5e7eb',
-                          borderLeft: '4px solid #f2c514',
-                          transition: 'all 0.3s ease',
-                          '&:hover': {
-                            boxShadow: '0 4px 12px rgba(242, 197, 20, 0.2)',
-                            transform: 'translateX(4px)',
-                          },
-                        }}
-                      >
-                        <Typography sx={{ fontSize: '12px', fontWeight: 600, color: '#9ca3af', fontFamily: '"Inter", sans-serif', mb: 0.5, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                          District
-                        </Typography>
-                        <Typography sx={{ fontSize: '16px', fontWeight: 600, color: '#111827', fontFamily: '"Inter", sans-serif' }}>
-                          {report.propertyDetails.district}
-                        </Typography>
-                      </Box>
-                    )}
-
-                    {report.propertyDetails.country && (
-                      <Box
-                        sx={{
-                          background: '#ffffff',
-                          borderRadius: '12px',
-                          p: 2.5,
-                          border: '1px solid #e5e7eb',
-                          borderLeft: '4px solid #f2c514',
-                          transition: 'all 0.3s ease',
-                          '&:hover': {
-                            boxShadow: '0 4px 12px rgba(242, 197, 20, 0.2)',
-                            transform: 'translateX(4px)',
-                          },
-                        }}
-                      >
-                        <Typography sx={{ fontSize: '12px', fontWeight: 600, color: '#9ca3af', fontFamily: '"Inter", sans-serif', mb: 0.5, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                          Country
-                        </Typography>
-                        <Typography sx={{ fontSize: '16px', fontWeight: 600, color: '#111827', fontFamily: '"Inter", sans-serif' }}>
-                          {report.propertyDetails.country}
-                        </Typography>
-                      </Box>
-                    )}
-
-                    {report.propertyDetails.residential !== undefined && (
-                      <Box
-                        sx={{
-                          background: '#ffffff',
-                          borderRadius: '12px',
-                          p: 2.5,
-                          border: '1px solid #e5e7eb',
-                          borderLeft: '4px solid #f2c514',
-                          transition: 'all 0.3s ease',
-                          '&:hover': {
-                            boxShadow: '0 4px 12px rgba(242, 197, 20, 0.2)',
-                            transform: 'translateX(4px)',
-                          },
-                        }}
-                      >
-                        <Typography sx={{ fontSize: '12px', fontWeight: 600, color: '#9ca3af', fontFamily: '"Inter", sans-serif', mb: 0.5, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                          Property Type
-                        </Typography>
-                        <Typography sx={{ fontSize: '16px', fontWeight: 600, color: '#111827', fontFamily: '"Inter", sans-serif' }}>
-                          {report.propertyDetails.residential ? 'Residential' : 'Commercial'}
-                        </Typography>
-                      </Box>
-                    )}
-                  </Box>
-                </Box>
-
-                {/* Geographic Coordinates */}
-                {report.propertyDetails.latitude && report.propertyDetails.longitude && (
-                  <Box
-                    sx={{
-                      background: 'linear-gradient(135deg, #fffbf0 0%, #fef3c7 100%)',
-                      borderRadius: '16px',
-                      p: 4,
-                      border: '2px solid #f2c514',
-                    }}
-                  >
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-                      <Box
-                        sx={{
-                          width: 48,
-                          height: 48,
-                          borderRadius: '12px',
-                          background: 'linear-gradient(135deg, #f2c514 0%, #fbbf24 100%)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          boxShadow: '0 4px 12px rgba(242, 197, 20, 0.3)',
-                        }}
-                      >
-                        <LocationOnIcon sx={{ color: '#000000', fontSize: '28px' }} />
-                      </Box>
-                      <Typography
-                        sx={{
-                          fontSize: '20px',
-                          fontWeight: 700,
-                          color: '#92400e',
-                          fontFamily: '"Poppins", sans-serif',
-                        }}
-                      >
-                        Geographic Coordinates
-                      </Typography>
-                    </Box>
-                    
-                    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' }, gap: 3 }}>
-                      <Box
-                        sx={{
-                          background: 'rgba(255, 255, 255, 0.7)',
-                          borderRadius: '12px',
-                          p: 3,
-                          border: '1px solid rgba(242, 197, 20, 0.3)',
-                        }}
-                      >
-                        <Typography sx={{ fontSize: '12px', fontWeight: 600, color: '#92400e', fontFamily: '"Inter", sans-serif', mb: 1, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                          Latitude
-                        </Typography>
-                        <Typography sx={{ fontSize: '20px', fontWeight: 700, color: '#78350f', fontFamily: '"Poppins", sans-serif' }}>
-                          {report.propertyDetails.latitude}
-                        </Typography>
-                      </Box>
-                      
-                      <Box
-                        sx={{
-                          background: 'rgba(255, 255, 255, 0.7)',
-                          borderRadius: '12px',
-                          p: 3,
-                          border: '1px solid rgba(242, 197, 20, 0.3)',
-                        }}
-                      >
-                        <Typography sx={{ fontSize: '12px', fontWeight: 600, color: '#92400e', fontFamily: '"Inter", sans-serif', mb: 1, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                          Longitude
-                        </Typography>
-                        <Typography sx={{ fontSize: '20px', fontWeight: 700, color: '#78350f', fontFamily: '"Poppins", sans-serif' }}>
-                          {report.propertyDetails.longitude}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Box>
-                )}
-              </Box>
-            )}
-          </ContentSection>
-        );
-
-      case 'EPC':
-        return (
-          <ContentSection>
-            <SectionTitle
-              sx={{
-                position: 'relative',
-                paddingLeft: 3,
-                '&::before': {
-                  content: '""',
-                  position: 'absolute',
-                  left: 0,
-                  top: 0,
-                  bottom: 0,
-                  width: '6px',
-                  backgroundColor: '#f2c514',
-                  borderRadius: '10px',
-                },
-              }}
-            >
-              Energy Performance Certificate (EPC)
-            </SectionTitle>
-            {report.epcData ? (
-              <Box>
-                {/* Energy Rating Hero Card */}
-                {report.epcData['asset-rating-band'] && (
-                  <Box
-                    sx={{
-                      background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-                      borderRadius: '16px',
-                      p: 4,
-                      mb: 4,
-                      position: 'relative',
-                      overflow: 'hidden',
-                      border: '3px solid #f2c514',
-                      boxShadow: '0 8px 24px rgba(16, 185, 129, 0.3)',
-                    }}
-                  >
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative', zIndex: 1 }}>
-                      <Box>
                         <Typography
                           sx={{
-                            fontSize: '14px',
-                            fontWeight: 600,
-                            color: 'rgba(255, 255, 255, 0.9)',
-                            fontFamily: '"Inter", sans-serif',
-                            letterSpacing: '1.5px',
+                            fontFamily: FONT_TEXT,
+                            fontSize: 9,
+                            letterSpacing: '0.16em',
                             textTransform: 'uppercase',
+                            color: '#888',
                             mb: 1,
                           }}
                         >
-                          Energy Rating
-                        </Typography>
-                        <Typography
-                          sx={{
-                            fontSize: '72px',
-                            fontWeight: 900,
-                            color: '#ffffff',
-                            fontFamily: '"Poppins", sans-serif',
-                            lineHeight: 1,
-                            textShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
-                          }}
-                        >
-                          {report.epcData['asset-rating-band']}
-                        </Typography>
-                  {report.epcData['asset-rating'] && (
-                          <Typography
-                            sx={{
-                              fontSize: '18px',
-                              fontWeight: 600,
-                              color: 'rgba(255, 255, 255, 0.95)',
-                              fontFamily: '"Inter", sans-serif',
-                              mt: 1,
-                            }}
-                          >
-                            Score: {report.epcData['asset-rating']}
-                          </Typography>
-                        )}
-                      </Box>
-                      <Box
-                        sx={{
-                          width: 120,
-                          height: 120,
-                          backgroundColor: 'rgba(242, 197, 20, 0.25)',
-                          borderRadius: '20px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          border: '2px solid rgba(242, 197, 20, 0.5)',
-                          backdropFilter: 'blur(10px)',
-                        }}
-                      >
-                        <BoltIcon sx={{ color: '#f2c514', fontSize: '64px' }} />
-                      </Box>
-                    </Box>
-                  </Box>
-                )}
-
-                {/* Property Information Grid */}
-                <Box sx={{ mb: 4 }}>
-                  <Typography
-                    sx={{
-                      fontSize: '18px',
-                      fontWeight: 700,
-                      color: '#111827',
-                      fontFamily: '"Poppins", sans-serif',
-                      mb: 3,
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 1,
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        width: 8,
-                        height: 8,
-                        backgroundColor: '#f2c514',
-                        borderRadius: '50%',
-                      }}
-                    />
-                    Property Information
-                  </Typography>
-                  
-                  <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' }, gap: 2 }}>
-                    {report.epcData.address && (
-                      <Box
-                        sx={{
-                          background: '#ffffff',
-                          borderRadius: '12px',
-                          p: 2.5,
-                          border: '1px solid #e5e7eb',
-                          borderLeft: '4px solid #f2c514',
-                          transition: 'all 0.3s ease',
-                          '&:hover': {
-                            boxShadow: '0 4px 12px rgba(242, 197, 20, 0.2)',
-                            transform: 'translateX(4px)',
-                          },
-                        }}
-                      >
-                        <Typography sx={{ fontSize: '12px', fontWeight: 600, color: '#9ca3af', fontFamily: '"Inter", sans-serif', mb: 0.5, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                          Address
-                        </Typography>
-                        <Typography sx={{ fontSize: '16px', fontWeight: 600, color: '#111827', fontFamily: '"Inter", sans-serif' }}>
-                          {report.epcData.address}
-                        </Typography>
-                      </Box>
-                    )}
-
-                  {report.epcData['property-type'] && (
-                      <Box
-                        sx={{
-                          background: '#ffffff',
-                          borderRadius: '12px',
-                          p: 2.5,
-                          border: '1px solid #e5e7eb',
-                          borderLeft: '4px solid #f2c514',
-                          transition: 'all 0.3s ease',
-                          '&:hover': {
-                            boxShadow: '0 4px 12px rgba(242, 197, 20, 0.2)',
-                            transform: 'translateX(4px)',
-                          },
-                        }}
-                      >
-                        <Typography sx={{ fontSize: '12px', fontWeight: 600, color: '#9ca3af', fontFamily: '"Inter", sans-serif', mb: 0.5, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                          Property Type
-                        </Typography>
-                        <Typography sx={{ fontSize: '16px', fontWeight: 600, color: '#111827', fontFamily: '"Inter", sans-serif' }}>
-                          {report.epcData['property-type']}
-                        </Typography>
-                      </Box>
-                    )}
-
-                    {report.epcData['floor-area'] && (
-                      <Box
-                        sx={{
-                          background: '#ffffff',
-                          borderRadius: '12px',
-                          p: 2.5,
-                          border: '1px solid #e5e7eb',
-                          borderLeft: '4px solid #f2c514',
-                          transition: 'all 0.3s ease',
-                          '&:hover': {
-                            boxShadow: '0 4px 12px rgba(242, 197, 20, 0.2)',
-                            transform: 'translateX(4px)',
-                          },
-                        }}
-                      >
-                        <Typography sx={{ fontSize: '12px', fontWeight: 600, color: '#9ca3af', fontFamily: '"Inter", sans-serif', mb: 0.5, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                          Floor Area
-                        </Typography>
-                        <Typography sx={{ fontSize: '16px', fontWeight: 600, color: '#111827', fontFamily: '"Inter", sans-serif' }}>
-                          {report.epcData['floor-area']} m²
-                        </Typography>
-                      </Box>
-                    )}
-
-                  {report.epcData['building-environment'] && (
-                      <Box
-                        sx={{
-                          background: '#ffffff',
-                          borderRadius: '12px',
-                          p: 2.5,
-                          border: '1px solid #e5e7eb',
-                          borderLeft: '4px solid #f2c514',
-                          transition: 'all 0.3s ease',
-                          '&:hover': {
-                            boxShadow: '0 4px 12px rgba(242, 197, 20, 0.2)',
-                            transform: 'translateX(4px)',
-                          },
-                        }}
-                      >
-                        <Typography sx={{ fontSize: '12px', fontWeight: 600, color: '#9ca3af', fontFamily: '"Inter", sans-serif', mb: 0.5, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                          Building Environment
-                        </Typography>
-                        <Typography sx={{ fontSize: '16px', fontWeight: 600, color: '#111827', fontFamily: '"Inter", sans-serif' }}>
-                          {report.epcData['building-environment']}
-                        </Typography>
-                      </Box>
-                    )}
-                  </Box>
-                </Box>
-
-                {/* Energy Performance Details */}
-                <Box
-                  sx={{
-                    background: 'linear-gradient(135deg, #fffbf0 0%, #fef3c7 100%)',
-                    borderRadius: '16px',
-                    p: 4,
-                    mb: 4,
-                    border: '2px solid #f2c514',
-                    '@media print': {
-                      pageBreakInside: 'avoid',
-                      breakInside: 'avoid',
-                    },
-                  }}
-                >
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-                    <Box
-                      sx={{
-                        width: 48,
-                        height: 48,
-                        borderRadius: '12px',
-                        background: 'linear-gradient(135deg, #f2c514 0%, #fbbf24 100%)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: '0 4px 12px rgba(242, 197, 20, 0.3)',
-                      }}
-                    >
-                      <BoltIcon sx={{ color: '#000000', fontSize: '28px' }} />
-                    </Box>
-                    <Typography
-                      sx={{
-                        fontSize: '20px',
-                        fontWeight: 700,
-                        color: '#92400e',
-                        fontFamily: '"Poppins", sans-serif',
-                      }}
-                    >
-                      Energy & Environmental Performance
-                    </Typography>
-                  </Box>
-                  
-                  <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' }, gap: 3 }}>
-                    {report.epcData['main-heating-fuel'] && (
-                      <Box
-                        sx={{
-                          background: 'rgba(255, 255, 255, 0.7)',
-                          borderRadius: '12px',
-                          p: 3,
-                          border: '1px solid rgba(242, 197, 20, 0.3)',
-                        }}
-                      >
-                        <Typography sx={{ fontSize: '12px', fontWeight: 600, color: '#92400e', fontFamily: '"Inter", sans-serif', mb: 1, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                          Main Heating Fuel
-                        </Typography>
-                        <Typography sx={{ fontSize: '18px', fontWeight: 700, color: '#78350f', fontFamily: '"Poppins", sans-serif' }}>
-                          {report.epcData['main-heating-fuel']}
-                        </Typography>
-                      </Box>
-                    )}
-
-                  {report.epcData['primary-energy-value'] && (
-                      <Box
-                        sx={{
-                          background: 'rgba(255, 255, 255, 0.7)',
-                          borderRadius: '12px',
-                          p: 3,
-                          border: '1px solid rgba(242, 197, 20, 0.3)',
-                        }}
-                      >
-                        <Typography sx={{ fontSize: '12px', fontWeight: 600, color: '#92400e', fontFamily: '"Inter", sans-serif', mb: 1, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                           Primary Energy Value
                         </Typography>
-                        <Typography sx={{ fontSize: '18px', fontWeight: 700, color: '#78350f', fontFamily: '"Poppins", sans-serif' }}>
-                          {report.epcData['primary-energy-value']} kWh/m²/year
+                        <Typography sx={{ fontSize: 19, fontWeight: 700, color: '#0a0a0a', fontFamily: FONT_TITLE }}>
+                          {epc?.['primary-energy-value'] || report.epcData?.['primary-energy-value']} kWh/m²/year
                         </Typography>
                       </Box>
                     )}
-
-                  {report.epcData['building-emissions'] && (
+                    {(epc?.['building-emissions'] ?? report.epcData?.['building-emissions']) && (
                       <Box
                         sx={{
-                          background: 'rgba(255, 255, 255, 0.7)',
-                          borderRadius: '12px',
-                          p: 3,
-                          border: '1px solid rgba(242, 197, 20, 0.3)',
+                          padding: '20px 24px',
+                          borderRight: { md: '1px solid rgba(0,0,0,0.08)' },
+                          borderBottom: '1px solid rgba(0,0,0,0.08)',
+                          background: '#ffffff',
                         }}
                       >
-                        <Typography sx={{ fontSize: '12px', fontWeight: 600, color: '#92400e', fontFamily: '"Inter", sans-serif', mb: 1, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                        <Typography
+                          sx={{
+                            fontFamily: FONT_TEXT,
+                            fontSize: 9,
+                            letterSpacing: '0.16em',
+                            textTransform: 'uppercase',
+                            color: '#888',
+                            mb: 1,
+                          }}
+                        >
                           Building Emissions
                         </Typography>
-                        <Typography sx={{ fontSize: '18px', fontWeight: 700, color: '#78350f', fontFamily: '"Poppins", sans-serif' }}>
-                          {report.epcData['building-emissions']} kgCO₂/m²/year
+                        <Typography sx={{ fontSize: 19, fontWeight: 700, color: '#0a0a0a', fontFamily: FONT_TITLE }}>
+                          {epc?.['building-emissions'] || report.epcData?.['building-emissions']} kgCO₂/m²/year
                         </Typography>
                       </Box>
                     )}
-
-                    {report.epcData['inspection-date'] && (
+                    {(epc?.['inspection-date'] ?? report.epcData?.['inspection-date']) && (
                       <Box
                         sx={{
-                          background: 'rgba(255, 255, 255, 0.7)',
-                          borderRadius: '12px',
-                          p: 3,
-                          border: '1px solid rgba(242, 197, 20, 0.3)',
+                          padding: '20px 24px',
+                          borderRight: '1px solid rgba(0,0,0,0.08)',
+                          borderBottom: '1px solid rgba(0,0,0,0.08)',
+                          background: '#ffffff',
                         }}
                       >
-                        <Typography sx={{ fontSize: '12px', fontWeight: 600, color: '#92400e', fontFamily: '"Inter", sans-serif', mb: 1, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                        <Typography
+                          sx={{
+                            fontFamily: FONT_TEXT,
+                            fontSize: 9,
+                            letterSpacing: '0.16em',
+                            textTransform: 'uppercase',
+                            color: '#888',
+                            mb: 1,
+                          }}
+                        >
                           Inspection Date
                         </Typography>
-                        <Typography sx={{ fontSize: '18px', fontWeight: 700, color: '#78350f', fontFamily: '"Poppins", sans-serif' }}>
-                          {new Date(report.epcData['inspection-date']).toLocaleDateString()}
+                        <Typography sx={{ fontSize: 19, fontWeight: 700, color: '#0a0a0a', fontFamily: FONT_TITLE }}>
+                          {new Date(epc?.['inspection-date'] || report.epcData?.['inspection-date']).toLocaleDateString('en-GB')}
                         </Typography>
                       </Box>
                     )}
-
-                    {report.epcData['lodgement-date'] && (
+                    {(epc?.['lodgement-date'] ?? report.epcData?.['lodgement-date']) && (
                       <Box
                         sx={{
-                          background: 'rgba(255, 255, 255, 0.7)',
-                          borderRadius: '12px',
-                          p: 3,
-                          border: '1px solid rgba(242, 197, 20, 0.3)',
+                          padding: '20px 24px',
+                          borderRight: '1px solid rgba(0,0,0,0.08)',
+                          borderBottom: '1px solid rgba(0,0,0,0.08)',
+                          background: '#ffffff',
                         }}
                       >
-                        <Typography sx={{ fontSize: '12px', fontWeight: 600, color: '#92400e', fontFamily: '"Inter", sans-serif', mb: 1, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                        <Typography
+                          sx={{
+                            fontFamily: FONT_TEXT,
+                            fontSize: 9,
+                            letterSpacing: '0.16em',
+                            textTransform: 'uppercase',
+                            color: '#888',
+                            mb: 1,
+                          }}
+                        >
                           Lodgement Date
                         </Typography>
-                        <Typography sx={{ fontSize: '18px', fontWeight: 700, color: '#78350f', fontFamily: '"Poppins", sans-serif' }}>
-                          {new Date(report.epcData['lodgement-date']).toLocaleDateString()}
+                        <Typography sx={{ fontSize: 19, fontWeight: 700, color: '#0a0a0a', fontFamily: FONT_TITLE }}>
+                          {new Date(epc?.['lodgement-date'] || report.epcData?.['lodgement-date']).toLocaleDateString('en-GB')}
                         </Typography>
                       </Box>
                     )}
@@ -2268,2130 +2102,1000 @@ const ReportDetailedPage: React.FC = () => {
                 </Box>
               </Box>
             ) : (
-              <Alert severity="info" sx={{ borderRadius: '12px', fontSize: '15px' }}>
+              <Alert severity="info" sx={{ borderRadius: '12px', fontSize: '16px' }}>
                 EPC data not available for this property.
               </Alert>
             )}
           </ContentSection>
         );
+      }
 
-      case 'Legal Section':
+      case 'Legal Section': {
+        const legalItems = landRegistryData?.result?.items
+          ? [...landRegistryData.result.items].sort((a: any, b: any) =>
+              new Date(b.transactionDate).getTime() - new Date(a.transactionDate).getTime()
+            )
+          : [];
+        const getVal = (t: any, path: string) => {
+          const parts = path.split('.');
+          let v: any = t;
+          for (const p of parts) {
+            v = v?.[p];
+            if (Array.isArray(v) && v[0]?._value != null) return v[0]._value;
+          }
+          return v;
+        };
         return (
           <ContentSection>
-            <SectionTitle
+            <Box sx={{ mt: 1 }}>
+              <Box
+                sx={{
+                  fontFamily: FONT_TEXT,
+                  fontSize: 13,
+                  letterSpacing: '0.2em',
+                  textTransform: 'uppercase',
+                  color: '#888',
+                  mb: 2,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1.25,
+                }}
+              >
+                Legal Section
+                <Box sx={{ flex: 1, height: 1, background: '#e8e6df' }} />
+              </Box>
+            </Box>
+            <Typography
               sx={{
-                position: 'relative',
-                paddingLeft: 3,
-                '&::before': {
-                  content: '""',
-                  position: 'absolute',
-                  left: 0,
-                  top: 0,
-                  bottom: 0,
-                  width: '6px',
-                  backgroundColor: '#f2c514',
-                  borderRadius: '10px',
-                },
+                fontFamily: FONT_TITLE,
+                fontSize: 17,
+                fontWeight: 700,
+                color: '#0a0a0a',
+                mb: 2.5,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1.25,
               }}
             >
-              Legal Section
-            </SectionTitle>
-            
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-              {/* Land Registry Transaction History */}
-              <Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
-                  <Box
-                    sx={{
-                      width: 8,
-                      height: 8,
-                      backgroundColor: '#f2c514',
-                      borderRadius: '50%',
-                    }}
-                  />
-                  <Typography
-                    sx={{
-                      fontSize: '20px',
-                      fontWeight: 700,
-                      color: '#111827',
-                      fontFamily: '"Poppins", "Montserrat", sans-serif',
-                    }}
-                  >
-                    HM Land Registry - Transaction History
-                  </Typography>
-                </Box>
+              <Box
+                component="svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                sx={{ width: 18, height: 18, color: '#f2c514', flexShrink: 0 }}
+              >
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <path d="M3 9h18M9 21V9" />
+              </Box>
+              HM Land Registry – Transaction History
+            </Typography>
 
-                {landRegistryLoading ? (
-                  <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
-                    <CircularProgress sx={{ color: '#f2c514' }} />
-                  </Box>
-                ) : landRegistryData?.result?.items && landRegistryData.result.items.length > 0 ? (
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    {landRegistryData.result.items
-                      .sort((a: any, b: any) => {
-                        const dateA = new Date(a.transactionDate);
-                        const dateB = new Date(b.transactionDate);
-                        return dateB.getTime() - dateA.getTime();
-                      })
-                      .map((transaction: any, index: number) => {
-                        const isLatest = index === 0;
-                        return (
+            {landRegistryLoading ? (
+              <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+                <CircularProgress sx={{ color: '#f2c514' }} />
+              </Box>
+            ) : legalItems.length > 0 ? (
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+                {legalItems.map((transaction: any, index: number) => {
+                  const addr = transaction.propertyAddress || {};
+                  const isLatest = index === 0;
+                  const unitLabel = [addr.paon, addr.saon].filter(Boolean).join(' ').toUpperCase() || '—';
+                  const addressSub = [addr.street, addr.town].filter(Boolean).join(', ').toUpperCase() || '—';
+                  const priceDate = new Date(transaction.transactionDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+                  const estateType = getVal(transaction, 'estateType.label.0._value') ?? '—';
+                  const recordStatus = getVal(transaction, 'recordStatus.label.0._value') ?? 'Add';
+                  const transCat = getVal(transaction, 'transactionCategory.label.0._value') ?? '—';
+                  const propType = getVal(transaction, 'propertyType.label.0._value') ?? '—';
+                  return (
+                    <Box
+                      key={transaction.transactionId}
+                      sx={{
+                        border: '2px solid #0a0a0a',
+                        background: '#ffffff',
+                        overflow: 'hidden',
+                        mb: 2,
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'flex-start',
+                          p: '24px 28px 20px',
+                          borderBottom: '2px solid #0a0a0a',
+                          background: '#0a0a0a',
+                          gap: 2.5,
+                          flexWrap: 'wrap',
+                        }}
+                      >
+                        <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 1.25 }}>
+                          <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 22, fontWeight: 900, color: '#ffffff', letterSpacing: '-0.01em' }}>
+                            {unitLabel}
+                          </Typography>
+                          {isLatest && (
+                            <Box
+                              sx={{
+                                background: '#f2c514',
+                                color: '#0a0a0a',
+                                fontFamily: FONT_TEXT,
+                                fontSize: 9,
+                                letterSpacing: '0.14em',
+                                padding: '4px 10px',
+                                fontWeight: 500,
+                                alignSelf: 'center',
+                              }}
+                            >
+                              LATEST
+                            </Box>
+                          )}
+                          <Typography sx={{ width: '100%', fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.06em', color: 'rgba(255,255,255,0.5)', fontWeight: 500, textTransform: 'uppercase', mt: 0.25 }}>
+                            {addressSub}
+                          </Typography>
+                        </Box>
+                        <Box sx={{ textAlign: 'right', flexShrink: 0 }}>
+                          <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 28, fontWeight: 900, color: '#f2c514', lineHeight: 1 }}>
+                            £{Number(transaction.pricePaid).toLocaleString('en-GB')}
+                          </Typography>
+                          <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 14, color: 'rgba(255,255,255,0.4)', mt: 0.5, letterSpacing: '0.06em' }}>
+                            {priceDate}
+                          </Typography>
+                        </Box>
+                      </Box>
+
+                      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, padding: 0 }}>
+                        {[
+                          { key: 'Transaction ID', val: transaction.transactionId, mono: true, wide: false },
+                          { key: 'New Build', val: transaction.newBuild ? 'Yes' : 'No', mono: false, wide: false },
+                          { key: 'Transaction Date', val: new Date(transaction.transactionDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }), mono: false, wide: false },
+                          { key: 'Price Paid', val: `£${Number(transaction.pricePaid).toLocaleString('en-GB')}`, mono: false, highlight: true, wide: false },
+                          { key: 'Type', val: 'TransactionRecord', mono: false, wide: false },
+                          { key: 'Estate Type', val: estateType, pill: true, wide: false },
+                          { key: 'Has Transaction', val: transaction.transactionId, mono: true, wide: true },
+                        ].map((field) => (
                           <Box
-                            key={transaction.transactionId}
+                            key={field.key}
                             sx={{
-                              p: 3,
-                              borderRadius: '12px',
-                              backgroundColor: isLatest ? '#fffbf0' : '#ffffff',
-                              border: isLatest ? '2px solid #f2c514' : '2px solid #e5e7eb',
-                              transition: 'all 0.3s ease',
-                              '&:hover': {
-                                borderColor: '#f2c514',
-                                transform: 'translateX(4px)',
-                                boxShadow: '0 4px 12px rgba(242, 197, 20, 0.2)',
-                              },
+                              padding: '18px 24px',
+                              borderRight: field.wide ? 'none' : '1px solid #e8e6df',
+                              borderBottom: '1px solid #e8e6df',
+                              gridColumn: field.wide ? 'span 2' : 'auto',
                             }}
                           >
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-                              <Box sx={{ flex: 1 }}>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
-                                  <Typography
-                                    sx={{
-                                      fontSize: '18px',
-                                      fontWeight: 700,
-                                      color: '#111827',
-                                      fontFamily: '"Poppins", sans-serif',
-                                    }}
-                                  >
-                                    {transaction.propertyAddress.paon}
-                                    {transaction.propertyAddress.saon ? ` ${transaction.propertyAddress.saon}` : ''}
-                                  </Typography>
-                                  {isLatest && (
-                                    <Box
-                                      sx={{
-                                        px: 1.5,
-                                        py: 0.5,
-                                        borderRadius: '6px',
-                                        backgroundColor: '#f2c514',
-                                      }}
-                                    >
-                                      <Typography
-                                        sx={{
-                                          fontSize: '11px',
-                                          fontWeight: 700,
-                                          color: '#000000',
-                                          fontFamily: '"Inter", sans-serif',
-                                          textTransform: 'uppercase',
-                                          letterSpacing: '0.5px',
-                                        }}
-                                      >
-                                        Latest
-                                      </Typography>
-                                    </Box>
-                                  )}
-                                </Box>
-                                <Typography
+                            <Typography
+                              sx={{
+                                fontFamily: FONT_TEXT,
+                                fontSize: 9,
+                                letterSpacing: '0.18em',
+                                textTransform: 'uppercase',
+                                color: '#888',
+                                mb: 0.75,
+                              }}
+                            >
+                              {field.key}
+                            </Typography>
+                            <Typography
+                              sx={{
+                                fontFamily: field.highlight ? FONT_TITLE : (field.mono ? FONT_TEXT : undefined),
+                                fontSize: field.highlight ? 18 : (field.mono ? 12 : 14),
+                                fontWeight: field.highlight ? 700 : (field.mono ? 400 : 600),
+                                color: field.mono ? '#555' : '#0a0a0a',
+                                wordBreak: 'break-all',
+                              }}
+                            >
+                              {field.pill ? (
+                                <Box
+                                  component="span"
                                   sx={{
-                                    fontSize: '14px',
-                                    color: '#6b7280',
-                                    fontFamily: '"Inter", sans-serif',
-                                  }}
-                                >
-                                  {transaction.propertyAddress.street}, {transaction.propertyAddress.town}
-                                </Typography>
-                              </Box>
-                              <Box sx={{ textAlign: 'right' }}>
-                                <Typography
-                                  sx={{
-                                    fontSize: '24px',
-                                    fontWeight: 700,
-                                    color: '#10b981',
-                                    fontFamily: '"Poppins", sans-serif',
-                                  }}
-                                >
-                                  £{transaction.pricePaid.toLocaleString()}
-                                </Typography>
-                                <Typography
-                                  sx={{
-                                    fontSize: '13px',
-                                    color: '#6b7280',
-                                    fontFamily: '"Inter", sans-serif',
-                                  }}
-                                >
-                                  {new Date(transaction.transactionDate).toLocaleDateString('en-GB', {
-                                    day: 'numeric',
-                                    month: 'short',
-                                    year: 'numeric',
-                                  })}
-                                </Typography>
-                              </Box>
-                            </Box>
-
-                            {/* Transaction Details Grid */}
-                            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' }, gap: 2.5, mt: 3 }}>
-                              {/* Transaction ID */}
-                              <Box>
-                                <Typography
-                                  sx={{
-                                    fontSize: '11px',
-                                    color: '#9ca3af',
-                                    fontFamily: '"Inter", sans-serif',
-                                    mb: 0.5,
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '0.5px',
-                                    fontWeight: 600,
-                                  }}
-                                >
-                                  Transaction ID
-                                </Typography>
-                                <Typography
-                                  sx={{
-                                    fontSize: '13px',
+                                    display: 'inline-block',
+                                    background: '#f2c514',
+                                    color: '#0a0a0a',
+                                    fontFamily: FONT_TEXT,
+                                    fontSize: 13,
+                                    letterSpacing: '0.08em',
+                                    padding: '3px 10px',
                                     fontWeight: 500,
-                                    color: '#111827',
-                                    fontFamily: '"Courier New", monospace',
-                                    wordBreak: 'break-all',
                                   }}
                                 >
-                                  {transaction.transactionId}
-                                </Typography>
-                              </Box>
+                                  {field.val}
+                                </Box>
+                              ) : (
+                                field.val
+                              )}
+                            </Typography>
+                          </Box>
+                        ))}
+                      </Box>
 
-                              {/* New Build */}
-                              <Box>
-                                <Typography
-                                  sx={{
-                                    fontSize: '11px',
-                                    color: '#9ca3af',
-                                    fontFamily: '"Inter", sans-serif',
-                                    mb: 0.5,
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '0.5px',
-                                    fontWeight: 600,
-                                  }}
-                                >
-                                  New Build
-                                </Typography>
-                                <Typography
-                                  sx={{
-                                    fontSize: '14px',
-                                    fontWeight: 600,
-                                    color: '#111827',
-                                    fontFamily: '"Inter", sans-serif',
-                                  }}
-                                >
-                                  {transaction.newBuild ? 'Yes' : 'No'}
-                                </Typography>
-                              </Box>
-
-                              {/* Transaction Date */}
-                              <Box>
-                                <Typography
-                                  sx={{
-                                    fontSize: '11px',
-                                    color: '#9ca3af',
-                                    fontFamily: '"Inter", sans-serif',
-                                    mb: 0.5,
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '0.5px',
-                                    fontWeight: 600,
-                                  }}
-                                >
-                                  Transaction Date
-                                </Typography>
-                                <Typography
-                                  sx={{
-                                    fontSize: '14px',
-                                    fontWeight: 600,
-                                    color: '#111827',
-                                    fontFamily: '"Inter", sans-serif',
-                                  }}
-                                >
-                                  {new Date(transaction.transactionDate).toLocaleDateString('en-GB', {
-                                    day: '2-digit',
-                                    month: '2-digit',
-                                    year: 'numeric',
-                                  })}
-                                </Typography>
-                              </Box>
-
-                              {/* Price Paid */}
-                              <Box>
-                                <Typography
-                                  sx={{
-                                    fontSize: '11px',
-                                    color: '#9ca3af',
-                                    fontFamily: '"Inter", sans-serif',
-                                    mb: 0.5,
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '0.5px',
-                                    fontWeight: 600,
-                                  }}
-                                >
-                                  Price Paid
-                                </Typography>
-                                <Typography
-                                  sx={{
-                                    fontSize: '14px',
-                                    fontWeight: 600,
-                                    color: '#111827',
-                                    fontFamily: '"Inter", sans-serif',
-                                  }}
-                                >
-                                  £{transaction.pricePaid.toLocaleString()}
-                                </Typography>
-                              </Box>
-
-                              {/* Type */}
-                              <Box>
-                                <Typography
-                                  sx={{
-                                    fontSize: '11px',
-                                    color: '#9ca3af',
-                                    fontFamily: '"Inter", sans-serif',
-                                    mb: 0.5,
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '0.5px',
-                                    fontWeight: 600,
-                                  }}
-                                >
-                                  Type
-                                </Typography>
-                                <Typography
-                                  sx={{
-                                    fontSize: '14px',
-                                    fontWeight: 600,
-                                    color: '#111827',
-                                    fontFamily: '"Inter", sans-serif',
-                                  }}
-                                >
-                                  TransactionRecord
-                                </Typography>
-                              </Box>
-
-                              {/* Estate Type */}
-                              <Box>
-                                <Typography
-                                  sx={{
-                                    fontSize: '11px',
-                                    color: '#9ca3af',
-                                    fontFamily: '"Inter", sans-serif',
-                                    mb: 0.5,
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '0.5px',
-                                    fontWeight: 600,
-                                  }}
-                                >
-                                  Estate Type
-                                </Typography>
-                                <Typography
-                                  sx={{
-                                    fontSize: '14px',
-                                    fontWeight: 600,
-                                    color: '#111827',
-                                    fontFamily: '"Inter", sans-serif',
-                                  }}
-                                >
-                                  {transaction.estateType.label[0]._value}
-                                </Typography>
-                              </Box>
-
-                              {/* Has Transaction */}
-                              <Box>
-                                <Typography
-                                  sx={{
-                                    fontSize: '11px',
-                                    color: '#9ca3af',
-                                    fontFamily: '"Inter", sans-serif',
-                                    mb: 0.5,
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '0.5px',
-                                    fontWeight: 600,
-                                  }}
-                                >
-                                  Has Transaction
-                                </Typography>
-                                <Typography
-                                  sx={{
-                                    fontSize: '13px',
-                                    fontWeight: 500,
-                                    color: '#111827',
-                                    fontFamily: '"Courier New", monospace',
-                                    wordBreak: 'break-all',
-                                  }}
-                                >
-                                  {transaction.transactionId}
-                                </Typography>
-                              </Box>
+                      <Box sx={{ borderTop: '2px solid #0a0a0a', background: '#f9f8f3' }}>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 1,
+                            padding: '14px 24px',
+                            fontFamily: FONT_TEXT,
+                            fontSize: 13,
+                            letterSpacing: '0.16em',
+                            textTransform: 'uppercase',
+                            color: '#888',
+                            borderBottom: '1px solid #e8e6df',
+                          }}
+                        >
+                          <LocationOnIcon sx={{ width: 14, height: 14, color: '#f2c514' }} />
+                          Property Address
+                        </Box>
+                        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' } }}>
+                          {[
+                            { key: 'County', val: addr.county || 'N/A' },
+                            { key: 'District', val: addr.district || 'N/A' },
+                            { key: 'PAON', val: addr.paon || 'N/A' },
+                            { key: 'Postcode', val: addr.postcode ? (
+                              <Box component="span" sx={{ display: 'inline-block', background: '#f2c514', color: '#0a0a0a', fontFamily: FONT_TEXT, fontSize: 12, letterSpacing: '0.06em', padding: '4px 12px', fontWeight: 500 }}>{addr.postcode}</Box>
+                            ) : 'N/A' },
+                            { key: 'Street', val: addr.street || 'N/A' },
+                            { key: 'Town', val: addr.town || 'N/A' },
+                          ].map((row) => (
+                            <Box
+                              key={row.key}
+                              sx={{ padding: '18px 24px', borderRight: '1px solid #e8e6df', borderBottom: '1px solid #e8e6df', '&:nth-of-type(even)': { borderRight: 'none' } }}
+                            >
+                              <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#888', fontWeight: 600, mb: 0.75 }}>{row.key}</Typography>
+                              <Typography sx={{ fontSize: 16, fontWeight: 600, color: '#0a0a0a', fontFamily: FONT_TEXT }}>{row.val}</Typography>
                             </Box>
+                          ))}
+                        </Box>
+                      </Box>
 
-                            {/* Property Address Section */}
-                            <Box sx={{ mt: 3, p: 2.5, backgroundColor: '#f9fafb', borderRadius: '8px' }}>
-                              <Typography
-                                sx={{
-                                  fontSize: '11px',
-                                  color: '#9ca3af',
-                                  fontFamily: '"Inter", sans-serif',
-                                  mb: 1.5,
-                                  textTransform: 'uppercase',
-                                  letterSpacing: '0.5px',
-                                  fontWeight: 600,
-                                }}
-                              >
-                                Property Address
-                              </Typography>
-                              <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' }, gap: 2 }}>
-                                {/* County */}
-                                <Box>
-                                  <Typography
-                                    sx={{
-                                      fontSize: '11px',
-                                      color: '#9ca3af',
-                                      fontFamily: '"Inter", sans-serif',
-                                      mb: 0.5,
-                                      textTransform: 'uppercase',
-                                      letterSpacing: '0.5px',
-                                      fontWeight: 600,
-                                    }}
-                                  >
-                                    County
-                                  </Typography>
-                                  <Typography
-                                    sx={{
-                                      fontSize: '14px',
-                                      fontWeight: 600,
-                                      color: '#111827',
-                                      fontFamily: '"Inter", sans-serif',
-                                    }}
-                                  >
-                                    {transaction.propertyAddress.county || 'N/A'}
-                                  </Typography>
-                                </Box>
+                      <Box sx={{ display: 'flex', alignItems: 'stretch', borderTop: '2px solid #0a0a0a', background: '#0a0a0a' }}>
+                        <Box sx={{ flex: 1, padding: '16px 22px', display: 'flex', flexDirection: 'column', gap: 0.6 }}>
+                          <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', fontWeight: 500 }}>Property Type</Typography>
+                          <Typography sx={{ fontSize: 15, fontWeight: 600, color: '#ffffff' }}>{propType}</Typography>
+                        </Box>
+                        <Box sx={{ width: 1, background: 'rgba(255,255,255,0.1)', margin: '12px 0' }} />
+                        <Box sx={{ flex: 1, padding: '16px 22px', display: 'flex', flexDirection: 'column', gap: 0.6 }}>
+                          <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', fontWeight: 500 }}>Record Status</Typography>
+                          <Typography sx={{ fontSize: 15, fontWeight: 600, color: '#ffffff' }}>{recordStatus}</Typography>
+                        </Box>
+                        <Box sx={{ width: 1, background: 'rgba(255,255,255,0.1)', margin: '12px 0' }} />
+                        <Box sx={{ flex: 1, padding: '16px 22px', display: 'flex', flexDirection: 'column', gap: 0.6 }}>
+                          <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', fontWeight: 500 }}>Transaction Category</Typography>
+                          <Typography sx={{ fontSize: 15, fontWeight: 600, color: '#ffffff' }}>{transCat}</Typography>
+                        </Box>
+                      </Box>
+                    </Box>
+                  );
+                })}
 
-                                {/* District */}
-                                <Box>
-                                  <Typography
-                                    sx={{
-                                      fontSize: '11px',
-                                      color: '#9ca3af',
-                                      fontFamily: '"Inter", sans-serif',
-                                      mb: 0.5,
-                                      textTransform: 'uppercase',
-                                      letterSpacing: '0.5px',
-                                      fontWeight: 600,
-                                    }}
-                                  >
-                                    District
-                                  </Typography>
-                                  <Typography
-                                    sx={{
-                                      fontSize: '14px',
-                                      fontWeight: 600,
-                                      color: '#111827',
-                                      fontFamily: '"Inter", sans-serif',
-                                    }}
-                                  >
-                                    {transaction.propertyAddress.district || 'N/A'}
-                                  </Typography>
-                                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.04em', color: '#888', lineHeight: 1.6, fontWeight: 500, padding: '14px 4px 32px' }}>
+                  <Box
+                    component="svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={1.5}
+                    sx={{ width: 14, height: 14, flexShrink: 0, mt: 0.3 }}
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </Box>
+                  <Typography component="span">
+                    Data source: Contains HM Land Registry data © Crown copyright and database right {new Date().getFullYear()}. Licensed under the{' '}
+                    <Typography
+                      component="a"
+                      href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      sx={{ color: '#f2c514', textDecoration: 'none', borderBottom: '1px solid #f2c514' }}
+                    >
+                      Open Government Licence v3.0
+                    </Typography>
+                    .
+                  </Typography>
+                </Box>
+              </Box>
+            ) : (
+              <Box sx={{ p: 4, border: '2px solid #e8e6df', background: '#f9f8f3', textAlign: 'center' }}>
+                <Typography sx={{ fontSize: 16, color: '#888', fontFamily: FONT_TEXT }}>
+                  No transaction history available for this postcode in the HM Land Registry Price Paid Data.
+                </Typography>
+              </Box>
+            )}
+          </ContentSection>
+        );
+      }
 
-                                {/* PAON */}
-                                <Box>
-                                  <Typography
-                                    sx={{
-                                      fontSize: '11px',
-                                      color: '#9ca3af',
-                                      fontFamily: '"Inter", sans-serif',
-                                      mb: 0.5,
-                                      textTransform: 'uppercase',
-                                      letterSpacing: '0.5px',
-                                      fontWeight: 600,
-                                    }}
-                                  >
-                                    PAON
-                                  </Typography>
-                                  <Typography
-                                    sx={{
-                                      fontSize: '14px',
-                                      fontWeight: 600,
-                                      color: '#111827',
-                                      fontFamily: '"Inter", sans-serif',
-                                    }}
-                                  >
-                                    {transaction.propertyAddress.paon}
-                                  </Typography>
-                                </Box>
+      case 'Mortgage Calculator': {
+        const calculateMortgage = () => {
+          if (!propertyValue || propertyValue <= 0) return null;
+          const depositAmount = (propertyValue * depositPercent) / 100;
+          const loanAmount = propertyValue - depositAmount;
+          const monthlyInterestRate = interestRate / 100 / 12;
+          const numberOfPayments = loanTerm * 12;
+          if (monthlyInterestRate === 0) {
+            return { monthlyPayment: loanAmount / numberOfPayments, totalAmount: loanAmount, totalInterest: 0, depositAmount, loanAmount };
+          }
+          const monthlyPayment =
+            (loanAmount * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) /
+            (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
+          const totalAmount = monthlyPayment * numberOfPayments;
+          const totalInterest = totalAmount - loanAmount;
+          return { monthlyPayment, totalAmount, totalInterest, depositAmount, loanAmount };
+        };
+        const mortgageResult = calculateMortgage();
+        const loanAmt = mortgageResult?.loanAmount ?? 0;
+        const totalInt = mortgageResult?.totalInterest ?? 0;
+        const fmt = (n: number) => '£' + Math.round(n).toLocaleString('en-GB');
+        return (
+          <ContentSection>
+            <Typography
+              component="div"
+              sx={{
+                fontFamily: FONT_TEXT,
+                fontSize: '16px',
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                color: '#888',
+                fontWeight: 600,
+                mb: 2,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1.25,
+                '&::after': { content: '""', flex: 1, height: 1, bgcolor: '#e8e6df' },
+              }}
+            >
+              Mortgage Calculator
+            </Typography>
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+                border: '2px solid #0a0a0a',
+                bgcolor: '#fff',
+                overflow: 'hidden',
+              }}
+            >
+              {/* Left: inputs */}
+              <Box sx={{ borderRight: { md: '2px solid #0a0a0a' }, display: 'flex', flexDirection: 'column' }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1.5,
+                    p: '20px 24px',
+                    bgcolor: '#fffde8',
+                    borderBottom: '2px solid #0a0a0a',
+                    fontFamily: FONT_TEXT,
+                    fontSize: 15,
+                    letterSpacing: '0.04em',
+                    color: '#7a5c00',
+                    fontWeight: 500,
+                  }}
+                >
+                  <Box sx={{ width: 34, height: 34, bgcolor: '#f2c514', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                      <polyline points="9 22 9 12 15 12 15 22" />
+                    </svg>
+                  </Box>
+                  <span>Calculate your mortgage payments based on the property price</span>
+                </Box>
+                <Box sx={{ py: 0, borderBottom: '1px solid #e8e6df' }}>
+                  <Typography component="label" sx={{ fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888', fontWeight: 600, display: 'block', mb: 1.25, px: 3, pt: 2.5 }}>
+                    Property Value
+                  </Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center', border: '2px solid #0a0a0a', bgcolor: '#fff', mx: 3, mb: 2 }}>
+                    <Box component="span" sx={{ py: 1.25, px: 1.75, fontFamily: FONT_TEXT, fontSize: 16, fontWeight: 600, bgcolor: '#0a0a0a', color: '#f2c514', flexShrink: 0 }}>
+                      £
+                    </Box>
+                    <InputBase
+                      type="number"
+                      value={propertyValue || ''}
+                      onChange={(e) => setPropertyValue(parseFloat(e.target.value) || 0)}
+                      placeholder="0"
+                      inputProps={{ min: 0, step: 1000 }}
+                      sx={{ flex: 1, border: 'none', outline: 'none', py: 1.25, px: 1.75, fontFamily: FONT_TITLE, fontSize: 22, fontWeight: 700, color: '#0a0a0a', '& input': { textAlign: 'left' } }}
+                    />
+                  </Box>
+                </Box>
+                <Box sx={{ py: 0, borderBottom: '1px solid #e8e6df' }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.25, px: 3, pt: 2.5 }}>
+                    <Typography component="label" sx={{ fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888', fontWeight: 600, mb: 0 }}>
+                      Deposit
+                    </Typography>
+                    <Box sx={{ bgcolor: '#f2c514', color: '#0a0a0a', fontFamily: FONT_TEXT, fontSize: 14, fontWeight: 600, letterSpacing: '0.06em', py: 0.5, px: 1.5, border: '2px solid #0a0a0a' }}>
+                      {depositPercent}%
+                    </Box>
+                  </Box>
+                  <Box sx={{ px: 3, pb: 1 }}>
+                    <Slider
+                      value={depositPercent}
+                      onChange={(_, v) => setDepositPercent(v as number)}
+                      min={1}
+                      max={100}
+                      step={1}
+                      sx={{
+                        color: '#f2c514',
+                        height: 4,
+                        '& .MuiSlider-thumb': { width: 20, height: 20, bgcolor: '#f2c514', border: '2px solid #0a0a0a', borderRadius: 0 },
+                        '& .MuiSlider-rail': { opacity: 1 },
+                      }}
+                    />
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', fontFamily: FONT_TEXT, fontSize: 12, color: '#888', letterSpacing: '0.06em', fontWeight: 500 }}>
+                      <span>1%</span>
+                      <span>100%</span>
+                    </Box>
+                  </Box>
+                </Box>
+                <Box sx={{ py: 0, borderBottom: '1px solid #e8e6df' }}>
+                  <Typography component="label" sx={{ fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888', fontWeight: 600, display: 'block', mb: 1.25, px: 3, pt: 2.5 }}>
+                    Interest Rate
+                  </Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center', border: '2px solid #0a0a0a', bgcolor: '#fff', mx: 3, mb: 2 }}>
+                    <InputBase
+                      type="number"
+                      value={interestRate ?? ''}
+                      onChange={(e) => setInterestRate(parseFloat(e.target.value) || 0)}
+                      inputProps={{ min: 0, step: 0.1 }}
+                      sx={{ flex: 1, border: 'none', outline: 'none', py: 1.25, px: 1.75, fontFamily: FONT_TITLE, fontSize: 22, fontWeight: 700, color: '#0a0a0a' }}
+                    />
+                    <Box component="span" sx={{ py: 1.25, px: 1.75, fontFamily: FONT_TEXT, fontSize: 16, fontWeight: 600, bgcolor: '#0a0a0a', color: '#f2c514', flexShrink: 0 }}>
+                      %
+                    </Box>
+                  </Box>
+                </Box>
+                <Box sx={{ py: 0 }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.25, px: 3, pt: 2.5 }}>
+                    <Typography component="label" sx={{ fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888', fontWeight: 600, mb: 0 }}>
+                      Loan Term
+                    </Typography>
+                    <Box sx={{ bgcolor: '#f2c514', color: '#0a0a0a', fontFamily: FONT_TEXT, fontSize: 14, fontWeight: 600, letterSpacing: '0.06em', py: 0.5, px: 1.5, border: '2px solid #0a0a0a' }}>
+                      {loanTerm} {loanTerm === 1 ? 'year' : 'years'}
+                    </Box>
+                  </Box>
+                  <Box sx={{ px: 3, pb: 2 }}>
+                    <Slider
+                      value={loanTerm}
+                      onChange={(_, v) => setLoanTerm(v as number)}
+                      min={1}
+                      max={40}
+                      step={1}
+                      sx={{
+                        color: '#f2c514',
+                        height: 4,
+                        '& .MuiSlider-thumb': { width: 20, height: 20, bgcolor: '#f2c514', border: '2px solid #0a0a0a', borderRadius: 0 },
+                        '& .MuiSlider-rail': { opacity: 1 },
+                      }}
+                    />
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', fontFamily: FONT_TEXT, fontSize: 12, color: '#888', letterSpacing: '0.06em', fontWeight: 500 }}>
+                      <span>1 yr</span>
+                      <span>40 yrs</span>
+                    </Box>
+                  </Box>
+                </Box>
+              </Box>
+              {/* Right: breakdown */}
+              <Box sx={{ display: 'flex', flexDirection: 'column', bgcolor: '#0a0a0a' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, p: '20px 24px', fontFamily: FONT_TITLE, fontSize: 20, fontWeight: 700, color: '#fff', borderBottom: '2px solid rgba(255,255,255,0.1)' }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} style={{ color: '#f2c514', flexShrink: 0 }}>
+                    <line x1="18" y1="20" x2="18" y2="10" />
+                    <line x1="12" y1="20" x2="12" y2="4" />
+                    <line x1="6" y1="20" x2="6" y2="14" />
+                  </svg>
+                  Mortgage Breakdown
+                </Box>
+                <Box sx={{ px: 3 }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 1.75, borderBottom: '1px solid rgba(255,255,255,0.08)', gap: 1.5 }}>
+                    <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 14, letterSpacing: '0.06em', color: 'rgba(255,255,255,0.6)', fontWeight: 500 }}>Property Value</Typography>
+                    <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 16, fontWeight: 600, color: '#fff' }}>{propertyValue > 0 ? fmt(propertyValue) : '—'}</Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 1.75, borderBottom: '1px solid rgba(255,255,255,0.08)', gap: 1.5 }}>
+                    <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 14, letterSpacing: '0.06em', color: 'rgba(255,255,255,0.6)', fontWeight: 500 }}>Deposit ({depositPercent}%)</Typography>
+                    <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 16, fontWeight: 600, color: '#fff' }}>{mortgageResult ? fmt(mortgageResult.depositAmount) : '—'}</Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 1.75, borderBottom: '1px solid rgba(255,255,255,0.08)', gap: 1.5 }}>
+                    <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 14, letterSpacing: '0.06em', color: 'rgba(255,255,255,0.6)', fontWeight: 500 }}>Loan Amount</Typography>
+                    <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 16, fontWeight: 600, color: '#fff' }}>{mortgageResult ? fmt(mortgageResult.loanAmount) : '—'}</Typography>
+                  </Box>
+                </Box>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', m: '0 24px', p: '18px 20px', bgcolor: '#f2c514', borderTop: '2px solid rgba(255,255,255,0.15)', borderBottom: '2px solid rgba(255,255,255,0.15)', gap: 1.5 }}>
+                  <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#0a0a0a', fontWeight: 600 }}>Monthly Payment</Typography>
+                  <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 28, fontWeight: 900, color: '#0a0a0a', lineHeight: 1 }}>
+                    {mortgageResult ? '£' + mortgageResult.monthlyPayment.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '—'}
+                  </Typography>
+                </Box>
+                <Box sx={{ px: 3 }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 1.75, borderBottom: '1px solid rgba(255,255,255,0.08)', gap: 1.5 }}>
+                    <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 14, letterSpacing: '0.06em', color: 'rgba(255,255,255,0.6)', fontWeight: 500 }}>Total Amount Paid</Typography>
+                    <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 16, fontWeight: 600, color: '#fff' }}>{mortgageResult ? fmt(mortgageResult.totalAmount) : '—'}</Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 1.75, gap: 1.5 }}>
+                    <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 14, letterSpacing: '0.06em', color: 'rgba(255,255,255,0.6)', fontWeight: 500 }}>Total Interest</Typography>
+                    <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 16, fontWeight: 600, color: 'rgba(242,197,20,0.9)' }}>{mortgageResult ? fmt(mortgageResult.totalInterest) : '—'}</Typography>
+                  </Box>
+                </Box>
+                <Box sx={{ display: 'flex', height: 6, m: '16px 24px 8px', overflow: 'hidden' }}>
+                  <Box sx={{ bgcolor: '#f2c514', flex: loanAmt || 1, transition: 'flex 0.4s ease' }} />
+                  <Box sx={{ bgcolor: 'rgba(255,255,255,0.2)', flex: totalInt || 0, transition: 'flex 0.4s ease' }} />
+                </Box>
+                <Box sx={{ display: 'flex', gap: 2, px: 3, pb: 2.5, fontFamily: FONT_TEXT, fontSize: 12, letterSpacing: '0.08em', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', fontWeight: 500 }}>
+                  <Box component="span" sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                    <Box sx={{ width: 8, height: 8, flexShrink: 0, bgcolor: '#f2c514' }} />
+                    Principal
+                  </Box>
+                  <Box component="span" sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                    <Box sx={{ width: 8, height: 8, flexShrink: 0, bgcolor: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.3)' }} />
+                    Interest
+                  </Box>
+                </Box>
+              </Box>
+            </Box>
+            {(!mortgageResult || propertyValue <= 0) && (
+              <Alert severity="info" sx={{ mt: 2, borderRadius: 0, fontSize: '16px' }}>
+                Please enter a valid property value to calculate mortgage payments.
+              </Alert>
+            )}
+          </ContentSection>
+        );
+      }
 
-                                {/* Postcode */}
-                                <Box>
-                                  <Typography
-                                    sx={{
-                                      fontSize: '11px',
-                                      color: '#9ca3af',
-                                      fontFamily: '"Inter", sans-serif',
-                                      mb: 0.5,
-                                      textTransform: 'uppercase',
-                                      letterSpacing: '0.5px',
-                                      fontWeight: 600,
-                                    }}
-                                  >
-                                    Postcode
-                                  </Typography>
-                                  <Typography
-                                    sx={{
-                                      fontSize: '14px',
-                                      fontWeight: 600,
-                                      color: '#111827',
-                                      fontFamily: '"Inter", sans-serif',
-                                    }}
-                                  >
-                                    {transaction.propertyAddress.postcode}
-                                  </Typography>
-                                </Box>
-
-                                {/* Street */}
-                                <Box>
-                                  <Typography
-                                    sx={{
-                                      fontSize: '11px',
-                                      color: '#9ca3af',
-                                      fontFamily: '"Inter", sans-serif',
-                                      mb: 0.5,
-                                      textTransform: 'uppercase',
-                                      letterSpacing: '0.5px',
-                                      fontWeight: 600,
-                                    }}
-                                  >
-                                    Street
-                                  </Typography>
-                                  <Typography
-                                    sx={{
-                                      fontSize: '14px',
-                                      fontWeight: 600,
-                                      color: '#111827',
-                                      fontFamily: '"Inter", sans-serif',
-                                    }}
-                                  >
-                                    {transaction.propertyAddress.street}
-                                  </Typography>
-                                </Box>
-
-                                {/* Town */}
-                                <Box>
-                                  <Typography
-                                    sx={{
-                                      fontSize: '11px',
-                                      color: '#9ca3af',
-                                      fontFamily: '"Inter", sans-serif',
-                                      mb: 0.5,
-                                      textTransform: 'uppercase',
-                                      letterSpacing: '0.5px',
-                                      fontWeight: 600,
-                                    }}
-                                  >
-                                    Town
-                                  </Typography>
-                                  <Typography
-                                    sx={{
-                                      fontSize: '14px',
-                                      fontWeight: 600,
-                                      color: '#111827',
-                                      fontFamily: '"Inter", sans-serif',
-                                    }}
-                                  >
-                                    {transaction.propertyAddress.town}
-                                  </Typography>
-                                </Box>
-                              </Box>
+      case 'Demographics Findings': {
+        const demoPeopleSvg = (
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} style={{ flexShrink: 0 }}>
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+        );
+        const demoClockSvg = (
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} style={{ flexShrink: 0 }}>
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+        );
+        return (
+          <ContentSection sx={{ pt: 1, pb: 7 }}>
+            <Typography
+              component="div"
+              sx={{
+                fontFamily: FONT_TEXT,
+                fontSize: '16px',
+                letterSpacing: '0.2em',
+                textTransform: 'uppercase',
+                color: '#888',
+                mb: 2,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1.25,
+                '&::after': { content: '""', flex: 1, height: 1, bgcolor: '#e8e6df' },
+              }}
+            >
+              Demographics Findings
+            </Typography>
+            {report.aiAnalysis ? (
+              <>
+                {report.aiAnalysis.summary && (
+                  <Box sx={{ bgcolor: '#fff', border: '2px solid #0a0a0a', borderLeft: '6px solid #f2c514', p: '28px 32px', mb: 4 }}>
+                    <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 20, fontWeight: 700, mb: 1.75 }}>Executive Summary</Typography>
+                    <Typography sx={{ fontSize: 14, lineHeight: 1.8, color: '#333', fontWeight: 300 }}>
+                      {(() => { const t = report.aiAnalysis!.summary!.slice(2); return t ? t.charAt(0).toUpperCase() + t.slice(1) : ''; })()}
+                    </Typography>
+                  </Box>
+                )}
+                {report.aiAnalysis.points && report.aiAnalysis.points.length > 0 && (
+                  <>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, mb: 3, fontFamily: FONT_TITLE, fontSize: 19, fontWeight: 700, color: '#0a0a0a' }}>
+                      <Box sx={{ color: '#f2c514' }}>{demoPeopleSvg}</Box>
+                      Key Benefits &amp; Insights
+                    </Box>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', border: '2px solid #0a0a0a', bgcolor: '#fff', overflow: 'hidden' }}>
+                      {report.aiAnalysis.points.map((point: any, index: number) => {
+                        const isLast = index === report.aiAnalysis!.points!.length - 1;
+                        const numStr = String(point.number ?? index + 1).padStart(2, '0');
+                        const contentText = point.content ? (() => { const t = point.content.slice(2); return t ? t.charAt(0).toUpperCase() + t.slice(1) : point.content; })() : '';
+                        return (
+                          <Box
+                            key={index}
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'stretch',
+                              borderBottom: isLast ? 'none' : '2px solid #0a0a0a',
+                            }}
+                          >
+                            <Box sx={{ width: 72, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', pt: 3.5, borderRight: '2px solid #0a0a0a', bgcolor: '#0a0a0a' }}>
+                              <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 24, fontWeight: 900, color: '#f2c514', lineHeight: 1, mb: 1.75 }}>{numStr}</Typography>
+                              <Box sx={{ flex: 1, width: 2, bgcolor: 'rgba(242,197,20,0.2)' }} />
                             </Box>
-
-                            {/* Property Type, Record Status, Transaction Category */}
-                            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' }, gap: 2.5, mt: 2.5 }}>
-                              {/* Property Type */}
-                              <Box>
-                                <Typography
-                                  sx={{
-                                    fontSize: '11px',
-                                    color: '#9ca3af',
-                                    fontFamily: '"Inter", sans-serif',
-                                    mb: 0.5,
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '0.5px',
-                                    fontWeight: 600,
-                                  }}
-                                >
-                                  Property Type
-                                </Typography>
-                                <Typography
-                                  sx={{
-                                    fontSize: '14px',
-                                    fontWeight: 600,
-                                    color: '#111827',
-                                    fontFamily: '"Inter", sans-serif',
-                                  }}
-                                >
-                                  {transaction.propertyType.label[0]._value}
-                                </Typography>
+                            <Box sx={{ flex: 1, py: 3.5, px: 4 }}>
+                              <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75, fontFamily: FONT_TEXT, fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#888', fontWeight: 600, mb: 1.25, bgcolor: '#f7f6f2', py: 0.5, px: 1.25, border: '1px solid #e8e6df' }}>
+                                {demoClockSvg}
+                                Insight
                               </Box>
-
-                              {/* Record Status */}
-                              <Box>
-                                <Typography
-                                  sx={{
-                                    fontSize: '11px',
-                                    color: '#9ca3af',
-                                    fontFamily: '"Inter", sans-serif',
-                                    mb: 0.5,
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '0.5px',
-                                    fontWeight: 600,
-                                  }}
-                                >
-                                  Record Status
-                                </Typography>
-                                <Typography
-                                  sx={{
-                                    fontSize: '14px',
-                                    fontWeight: 600,
-                                    color: '#111827',
-                                    fontFamily: '"Inter", sans-serif',
-                                  }}
-                                >
-                                  {transaction.recordStatus?.label?.[0]?._value || 'Add'}
-                                </Typography>
-                              </Box>
-
-                              {/* Transaction Category */}
-                              <Box>
-                                <Typography
-                                  sx={{
-                                    fontSize: '11px',
-                                    color: '#9ca3af',
-                                    fontFamily: '"Inter", sans-serif',
-                                    mb: 0.5,
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '0.5px',
-                                    fontWeight: 600,
-                                  }}
-                                >
-                                  Transaction Category
-                                </Typography>
-                                <Typography
-                                  sx={{
-                                    fontSize: '14px',
-                                    fontWeight: 600,
-                                    color: '#111827',
-                                    fontFamily: '"Inter", sans-serif',
-                                  }}
-                                >
-                                  {transaction.transactionCategory.label[0]._value}
-                                </Typography>
+                              <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 22, fontWeight: 700, color: '#0a0a0a', mb: 1.5, lineHeight: 1.2 }}>{point.title}</Typography>
+                              <Typography sx={{ fontSize: 16, lineHeight: 1.75, color: '#444', fontWeight: 500, mb: 2.25 }}>{contentText}</Typography>
+                              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                                <Box component="span" sx={{ display: 'inline-block', bgcolor: '#f2c514', color: '#0a0a0a', fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.08em', py: 0.6, px: 1.5, fontWeight: 500, border: '1px solid rgba(0,0,0,0.1)' }}>
+                                  Key benefit
+                                </Box>
                               </Box>
                             </Box>
                           </Box>
                         );
                       })}
-                    
-                    {/* Data Source Attribution */}
-                    <Box
-                      sx={{
-                        p: 2.5,
-                        borderRadius: '10px',
-                        backgroundColor: '#f9fafb',
-                        border: '1px solid #e5e7eb',
-                        mt: 1,
-                      }}
-                    >
-                      <Typography
-                        sx={{
-                          fontSize: '12px',
-                          color: '#6b7280',
-                          fontFamily: '"Inter", sans-serif',
-                          lineHeight: 1.6,
-                        }}
-                      >
-                        Data source: Contains HM Land Registry data © Crown copyright and database right {new Date().getFullYear()}. This data is licensed under the{' '}
-                        <Typography
-                          component="a"
-                          href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          sx={{
-                            color: '#f2c514',
-                            textDecoration: 'underline',
-                            fontWeight: 600,
-                            '&:hover': {
-                              color: '#d4a911',
-                            },
-                          }}
-                        >
-                          Open Government Licence v3.0
-                        </Typography>
-                        .
-                      </Typography>
                     </Box>
-                  </Box>
-                ) : (
-                  <Box
-                    sx={{
-                      p: 4,
-                      borderRadius: '12px',
-                      backgroundColor: '#f9fafb',
-                      border: '1px solid #e5e7eb',
-                      textAlign: 'center',
-                    }}
-                  >
-                    <Typography
-                      sx={{
-                        fontSize: '15px',
-                        color: '#6b7280',
-                        fontFamily: '"Inter", sans-serif',
-                      }}
-                    >
-                      No transaction history available for this postcode in the HM Land Registry Price Paid Data.
-                    </Typography>
-                  </Box>
-                )}
-              </Box>
-
-              {/* Important Notice */}
-              <Box
-                sx={{
-                  p: 4,
-                  borderRadius: '16px',
-                  background: 'linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%)',
-                  border: '2px solid #ef4444',
-                  mt: 4,
-                }}
-              >
-                <Box sx={{ display: 'flex', gap: 2.5 }}>
-                  <Box
-                    sx={{
-                      width: 44,
-                      height: 44,
-                      borderRadius: '10px',
-                      backgroundColor: '#ef4444',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0,
-                      boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)',
-                    }}
-                  >
-                    <Typography sx={{ fontSize: '24px' }}>⚠️</Typography>
-                  </Box>
-                  <Box>
-                    <Typography
-                      sx={{
-                        fontSize: '16px',
-                        fontWeight: 700,
-                        color: '#dc2626',
-                        fontFamily: '"Poppins", sans-serif',
-                        mb: 1,
-                      }}
-                    >
-                      Professional Legal Advice Required
-                    </Typography>
-                    <Typography
-                      sx={{
-                        fontSize: '15px',
-                        lineHeight: 1.8,
-                        fontFamily: '"Inter", sans-serif',
-                        color: '#7f1d1d',
-                      }}
-                    >
-                      This section provides general information only. Always seek professional legal advice from a qualified solicitor or conveyancer before proceeding with any property transaction. They will conduct thorough due diligence and ensure all legal requirements are met.
-                    </Typography>
-                  </Box>
-                </Box>
-              </Box>
-            </Box>
-          </ContentSection>
-        );
-
-      case 'Mortgage Calculator':
-        // Calculate mortgage
-        const calculateMortgage = () => {
-          if (!propertyValue || propertyValue <= 0) return null;
-          
-          const depositAmount = (propertyValue * depositPercent) / 100;
-          const loanAmount = propertyValue - depositAmount;
-          const monthlyInterestRate = interestRate / 100 / 12;
-          const numberOfPayments = loanTerm * 12;
-          
-          if (monthlyInterestRate === 0) {
-            return {
-              monthlyPayment: loanAmount / numberOfPayments,
-              totalAmount: loanAmount,
-              totalInterest: 0,
-              depositAmount,
-              loanAmount,
-            };
-          }
-          
-          const monthlyPayment = 
-            (loanAmount * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) /
-            (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
-          
-          const totalAmount = monthlyPayment * numberOfPayments;
-          const totalInterest = totalAmount - loanAmount;
-          
-          return {
-            monthlyPayment,
-            totalAmount,
-            totalInterest,
-            depositAmount,
-            loanAmount,
-          };
-        };
-        
-        const mortgageResult = calculateMortgage();
-        
-        return (
-          <ContentSection>
-            <SectionTitle sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 4 }}>
-              <Box
-                sx={{
-                  width: 6,
-                  height: 48,
-                  backgroundColor: '#f2c514',
-                  borderRadius: '3px',
-                }}
-              />
-              Mortgage Calculator
-            </SectionTitle>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-              <Box
-                sx={{
-                  background: 'linear-gradient(135deg, #ffffff 0%, #fefce8 100%)',
-                  borderRadius: '16px',
-                  p: 4,
-                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
-                  border: '1px solid #fde68a',
-                }}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-                  <Box
-                    sx={{
-                      width: 48,
-                      height: 48,
-                      backgroundColor: '#f2c514',
-                      borderRadius: '12px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: '0 4px 12px rgba(242, 197, 20, 0.3)',
-                    }}
-                  >
-                    <Typography sx={{ fontSize: '24px' }}>🏠</Typography>
-                  </Box>
-                  <Typography
-                    variant="body1"
-                    sx={{
-                      color: '#78350f',
-                      fontFamily: '"Inter", sans-serif',
-                      fontSize: '15px',
-                      fontWeight: 500,
-                    }}
-                  >
-                    Calculate your mortgage payments based on the property price
-                  </Typography>
-                </Box>
-                  
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                    {/* Property Value */}
-                    <Box>
-                      <Typography sx={{ mb: 2, fontSize: '15px', fontWeight: 600, color: '#111827', fontFamily: '"Poppins", sans-serif' }}>
-                        Property Value
-                      </Typography>
-                      <TextField
-                        fullWidth
-                        type="number"
-                        value={propertyValue || ''}
-                        onChange={(e) => setPropertyValue(parseFloat(e.target.value) || 0)}
-                        variant="outlined"
-                        placeholder="Enter property value"
-                        sx={{ 
-                          '& .MuiOutlinedInput-root': {
-                            borderRadius: '12px',
-                            backgroundColor: '#ffffff',
-                            '& fieldset': {
-                              borderColor: '#e5e7eb',
-                              borderWidth: '2px',
-                            },
-                            '&:hover fieldset': {
-                              borderColor: '#fbbf24',
-                            },
-                            '&.Mui-focused fieldset': {
-                              borderColor: '#f2c514',
-                              borderWidth: '2px',
-                            },
-                          },
-                          '& .MuiInputBase-input': { 
-                            fontFamily: '"Inter", sans-serif',
-                            fontSize: '18px',
-                            fontWeight: 600,
-                            color: '#111827',
-                            padding: '16px',
-                          }, 
-                        }}
-                      />
-                    </Box>
-
-                    {/* Deposit Slider */}
-                    <Box>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                        <Typography sx={{ fontSize: '15px', fontWeight: 600, color: '#111827', fontFamily: '"Poppins", sans-serif' }}>
-                          💳 Deposit
-                        </Typography>
-                        <Box
-                          sx={{
-                            backgroundColor: '#fef3c7',
-                            borderRadius: '8px',
-                            px: 2,
-                            py: 0.5,
-                            border: '2px solid #fbbf24',
-                          }}
-                        >
-                          <Typography sx={{ fontSize: '20px', fontWeight: 700, color: '#d97706', fontFamily: '"Poppins", sans-serif' }}>
-                          {depositPercent}%
-                        </Typography>
-                        </Box>
-                      </Box>
-                      <SliderContainer>
-                        <Slider
-                          value={depositPercent}
-                          onChange={(_, newValue) => setDepositPercent(newValue as number)}
-                          min={1}
-                          max={100}
-                          step={1}
-                          sx={{
-                            color: '#f2c514',
-                            height: 8,
-                            '& .MuiSlider-thumb': {
-                              width: 24,
-                              height: 24,
-                              backgroundColor: '#f2c514',
-                              border: '3px solid #ffffff',
-                              boxShadow: '0 4px 12px rgba(242, 197, 20, 0.5)',
-                              '&:hover': {
-                                boxShadow: '0 6px 16px rgba(242, 197, 20, 0.6)',
-                              },
-                            },
-                            '& .MuiSlider-track': {
-                              height: 8,
-                              borderRadius: 4,
-                              background: 'linear-gradient(90deg, #f2c514 0%, #fbbf24 100%)',
-                            },
-                            '& .MuiSlider-rail': {
-                              height: 8,
-                              borderRadius: 4,
-                              backgroundColor: '#e5e7eb',
-                            },
-                          }}
-                        />
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
-                          <Typography sx={{ fontSize: '12px', color: '#9ca3af', fontFamily: '"Inter", sans-serif', fontWeight: 500 }}>1%</Typography>
-                          <Typography sx={{ fontSize: '12px', color: '#9ca3af', fontFamily: '"Inter", sans-serif', fontWeight: 500 }}>100%</Typography>
-                    </Box>
-                      </SliderContainer>
-                    </Box>
-
-                    {/* Interest Rate */}
-                    <Box>
-                      <Typography sx={{ mb: 2, fontSize: '15px', fontWeight: 600, color: '#111827', fontFamily: '"Poppins", sans-serif' }}>
-                        📊 Interest Rate
-                      </Typography>
-                      <TextField
-                        fullWidth
-                        type="number"
-                        value={interestRate || ''}
-                        onChange={(e) => setInterestRate(parseFloat(e.target.value) || 0)}
-                        variant="outlined"
-                        placeholder="Enter interest rate"
-                        inputProps={{ min: 0, step: 0.1 }}
-                        sx={{ 
-                          '& .MuiOutlinedInput-root': {
-                            borderRadius: '12px',
-                            backgroundColor: '#ffffff',
-                            '& fieldset': {
-                              borderColor: '#e5e7eb',
-                              borderWidth: '2px',
-                            },
-                            '&:hover fieldset': {
-                              borderColor: '#fbbf24',
-                            },
-                            '&.Mui-focused fieldset': {
-                              borderColor: '#f2c514',
-                              borderWidth: '2px',
-                            },
-                          },
-                          '& .MuiInputBase-input': { 
-                            fontFamily: '"Inter", sans-serif',
-                            fontSize: '18px',
-                            fontWeight: 600,
-                            color: '#111827',
-                            padding: '16px',
-                          }, 
-                        }}
-                      />
-                    </Box>
-
-                    {/* Loan Term Timeline */}
-                    <Box>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                        <Typography sx={{ fontSize: '15px', fontWeight: 600, color: '#111827', fontFamily: '"Poppins", sans-serif' }}>
-                          ⏱️ Loan Term
-                        </Typography>
-                        <Box
-                          sx={{
-                            backgroundColor: '#fef3c7',
-                            borderRadius: '8px',
-                            px: 2,
-                            py: 0.5,
-                            border: '2px solid #fbbf24',
-                          }}
-                        >
-                          <Typography sx={{ fontSize: '18px', fontWeight: 700, color: '#d97706', fontFamily: '"Poppins", sans-serif' }}>
-                          {loanTerm} {loanTerm === 1 ? 'year' : 'years'}
-                        </Typography>
-                        </Box>
-                      </Box>
-                      <TimelineContainer>
-                        <TimelineLine>
-                          {Array.from({ length: 40 }, (_, i) => {
-                            const year = i + 1;
-                            const position = (i / 39) * 100;
-                            const isActive = year === loanTerm;
-                            const isMajor = year % 5 === 0 || year === 1;
-                            return (
-                              <TimelineMarker
-                                key={year}
-                                active={isActive}
-                                $position={position}
-                                onClick={() => setLoanTerm(year)}
-                                sx={{
-                                  width: isMajor ? (isActive ? '24px' : '20px') : (isActive ? '20px' : '12px'),
-                                  height: isMajor ? (isActive ? '24px' : '20px') : (isActive ? '20px' : '12px'),
-                                }}
-                              />
-                            );
-                          })}
-                        </TimelineLine>
-                      </TimelineContainer>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
-                        <Typography sx={{ fontSize: '12px', color: '#9ca3af', fontFamily: '"Inter", "Roboto", sans-serif' }}>1</Typography>
-                        <Typography sx={{ fontSize: '12px', color: '#9ca3af', fontFamily: '"Inter", "Roboto", sans-serif' }}>40</Typography>
-                      </Box>
-                    </Box>
-                  </Box>
-                </Box>
-              
-              {mortgageResult && propertyValue > 0 && (
-                <Box
-                  sx={{
-                    background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
-                    borderRadius: '16px',
-                    overflow: 'hidden',
-                    boxShadow: '0 8px 24px rgba(242, 197, 20, 0.25)',
-                    border: '2px solid #fbbf24',
-                  }}
-                >
-                  <Box sx={{ p: 4 }}>
-                    <Typography
-                      sx={{
-                        fontSize: '18px',
-                        fontWeight: 700,
-                        color: '#92400e',
-                        fontFamily: '"Poppins", sans-serif',
-                        mb: 3,
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 1,
-                      }}
-                    >
-                       Mortgage Breakdown
-                    </Typography>
-                    
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          p: 2,
-                          backgroundColor: 'rgba(255, 255, 255, 0.6)',
-                          borderRadius: '10px',
-                        }}
-                      >
-                        <Typography sx={{ fontSize: '15px', fontWeight: 500, color: '#78350f', fontFamily: '"Inter", sans-serif' }}>
-                          Property Value
-                        </Typography>
-                        <Typography sx={{ fontSize: '16px', fontWeight: 700, color: '#78350f', fontFamily: '"Poppins", sans-serif' }}>
-                          £{propertyValue.toLocaleString()}
-                        </Typography>
-                      </Box>
-                      
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          p: 2,
-                          backgroundColor: 'rgba(255, 255, 255, 0.6)',
-                          borderRadius: '10px',
-                        }}
-                      >
-                        <Typography sx={{ fontSize: '15px', fontWeight: 500, color: '#78350f', fontFamily: '"Inter", sans-serif' }}>
-                          Deposit ({depositPercent}%)
-                        </Typography>
-                        <Typography sx={{ fontSize: '16px', fontWeight: 700, color: '#78350f', fontFamily: '"Poppins", sans-serif' }}>
-                          £{mortgageResult.depositAmount.toLocaleString()}
-                        </Typography>
-                      </Box>
-                      
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          p: 2,
-                          backgroundColor: 'rgba(255, 255, 255, 0.6)',
-                          borderRadius: '10px',
-                        }}
-                      >
-                        <Typography sx={{ fontSize: '15px', fontWeight: 500, color: '#78350f', fontFamily: '"Inter", sans-serif' }}>
-                          Loan Amount
-                        </Typography>
-                        <Typography sx={{ fontSize: '16px', fontWeight: 700, color: '#78350f', fontFamily: '"Poppins", sans-serif' }}>
-                          £{mortgageResult.loanAmount.toLocaleString()}
-                        </Typography>
-                      </Box>
-                      
-                      {/* Highlight Monthly Payment */}
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          p: 3,
-                          backgroundColor: '#f2c514',
-                          borderRadius: '12px',
-                          boxShadow: '0 6px 16px rgba(242, 197, 20, 0.4)',
-                          mt: 1,
-                        }}
-                      >
-                        <Typography sx={{ fontSize: '18px', fontWeight: 700, color: '#000000', fontFamily: '"Poppins", sans-serif' }}>
-                          Monthly Payment
-                        </Typography>
-                        <Typography sx={{ fontSize: '28px', fontWeight: 900, color: '#000000', fontFamily: '"Poppins", sans-serif' }}>
-                          £{mortgageResult.monthlyPayment.toFixed(2)}
-                        </Typography>
-                      </Box>
-                      
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          p: 2,
-                          backgroundColor: 'rgba(255, 255, 255, 0.6)',
-                          borderRadius: '10px',
-                        }}
-                      >
-                        <Typography sx={{ fontSize: '15px', fontWeight: 500, color: '#78350f', fontFamily: '"Inter", sans-serif' }}>
-                          Total Amount Paid
-                        </Typography>
-                        <Typography sx={{ fontSize: '16px', fontWeight: 700, color: '#78350f', fontFamily: '"Poppins", sans-serif' }}>
-                          £{mortgageResult.totalAmount.toLocaleString(undefined, { maximumFractionDigits: 2 })}
-                        </Typography>
-                      </Box>
-                      
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          p: 2,
-                          backgroundColor: 'rgba(255, 255, 255, 0.6)',
-                          borderRadius: '10px',
-                        }}
-                      >
-                        <Typography sx={{ fontSize: '15px', fontWeight: 500, color: '#78350f', fontFamily: '"Inter", sans-serif' }}>
-                          Total Interest
-                        </Typography>
-                        <Typography sx={{ fontSize: '16px', fontWeight: 700, color: '#78350f', fontFamily: '"Poppins", sans-serif' }}>
-                          £{mortgageResult.totalInterest.toLocaleString(undefined, { maximumFractionDigits: 2 })}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Box>
-                </Box>
-              )}
-              
-              {(!mortgageResult || propertyValue <= 0) && (
-                <Alert severity="info">
-                  Please enter a valid property value to calculate mortgage payments.
-                </Alert>
-              )}
-            </Box>
-          </ContentSection>
-        );
-
-      case 'Demographics Findings':
-        return (
-          <ContentSection>
-            <SectionTitle sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 4 }}>
-              <Box
-                sx={{
-                  width: 6,
-                  height: 48,
-                  backgroundColor: '#f2c514',
-                  borderRadius: '3px',
-                }}
-              />
-              Demographics Findings
-            </SectionTitle>
-            {report.aiAnalysis ? (
-              <>
-                {report.aiAnalysis.summary && (
-                  <Box sx={{ mb: 4 }}>
-                    <Box
-                      sx={{
-                        background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
-                        borderRadius: '16px',
-                        p: 4,
-                        position: 'relative',
-                        overflow: 'hidden',
-                        boxShadow: '0 4px 20px rgba(251, 191, 36, 0.15)',
-                        border: '1px solid #fbbf24',
-                        '&::before': {
-                          content: '""',
-                          position: 'absolute',
-                          top: 0,
-                          right: 0,
-                          width: '200px',
-                          height: '200px',
-                          background: 'radial-gradient(circle, rgba(251, 191, 36, 0.2) 0%, transparent 70%)',
-                          borderRadius: '50%',
-                          transform: 'translate(30%, -30%)',
-                        },
-                      }}
-                    >
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-                        <Box
-                          sx={{
-                            width: 48,
-                            height: 48,
-                            backgroundColor: '#f2c514',
-                            borderRadius: '12px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            boxShadow: '0 4px 12px rgba(242, 197, 20, 0.3)',
-                          }}
-                        >
-                          <Typography sx={{ fontSize: '24px', fontWeight: 700, color: '#000' }}>
-                            📊
-                    </Typography>
-                        </Box>
-                        <Typography
-                          variant="h5"
-                          sx={{
-                            fontWeight: 700,
-                            fontSize: '22px',
-                            fontFamily: '"Poppins", sans-serif',
-                            color: '#92400e',
-                            letterSpacing: '-0.02em',
-                          }}
-                        >
-                          Executive Summary
-                        </Typography>
-                      </Box>
-                        <Typography 
-                          variant="body1" 
-                          sx={{ 
-                            lineHeight: 1.8, 
-                            fontSize: '16px',
-                          fontFamily: '"Inter", sans-serif',
-                          color: '#78350f',
-                          position: 'relative',
-                          zIndex: 1,
-                          }}
-                        >
-                          {(() => {
-                            const text = report.aiAnalysis.summary.slice(2);
-                            return text.charAt(0).toUpperCase() + text.slice(1);
-                          })()}
-                      </Typography>
-                    </Box>
-                  </Box>
-                )}
-                {report.aiAnalysis.points && report.aiAnalysis.points.length > 0 && (
-                  <Box>
-                    <Typography
-                      variant="h5"
-                      sx={{
-                        mb: 3,
-                        fontWeight: 700,
-                        fontSize: '20px',
-                        fontFamily: '"Poppins", sans-serif',
-                        color: '#111827',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 1.5,
-                      }}
-                    >
-                      <Box
-                        sx={{
-                          width: 8,
-                          height: 8,
-                          backgroundColor: '#f2c514',
-                          borderRadius: '50%',
-                        }}
-                      />
-                      Key Benefits & Insights
-                    </Typography>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                    {report.aiAnalysis.points.map((point: any, index: number) => (
-                        <Box
-                          key={index}
-                          sx={{
-                            background: '#ffffff',
-                            borderRadius: '12px',
-                            p: 3,
-                            boxShadow: '0 2px 12px rgba(0, 0, 0, 0.06)',
-                            border: '1px solid #e5e7eb',
-                            transition: 'all 0.3s ease',
-                            position: 'relative',
-                            overflow: 'hidden',
-                            '&:hover': {
-                              boxShadow: '0 8px 24px rgba(242, 197, 20, 0.15)',
-                              borderColor: '#fbbf24',
-                              transform: 'translateY(-2px)',
-                            },
-                            '&::before': {
-                              content: '""',
-                              position: 'absolute',
-                              left: 0,
-                              top: 0,
-                              width: '4px',
-                              height: '100%',
-                              background: 'linear-gradient(180deg, #f2c514 0%, #d4a911 100%)',
-                            },
-                          }}
-                        >
-                          <Box sx={{ display: 'flex', alignItems: 'start', gap: 2 }}>
-                            <Box
-                              sx={{
-                                minWidth: 40,
-                                height: 40,
-                                backgroundColor: '#fef3c7',
-                                borderRadius: '10px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                fontWeight: 700,
-                                fontSize: '18px',
-                                color: '#d97706',
-                                fontFamily: '"Poppins", sans-serif',
-                                boxShadow: '0 2px 8px rgba(251, 191, 36, 0.2)',
-                              }}
-                            >
-                              {point.number}
-                            </Box>
-                            <Box sx={{ flex: 1 }}>
-                          <Typography 
-                            variant="h6" 
-                            sx={{ 
-                              mb: 1.5, 
-                                  fontWeight: 700,
-                              fontSize: '18px',
-                                  color: '#111827',
-                                  fontFamily: '"Poppins", sans-serif',
-                                  letterSpacing: '-0.01em',
-                            }}
-                          >
-                                {point.title}
-                          </Typography>
-                          <Typography 
-                            variant="body1" 
-                            sx={{ 
-                                  color: '#4b5563',
-                              lineHeight: 1.8, 
-                                  fontSize: '15px',
-                                  fontFamily: '"Inter", sans-serif',
-                            }}
-                          >
-                            {(() => {
-                              const text = point.content.slice(2);
-                              return text.charAt(0).toUpperCase() + text.slice(1);
-                            })()}
-                          </Typography>
-                            </Box>
-                          </Box>
-                        </Box>
-                    ))}
-                    </Box>
-                  </Box>
+                  </>
                 )}
               </>
             ) : (
-              <Alert severity="info" sx={{ borderRadius: '12px', fontSize: '15px' }}>
+              <Alert severity="info" sx={{ borderRadius: 0, fontSize: '16px' }}>
                 Amenities analysis not available for this property.
               </Alert>
             )}
           </ContentSection>
         );
+      }
 
-      case 'Psychographics Analysis':
+      case 'Psychographics Analysis': {
+        const psychoPeopleSvg = (
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} style={{ flexShrink: 0 }}>
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+        );
+        const psychoTagSvg = (
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} style={{ flexShrink: 0 }}>
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+        );
         return (
-          <ContentSection>
-            <SectionTitle
+          <ContentSection sx={{ pt: 1, pb: 7 }}>
+            <Typography
+              component="div"
               sx={{
-                position: 'relative',
-                paddingLeft: 3,
-                '&::before': {
-                  content: '""',
-                  position: 'absolute',
-                  left: 0,
-                  top: 0,
-                  bottom: 0,
-                  width: '6px',
-                  backgroundColor: '#f2c514',
-                  borderRadius: '10px',
-                },
+                fontFamily: FONT_TEXT,
+                fontSize: '16px',
+                letterSpacing: '0.2em',
+                textTransform: 'uppercase',
+                color: '#888',
+                mb: 2,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1.25,
+                '&::after': { content: '""', flex: 1, height: 1, bgcolor: '#e8e6df' },
               }}
             >
               Psychographics Analysis
-            </SectionTitle>
+            </Typography>
             {report.psychographicsAnalysis ? (
               <>
-                {/* Hero Section with Golden Theme */}
-                <Box 
-                  sx={{ 
-                    mb: 4, 
-                    p: 4, 
-                    background: 'linear-gradient(135deg, rgba(242, 197, 20, 0.15) 0%, rgba(251, 191, 36, 0.1) 100%)',
-                    borderRadius: '16px',
-                    border: '2px solid #f2c514',
-                    position: 'relative',
-                    overflow: 'hidden',
-                  }}
-                >
-                  <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 3 }}>
-                    <Box
-                      sx={{
-                        width: 64,
-                        height: 64,
-                        borderRadius: '16px',
-                        background: 'linear-gradient(135deg, #f2c514 0%, #fbbf24 100%)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: 0,
-                        boxShadow: '0 8px 24px rgba(242, 197, 20, 0.4)',
-                      }}
-                    >
-                      <PsychologyIcon sx={{ color: '#000000', fontSize: '36px' }} />
-                    </Box>
-                    <Box sx={{ flex: 1 }}>
-                  <Typography 
-                    variant="h5" 
-                    sx={{ 
-                      fontWeight: 700, 
-                      fontSize: '24px', 
-                          fontFamily: '"Poppins", "Montserrat", sans-serif',
-                          mb: 1.5,
-                          color: '#111827',
-                    }}
-                  >
-                    Understanding Your Target Market
-                  </Typography>
-                  <Typography 
-                    variant="body1" 
-                    sx={{ 
-                      fontSize: '16px', 
-                      lineHeight: 1.8,
-                          fontFamily: '"Inter", sans-serif',
-                          color: '#4b5563',
-                    }}
-                  >
-                    Comprehensive psychographic insights into customer behaviors, values, lifestyles, and purchasing motivations for this commercial property location.
-                  </Typography>
-                    </Box>
-                  </Box>
-                </Box>
-
-                {/* Summary Section */}
                 {report.psychographicsAnalysis.summary && (
-                  <Box 
-                    sx={{ 
-                      mb: 4, 
-                      overflow: 'hidden',
-                      background: 'linear-gradient(135deg, #fffbf0 0%, #fef3c7 100%)',
-                      borderRadius: '16px',
-                      border: '2px solid #f2c514',
-                    }}
-                  >
-                    <Box sx={{ 
-                      p: 3, 
-                      borderBottom: '2px solid #f2c514',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 2,
-                    }}>
-                      <Box
-                        sx={{ 
-                          width: 40,
-                          height: 40,
-                          borderRadius: '10px',
-                          background: 'linear-gradient(135deg, #f2c514 0%, #fbbf24 100%)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          boxShadow: '0 4px 12px rgba(242, 197, 20, 0.3)',
-                        }}
-                      >
-                        <DescriptionIcon sx={{ color: '#000000', fontSize: '22px' }} />
-                      </Box>
-                      <Typography 
-                        variant="h6" 
-                          sx={{ 
-                          fontWeight: 700, 
-                          fontSize: '20px', 
-                          fontFamily: '"Poppins", "Montserrat", sans-serif',
-                          color: '#92400e',
-                        }}
-                      >
-                        Executive Summary
-                      </Typography>
-                    </Box>
-                    <Box sx={{ p: 4 }}>
-                      <Typography 
-                        variant="body1" 
-                        sx={{ 
-                          lineHeight: 1.9, 
-                          fontSize: '16px',
-                          fontFamily: '"Inter", sans-serif',
-                          color: '#78350f',
-                        }}
-                      >
-                        {report.psychographicsAnalysis.summary}
-                      </Typography>
-                    </Box>
+                  <Box sx={{ bgcolor: '#fff', border: '2px solid #0a0a0a', borderLeft: '6px solid #f2c514', p: '28px 32px', mb: 4 }}>
+                    <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 20, fontWeight: 700, mb: 1.75 }}>Executive Summary</Typography>
+                    <Typography sx={{ fontSize: 14, lineHeight: 1.8, color: '#333', fontWeight: 300 }}>{report.psychographicsAnalysis.summary}</Typography>
                   </Box>
                 )}
-
-                {/* Key Insights Grid */}
                 {report.psychographicsAnalysis.points && report.psychographicsAnalysis.points.length > 0 && (
-                  <Box>
-                    <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                      <Box
-                        sx={{
-                          width: 8,
-                          height: 8,
-                          backgroundColor: '#f2c514',
-                          borderRadius: '50%',
-                        }}
-                      />
-                    <Typography 
-                      variant="h6" 
-                      sx={{ 
-                          fontWeight: 700, 
-                        fontSize: '20px', 
-                          fontFamily: '"Poppins", "Montserrat", sans-serif',
-                          color: '#111827',
-                      }}
-                    >
+                  <>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, mb: 3, fontFamily: FONT_TITLE, fontSize: 19, fontWeight: 700, color: '#0a0a0a' }}>
+                      <Box sx={{ color: '#f2c514' }}>{psychoPeopleSvg}</Box>
                       Key Psychographic Insights
-                    </Typography>
                     </Box>
-                    
-                    <Box 
-                      sx={{ 
-                        display: 'grid', 
-                        gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
-                        gap: 3,
-                      }}
-                    >
+                    <Box sx={{ display: 'flex', flexDirection: 'column', border: '2px solid #0a0a0a', bgcolor: '#fff', overflow: 'hidden' }}>
                       {report.psychographicsAnalysis.points.map((point: any, index: number) => {
-                        // Define diverse gradient colors for each card
-                        const gradients = [
-                          { bg: '#fef3c7', border: '#f59e0b', textColor: '#92400e', icon: '👥' }, // Warm Yellow
-                          { bg: '#dbeafe', border: '#3b82f6', textColor: '#1e40af', icon: '💡' }, // Blue
-                          { bg: '#d1fae5', border: '#10b981', textColor: '#065f46', icon: '🛒' }, // Green
-                          { bg: '#fce7f3', border: '#ec4899', textColor: '#9f1239', icon: '⚖️' }, // Pink
-                          { bg: '#e0e7ff', border: '#6366f1', textColor: '#3730a3', icon: '🏷️' }, // Indigo
-                          { bg: '#fed7aa', border: '#f97316', textColor: '#9a3412', icon: '🤝' }, // Orange
-                          { bg: '#ccfbf1', border: '#14b8a6', textColor: '#115e59', icon: '📱' }, // Teal
-                          { bg: '#fef9c3', border: '#eab308', textColor: '#854d0e', icon: '💰' }, // Yellow
-                          { bg: '#e9d5ff', border: '#a855f7', textColor: '#6b21a8', icon: '⏰' }, // Purple
-                          { bg: '#cffafe', border: '#06b6d4', textColor: '#155e75', icon: '📈' }, // Cyan
-                        ];
-                        const gradient = gradients[index % gradients.length];
-                        
+                        const isLast = index === report.psychographicsAnalysis!.points!.length - 1;
+                        const numStr = String(point.number ?? index + 1).padStart(2, '0');
+                        const contentText = point.content || point.raw || '';
                         return (
                           <Box
-                            key={index} 
-                            sx={{ 
-                              overflow: 'hidden',
-                              borderRadius: '12px',
-                              border: `2px solid ${gradient.border}`,
-                              backgroundColor: '#ffffff',
-                              transition: 'all 0.3s ease',
-                              '&:hover': {
-                                transform: 'translateY(-4px)',
-                                boxShadow: `0 12px 32px ${gradient.border}40`,
-                              },
+                            key={index}
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'stretch',
+                              borderBottom: isLast ? 'none' : '2px solid #0a0a0a',
                             }}
                           >
-                            {/* Card Header */}
-                            <Box 
-                              sx={{ 
-                                p: 2.5, 
-                                backgroundColor: gradient.bg,
-                                borderBottom: `2px solid ${gradient.border}`,
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 2,
-                              }}
-                            >
-                              <Box 
-                                sx={{ 
-                                  width: 48, 
-                                  height: 48, 
-                                  borderRadius: '12px',
-                                  backgroundColor: '#ffffff',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  fontSize: '24px',
-                                  boxShadow: `0 4px 12px ${gradient.border}30`,
-                                }}
-                              >
-                                {gradient.icon}
-                              </Box>
-                              <Box sx={{ flex: 1 }}>
-                                <Typography 
-                                  sx={{ 
-                                    fontSize: '12px', 
-                                    fontWeight: 700, 
-                                    color: gradient.textColor,
-                                    fontFamily: '"Inter", sans-serif',
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '1px',
-                                    mb: 0.5,
-                                  }}
-                                >
-                                  Point {point.number}
-                                </Typography>
-                                <Typography 
-                                  variant="h6" 
-                                  sx={{ 
-                                    fontWeight: 700, 
-                                    fontSize: '16px',
-                                    color: '#111827', 
-                                    fontFamily: '"Poppins", "Montserrat", sans-serif',
-                                    lineHeight: 1.3,
-                                  }}
-                                >
-                                  {point.title || `Insight ${point.number}`}
-                                </Typography>
-                              </Box>
+                            <Box sx={{ width: 72, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', pt: 3.5, borderRight: '2px solid #0a0a0a', bgcolor: '#0a0a0a' }}>
+                              <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 24, fontWeight: 900, color: '#f2c514', lineHeight: 1, mb: 1.75 }}>{numStr}</Typography>
+                              <Box sx={{ flex: 1, width: 2, bgcolor: 'rgba(242,197,20,0.2)' }} />
                             </Box>
-                            
-                            {/* Card Content */}
-                            <Box sx={{ p: 3 }}>
-                              <Typography 
-                                variant="body1" 
-                                sx={{ 
-                                  color: '#4b5563', 
-                                  lineHeight: 1.8, 
-                                  fontSize: '15px',
-                                  fontFamily: '"Inter", sans-serif',
-                                }}
-                              >
-                                {point.content || point.raw || ''}
-                              </Typography>
+                            <Box sx={{ flex: 1, py: 3.5, px: 4 }}>
+                              <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75, fontFamily: FONT_TEXT, fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#888', fontWeight: 600, mb: 1.25, bgcolor: '#f7f6f2', py: 0.5, px: 1.25, border: '1px solid #e8e6df' }}>
+                                {psychoTagSvg}
+                                Insight
+                              </Box>
+                              <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 22, fontWeight: 700, color: '#0a0a0a', mb: 1.5, lineHeight: 1.2 }}>{point.title || `Insight ${point.number}`}</Typography>
+                              <Typography sx={{ fontSize: 16, lineHeight: 1.75, color: '#444', fontWeight: 500, mb: 2.25 }}>{contentText}</Typography>
+                              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                                <Box component="span" sx={{ display: 'inline-block', bgcolor: '#f2c514', color: '#0a0a0a', fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.08em', py: 0.6, px: 1.5, fontWeight: 500, border: '1px solid rgba(0,0,0,0.1)' }}>
+                                  Psychographic
+                                </Box>
+                              </Box>
                             </Box>
                           </Box>
                         );
                       })}
                     </Box>
-                  </Box>
+                  </>
                 )}
-
-                {/* Property Context Footer */}
-                <Box 
-                  sx={{ 
-                    mt: 4, 
-                    p: 3, 
-                    background: 'linear-gradient(135deg, rgba(242, 197, 20, 0.08) 0%, rgba(251, 191, 36, 0.05) 100%)',
-                    borderRadius: '12px',
-                    border: '1px solid rgba(242, 197, 20, 0.3)',
-                  }}
-                >
-                  <Typography 
-                    variant="body2" 
-                    sx={{ 
-                      color: '#6b7280',
-                      fontSize: '14px',
-                      fontFamily: '"Inter", sans-serif',
-                      textAlign: 'center',
-                      lineHeight: 1.6,
-                    }}
-                  >
-                    This psychographics analysis is tailored for <Box component="strong" sx={{ color: '#92400e', fontWeight: 700 }}>{report.location?.propertyType || 'commercial'}</Box> properties 
+                <Box sx={{ mt: 4, p: 3, bgcolor: 'rgba(242,197,20,0.08)', border: '1px solid rgba(242,197,20,0.3)' }}>
+                  <Typography sx={{ color: '#6b7280', fontSize: 14, fontFamily: FONT_TEXT, textAlign: 'center', lineHeight: 1.6 }}>
+                    This psychographics analysis is tailored for <Box component="strong" sx={{ color: '#92400e', fontWeight: 700 }}>{report.location?.propertyType || 'commercial'}</Box> properties
                     in the <Box component="strong" sx={{ color: '#92400e', fontWeight: 700 }}>{report.location?.postcode || ''}</Box> area, helping you understand your potential customer base.
                   </Typography>
                 </Box>
               </>
             ) : (
-              <Alert 
-                severity="info" 
-                sx={{ 
-                  borderRadius: '12px',
-                  fontSize: '15px',
-                  '& .MuiAlert-message': {
-                    fontFamily: '"Inter", sans-serif',
-                  },
-                }}
-              >
+              <Alert severity="info" sx={{ borderRadius: 0, fontSize: '16px' }}>
                 Psychographics analysis is not available for this property. This feature provides insights into target customer behaviors, values, and purchasing motivations.
               </Alert>
             )}
           </ContentSection>
         );
+      }
 
-      case 'Price Prediction':
+      case 'Price Prediction': {
+        const valuationType = report.location.valuationType?.toLowerCase() || '';
+        const showLetting = valuationType.includes('letting');
+        const showSales = valuationType.includes('sales');
+        const showBoth = showLetting && showSales;
+        const conversionFactor = unitSelection === 'sqm' ? 10.764 : 1;
+        const unitDisplay = unitSelection === 'sqm' ? 'm²' : 'sqft';
+        const pred = report.predictedPrice;
+        const effectiveArea = pred?.effectiveAreaSqft || 0;
+
+        const randomYield = (min: number, max: number) => Math.round((Math.random() * (max - min) + min) * 100) / 100;
+        const annualPA = pred?.pricingPA || 0;
+        const highestYield = randomYield(3, 4.5);
+        const averageYield = randomYield(4.5, 5.5);
+        const lowestYield = randomYield(5.5, 7);
+        const priceCards = [
+          { label: 'Lowest Price', mult: 100 / lowestYield },
+          { label: 'Average Price', mult: 100 / averageYield, featured: true },
+          { label: 'Highest Price', mult: 100 / highestYield },
+        ];
+
+        const calendarSvg = (w: number, h: number) => (
+          <svg width={w} height={h} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+            <rect x="3" y="4" width="18" height="18" rx="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
+          </svg>
+        );
+        const chartDownSvg = (w: number, h: number) => (
+          <svg width={w} height={h} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+            <polyline points="17 6 23 6 23 12" />
+          </svg>
+        );
+        const chartAvgSvg = (w: number, h: number) => (
+          <svg width={w} height={h} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+            <line x1="12" y1="1" x2="12" y2="23" />
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+          </svg>
+        );
+        const chartUpSvg = (w: number, h: number) => (
+          <svg width={w} height={h} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+            <polyline points="23 18 13.5 8.5 8.5 13.5 1 6" />
+            <polyline points="17 18 23 18 23 12" />
+          </svg>
+        );
+        const alertSvg = () => (
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+            <line x1="12" y1="9" x2="12" y2="13" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+        );
+
         return (
-          <ContentSection>
-            <SectionTitle
+          <ContentSection sx={{ pt: 1, pb: 7 }}>
+            <Typography
+              component="div"
               sx={{
-                position: 'relative',
-                paddingLeft: 3,
-                '&::before': {
-                  content: '""',
-                  position: 'absolute',
-                  left: 0,
-                  top: 0,
-                  bottom: 0,
-                  width: '6px',
-                  backgroundColor: '#f2c514',
-                  borderRadius: '10px',
-                },
+                fontFamily: FONT_TEXT,
+                fontSize: '16px',
+                letterSpacing: '0.2em',
+                textTransform: 'uppercase',
+                color: '#888',
+                mb: 2,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1.25,
+                '&::after': { content: '""', flex: 1, height: 1, bgcolor: '#e8e6df' },
               }}
             >
               Price Prediction
-            </SectionTitle>
-            <Box sx={{ mb: 3, display: 'flex', justifyContent: 'flex-end' }}>
-              <FormControl 
-                sx={{ 
-                  minWidth: 200,
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: '10px',
-                    '&:hover fieldset': {
-                      borderColor: '#f2c514',
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: '#f2c514',
-                      borderWidth: '2px',
-                    },
-                  },
-                  '& .MuiInputLabel-root.Mui-focused': {
-                    color: '#f2c514',
-                  },
-                }}
-              >
-                <InputLabel id="unit-select-label">Unit</InputLabel>
-                <Select
-                  labelId="unit-select-label"
-                  id="unit-select"
-                  value={unitSelection}
-                  label="Unit"
-                  onChange={(e) => setUnitSelection(e.target.value as 'sqft' | 'sqm')}
+            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2, mb: 4.5 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, fontFamily: FONT_TITLE, fontSize: 24, fontWeight: 700, color: '#0a0a0a' }}>
+                <Box sx={{ width: 5, height: 28, bgcolor: '#f2c514', flexShrink: 0 }} />
+                Price Prediction
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', border: '2px solid #0a0a0a', overflow: 'hidden' }}>
+                <Box sx={{ py: 1.25, px: 2, fontFamily: FONT_TEXT, fontSize: 9, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#888', bgcolor: '#fff', borderRight: '2px solid #0a0a0a' }}>
+                  Unit
+                </Box>
+                <Button
+                  onClick={() => setUnitSelection('sqft')}
+                  disableRipple
                   sx={{
-                    fontFamily: '"Inter", "Roboto", sans-serif',
-                    fontWeight: 500,
+                    fontFamily: FONT_TEXT,
+                    fontSize: 14,
+                    letterSpacing: '0.08em',
+                    py: 1.25,
+                    px: 2.25,
+                    bgcolor: unitSelection === 'sqft' ? '#0a0a0a' : '#fff',
+                    color: unitSelection === 'sqft' ? '#f2c514' : '#888',
+                    fontWeight: unitSelection === 'sqft' ? 500 : 400,
+                    borderRadius: 0,
+                    borderRight: '1px solid #e8e6df',
+                    '&:hover': { bgcolor: unitSelection === 'sqft' ? '#0a0a0a' : '#f7f6f2' },
                   }}
                 >
-                  <MenuItem value="sqft" sx={{ fontFamily: '"Inter", sans-serif' }}>Square Feet</MenuItem>
-                  <MenuItem value="sqm" sx={{ fontFamily: '"Inter", sans-serif' }}>Square Meter</MenuItem>
-                </Select>
-              </FormControl>
+                  Square Feet
+                </Button>
+                <Button
+                  onClick={() => setUnitSelection('sqm')}
+                  disableRipple
+                  sx={{
+                    fontFamily: FONT_TEXT,
+                    fontSize: 14,
+                    letterSpacing: '0.08em',
+                    py: 1.25,
+                    px: 2.25,
+                    bgcolor: unitSelection === 'sqm' ? '#0a0a0a' : '#fff',
+                    color: unitSelection === 'sqm' ? '#f2c514' : '#888',
+                    fontWeight: unitSelection === 'sqm' ? 500 : 400,
+                    borderRadius: 0,
+                    '&:hover': { bgcolor: unitSelection === 'sqm' ? '#0a0a0a' : '#f7f6f2' },
+                  }}
+                >
+                  Square Metres
+                </Button>
+              </Box>
             </Box>
-            {(() => {
-              const valuationType = report.location.valuationType?.toLowerCase() || '';
-              const showLetting = valuationType.includes('letting');
-              const showSales = valuationType.includes('sales');
-              const showBoth = showLetting && showSales;
-              
-              // Conversion factor: 1 sqft = 0.092903 sqm, so to convert from sqft to sqm, multiply by 0.092903
-              // But the user wants to multiply by 10.764, which is actually 1/0.092903 (converting price per sqft to price per sqm)
-              const conversionFactor = unitSelection === 'sqm' ? 10.764 : 1;
-              const unitLabel = unitSelection === 'sqm' ? 'Sqm' : 'Sqft';
-              
-              return (
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  {/* Letting's Valuation Section */}
-                  {showLetting && (
-                    <Box>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
-                        <Box
-                          sx={{
-                            width: 8,
-                            height: 8,
-                            backgroundColor: '#f2c514',
-                            borderRadius: '50%',
-                          }}
-                        />
-                        <Typography variant="h5" sx={{ fontWeight: 700, fontSize: '22px', color: '#111827', fontFamily: '"Poppins", "Montserrat", sans-serif' }}>
-                        {showBoth ? '1. Letting\'s Valuation' : 'Letting\'s Valuation'}
-                      </Typography>
+
+            {showLetting && (
+              <Box sx={{ mb: 5.5 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, mb: 2.5, fontFamily: FONT_TITLE, fontSize: 18, fontWeight: 700, color: '#0a0a0a' }}>
+                  <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: '#f2c514', flexShrink: 0 }} />
+                  {showBoth ? "1. Letting's Valuation" : "Letting's Valuation"}
+                </Box>
+                {pred ? (
+                  <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2.5, mb: 5.5 }}>
+                    <Box sx={{ border: '2px solid #0a0a0a', bgcolor: '#fff', overflow: 'hidden', transition: 'transform 0.2s', '&:hover': { transform: 'translateY(-2px)' } }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.75, p: '20px 24px', borderBottom: '2px solid #0a0a0a', bgcolor: '#0a0a0a' }}>
+                        <Box sx={{ width: 38, height: 38, bgcolor: '#f2c514', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }} style={{ color: '#0a0a0a' }}>{calendarSvg(20, 20)}</Box>
+                        <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 17, fontWeight: 700, color: '#fff' }}>Annual Pricing</Typography>
                       </Box>
-                      {report.predictedPrice ? (
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 4 }}>
-                            <Box sx={{ flex: 1 }}>
-                              <Box
-                                sx={{
-                                  borderRadius: '16px',
-                                  border: '2px solid #10b981',
-                                  overflow: 'hidden',
-                                  backgroundColor: '#ffffff',
-                                  boxShadow: '0 4px 16px rgba(16, 185, 129, 0.15)',
-                                  transition: 'all 0.3s ease',
-                                  '&:hover': {
-                                    transform: 'translateY(-4px)',
-                                    boxShadow: '0 8px 24px rgba(16, 185, 129, 0.25)',
-                                  },
-                                }}
-                              >
-                                <Box sx={{ p: 3, background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%)', borderBottom: '2px solid #10b981', display: 'flex', alignItems: 'center', gap: 2 }}>
-                                  <Box
-                                    sx={{
-                                      width: 40,
-                                      height: 40,
-                                      borderRadius: '10px',
-                                      backgroundColor: '#10b981',
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      justifyContent: 'center',
-                                      boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)',
-                                    }}
-                                  >
-                                    <Typography sx={{ fontSize: '20px' }}>📅</Typography>
-                                  </Box>
-                                  <Typography variant="h6" sx={{ fontWeight: 700, fontSize: '18px', color: '#065f46', fontFamily: '"Poppins", "Montserrat", sans-serif' }}>
-                                      Annual Pricing
-                                    </Typography>
-                                  </Box>
-                                  <Box sx={{ p: 3 }}>
-                                  <Box sx={{ py: 2.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #f0fdf4' }}>
-                                    <Typography sx={{ fontSize: '14px', color: '#6b7280', fontWeight: 500, fontFamily: '"Inter", sans-serif', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total Price (PA)</Typography>
-                                    <Typography sx={{ color: '#10b981', fontSize: '20px', fontWeight: 700, fontFamily: '"Poppins", sans-serif' }}>
-                                        £{report.predictedPrice.pricingPA?.toLocaleString() || 'N/A'}
-                                    </Typography>
-                                  </Box>
-                                  <Box sx={{ py: 2.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #f0fdf4' }}>
-                                    <Typography sx={{ fontSize: '14px', color: '#6b7280', fontWeight: 500, fontFamily: '"Inter", sans-serif', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Price Per {unitLabel} (PA)</Typography>
-                                    <Typography sx={{ fontSize: '17px', fontWeight: 600, color: '#111827', fontFamily: '"Inter", sans-serif' }}>
-                                        £{report.predictedPrice.pricePerSqftPA ? (report.predictedPrice.pricePerSqftPA * conversionFactor).toFixed(2) : 'N/A'}
-                                    </Typography>
-                                  </Box>
-                                    {report.predictedPrice.effectiveAreaSqft && (
-                                    <Box sx={{ py: 2.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                      <Typography sx={{ fontSize: '14px', color: '#6b7280', fontWeight: 500, fontFamily: '"Inter", sans-serif', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Effective Area ({unitSelection === 'sqm' ? 'Sqm' : 'Sqft'})</Typography>
-                                      <Typography sx={{ fontSize: '17px', fontWeight: 600, color: '#111827', fontFamily: '"Inter", sans-serif' }}>
-                                          {unitSelection === 'sqm' 
-                                            ? `${(report.predictedPrice.effectiveAreaSqft / 10.764).toFixed(2)} sqm`
-                                            : `${report.predictedPrice.effectiveAreaSqft} sqft`
-                                          }
-                                      </Typography>
-                                    </Box>
-                                    )}
-                                  </Box>
-                              </Box>
-                            </Box>
-                            <Box sx={{ flex: 1 }}>
-                              <Box
-                                sx={{
-                                  borderRadius: '16px',
-                                  border: '2px solid #10b981',
-                                  overflow: 'hidden',
-                                  backgroundColor: '#ffffff',
-                                  boxShadow: '0 4px 16px rgba(16, 185, 129, 0.15)',
-                                  transition: 'all 0.3s ease',
-                                  '&:hover': {
-                                    transform: 'translateY(-4px)',
-                                    boxShadow: '0 8px 24px rgba(16, 185, 129, 0.25)',
-                                  },
-                                }}
-                              >
-                                <Box sx={{ p: 3, background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%)', borderBottom: '2px solid #10b981', display: 'flex', alignItems: 'center', gap: 2 }}>
-                                  <Box
-                                    sx={{
-                                      width: 40,
-                                      height: 40,
-                                      borderRadius: '10px',
-                                      backgroundColor: '#10b981',
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      justifyContent: 'center',
-                                      boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)',
-                                    }}
-                                  >
-                                    <Typography sx={{ fontSize: '20px' }}>📆</Typography>
-                                  </Box>
-                                  <Typography variant="h6" sx={{ fontWeight: 700, fontSize: '18px', color: '#065f46', fontFamily: '"Poppins", "Montserrat", sans-serif' }}>
-                                      Monthly Pricing
-                                    </Typography>
-                                  </Box>
-                                  <Box sx={{ p: 3 }}>
-                                  <Box sx={{ py: 2.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #f0fdf4' }}>
-                                    <Typography sx={{ fontSize: '14px', color: '#6b7280', fontWeight: 500, fontFamily: '"Inter", sans-serif', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total Price (PCM)</Typography>
-                                    <Typography sx={{ color: '#10b981', fontSize: '20px', fontWeight: 700, fontFamily: '"Poppins", sans-serif' }}>
-                                        £{report.predictedPrice.pricingPCM?.toLocaleString() || 'N/A'}
-                                    </Typography>
-                                  </Box>
-                                  <Box sx={{ py: 2.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <Typography sx={{ fontSize: '14px', color: '#6b7280', fontWeight: 500, fontFamily: '"Inter", sans-serif', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Price Per {unitLabel} (PCM)</Typography>
-                                    <Typography sx={{ fontSize: '17px', fontWeight: 600, color: '#111827', fontFamily: '"Inter", sans-serif' }}>
-                                        £{report.predictedPrice.pricePerSqftPCM ? (report.predictedPrice.pricePerSqftPCM * conversionFactor).toFixed(2) : 'N/A'}
-                                    </Typography>
-                                  </Box>
-                                </Box>
-                              </Box>
-                            </Box>
+                      <Box sx={{ px: 3 }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 2, borderBottom: '1px solid #e8e6df', gap: 1.5 }}>
+                          <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888' }}>Total Price (PA)</Typography>
+                          <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 22, fontWeight: 900, color: '#f2c514' }}>£{pred.pricingPA?.toLocaleString() || 'N/A'}</Typography>
+                        </Box>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 2, borderBottom: '1px solid #e8e6df', gap: 1.5 }}>
+                          <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888' }}>Price per {unitDisplay} (PA)</Typography>
+                          <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 16, fontWeight: 700, color: '#0a0a0a' }}>{pred.pricePerSqftPA ? '£' + (pred.pricePerSqftPA * conversionFactor).toFixed(2) : 'N/A'}</Typography>
+                        </Box>
+                        {effectiveArea > 0 && (
+                          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 2, gap: 1.5 }}>
+                            <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888' }}>Effective Area ({unitDisplay})</Typography>
+                            <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 16, fontWeight: 700, color: '#0a0a0a' }}>
+                              {unitSelection === 'sqm' ? (effectiveArea / 10.764).toFixed(2) + ' m²' : effectiveArea + ' sqft'}
+                            </Typography>
                           </Box>
-                        </Box>
-                      ) : (
-                        <Alert severity="info" sx={{ borderRadius: '12px', fontSize: '15px' }}>Letting's valuation not available for this property.</Alert>
-                      )}
-                    </Box>
-                  )}
-
-                  {/* Sales Valuation Section */}
-                  {showSales && (
-                    <Box>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
-                        <Box
-                          sx={{
-                            width: 8,
-                            height: 8,
-                            backgroundColor: '#f2c514',
-                            borderRadius: '50%',
-                          }}
-                        />
-                        <Typography variant="h5" sx={{ fontWeight: 700, fontSize: '22px', color: '#111827', fontFamily: '"Poppins", "Montserrat", sans-serif' }}>
-                        {showBoth ? '2. Sales Valuation' : 'Sales Valuation'}
-                      </Typography>
+                        )}
                       </Box>
-                      {report.predictedPrice ? (
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                          {/* Three Price Cards */}
-                          {(() => {
-                            const annualPA = report.predictedPrice.pricingPA || 0;
-                            const effectiveArea = report.predictedPrice.effectiveAreaSqft || 0;
-                            
-                            // Generate random yields for each card (2 decimal places)
-                            // Helper function to generate random number between min and max with 2 decimal places
-                            const randomYield = (min: number, max: number) => {
-                              return Math.round((Math.random() * (max - min) + min) * 100) / 100;
-                            };
-                            
-                            // Generate random yields for each price card
-                            const highestYield = randomYield(3.00, 4.50); // Highest Price: 3% to 4.5%
-                            const averageYield = randomYield(4.50, 5.50); // Average Price: 4.5% to 5.5%
-                            const lowestYield = randomYield(5.50, 7.00); // Lowest Price: 5.5% to 7%
-                            
-                            // Calculate multipliers from yields (multiplier = 100 / yield)
-                            const highestMultiplier = 100 / highestYield;
-                            const averageMultiplier = 100 / averageYield;
-                            const lowestMultiplier = 100 / lowestYield;
-                            
-                            // Define the three yield options with random yields and calculated multipliers
-                            const priceCards = [
-                              { label: 'Lowest Price', yield: lowestYield, multiplier: lowestMultiplier, emoji: '📉' },
-                              { label: 'Average Price', yield: averageYield, multiplier: averageMultiplier, emoji: '£' },
-                              { label: 'Highest Price', yield: highestYield, multiplier: highestMultiplier, emoji: '📈' },
-                            ];
-
-                            return (
-                              <Box sx={{ 
-                                display: 'flex', 
-                                flexDirection: { xs: 'column', md: 'row' }, 
-                                gap: 3,
-                                '@media print': {
-                                  pageBreakInside: 'avoid',
-                                  breakInside: 'avoid',
-                                },
-                              }}>
-                                {priceCards.map((card, index) => {
-                                  const calculatedSalesPrice = annualPA * card.multiplier;
-                                  const calculatedPricePerSqft = effectiveArea > 0 ? calculatedSalesPrice / effectiveArea : 0;
-                                  const isAverage = card.label === 'Average Price';
-
-                                  return (
-                                    <Box key={card.label} sx={{ 
-                                      flex: 1,
-                                      '@media print': {
-                                        pageBreakInside: 'avoid',
-                                        breakInside: 'avoid',
-                                      },
-                                    }}>
-                                      <Box
-                                        sx={{
-                                          borderRadius: '16px',
-                                          border: isAverage ? '3px solid #f2c514' : '2px solid #e5e7eb',
-                                          overflow: 'hidden',
-                                          backgroundColor: '#ffffff',
-                                          boxShadow: isAverage ? '0 8px 24px rgba(242, 197, 20, 0.35)' : '0 4px 12px rgba(0, 0, 0, 0.08)',
-                                          transform: isAverage ? 'scale(1.05)' : 'scale(1)',
-                                          transition: 'all 0.3s ease',
-                                          '&:hover': {
-                                            transform: isAverage ? 'scale(1.05) translateY(-4px)' : 'translateY(-4px)',
-                                            boxShadow: isAverage ? '0 12px 32px rgba(242, 197, 20, 0.45)' : '0 8px 20px rgba(0, 0, 0, 0.15)',
-                                          },
-                                          '@media print': {
-                                            pageBreakInside: 'avoid',
-                                            breakInside: 'avoid',
-                                            transform: 'none',
-                                          },
-                                        }}
-                                      >
-                                        <Box sx={{ 
-                                          p: 3, 
-                                          background: isAverage 
-                                            ? 'linear-gradient(135deg, rgba(242, 197, 20, 0.15) 0%, rgba(251, 191, 36, 0.1) 100%)' 
-                                            : 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
-                                          borderBottom: isAverage ? '2px solid #f2c514' : '2px solid #e5e7eb',
-                                          display: 'flex',
-                                          alignItems: 'center',
-                                          gap: 2,
-                                        }}>
-                                          <Box
-                                            sx={{
-                                              width: 40,
-                                              height: 40,
-                                              borderRadius: '10px',
-                                              background: isAverage 
-                                                ? 'linear-gradient(135deg, #f2c514 0%, #fbbf24 100%)' 
-                                                : '#ffffff',
-                                              display: 'flex',
-                                              alignItems: 'center',
-                                              justifyContent: 'center',
-                                              boxShadow: isAverage ? '0 4px 12px rgba(242, 197, 20, 0.3)' : '0 2px 8px rgba(0, 0, 0, 0.1)',
-                                            }}
-                                          >
-                                            <Typography sx={{ fontSize: '20px' }}>{card.emoji}</Typography>
-                                          </Box>
-                                          <Typography variant="h6" sx={{ fontWeight: 700, fontSize: '18px', color: isAverage ? '#92400e' : '#374151', fontFamily: '"Poppins", "Montserrat", sans-serif' }}>
-                                              {card.label}
-                                            </Typography>
-                                          </Box>
-                                          <Box sx={{ p: 3 }}>
-                                          <Box sx={{ py: 2.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #f3f4f6' }}>
-                                            <Typography sx={{ fontSize: '14px', color: '#6b7280', fontWeight: 500, fontFamily: '"Inter", sans-serif', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Sale Price</Typography>
-                                            <Typography sx={{ color: isAverage ? '#f2c514' : '#10b981', fontSize: '20px', fontWeight: 700, fontFamily: '"Poppins", sans-serif' }}>
-                                                £{calculatedSalesPrice.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                                            </Typography>
-                                          </Box>
-                                            {effectiveArea > 0 && (
-                                            <Box sx={{ py: 2.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #f3f4f6' }}>
-                                              <Typography sx={{ fontSize: '14px', color: '#6b7280', fontWeight: 500, fontFamily: '"Inter", sans-serif', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Price Per {unitLabel}</Typography>
-                                              <Typography sx={{ fontSize: '17px', fontWeight: 600, color: '#111827', fontFamily: '"Inter", sans-serif' }}>
-                                                  £{(calculatedPricePerSqft * conversionFactor).toFixed(2)}
-                                              </Typography>
-                                            </Box>
-                                            )}
-                                            {effectiveArea > 0 && (
-                                            <Box sx={{ py: 2.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                              <Typography sx={{ fontSize: '14px', color: '#6b7280', fontWeight: 500, fontFamily: '"Inter", sans-serif', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Effective Area ({unitSelection === 'sqm' ? 'Sqm' : 'Sqft'})</Typography>
-                                              <Typography sx={{ fontSize: '17px', fontWeight: 600, color: '#111827', fontFamily: '"Inter", sans-serif' }}>
-                                                  {unitSelection === 'sqm' 
-                                                    ? `${(effectiveArea / 10.764).toFixed(2)} sqm`
-                                                    : `${effectiveArea} sqft`
-                                                  }
-                                              </Typography>
-                                            </Box>
-                                            )}
-                                          </Box>
-                                      </Box>
-                                    </Box>
-                                  );
-                                })}
-                              </Box>
-                            );
-                          })()}
-                        </Box>
-                      ) : (
-                        <Alert severity="info" sx={{ borderRadius: '12px', fontSize: '15px' }}>Sales valuation not available for this property.</Alert>
-                      )}
                     </Box>
-                  )}
+                    <Box sx={{ border: '2px solid #0a0a0a', bgcolor: '#fff', overflow: 'hidden', transition: 'transform 0.2s', '&:hover': { transform: 'translateY(-2px)' } }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.75, p: '20px 24px', borderBottom: '2px solid #0a0a0a', bgcolor: '#0a0a0a' }}>
+                        <Box sx={{ width: 38, height: 38, bgcolor: '#f2c514', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }} style={{ color: '#0a0a0a' }}>{calendarSvg(20, 20)}</Box>
+                        <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 17, fontWeight: 700, color: '#fff' }}>Monthly Pricing</Typography>
+                      </Box>
+                      <Box sx={{ px: 3 }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 2, borderBottom: '1px solid #e8e6df', gap: 1.5 }}>
+                          <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888' }}>Total Price (PCM)</Typography>
+                          <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 22, fontWeight: 900, color: '#f2c514' }}>£{pred.pricingPCM?.toLocaleString() || 'N/A'}</Typography>
+                        </Box>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 2, gap: 1.5 }}>
+                          <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888' }}>Price per {unitDisplay} (PCM)</Typography>
+                          <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 16, fontWeight: 700, color: '#0a0a0a' }}>{pred.pricePerSqftPCM ? '£' + (pred.pricePerSqftPCM * conversionFactor).toFixed(2) : 'N/A'}</Typography>
+                        </Box>
+                      </Box>
+                    </Box>
+                  </Box>
+                ) : (
+                  <Alert severity="info" sx={{ borderRadius: 0, fontSize: '16px' }}>Letting's valuation not available for this property.</Alert>
+                )}
+              </Box>
+            )}
 
-                  {/* Note Section */}
-                  {(showLetting || showSales) && (
-                    <Box 
-                      sx={{ 
-                        p: 4, 
-                        background: 'linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%)',
-                        border: '2px solid #ef4444', 
-                        borderRadius: '16px',
-                        position: 'relative',
-                        overflow: 'hidden',
-                      }}
-                    >
-                      <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
+            {showSales && (
+              <Box sx={{ mb: 3 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, mb: 2.5, fontFamily: FONT_TITLE, fontSize: 20, fontWeight: 700, color: '#0a0a0a' }}>
+                  <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: '#f2c514', flexShrink: 0 }} />
+                  {showBoth ? '2. Sales Valuation' : 'Sales Valuation'}
+                </Box>
+                {pred ? (
+                  <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' }, border: '2px solid #0a0a0a', bgcolor: '#fff', overflow: 'hidden', mb: 3 }}>
+                    {priceCards.map((card) => {
+                      const salePrice = annualPA * card.mult;
+                      const pricePerUnit = effectiveArea > 0 ? (salePrice / effectiveArea) * conversionFactor : 0;
+                      const featured = !!card.featured;
+                      const Icon = card.label === 'Lowest Price' ? chartDownSvg : card.label === 'Average Price' ? chartAvgSvg : chartUpSvg;
+                      return (
                         <Box
+                          key={card.label}
                           sx={{
-                            width: 44,
-                            height: 44,
-                            borderRadius: '10px',
-                            backgroundColor: '#ef4444',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            flexShrink: 0,
-                            boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)',
+                            position: 'relative',
+                            borderRight: { md: '2px solid #0a0a0a' },
+                            bgcolor: featured ? '#0a0a0a' : 'transparent',
+                            '&:last-child': { borderRight: 'none' },
                           }}
                         >
-                          <Typography sx={{ fontSize: '24px' }}>⚠️</Typography>
+                          {featured && (
+                            <Box sx={{ position: 'absolute', top: 0, right: 0, bgcolor: '#f2c514', color: '#0a0a0a', fontFamily: FONT_TEXT, fontSize: 12, letterSpacing: '0.1em', py: 0.6, px: 1.5, textTransform: 'uppercase', fontWeight: 600 }}>
+                              Average
+                            </Box>
+                          )}
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, p: '20px 24px', borderBottom: '2px solid #0a0a0a', bgcolor: featured ? '#f2c514' : 'transparent', borderBottomColor: featured ? 'rgba(0,0,0,0.2)' : '#0a0a0a' }}>
+                            <Box sx={{ width: 34, height: 34, bgcolor: featured ? '#0a0a0a' : '#f7f6f2', border: '1px solid #e8e6df', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }} style={{ color: featured ? '#f2c514' : '#888' }}>{Icon(16, 16)}</Box>
+                            <Typography sx={{ fontFamily: FONT_TITLE, fontSize: featured ? 19 : 18, fontWeight: 700, color: featured ? '#0a0a0a' : '#0a0a0a' }}>{card.label}</Typography>
+                          </Box>
+                          <Box sx={{ px: 3, '& .row': { borderBottom: featured ? '1px solid rgba(255,255,255,0.1)' : '1px solid #e8e6df' } }}>
+                            <Box className="row" sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 1.9, gap: 1.5 }}>
+                              <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, color: featured ? 'rgba(255,255,255,0.6)' : '#888' }}>Sale Price</Typography>
+                              <Typography sx={{ fontFamily: FONT_TITLE, fontSize: featured ? 22 : 20, fontWeight: 900, color: '#f2c514' }}>£{Math.round(salePrice).toLocaleString()}</Typography>
+                            </Box>
+                            {effectiveArea > 0 && (
+                              <Box className="row" sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 1.9, gap: 1.5 }}>
+                                <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, color: featured ? 'rgba(255,255,255,0.6)' : '#888' }}>Price per {unitDisplay}</Typography>
+                                <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 16, fontWeight: 700, color: featured ? '#fff' : '#0a0a0a' }}>£{pricePerUnit.toFixed(2)}</Typography>
+                              </Box>
+                            )}
+                            {effectiveArea > 0 && (
+                              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 1.9, gap: 1.5 }}>
+                                <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, color: featured ? 'rgba(255,255,255,0.6)' : '#888' }}>Effective Area ({unitDisplay})</Typography>
+                                <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 16, fontWeight: 700, color: featured ? '#fff' : '#0a0a0a' }}>
+                                  {unitSelection === 'sqm' ? (effectiveArea / 10.764).toFixed(2) + ' m²' : effectiveArea + ' sqft'}
+                                </Typography>
+                              </Box>
+                            )}
+                          </Box>
                         </Box>
-                        <Box>
-                          <Typography 
-                            sx={{ 
-                              fontSize: '16px', 
-                              fontWeight: 700, 
-                              color: '#dc2626', 
-                              fontFamily: '"Poppins", sans-serif',
-                              mb: 1,
-                            }}
-                          >
-                            Important Note
-                          </Typography>
-                          <Typography 
-                            variant="body1" 
-                            sx={{ 
-                              fontSize: '15px', 
-                              lineHeight: 1.8, 
-                              fontFamily: '"Inter", sans-serif', 
-                              color: '#7f1d1d',
-                            }}
-                          >
-                            These price predictions are based on market analysis and comparable properties in the area. 
-                        Actual prices may vary based on negotiation, market conditions, and property-specific factors.
-                      </Typography>
-                        </Box>
-                      </Box>
-                    </Box>
-                  )}
+                      );
+                    })}
+                  </Box>
+                ) : (
+                  <Alert severity="info" sx={{ borderRadius: 0, fontSize: '16px' }}>Sales valuation not available for this property.</Alert>
+                )}
+              </Box>
+            )}
 
-                  {/* Show message if no valuation type matches */}
-                  {!showLetting && !showSales && (
-                    <Alert severity="info" sx={{ borderRadius: '12px', fontSize: '15px' }}>Price prediction not available for this property.</Alert>
-                  )}
+            {(showLetting || showSales) && (
+              <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, bgcolor: '#fff5f5', border: '2px solid #c0392b', borderLeft: '6px solid #c0392b', p: '20px 24px' }}>
+                <Box sx={{ width: 36, height: 36, bgcolor: '#c0392b', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }} style={{ color: '#fff' }}>{alertSvg()}</Box>
+                <Box sx={{ flex: 1 }}>
+                  <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 18, fontWeight: 700, color: '#c0392b', mb: 0.75 }}>Important Note</Typography>
+                  <Typography sx={{ fontSize: 16, lineHeight: 1.7, color: '#555', fontWeight: 500, fontFamily: FONT_TEXT }}>
+                    These price predictions are based on market analysis and comparable properties in the area. Actual prices may vary based on negotiation, market conditions, and property-specific factors.
+                  </Typography>
                 </Box>
-              );
-            })()}
+              </Box>
+            )}
+
+            {!showLetting && !showSales && (
+              <Alert severity="info" sx={{ borderRadius: 0, fontSize: '16px' }}>Price prediction not available for this property.</Alert>
+            )}
           </ContentSection>
         );
+      }
 
       case 'Area Details':
         return (
@@ -4421,403 +3125,358 @@ const ReportDetailedPage: React.FC = () => {
             </SectionTitle>
             
             {crimeData && (
-              <Box>
-                {/* Crime Overview Section */}
-                <Box sx={{ mb: 4 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
-                    <Box
-                      sx={{
-                        width: 8,
-                        height: 8,
-                        backgroundColor: '#f2c514',
-                        borderRadius: '50%',
-                      }}
-                    />
-                  <Typography
-                    variant="h6"
+              <Box sx={{ mb: 5 }}>
+                {/* Crime Statistics headline */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
+                  <Box
                     sx={{
-                        fontSize: '20px',
-                        fontWeight: 700,
-                        color: '#111827',
-                        fontFamily: '"Poppins", "Montserrat", sans-serif',
+                      width: 10,
+                      height: 10,
+                      backgroundColor: '#f2c514',
+                      borderRadius: '50%',
+                    }}
+                  />
+                  <Typography
+                    sx={{
+                      fontSize: '20px',
+                      fontWeight: 700,
+                      color: '#0a0a0a',
+                      letterSpacing: '-0.01em',
+                      fontFamily: FONT_TITLE,
                     }}
                   >
                     Crime Statistics for {crimeData.postcode}
                   </Typography>
-                  </Box>
+                </Box>
 
-                  {/* Summary Cards */}
+                {/* Top three stat cards – crime rating / population / total crimes */}
+                <Box
+                  sx={{
+                    display: 'grid',
+                    gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
+                    border: '2px solid #0a0a0a',
+                    mb: 3,
+                  }}
+                >
+                  {/* Crime Rating */}
                   <Box
                     sx={{
-                      display: 'grid',
-                      gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: '1fr 1fr 1fr' },
-                      gap: 2,
-                      mb: 4,
+                      p: 3.5,
+                      borderRight: { xs: 'none', md: '2px solid #0a0a0a' },
+                      backgroundColor: '#ffffff',
                     }}
                   >
-                    {/* Crime Rating Card */}
-                    <Box
+                    <Typography
                       sx={{
-                        borderRadius: '16px',
-                        background: crimeData.data.crime_rating === 'Very high' 
-                          ? 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)'
-                          : crimeData.data.crime_rating === 'High'
-                          ? 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)'
-                          : 'linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)',
-                        boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
-                        border: crimeData.data.crime_rating === 'Very high' 
-                          ? '2px solid #fca5a5'
-                          : crimeData.data.crime_rating === 'High'
-                          ? '2px solid #fcd34d'
-                          : '2px solid #6ee7b7',
-                        p: 3,
-                        transition: 'all 0.3s ease',
-                        '&:hover': {
-                          transform: 'translateY(-4px)',
-                          boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
-                        },
+                        fontFamily: FONT_TEXT,
+                        fontSize: '14px',
+                        letterSpacing: '0.12em',
+                        textTransform: 'uppercase',
+                        color: '#888888',
+                        fontWeight: 600,
+                        mb: 1.5,
                       }}
                     >
-                        <Typography
-                          sx={{
-                          fontSize: '13px',
-                            color: '#6b7280',
-                            fontFamily: '"Inter", sans-serif',
-                            mb: 1,
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.5px',
-                          fontWeight: 600,
-                          }}
-                        >
-                          Crime Rating
-                        </Typography>
-                        <Typography
-                          sx={{
-                          fontSize: '28px',
-                            fontWeight: 700,
-                            color: crimeData.data.crime_rating === 'Very high' 
-                              ? '#dc2626'
-                              : crimeData.data.crime_rating === 'High'
-                              ? '#d97706'
-                              : '#059669',
-                          fontFamily: '"Poppins", sans-serif',
-                          }}
-                        >
-                          {crimeData.data.crime_rating}
-                        </Typography>
-                    </Box>
-
-                    {/* Population Card */}
-                    <Box
+                      Crime Rating
+                    </Typography>
+                    <Typography
                       sx={{
-                        borderRadius: '16px',
-                        background: 'linear-gradient(135deg, rgba(242, 197, 20, 0.1) 0%, rgba(251, 191, 36, 0.05) 100%)',
-                        boxShadow: '0 4px 16px rgba(242, 197, 20, 0.15)',
-                        border: '2px solid #f2c514',
-                        p: 3,
-                        transition: 'all 0.3s ease',
-                        '&:hover': {
-                          transform: 'translateY(-4px)',
-                          boxShadow: '0 8px 24px rgba(242, 197, 20, 0.25)',
-                        },
+                        fontFamily: FONT_TITLE,
+                        fontSize: '32px',
+                        fontWeight: 800,
+                        lineHeight: 1,
+                        color:
+                          crimeData.data.crime_rating?.toLowerCase().includes('very high') ||
+                          crimeData.data.crime_rating?.toLowerCase().includes('high')
+                            ? '#c0392b'
+                            : '#0a0a0a',
                       }}
                     >
-                        <Typography
-                          sx={{
-                          fontSize: '13px',
-                            color: '#6b7280',
-                            fontFamily: '"Inter", sans-serif',
-                            mb: 1,
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.5px',
-                          fontWeight: 600,
-                          }}
-                        >
-                          Population
-                        </Typography>
-                        <Typography
-                          sx={{
-                          fontSize: '28px',
-                            fontWeight: 700,
-                          color: '#d4a911',
-                          fontFamily: '"Poppins", sans-serif',
-                          }}
-                        >
-                          {crimeData.data.population.toLocaleString()}
-                        </Typography>
-                    </Box>
-
-                    {/* Total Crimes Card */}
-                    <Box
-                      sx={{
-                        borderRadius: '16px',
-                        background: 'linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%)',
-                        boxShadow: '0 4px 16px rgba(124, 58, 237, 0.15)',
-                        border: '2px solid #c4b5fd',
-                        p: 3,
-                        transition: 'all 0.3s ease',
-                        '&:hover': {
-                          transform: 'translateY(-4px)',
-                          boxShadow: '0 8px 24px rgba(124, 58, 237, 0.25)',
-                        },
-                      }}
-                    >
-                        <Typography
-                          sx={{
-                          fontSize: '13px',
-                            color: '#6b7280',
-                            fontFamily: '"Inter", sans-serif',
-                            mb: 1,
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.5px',
-                          fontWeight: 600,
-                          }}
-                        >
-                          Total Crimes (12 months)
-                        </Typography>
-                        <Typography
-                          sx={{
-                          fontSize: '28px',
-                            fontWeight: 700,
-                            color: '#7c3aed',
-                          fontFamily: '"Poppins", sans-serif',
-                          }}
-                        >
-                          {crimeData.data.crimes_last_12m.total.toLocaleString()}
-                        </Typography>
-                        <Typography
-                          sx={{
-                            fontSize: '12px',
-                            color: '#9ca3af',
-                            fontFamily: '"Inter", sans-serif',
-                            mt: 0.5,
-                          }}
-                        >
-                          {crimeData.data.crimes_last_12m.per_thousand.toFixed(1)} per 1,000 residents
-                        </Typography>
-                    </Box>
+                      {crimeData.data.crime_rating || 'N/A'}
+                    </Typography>
                   </Box>
 
-                  {/* Crime Breakdown */}
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
-                    <Box
-                      sx={{
-                        width: 6,
-                        height: 6,
-                        backgroundColor: '#f2c514',
-                        borderRadius: '50%',
-                      }}
-                    />
-                  <Typography
-                    variant="h6"
+                  {/* Population */}
+                  <Box
                     sx={{
-                        fontSize: '18px',
-                        fontWeight: 700,
-                        color: '#111827',
-                        fontFamily: '"Poppins", "Montserrat", sans-serif',
+                      p: 3.5,
+                      borderRight: { xs: 'none', md: '2px solid #0a0a0a' },
+                      backgroundColor: '#ffffff',
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        fontFamily: FONT_TEXT,
+                        fontSize: '14px',
+                        letterSpacing: '0.12em',
+                        textTransform: 'uppercase',
+                        color: '#888888',
+                        fontWeight: 600,
+                        mb: 1.5,
+                      }}
+                    >
+                      Population
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontFamily: FONT_TITLE,
+                        fontSize: '32px',
+                        fontWeight: 800,
+                        lineHeight: 1,
+                        color: '#f2c514',
+                      }}
+                    >
+                      {crimeData.data.population.toLocaleString()}
+                    </Typography>
+                  </Box>
+
+                  {/* Total Crimes */}
+                  <Box
+                    sx={{
+                      p: 3.5,
+                      backgroundColor: '#ffffff',
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        fontFamily: FONT_TEXT,
+                        fontSize: '14px',
+                        letterSpacing: '0.12em',
+                        textTransform: 'uppercase',
+                        color: '#888888',
+                        fontWeight: 600,
+                        mb: 1.5,
+                      }}
+                    >
+                      Total Crimes (12 Months)
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontFamily: FONT_TITLE,
+                        fontSize: '32px',
+                        fontWeight: 800,
+                        lineHeight: 1,
+                        color: '#0a0a0a',
+                        mb: 0.75,
+                      }}
+                    >
+                      {crimeData.data.crimes_last_12m.total.toLocaleString()}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontFamily: FONT_TEXT,
+                        fontSize: '15px',
+                        color: '#888888',
+                        letterSpacing: '0.04em',
+                        fontWeight: 500,
+                      }}
+                    >
+                      {crimeData.data.crimes_last_12m.per_thousand.toFixed(1)} per 1,000 residents
+                    </Typography>
+                  </Box>
+                </Box>
+
+                {/* Crime Breakdown heading */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2.5 }}>
+                  <Box
+                    sx={{
+                      width: 10,
+                      height: 10,
+                      backgroundColor: '#f2c514',
+                      borderRadius: '50%',
+                    }}
+                  />
+                  <Typography
+                    sx={{
+                      fontSize: '20px',
+                      fontWeight: 700,
+                      color: '#0a0a0a',
+                      letterSpacing: '-0.01em',
+                      fontFamily: FONT_TITLE,
                     }}
                   >
                     Crime Breakdown (Last 12 Months)
                   </Typography>
-                  </Box>
+                </Box>
 
-                  <Box
-                    sx={{
-                      display: 'grid',
-                      gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
-                      gap: 2,
-                      mb: 4,
-                    }}
-                  >
-                    {Object.entries(crimeData.data.crimes_last_12m)
-                      .filter(([key]) => key !== 'total' && key !== 'per_thousand')
-                      .sort(([, a], [, b]) => (b as number) - (a as number))
-                      .map(([crimeType, count]) => {
-                        const isAboveAverage = crimeData.data.above_national_average.includes(crimeType);
-                        const percentage = ((count as number) / crimeData.data.crimes_last_12m.total) * 100;
-                        
-                        return (
+                {/* Crime breakdown grid */}
+                <Box
+                  sx={{
+                    display: 'grid',
+                    gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+                    gap: 1.5,
+                    mb: 2,
+                  }}
+                >
+                  {Object.entries(crimeData.data.crimes_last_12m)
+                    .filter(([key]) => key !== 'total' && key !== 'per_thousand')
+                    .sort(([, a], [, b]) => (b as number) - (a as number))
+                    .map(([crimeType, count]) => {
+                      const isAboveAverage = crimeData.data.above_national_average.includes(crimeType);
+                      const percentage =
+                        typeof count === 'number' && crimeData.data.crimes_last_12m.total > 0
+                          ? (count / crimeData.data.crimes_last_12m.total) * 100
+                          : 0;
+
+                      return (
+                        <Box
+                          key={crimeType}
+                          sx={{
+                            backgroundColor: '#ffffff',
+                            border: '2px solid #0a0a0a',
+                            p: 2,
+                            pt: 2.25,
+                            pb: 1.75,
+                          }}
+                        >
                           <Box
-                            key={crimeType}
                             sx={{
-                              p: 2.5,
-                              borderRadius: '12px',
-                              backgroundColor: '#ffffff',
-                              border: '2px solid #e5e7eb',
-                              transition: 'all 0.3s ease',
-                              '&:hover': {
-                                borderColor: '#f2c514',
-                                transform: 'translateX(4px)',
-                                boxShadow: '0 4px 12px rgba(242, 197, 20, 0.15)',
-                              },
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                              mb: 1,
+                              gap: 1.25,
                             }}
                           >
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
+                            <Typography
+                              sx={{
+                                fontFamily: FONT_TEXT,
+                                fontSize: '16px',
+                                fontWeight: 500,
+                                color: '#0a0a0a',
+                              }}
+                            >
+                              {crimeType}
+                            </Typography>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                               <Typography
                                 sx={{
-                                  fontSize: '15px',
-                                  fontWeight: 600,
-                                  color: '#374151',
-                                  fontFamily: '"Inter", sans-serif',
+                                  fontFamily: FONT_TEXT,
+                                  fontSize: '16px',
+                                  fontWeight: 700,
+                                  color: '#0a0a0a',
                                 }}
                               >
-                                {crimeType}
+                                {(count as number).toLocaleString()}
                               </Typography>
-                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                                <Typography
-                                  sx={{
-                                    fontSize: '16px',
-                                    fontWeight: 700,
-                                    color: '#111827',
-                                    fontFamily: '"Poppins", sans-serif',
-                                  }}
-                                >
-                                  {(count as number).toLocaleString()}
-                                </Typography>
-                                <Box
-                                  sx={{
-                                    px: 1.5,
-                                    py: 0.5,
-                                    borderRadius: '6px',
-                                    backgroundColor: isAboveAverage ? '#fef2f2' : '#f0fdf4',
-                                    border: `1px solid ${isAboveAverage ? '#fca5a5' : '#86efac'}`,
-                                  }}
-                                >
-                                  <Typography
-                                    sx={{
-                                      fontSize: '11px',
-                                      fontWeight: 700,
-                                      color: isAboveAverage ? '#dc2626' : '#16a34a',
-                                      fontFamily: '"Inter", sans-serif',
-                                    }}
-                                  >
-                                    {isAboveAverage ? 'Above Avg' : 'Below Avg'}
-                                  </Typography>
-                                </Box>
-                              </Box>
-                            </Box>
-                            <Box
-                              sx={{
-                                width: '100%',
-                                height: '8px',
-                                backgroundColor: '#f3f4f6',
-                                borderRadius: '4px',
-                                overflow: 'hidden',
-                              }}
-                            >
                               <Box
                                 sx={{
-                                  width: `${Math.min(percentage * 2, 100)}%`,
-                                  height: '100%',
-                                  backgroundColor: isAboveAverage ? '#f87171' : '#4ade80',
-                                  borderRadius: '4px',
-                                  transition: 'width 0.6s ease-out',
+                                  fontFamily: FONT_TEXT,
+                                  fontSize: '12px',
+                                  letterSpacing: '0.1em',
+                                  px: 1.25,
+                                  py: 0.5,
+                                  border: '1px solid',
+                                  borderColor: isAboveAverage ? '#c0392b' : '#2d7a4e',
+                                  color: isAboveAverage ? '#c0392b' : '#2d7a4e',
+                                  whiteSpace: 'nowrap',
                                 }}
-                              />
+                              >
+                                {isAboveAverage ? 'Above Avg' : 'Below Avg'}
+                              </Box>
                             </Box>
                           </Box>
-                        );
-                      })}
-                  </Box>
+                          <Box
+                            sx={{
+                              width: '100%',
+                              height: '4px',
+                              backgroundColor: '#e8e6df',
+                            }}
+                          >
+                            <Box
+                              sx={{
+                                width: `${Math.min(percentage * 3, 100)}%`,
+                                height: '100%',
+                                backgroundColor: isAboveAverage ? '#c0392b' : '#2d7a4e',
+                                transition: 'width 0.4s ease',
+                              }}
+                            />
+                          </Box>
+                        </Box>
+                      );
+                    })}
+                </Box>
 
-                  {/* Above/Below National Average Summary */}
+                {/* Above / Below national average summary */}
+                <Box
+                  sx={{
+                    display: 'grid',
+                    gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+                    gap: 1.5,
+                  }}
+                >
+                  {/* Above national average */}
                   <Box
                     sx={{
-                      display: 'grid',
-                      gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
-                      gap: 3,
+                      border: '2px solid #0a0a0a',
+                      backgroundColor: '#fff5f5',
+                      borderLeft: '4px solid #c0392b',
+                      p: 2.75,
                     }}
                   >
-                    {/* Above Average */}
-                    <Box
+                    <Typography
                       sx={{
-                        p: 3,
-                        borderRadius: '12px',
-                        backgroundColor: '#fef2f2',
-                        border: '1px solid #fecaca',
+                        fontFamily: FONT_TEXT,
+                        fontSize: '16px',
+                        fontWeight: 700,
+                        mb: 1.5,
+                        color: '#c0392b',
                       }}
                     >
+                      Above National Average ({crimeData.data.above_national_average.length})
+                    </Typography>
+                    {crimeData.data.above_national_average.length === 0 && (
                       <Typography
                         sx={{
-                          fontSize: '14px',
-                          fontWeight: 600,
-                          color: '#dc2626',
-                          fontFamily: '"Montserrat", sans-serif',
-                          mb: 2,
+                          fontFamily: FONT_TEXT,
+                          fontSize: '16px',
+                          fontWeight: 300,
+                          color: '#555555',
                         }}
                       >
-                        Above National Average ({crimeData.data.above_national_average.length})
+                        No crime categories are currently above the national average for this postcode.
                       </Typography>
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                        {crimeData.data.above_national_average.map((crime) => (
-                          <Box
-                            key={crime}
-                            sx={{
-                              px: 2,
-                              py: 0.5,
-                              borderRadius: '16px',
-                              backgroundColor: '#ffffff',
-                              border: '1px solid #fca5a5',
-                            }}
-                          >
-                            <Typography
-                              sx={{
-                                fontSize: '12px',
-                                color: '#b91c1c',
-                                fontFamily: '"Inter", sans-serif',
-                              }}
-                            >
-                              {crime}
-                            </Typography>
-                          </Box>
-                        ))}
-                      </Box>
-                    </Box>
+                    )}
+                  </Box>
 
-                    {/* Below Average */}
-                    <Box
+                  {/* Below national average */}
+                  <Box
+                    sx={{
+                      border: '2px solid #0a0a0a',
+                      backgroundColor: '#f3fff7',
+                      borderLeft: '4px solid #2d7a4e',
+                      p: 2.75,
+                    }}
+                  >
+                    <Typography
                       sx={{
-                        p: 3,
-                        borderRadius: '12px',
-                        backgroundColor: '#f0fdf4',
-                        border: '1px solid #bbf7d0',
+                        fontFamily: FONT_TEXT,
+                        fontSize: '16px',
+                        fontWeight: 700,
+                        mb: 1.5,
+                        color: '#2d7a4e',
                       }}
                     >
-                      <Typography
-                        sx={{
-                          fontSize: '14px',
-                          fontWeight: 600,
-                          color: '#16a34a',
-                          fontFamily: '"Montserrat", sans-serif',
-                          mb: 2,
-                        }}
-                      >
-                        Below National Average ({crimeData.data.below_national_average.length})
-                      </Typography>
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                        {crimeData.data.below_national_average.map((crime) => (
-                          <Box
-                            key={crime}
-                            sx={{
-                              px: 2,
-                              py: 0.5,
-                              borderRadius: '16px',
-                              backgroundColor: '#ffffff',
-                              border: '1px solid #86efac',
-                            }}
-                          >
-                            <Typography
-                              sx={{
-                                fontSize: '12px',
-                                color: '#15803d',
-                                fontFamily: '"Inter", sans-serif',
-                              }}
-                            >
-                              {crime}
-                            </Typography>
-                          </Box>
-                        ))}
-                      </Box>
+                      Below National Average ({crimeData.data.below_national_average.length})
+                    </Typography>
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                      {crimeData.data.below_national_average.map((crime) => (
+                        <Box
+                          key={crime}
+                          sx={{
+                            fontFamily: FONT_TEXT,
+                            fontSize: '16px',
+                            letterSpacing: '0.06em',
+                            px: 1.25,
+                            py: 0.75,
+                            border: '1px solid #e8e6df',
+                            backgroundColor: '#ffffff',
+                            color: '#0a0a0a',
+                          }}
+                        >
+                          {crime}
+                        </Box>
+                      ))}
                     </Box>
                   </Box>
                 </Box>
@@ -4831,7 +3490,7 @@ const ReportDetailedPage: React.FC = () => {
             )}
 
             {/* Article 4 Section */}
-            <Divider sx={{ my: 4, borderColor: 'rgba(242, 197, 20, 0.2)' }} />
+            <Divider sx={{ my: 4, borderColor: '#e8e6df' }} />
             
             <Box sx={{ mb: 4 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
@@ -4843,26 +3502,28 @@ const ReportDetailedPage: React.FC = () => {
                     borderRadius: '50%',
                   }}
                 />
-              <Typography
-                variant="h6"
-                sx={{
+                <Typography
+                  sx={{
                     fontSize: '20px',
                     fontWeight: 700,
-                    color: '#111827',
-                    fontFamily: '"Poppins", "Montserrat", sans-serif',
-                }}
-              >
-                Article 4 Directions
-              </Typography>
+                    color: '#0a0a0a',
+                    letterSpacing: '-0.01em',
+                    fontFamily: FONT_TITLE,
+                  }}
+                >
+                  Article 4 Directions
+                </Typography>
               </Box>
               
               <Typography
                 variant="body2"
                 sx={{
-                  fontSize: '14px',
+                  fontSize: '17px',
                   color: '#6b7280',
-                  fontFamily: '"Inter", sans-serif',
+                  fontFamily: FONT_TEXT,
+                  fontWeight: 500,
                   mb: 3,
+                  lineHeight: 1.6,
                 }}
               >
                 Article 4 Directions remove permitted development rights in specific areas, meaning planning permission is required for certain changes that would otherwise be allowed.
@@ -4873,18 +3534,17 @@ const ReportDetailedPage: React.FC = () => {
                   {article4Data.data.article4_areas.length > 0 ? (
                     <Box
                       sx={{
+                        border: '2px solid #f2c514',
+                        backgroundColor: '#fffde8',
                         p: 3,
-                        borderRadius: '12px',
-                        backgroundColor: '#fef3c7',
-                        border: '1px solid #fcd34d',
                       }}
                     >
                       <Typography
                         sx={{
-                          fontSize: '14px',
-                          fontWeight: 600,
-                          color: '#92400e',
-                          fontFamily: '"Montserrat", sans-serif',
+                          fontFamily: FONT_TITLE,
+                          fontSize: '18px',
+                          fontWeight: 700,
+                          color: '#7a5c00',
                           mb: 2,
                         }}
                       >
@@ -4895,18 +3555,17 @@ const ReportDetailedPage: React.FC = () => {
                           <Box
                             key={index}
                             sx={{
-                              p: 2.5,
-                              borderRadius: '8px',
                               backgroundColor: '#ffffff',
-                              border: '1px solid #f59e0b',
+                              border: '2px solid #0a0a0a',
+                              p: 2.5,
                             }}
                           >
                             <Typography
                               sx={{
-                                fontSize: '14px',
-                                color: '#b45309',
-                                fontFamily: '"Inter", sans-serif',
-                                fontWeight: 600,
+                                fontFamily: FONT_TEXT,
+                                fontSize: '16px',
+                                fontWeight: 700,
+                                color: '#7a5c00',
                                 mb: 1,
                               }}
                             >
@@ -4914,9 +3573,9 @@ const ReportDetailedPage: React.FC = () => {
                             </Typography>
                             <Typography
                               sx={{
-                                fontSize: '13px',
-                                color: '#92400e',
-                                fontFamily: '"Inter", sans-serif',
+                                fontSize: '16px',
+                                color: '#444444',
+                                fontFamily: FONT_TEXT,
                                 mb: 1.5,
                                 lineHeight: 1.6,
                               }}
@@ -4930,13 +3589,16 @@ const ReportDetailedPage: React.FC = () => {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 sx={{
-                                  fontSize: '13px',
-                                  color: '#b45309',
-                                  fontFamily: '"Inter", sans-serif',
-                                  textDecoration: 'underline',
-                                  fontWeight: 500,
+                                  fontFamily: FONT_TEXT,
+                                  fontSize: '14px',
+                                  fontWeight: 600,
+                                  color: '#7a5c00',
+                                  textDecoration: 'none',
+                                  letterSpacing: '0.04em',
+                                  borderBottom: '1px solid #7a5c00',
                                   '&:hover': {
-                                    color: '#92400e',
+                                    color: '#5c4300',
+                                    borderBottomColor: '#5c4300',
                                   },
                                 }}
                               >
@@ -4950,27 +3612,27 @@ const ReportDetailedPage: React.FC = () => {
                   ) : (
                     <Box
                       sx={{
+                        border: '2px solid #0a0a0a',
+                        backgroundColor: '#f3fff7',
+                        borderLeft: '4px solid #2d7a4e',
                         p: 3,
-                        borderRadius: '12px',
-                        backgroundColor: '#f0fdf4',
-                        border: '1px solid #bbf7d0',
                       }}
                     >
                       <Typography
                         sx={{
-                          fontSize: '14px',
+                          fontFamily: FONT_TEXT,
+                          fontSize: '16px',
                           fontWeight: 600,
-                          color: '#16a34a',
-                          fontFamily: '"Montserrat", sans-serif',
+                          color: '#2d7a4e',
                         }}
                       >
                         ✓ No Article 4 Directions apply to this postcode
                       </Typography>
                       <Typography
                         sx={{
-                          fontSize: '13px',
+                          fontSize: '16px',
                           color: '#15803d',
-                          fontFamily: '"Inter", sans-serif',
+                          fontFamily: FONT_TEXT,
                           mt: 1,
                         }}
                       >
@@ -4989,7 +3651,7 @@ const ReportDetailedPage: React.FC = () => {
             </Box>
 
             {/* BRMA/LHA Section */}
-            <Divider sx={{ my: 4, borderColor: 'rgba(242, 197, 20, 0.2)' }} />
+            <Divider sx={{ my: 4, borderColor: '#e8e6df' }} />
             
             <Box sx={{ mb: 4 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
@@ -5001,26 +3663,28 @@ const ReportDetailedPage: React.FC = () => {
                     borderRadius: '50%',
                   }}
                 />
-              <Typography
-                variant="h6"
-                sx={{
+                <Typography
+                  sx={{
                     fontSize: '20px',
                     fontWeight: 700,
-                    color: '#111827',
-                    fontFamily: '"Poppins", "Montserrat", sans-serif',
-                }}
-              >
-                Local Housing Allowance (LHA) Rates
-              </Typography>
+                    color: '#0a0a0a',
+                    letterSpacing: '-0.01em',
+                    fontFamily: FONT_TITLE,
+                  }}
+                >
+                  Local Housing Allowance (LHA) Rates
+                </Typography>
               </Box>
               
               <Typography
                 variant="body2"
                 sx={{
-                  fontSize: '14px',
+                  fontSize: '17px',
                   color: '#6b7280',
-                  fontFamily: '"Inter", sans-serif',
+                  fontFamily: FONT_TEXT,
+                  fontWeight: 500,
                   mb: 3,
+                  lineHeight: 1.6,
                 }}
               >
                 LHA rates are used to calculate Housing Benefit for tenants renting from private landlords. Rates are set by the Broad Rental Market Area (BRMA).
@@ -5031,26 +3695,20 @@ const ReportDetailedPage: React.FC = () => {
                   {/* BRMA Info Card */}
                   <Box
                     sx={{
-                      p: 4,
-                      borderRadius: '16px',
-                      background: 'linear-gradient(135deg, rgba(242, 197, 20, 0.1) 0%, rgba(251, 191, 36, 0.05) 100%)',
                       border: '2px solid #f2c514',
+                      backgroundColor: '#fffde8',
+                      p: 3,
                       mb: 3,
-                      boxShadow: '0 4px 16px rgba(242, 197, 20, 0.15)',
-                      transition: 'all 0.3s ease',
-                      '&:hover': {
-                        boxShadow: '0 8px 24px rgba(242, 197, 20, 0.25)',
-                      },
                     }}
                   >
                     <Typography
                       sx={{
-                        fontSize: '13px',
-                        color: '#92400e',
-                        fontFamily: '"Inter", sans-serif',
+                        fontSize: '14px',
+                        color: '#7a5c00',
+                        fontFamily: FONT_TEXT,
                         mb: 1,
                         textTransform: 'uppercase',
-                        letterSpacing: '0.5px',
+                        letterSpacing: '0.12em',
                         fontWeight: 600,
                       }}
                     >
@@ -5058,20 +3716,22 @@ const ReportDetailedPage: React.FC = () => {
                     </Typography>
                     <Typography
                       sx={{
-                        fontSize: '24px',
+                        fontSize: '26px',
                         fontWeight: 700,
-                        color: '#d4a911',
-                        fontFamily: '"Poppins", "Montserrat", sans-serif',
+                        color: '#7a5c00',
+                        fontFamily: FONT_TITLE,
                       }}
                     >
                       {brmaLhaData.data.brma_name}
                     </Typography>
                     <Typography
                       sx={{
-                        fontSize: '13px',
-                        color: '#9ca3af',
-                        fontFamily: '"Inter", sans-serif',
+                        fontSize: '16px',
+                        color: 'rgba(122,92,0,0.6)',
+                        fontFamily: FONT_TEXT,
                         mt: 1,
+                        letterSpacing: '0.06em',
+                        fontWeight: 500,
                       }}
                     >
                       BRMA Code: {brmaLhaData.data.brma_code}
@@ -5088,23 +3748,25 @@ const ReportDetailedPage: React.FC = () => {
                         borderRadius: '50%',
                       }}
                     />
-                  <Typography
-                    sx={{
+                    <Typography
+                      sx={{
                         fontSize: '18px',
                         fontWeight: 700,
-                        color: '#111827',
-                        fontFamily: '"Poppins", "Montserrat", sans-serif',
-                    }}
-                  >
-                    Weekly LHA Rates ({brmaLhaData.data.rates[0]?.year || 'Current'})
-                  </Typography>
+                        color: '#0a0a0a',
+                        fontFamily: FONT_TITLE,
+                      }}
+                    >
+                      Weekly LHA Rates ({brmaLhaData.data.rates[0]?.year || 'Current'})
+                    </Typography>
                   </Box>
 
                   <Box
                     sx={{
                       display: 'grid',
                       gridTemplateColumns: { xs: '1fr 1fr', sm: 'repeat(3, 1fr)', md: 'repeat(5, 1fr)' },
-                      gap: 2,
+                      border: '2px solid #0a0a0a',
+                      backgroundColor: '#ffffff',
+                      overflow: 'hidden',
                       '@media print': {
                         pageBreakInside: 'avoid',
                         breakInside: 'avoid',
@@ -5116,31 +3778,25 @@ const ReportDetailedPage: React.FC = () => {
                         key={rate.beds}
                         sx={{
                           p: 3,
-                          borderRadius: '14px',
-                          backgroundColor: '#ffffff',
-                          border: '2px solid #e5e7eb',
                           textAlign: 'center',
-                          transition: 'all 0.3s ease',
-                          '&:hover': {
-                            borderColor: '#f2c514',
-                            transform: 'translateY(-4px)',
-                            boxShadow: '0 8px 20px rgba(242, 197, 20, 0.2)',
+                          borderRight: { xs: 'none', md: '2px solid #0a0a0a' },
+                          '&:last-of-type': {
+                            borderRight: 'none',
                           },
                           '@media print': {
                             pageBreakInside: 'avoid',
                             breakInside: 'avoid',
-                            transform: 'none',
                           },
                         }}
                       >
                         <Typography
                           sx={{
-                            fontSize: '12px',
-                            color: '#6b7280',
-                            fontFamily: '"Inter", sans-serif',
+                            fontSize: '14px',
+                            color: '#888888',
+                            fontFamily: FONT_TEXT,
                             mb: 1.5,
                             textTransform: 'uppercase',
-                            letterSpacing: '0.5px',
+                            letterSpacing: '0.1em',
                             fontWeight: 600,
                           }}
                         >
@@ -5148,32 +3804,39 @@ const ReportDetailedPage: React.FC = () => {
                         </Typography>
                         <Typography
                           sx={{
-                            fontSize: '26px',
-                            fontWeight: 700,
+                            fontSize: '22px',
+                            fontWeight: 800,
                             color: '#f2c514',
-                            fontFamily: '"Poppins", "Montserrat", sans-serif',
+                            fontFamily: FONT_TITLE,
+                            mb: 0.5,
                           }}
                         >
                           £{rate.lha_rate.toFixed(2)}
                         </Typography>
                         <Typography
                           sx={{
-                            fontSize: '11px',
-                            color: '#9ca3af',
-                            fontFamily: '"Inter", sans-serif',
-                            mt: 0.5,
+                            fontSize: '14px',
+                            color: '#888888',
+                            fontFamily: FONT_TEXT,
+                            letterSpacing: '0.06em',
+                            fontWeight: 500,
+                            mb: 1.25,
                           }}
                         >
                           per week
                         </Typography>
+                        <Box
+                          sx={{
+                            height: '1px',
+                            backgroundColor: '#e8e6df',
+                            my: 1,
+                          }}
+                        />
                         <Typography
                           sx={{
-                            fontSize: '13px',
-                            color: '#6b7280',
-                            fontFamily: '"Inter", sans-serif',
-                            mt: 1.5,
-                            pt: 1.5,
-                            borderTop: '1px solid #f3f4f6',
+                            fontSize: '14px',
+                            color: '#0a0a0a',
+                            fontFamily: FONT_TEXT,
                             fontWeight: 600,
                           }}
                         >
@@ -5193,8 +3856,8 @@ const ReportDetailedPage: React.FC = () => {
             </Box>
 
             {/* Demographics Section */}
-            <Divider sx={{ my: 4, borderColor: 'rgba(242, 197, 20, 0.2)' }} />
-            
+            <Divider sx={{ my: 4, borderColor: '#e8e6df' }} />
+
             <Box sx={{ mb: 4 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
                 <Box
@@ -5205,26 +3868,29 @@ const ReportDetailedPage: React.FC = () => {
                     borderRadius: '50%',
                   }}
                 />
-              <Typography
-                variant="h6"
-                sx={{
+                <Typography
+                  variant="h6"
+                  sx={{
                     fontSize: '20px',
                     fontWeight: 700,
-                    color: '#111827',
-                    fontFamily: '"Poppins", "Montserrat", sans-serif',
-                }}
-              >
-                Area Demographics
-              </Typography>
+                    color: '#0a0a0a',
+                    letterSpacing: '-0.01em',
+                    fontFamily: FONT_TITLE,
+                  }}
+                >
+                  Area Demographics
+                </Typography>
               </Box>
-              
+
               <Typography
                 variant="body2"
                 sx={{
-                  fontSize: '14px',
+                  fontSize: '17px',
                   color: '#6b7280',
-                  fontFamily: '"Inter", sans-serif',
+                  fontFamily: FONT_TEXT,
+                  fontWeight: 500,
                   mb: 3,
+                  lineHeight: 1.6,
                 }}
               >
                 Detailed demographic breakdown of the local population based on census data.
@@ -5239,9 +3905,9 @@ const ReportDetailedPage: React.FC = () => {
                       data: { [key: string]: number },
                       colorScheme: string[]
                     ) => {
-                      const entries = Object.entries(data).filter(([, value]) => value > 0);
-                      const total = entries.reduce((sum, [, value]) => sum + value, 0);
-                      
+                    const entries = Object.entries(data).filter(([, value]) => value > 0);
+                    const total = entries.reduce((sum, [, value]) => sum + value, 0);
+
                       // Calculate pie slices
                       let currentAngle = 0;
                       const slices = entries.map(([label, value], index) => {
@@ -5261,8 +3927,8 @@ const ReportDetailedPage: React.FC = () => {
 
                       // SVG path for pie slice with configurable center
                       const getSlicePath = (startAngle: number, endAngle: number, radius: number, cx: number = 150, cy: number = 150) => {
-                        const startRad = (startAngle - 90) * (Math.PI / 180);
-                        const endRad = (endAngle - 90) * (Math.PI / 180);
+                      const startRad = (startAngle - 90) * (Math.PI / 180);
+                      const endRad = (endAngle - 90) * (Math.PI / 180);
                         const x1 = cx + radius * Math.cos(startRad);
                         const y1 = cy + radius * Math.sin(startRad);
                         const x2 = cx + radius * Math.cos(endRad);
@@ -5274,24 +3940,23 @@ const ReportDetailedPage: React.FC = () => {
                       return (
                         <Box
                           sx={{
-                            p: 4,
-                            borderRadius: '20px',
-                            backgroundColor: '#ffffff',
-                            border: '1px solid #e5e7eb',
-                            boxShadow: '0 8px 24px -4px rgba(0, 0, 0, 0.12)',
-                            transition: 'all 0.3s ease',
-                            '&:hover': {
-                              boxShadow: '0 12px 32px -4px rgba(0, 0, 0, 0.18)',
-                            },
+                          p: 3.5,
+                          borderRadius: 0,
+                          backgroundColor: '#ffffff',
+                          border: '2px solid #0a0a0a',
+                          boxShadow: 'none',
+                          '@media print': {
+                            boxShadow: 'none',
+                          },
                           }}
                         >
                           <Typography
                             sx={{
-                              fontSize: '22px',
+                            fontSize: '16px',
                               fontWeight: 700,
-                              color: '#1f2937',
-                              fontFamily: '"Montserrat", sans-serif',
-                              mb: 4,
+                            color: '#0a0a0a',
+                            fontFamily: FONT_TEXT,
+                            mb: 3,
                               textAlign: 'center',
                             }}
                           >
@@ -5302,7 +3967,7 @@ const ReportDetailedPage: React.FC = () => {
                               display: 'flex',
                               flexDirection: 'column',
                               alignItems: 'center',
-                              gap: 4,
+                              gap: 3,
                             }}
                           >
                             {/* Pie Chart SVG - Larger size with tooltips */}
@@ -5316,8 +3981,8 @@ const ReportDetailedPage: React.FC = () => {
                                       cursor: pointer;
                                     }
                                     .pie-slice:hover {
-                                      transform: scale(1.08);
-                                      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.25));
+                                      transform: scale(1.03);
+                                      filter: drop-shadow(0 3px 8px rgba(0,0,0,0.25));
                                     }
                                   `}
                                 </style>
@@ -5339,10 +4004,10 @@ const ReportDetailedPage: React.FC = () => {
                                           />
                                           <Typography
                                             sx={{
-                                              fontSize: '15px',
+                                              fontSize: '16px',
                                               fontWeight: 700,
                                               color: '#ffffff',
-                                              fontFamily: '"Montserrat", sans-serif',
+                                              fontFamily: FONT_TEXT,
                                               lineHeight: 1.4,
                                               wordBreak: 'break-word',
                                             }}
@@ -5351,18 +4016,18 @@ const ReportDetailedPage: React.FC = () => {
                                           </Typography>
                                         </Box>
                                         <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 3, mb: 1 }}>
-                                          <Typography sx={{ fontSize: '13px', color: 'rgba(255,255,255,0.8)', fontFamily: '"Inter", sans-serif', flexShrink: 0 }}>
+                                          <Typography sx={{ fontSize: '16px', color: 'rgba(255,255,255,0.8)', fontFamily: FONT_TEXT, flexShrink: 0 }}>
                                             Count:
                                           </Typography>
-                                          <Typography sx={{ fontSize: '14px', fontWeight: 600, color: '#ffffff', fontFamily: '"Montserrat", sans-serif' }}>
+                                          <Typography sx={{ fontSize: '16px', fontWeight: 600, color: '#ffffff', fontFamily: FONT_TITLE }}>
                                             {slice.value.toLocaleString()}
                                           </Typography>
                                         </Box>
                                         <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 3 }}>
-                                          <Typography sx={{ fontSize: '13px', color: 'rgba(255,255,255,0.8)', fontFamily: '"Inter", sans-serif', flexShrink: 0 }}>
+                                          <Typography sx={{ fontSize: '16px', color: 'rgba(255,255,255,0.8)', fontFamily: FONT_TEXT, flexShrink: 0 }}>
                                             Percentage:
                                           </Typography>
-                                          <Typography sx={{ fontSize: '14px', fontWeight: 600, color: '#ffffff', fontFamily: '"Montserrat", sans-serif' }}>
+                                          <Typography sx={{ fontSize: '16px', fontWeight: 600, color: '#ffffff', fontFamily: FONT_TITLE }}>
                                             {slice.percentage.toFixed(1)}%
                                           </Typography>
                                         </Box>
@@ -5376,10 +4041,10 @@ const ReportDetailedPage: React.FC = () => {
                                             gap: 3,
                                           }}
                                         >
-                                          <Typography sx={{ fontSize: '12px', color: 'rgba(255,255,255,0.7)', fontFamily: '"Inter", sans-serif', flexShrink: 0 }}>
+                                          <Typography sx={{ fontSize: '12px', color: 'rgba(255,255,255,0.7)', fontFamily: FONT_TEXT, flexShrink: 0 }}>
                                             of Total:
                                           </Typography>
-                                          <Typography sx={{ fontSize: '13px', fontWeight: 500, color: 'rgba(255,255,255,0.9)', fontFamily: '"Inter", sans-serif' }}>
+                                          <Typography sx={{ fontSize: '16px', fontWeight: 500, color: 'rgba(255,255,255,0.9)', fontFamily: FONT_TEXT }}>
                                             {total.toLocaleString()}
                                           </Typography>
                                         </Box>
@@ -5417,12 +4082,14 @@ const ReportDetailedPage: React.FC = () => {
                                   x="150"
                                   y="140"
                                   textAnchor="middle"
-                                  style={{
-                                    fontSize: '16px',
-                                    fontWeight: 600,
-                                    fill: '#6b7280',
-                                    fontFamily: 'Inter, sans-serif',
-                                  }}
+                                style={{
+                                  fontSize: '12px',
+                                  fontWeight: 500,
+                                  letterSpacing: '0.14em',
+                                  textTransform: 'uppercase',
+                                  fill: '#9ca3af',
+                                  fontFamily: FONT_TEXT,
+                                }}
                                 >
                                   Total
                                 </text>
@@ -5431,10 +4098,10 @@ const ReportDetailedPage: React.FC = () => {
                                   y="168"
                                   textAnchor="middle"
                                   style={{
-                                    fontSize: '24px',
-                                    fontWeight: 700,
-                                    fill: '#1f2937',
-                                    fontFamily: 'Montserrat, sans-serif',
+                                  fontSize: '22px',
+                                  fontWeight: 800,
+                                  fill: '#0a0a0a',
+                                  fontFamily: FONT_TEXT,
                                   }}
                                 >
                                   {total.toLocaleString()}
@@ -5442,51 +4109,56 @@ const ReportDetailedPage: React.FC = () => {
                               </svg>
                             </Box>
                             {/* Legend - Full width below chart */}
-                            <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                            <Box
+                              sx={{
+                                width: '100%',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: 0,
+                              }}
+                            >
                               {slices.map((slice, index) => (
                                 <Box
                                   key={index}
                                   sx={{
                                     display: 'flex',
                                     alignItems: 'center',
+                                    justifyContent: 'space-between',
                                     gap: 2,
-                                    p: 1.5,
-                                    borderRadius: '10px',
-                                    backgroundColor: '#f9fafb',
-                                    transition: 'all 0.2s ease',
-                                    '&:hover': {
-                                      backgroundColor: '#f3f4f6',
-                                      transform: 'translateX(4px)',
-                                    },
+                                    py: 1.25,
+                                    borderBottom: '1px solid #e8e6df',
                                   }}
                                 >
-                                  <Box
-                                    sx={{
-                                      width: 18,
-                                      height: 18,
-                                      borderRadius: '6px',
-                                      backgroundColor: slice.color,
-                                      flexShrink: 0,
-                                      boxShadow: `0 2px 4px ${slice.color}40`,
-                                    }}
-                                  />
+                                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flex: 1, minWidth: 0 }}>
+                                    <Box
+                                      sx={{
+                                        width: 10,
+                                        height: 10,
+                                        borderRadius: '50%',
+                                        backgroundColor: slice.color,
+                                        flexShrink: 0,
+                                      }}
+                                    />
+                                    <Typography
+                                      sx={{
+                                        fontSize: '16px',
+                                        color: '#333333',
+                                        fontFamily: FONT_TEXT,
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        whiteSpace: 'nowrap',
+                                      }}
+                                      title={slice.label}
+                                    >
+                                      {slice.label}
+                                    </Typography>
+                                  </Box>
                                   <Typography
                                     sx={{
-                                      fontSize: '15px',
-                                      color: '#374151',
-                                      fontFamily: '"Inter", sans-serif',
-                                      flex: 1,
+                                      fontSize: '12px',
                                       fontWeight: 500,
-                                    }}
-                                  >
-                                    {slice.label}
-                                  </Typography>
-                                  <Typography
-                                    sx={{
-                                      fontSize: '15px',
-                                      fontWeight: 700,
-                                      color: '#1f2937',
-                                      fontFamily: '"Montserrat", sans-serif',
+                                      color: '#0a0a0a',
+                                      fontFamily: FONT_TEXT,
                                     }}
                                   >
                                     {slice.percentage.toFixed(1)}%
@@ -5505,46 +4177,47 @@ const ReportDetailedPage: React.FC = () => {
                       data: { [key: string]: number },
                       colorScheme: string[]
                     ) => {
-                      const entries = Object.entries(data).filter(([, value]) => value > 0);
-                      const total = entries.reduce((sum, [, value]) => sum + value, 0);
-                      const maxValue = Math.max(...entries.map(([, value]) => value));
+                    const entries = Object.entries(data).filter(([, value]) => value > 0);
+                    const total = entries.reduce((sum, [, value]) => sum + value, 0);
+                    const maxValue = Math.max(...entries.map(([, value]) => value));
 
                       return (
                         <Box
                           sx={{
-                            p: 4,
-                            borderRadius: '20px',
-                            backgroundColor: '#ffffff',
-                            border: '1px solid #e5e7eb',
-                            boxShadow: '0 8px 24px -4px rgba(0, 0, 0, 0.12)',
-                            transition: 'all 0.3s ease',
-                            '&:hover': {
-                              boxShadow: '0 12px 32px -4px rgba(0, 0, 0, 0.18)',
-                            },
+                          p: 3.5,
+                          borderRadius: 0,
+                          backgroundColor: '#ffffff',
+                          border: '2px solid #0a0a0a',
+                          boxShadow: 'none',
+                          '@media print': {
+                            boxShadow: 'none',
+                          },
                           }}
                         >
                           <Typography
                             sx={{
-                              fontSize: '22px',
+                            fontSize: '16px',
                               fontWeight: 700,
-                              color: '#1f2937',
-                              fontFamily: '"Montserrat", sans-serif',
-                              mb: 1,
+                            color: '#0a0a0a',
+                            fontFamily: FONT_TEXT,
+                            mb: 0.5,
                             }}
                           >
                             {title}
                           </Typography>
                           <Typography
                             sx={{
-                              fontSize: '16px',
-                              color: '#6b7280',
-                              fontFamily: '"Inter", sans-serif',
-                              mb: 4,
+                            fontSize: '16px',
+                            color: '#9ca3af',
+                            fontFamily: FONT_TEXT,
+                            letterSpacing: '0.06em',
+                            textTransform: 'uppercase',
+                            mb: 3,
                             }}
                           >
                             Total: {total.toLocaleString()} people
                           </Typography>
-                          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                             {entries.map(([label, value], index) => {
                               const percentage = ((value / total) * 100).toFixed(1);
                               const barWidth = (value / maxValue) * 100;
@@ -5554,10 +4227,7 @@ const ReportDetailedPage: React.FC = () => {
                                 <Box 
                                   key={label}
                                   sx={{
-                                    transition: 'all 0.2s ease',
-                                    '&:hover': {
-                                      transform: 'translateX(4px)',
-                                    },
+                                    mb: 1,
                                   }}
                                 >
                                   <Box
@@ -5571,9 +4241,9 @@ const ReportDetailedPage: React.FC = () => {
                                     <Typography
                                       sx={{
                                         fontSize: '16px',
-                                        fontWeight: 500,
-                                        color: '#374151',
-                                        fontFamily: '"Inter", sans-serif',
+                                        fontWeight: 400,
+                                        color: '#0a0a0a',
+                                        fontFamily: FONT_TEXT,
                                         maxWidth: '55%',
                                         overflow: 'hidden',
                                         textOverflow: 'ellipsis',
@@ -5588,28 +4258,29 @@ const ReportDetailedPage: React.FC = () => {
                                         sx={{
                                           fontSize: '16px',
                                           fontWeight: 700,
-                                          color: '#1f2937',
-                                          fontFamily: '"Montserrat", sans-serif',
+                                          color: '#0a0a0a',
+                                          fontFamily: FONT_TEXT,
                                         }}
                                       >
                                         {value.toLocaleString()}
                                       </Typography>
                                       <Box
                                         sx={{
-                                          backgroundColor: `${color}20`,
-                                          px: 1.5,
+                                          backgroundColor: '#f7f6f2',
+                                          px: 1,
                                           py: 0.5,
-                                          borderRadius: '8px',
-                                          minWidth: '60px',
+                                          borderRadius: 0,
+                                          minWidth: '52px',
                                           textAlign: 'center',
+                                          border: '1px solid #e8e6df',
                                         }}
                                       >
                                         <Typography
                                           sx={{
-                                            fontSize: '14px',
-                                            fontWeight: 600,
-                                            color: color,
-                                            fontFamily: '"Inter", sans-serif',
+                                            fontSize: '16px',
+                                            fontWeight: 500,
+                                            color: '#0a0a0a',
+                                            fontFamily: FONT_TEXT,
                                           }}
                                         >
                                           {percentage}%
@@ -5620,9 +4291,9 @@ const ReportDetailedPage: React.FC = () => {
                                   <Box
                                     sx={{
                                       width: '100%',
-                                      height: '16px',
-                                      backgroundColor: '#f3f4f6',
-                                      borderRadius: '8px',
+                                      height: '6px',
+                                      backgroundColor: '#e8e6df',
+                                      borderRadius: 0,
                                       overflow: 'hidden',
                                     }}
                                   >
@@ -5630,9 +4301,9 @@ const ReportDetailedPage: React.FC = () => {
                                       sx={{
                                         width: `${barWidth}%`,
                                         height: '100%',
-                                        background: `linear-gradient(90deg, ${color} 0%, ${color}cc 100%)`,
-                                        borderRadius: '8px',
-                                        transition: 'width 0.6s ease-out',
+                                        background: color,
+                                        borderRadius: 0,
+                                        transition: 'width 0.5s ease-out',
                                       }}
                                     />
                                   </Box>
@@ -5717,35 +4388,34 @@ const ReportDetailedPage: React.FC = () => {
         );
 
       case 'About us':
-        return (
-          <ContentSection
-            sx={{
-              // minHeight: { xs: 'auto', md: '100vh' },
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: { xs: 'flex-start', md: 'center' },
-              position: 'relative',
-              zIndex: 10,
-              backgroundColor: '#ffffff',
-              '@media print': {
-                minHeight: 'auto',
-                display: 'block',
-                justifyContent: 'flex-start',
-                pageBreakBefore: 'auto',
+          return (
+            <ContentSection
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: { xs: 'flex-start', md: 'center' },
                 position: 'relative',
                 zIndex: 10,
-                overflow: 'visible',
-              },
-            }}
-          >
-            <Box sx={{ mx: 'auto', position: 'relative', zIndex: 2 }}>
-              {/* Primary About block */}
-              <Box sx={{ mb: 6 }}>
+                backgroundColor: '#ffffff',
+                '@media print': {
+                  minHeight: 'auto',
+                  display: 'block',
+                  justifyContent: 'flex-start',
+                  pageBreakBefore: 'auto',
+                  position: 'relative',
+                  zIndex: 10,
+                  overflow: 'visible',
+                },
+              }}
+            >
+              <Box sx={{ mx: 'auto', position: 'relative', zIndex: 2 }}>
+                {/* Section label */}
                 <SectionTitle
                   sx={{
                     position: 'relative',
                     paddingLeft: 3,
                     mb: 4,
+                    fontFamily: FONT_TITLE,
                     '&::before': {
                       content: '""',
                       position: 'absolute',
@@ -5760,16 +4430,14 @@ const ReportDetailedPage: React.FC = () => {
                 >
                   About us
                 </SectionTitle>
-                
-                {/* Hero Card with Company Name */}
+  
+                {/* Primary company card */}
                 <Box
                   sx={{
-                    p: 4,
-                    borderRadius: '16px',
-                    background: 'linear-gradient(135deg, rgba(242, 197, 20, 0.1) 0%, rgba(251, 191, 36, 0.05) 100%)',
-                    border: '2px solid #f2c514',
                     mb: 4,
-                    boxShadow: '0 4px 16px rgba(242, 197, 20, 0.15)',
+                    border: '2px solid #f2c514',
+                    backgroundColor: '#fffde8',
+                    p: 3.5,
                     '@media print': {
                       pageBreakInside: 'avoid',
                       breakInside: 'avoid',
@@ -5779,549 +4447,419 @@ const ReportDetailedPage: React.FC = () => {
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
                     <Box
                       sx={{
-                        width: 48,
-                        height: 48,
+                        width: 46,
+                        height: 46,
                         borderRadius: '12px',
-                        background: 'linear-gradient(135deg, #f2c514 0%, #fbbf24 100%)',
+                        backgroundColor: '#f2c514',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        boxShadow: '0 4px 12px rgba(242, 197, 20, 0.3)',
+                        flexShrink: 0,
                       }}
                     >
                       <Typography sx={{ fontSize: '24px' }}>🏢</Typography>
                     </Box>
-                <Typography
-                      variant="h4"
-                  sx={{
-                        fontSize: '28px',
-                        fontWeight: 700,
-                        color: '#d4a911',
-                        fontFamily: '"Poppins", "Montserrat", sans-serif',
-                        letterSpacing: '-0.02em',
-                  }}
-                >
-                  CommercialUK Ltd
-                </Typography>
-                  </Box>
-                <Typography
-                  variant="body1"
-                  sx={{
-                      fontSize: '17px',
-                      color: '#4b5563',
-                    fontWeight: 400,
-                      lineHeight: 1.9,
-                      fontFamily: '"Inter", sans-serif',
-                  }}
-                >
-                  At CommercialUK, we believe great property experiences go far beyond listings. Our team is dedicated to
-                  providing clear, informed guidance, responsive support, and a seamless digital journey for every client
-                  – whether you are a landlord, investor, developer, or business owner searching for the right space.
-                  We combine local market expertise with technology to create a smooth, trustworthy process from first
-                  enquiry through to completion.
-                </Typography>
-                </Box>
-              </Box>
-
-              {/* Secondary story / mission block */}
-              <Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
-                  <Box
-                    sx={{
-                      width: 8,
-                      height: 8,
-                      backgroundColor: '#f2c514',
-                      borderRadius: '50%',
-                    }}
-                  />
-                <Typography
-                    variant="h5"
-                  sx={{
-                      fontSize: '22px',
-                      fontWeight: 700,
-                      color: '#111827',
-                      fontFamily: '"Poppins", "Montserrat", sans-serif',
-                  }}
-                >
-                  A little bit about CommercialUK
-                </Typography>
-                </Box>
-                
-                {/* Mission Cards */}
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                  <Box
-                    sx={{
-                      p: 4,
-                      borderRadius: '16px',
-                      backgroundColor: '#ffffff',
-                      border: '2px solid #e5e7eb',
-                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
-                      transition: 'all 0.3s ease',
-                      '&:hover': {
-                        borderColor: '#f2c514',
-                        transform: 'translateX(4px)',
-                        boxShadow: '0 8px 20px rgba(242, 197, 20, 0.2)',
-                      },
-                      '@media print': {
-                        pageBreakInside: 'avoid',
-                        breakInside: 'avoid',
-                        transform: 'none',
-                      },
-                    }}
-                  >
-                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2.5 }}>
-                      <Box
-                        sx={{
-                          width: 40,
-                          height: 40,
-                          borderRadius: '10px',
-                          backgroundColor: 'rgba(242, 197, 20, 0.15)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          flexShrink: 0,
-                          mt: 0.5,
-                        }}
-                      >
-                        <Typography sx={{ fontSize: '20px' }}>🎯</Typography>
-                      </Box>
-                <Typography
-                  variant="body1"
-                  sx={{
-                          fontSize: '17px',
-                          color: '#4b5563',
-                    fontWeight: 400,
-                          lineHeight: 1.9,
-                          fontFamily: '"Inter", sans-serif',
-                  }}
-                >
-                  Our platform is built specifically for the UK commercial property market, bringing together offices,
-                  retail, industrial, leisure, and mixed‑use opportunities in one place. By partnering with experienced
-                  agents and owners, we ensure every listing is accurate, well‑presented, and supported by the right
-                  documentation so that buyers and tenants can act with confidence.
-                </Typography>
-                    </Box>
-                  </Box>
-
-                  <Box
-                    sx={{
-                      p: 4,
-                      borderRadius: '16px',
-                      backgroundColor: '#ffffff',
-                      border: '2px solid #e5e7eb',
-                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
-                      transition: 'all 0.3s ease',
-                      '&:hover': {
-                        borderColor: '#f2c514',
-                        transform: 'translateX(4px)',
-                        boxShadow: '0 8px 20px rgba(242, 197, 20, 0.2)',
-                      },
-                      '@media print': {
-                        pageBreakInside: 'avoid',
-                        breakInside: 'avoid',
-                        transform: 'none',
-                      },
-                    }}
-                  >
-                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2.5 }}>
-                      <Box
-                        sx={{
-                          width: 40,
-                          height: 40,
-                          borderRadius: '10px',
-                          backgroundColor: 'rgba(242, 197, 20, 0.15)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          flexShrink: 0,
-                          mt: 0.5,
-                        }}
-                      >
-                        <Typography sx={{ fontSize: '20px' }}>🚀</Typography>
-                      </Box>
-                <Typography
-                  variant="body1"
-                  sx={{
-                          fontSize: '17px',
-                          color: '#4b5563',
-                    fontWeight: 400,
-                          lineHeight: 1.9,
-                          fontFamily: '"Inter", sans-serif',
-                  }}
-                >
-                  From detailed digital brochures and reporting to tools that help you understand pricing, demand, and
-                  local demographics, CommercialUK is designed to simplify complex decisions. Our mission is to make
-                  commercial real estate more accessible, transparent, and efficient – so you can focus on what matters
-                  most: growing your business and maximising the value of your property.
-                </Typography>
-                    </Box>
-                  </Box>
-                </Box>
-              </Box>
-            </Box>
-          </ContentSection>
-        );
-
-      case 'Data Sources':
-          return (
-            <ContentSection
-              sx={{
-                position: 'relative',
-                zIndex: 10,
-                backgroundColor: '#ffffff',
-                '@media print': {
-                  pageBreakBefore: 'auto',
-                  position: 'relative',
-                  zIndex: 10,
-                  overflow: 'visible',
-                },
-              }}
-            >
-              <SectionTitle
-                sx={{
-                  position: 'relative',
-                  paddingLeft: 3,
-                  '&::before': {
-                    content: '""',
-                    position: 'absolute',
-                    left: 0,
-                    top: 0,
-                    bottom: 0,
-                    width: '6px',
-                    backgroundColor: '#f2c514',
-                    borderRadius: '10px',
-                  },
-                }}
-              >
-                Data sources
-              </SectionTitle>
-              
-              {/* Introduction Card */}
-              <Box
-                sx={{
-                  p: 4,
-                  borderRadius: '16px',
-                  background: 'linear-gradient(135deg, #fffbf0 0%, #fef3c7 100%)',
-                  border: '2px solid #f2c514',
-                  mb: 5,
-                  boxShadow: '0 4px 16px rgba(242, 197, 20, 0.15)',
-                }}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2.5 }}>
-                  <Box
-                    sx={{
-                      width: 48,
-                      height: 48,
-                      borderRadius: '12px',
-                      background: 'linear-gradient(135deg, #f2c514 0%, #fbbf24 100%)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: '0 4px 12px rgba(242, 197, 20, 0.3)',
-                      flexShrink: 0,
-                      mt: 0.5,
-                    }}
-                  >
-                    <Typography sx={{ fontSize: '24px' }}>📊</Typography>
-                  </Box>
-              <Typography
-                variant="body1"
-                sx={{
-                      fontSize: '17px',
-                      color: '#78350f',
-                  fontWeight: 400,
-                      lineHeight: 1.9,
-                      fontFamily: '"Inter", sans-serif',
-                }}
-              >
-                We believe in making property information more freely available to the buyers, sellers, landlords and tenants we 
-                work closely with. That is why we aggregate data from a variety of different public and licenced sources to include 
-                in guides such as this one. Please find a list of our data partners below.
-              </Typography>
-                </Box>
-              </Box>
-  
-              {/* Section Header for Partners */}
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 4 }}>
-                <Box
-                  sx={{
-                    width: 8,
-                    height: 8,
-                    backgroundColor: '#f2c514',
-                    borderRadius: '50%',
-                  }}
-                />
-                <Typography
-                  sx={{
-                    fontSize: '20px',
-                    fontWeight: 700,
-                    color: '#111827',
-                    fontFamily: '"Poppins", "Montserrat", sans-serif',
-                  }}
-                >
-                  Our Data Partners
-                </Typography>
-              </Box>
-  
-              {/* Logo Grid */}
-              <Box
-                sx={{
-                  display: 'grid',
-                  gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
-                  gap: { xs: 4, md: 5 },
-                  mb: 8,
-                  '@media print': {
-                    gridTemplateColumns: 'repeat(4, 1fr)',
-                    gap: 3,
-                    pageBreakInside: 'avoid',
-                  },
-                }}
-              >
-                {/* GOV.UK Logo */}
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: { xs: 120, md: 140 },
-                    p: 3,
-                    backgroundColor: '#ffffff',
-                    borderRadius: '16px',
-                    border: '2px solid #e5e7eb',
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
-                    transition: 'all 0.3s ease',
-                    '&:hover': {
-                      transform: 'translateY(-6px)',
-                      boxShadow: '0 12px 28px rgba(242, 197, 20, 0.25)',
-                      borderColor: '#f2c514',
-                    },
-                  }}
-                >
-                  <Box
-                    component="img"
-                    src="https://www.publictechnology.net/wp-content/uploads/2025/06/GOV.UK_updated_brand_logo_lock_up.jpg"
-                    alt="GOV.UK"
-                    sx={{
-                      maxWidth: '90%',
-                      maxHeight: '90%',
-                      objectFit: 'contain',
-                    }}
-                  />
-                </Box>
-  
-                {/* Google Maps Logo */}
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: { xs: 120, md: 140 },
-                    p: 3,
-                    backgroundColor: '#ffffff',
-                    borderRadius: '16px',
-                    border: '2px solid #e5e7eb',
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
-                    transition: 'all 0.3s ease',
-                    '&:hover': {
-                      transform: 'translateY(-6px)',
-                      boxShadow: '0 12px 28px rgba(242, 197, 20, 0.25)',
-                      borderColor: '#f2c514',
-                    },
-                  }}
-                >
-                  <Box
-                    component="img"
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Google_Maps_Logo_2020.svg/1137px-Google_Maps_Logo_2020.svg.png"
-                    alt="Google Maps"
-                    sx={{
-                      maxWidth: '90%',
-                      maxHeight: '90%',
-                      objectFit: 'contain',
-                    }}
-                  />
-                </Box>
-  
-                {/* getAddress.io Logo */}
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: { xs: 120, md: 140 },
-                    p: 3,
-                    backgroundColor: '#ffffff',
-                    borderRadius: '16px',
-                    border: '2px solid #e5e7eb',
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
-                    transition: 'all 0.3s ease',
-                    '&:hover': {
-                      transform: 'translateY(-6px)',
-                      boxShadow: '0 12px 28px rgba(242, 197, 20, 0.25)',
-                      borderColor: '#f2c514',
-                    },
-                  }}
-                >
-                  <Box
-                    component="img"
-                    src="https://avatars.githubusercontent.com/u/8994465?s=280&v=4"
-                    alt="getAddress.io"
-                    sx={{
-                      maxWidth: '90%',
-                      maxHeight: '90%',
-                      objectFit: 'contain',
-                    }}
-                  />
-                </Box>
-  
-                {/* ChatGPT Logo */}
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: { xs: 120, md: 140 },
-                    p: 3,
-                    backgroundColor: '#ffffff',
-                    borderRadius: '16px',
-                    border: '2px solid #e5e7eb',
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
-                    transition: 'all 0.3s ease',
-                    '&:hover': {
-                      transform: 'translateY(-6px)',
-                      boxShadow: '0 12px 28px rgba(242, 197, 20, 0.25)',
-                      borderColor: '#f2c514',
-                    },
-                  }}
-                >
-                  <Box
-                    component="img"
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/ChatGPT-Logo.svg/1024px-ChatGPT-Logo.svg.png"
-                    alt="ChatGPT"
-                    sx={{
-                      maxWidth: '90%',
-                      maxHeight: '90%',
-                      objectFit: 'contain',
-                    }}
-                  />
-                </Box>
-              </Box>
-  
-              {/* Disclaimer Section */}
-              <Box sx={{ mt: 4 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
-                  <Box
-                    sx={{
-                      width: 8,
-                      height: 8,
-                      backgroundColor: '#f2c514',
-                      borderRadius: '50%',
-                    }}
-                  />
-                <Typography
-                  sx={{
-                      fontSize: '18px',
-                      fontWeight: 700,
-                      color: '#111827',
-                      fontFamily: '"Poppins", "Montserrat", sans-serif',
-                    }}
-                  >
-                    Legal Disclaimer
-                  </Typography>
-                </Box>
-
-                <Box
-                  sx={{
-                    p: 4,
-                    borderRadius: '16px',
-                    backgroundColor: '#f9fafb',
-                    border: '2px solid #e5e7eb',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 3,
-                    '@media print': {
-                      pageBreakInside: 'avoid',
-                      breakInside: 'avoid',
-                    },
-                  }}
-                >
-                  <Box sx={{ display: 'flex', gap: 2 }}>
-                    {/* <Box
-                      sx={{
-                        width: 6,
-                        backgroundColor: '#f2c514',
-                        borderRadius: '3px',
-                        flexShrink: 0,
-                      }}
-                    /> */}
                     <Typography
                       sx={{
-                        fontSize: '14px',
-                    color: '#6b7280',
-                        lineHeight: 1.9,
-                        fontFamily: '"Inter", sans-serif',
-                  }}
-                >
-                      <Box component="strong" sx={{ color: '#111827', fontWeight: 700 }}>Disclaimer:</Box> Whilst all reasonable effort is made to ensure the information in this publication is current, CommercialUK does not warrant the accuracy or completeness 
-                  (including reliability, currency or suitability) of the data and information contained in this report and accepts no liability (including without limitation, liability in negligence) 
-                  for any loss or damage or costs (including consequential damage) arising in connection with the data and information contained in this report.
-                </Typography>
-                  </Box>
-
-                  <Box sx={{ display: 'flex', gap: 2 }}>
-                    {/* <Box
-                      sx={{
-                        width: 6,
-                        backgroundColor: '#f2c514',
-                        borderRadius: '3px',
-                        flexShrink: 0,
+                        fontFamily: FONT_TITLE,
+                        fontSize: '22px',
+                        fontWeight: 800,
+                        color: '#7a5c00',
+                        letterSpacing: '-0.02em',
                       }}
-                    /> */}
-                <Typography
-                  sx={{
-                        fontSize: '14px',
-                    color: '#6b7280',
-                        lineHeight: 1.9,
-                        fontFamily: '"Inter", sans-serif',
-                  }}
-                >
-                  The estimate of current value potentially contained in the report may have been manually provided by the Agent; or may be based on a proprietary automated valuation 
-                  estimate provided by CommercialUK (the CommercialUK Estimate™). Any estimated values are current at the date of the publication only. It is computer generated and is not a 
-                  professional appraisal of the subject property and should not be relied upon in lieu of appropriate professional advice.
-                </Typography>
+                    >
+                      CommercialUK Ltd
+                    </Typography>
                   </Box>
-
-                  <Box sx={{ display: 'flex', gap: 2 }}>
-                    {/* <Box
+                  <Typography
+                    sx={{
+                      fontFamily: FONT_TEXT,
+                      fontSize: '17px',
+                      fontWeight: 500,
+                      color: '#5a4200',
+                      lineHeight: 1.85,
+                    }}
+                  >
+                    At CommercialUK, we believe great property experiences go far beyond listings. Our team is dedicated to
+                    providing clear, informed guidance, responsive support, and a seamless digital journey for every client –
+                    whether you are a landlord, investor, developer, or business owner searching for the right space. We combine
+                    local market expertise with technology to create a smooth, trustworthy process from first enquiry through to
+                    completion.
+                  </Typography>
+                </Box>
+  
+                {/* Sub-heading */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2.5 }}>
+                  <Box
+                    sx={{
+                      width: 10,
+                      height: 10,
+                      backgroundColor: '#f2c514',
+                      borderRadius: '50%',
+                    }}
+                  />
+                  <Typography
+                    sx={{
+                      fontFamily: FONT_TITLE,
+                      fontSize: '20px',
+                      fontWeight: 700,
+                      color: '#0a0a0a',
+                      letterSpacing: '-0.01em',
+                    }}
+                  >
+                    A little bit about CommercialUK
+                  </Typography>
+                </Box>
+  
+                {/* Two about cards */}
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  <Box
+                    sx={{
+                      border: '2px solid #0a0a0a',
+                      backgroundColor: '#ffffff',
+                      p: 3,
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: 2.5,
+                      '@media print': {
+                        pageBreakInside: 'avoid',
+                        breakInside: 'avoid',
+                      },
+                    }}
+                  >
+                    <Box
                       sx={{
-                        width: 6,
+                        width: 40,
+                        height: 40,
                         backgroundColor: '#f2c514',
-                        borderRadius: '3px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                         flexShrink: 0,
+                        mt: 0.5,
                       }}
-                    /> */}
-                <Typography
-                  sx={{
-                        fontSize: '14px',
-                    color: '#6b7280',
-                        lineHeight: 1.9,
-                        fontFamily: '"Inter", sans-serif',
-                  }}
-                >
-                  The accuracy of the methodology used to develop the CommercialUK Estimate™, the existence of the subject property, and the accuracy of the CommercialUK Estimate™ and 
-                  all rule sets provided are estimates based on available data and are not guaranteed or warranted. CommercialUK excludes all liability for any loss or damage arising in 
-                  connection with the CommercialUK Estimate™.
-                </Typography>
+                    >
+                      <Typography sx={{ fontSize: '20px' }}>➜</Typography>
+                    </Box>
+                    <Typography
+                      sx={{
+                        fontFamily: FONT_TEXT,
+                        fontSize: '17px',
+                        fontWeight: 500,
+                        color: '#444444',
+                        lineHeight: 1.85,
+                      }}
+                    >
+                      Our platform is built specifically for the UK commercial property market, bringing together offices, retail,
+                      industrial, leisure, and mixed‑use opportunities in one place. By partnering with experienced agents and
+                      owners, we ensure every listing is accurate, well‑presented, and supported by the right documentation so that
+                      buyers and tenants can act with confidence.
+                    </Typography>
+                  </Box>
+  
+                  <Box
+                    sx={{
+                      border: '2px solid #0a0a0a',
+                      backgroundColor: '#ffffff',
+                      p: 3,
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: 2.5,
+                      '@media print': {
+                        pageBreakInside: 'avoid',
+                        breakInside: 'avoid',
+                      },
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        width: 40,
+                        height: 40,
+                        backgroundColor: '#f2c514',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                        mt: 0.5,
+                      }}
+                    >
+                      <Typography sx={{ fontSize: '20px' }}>⚡</Typography>
+                    </Box>
+                    <Typography
+                      sx={{
+                        fontFamily: FONT_TEXT,
+                        fontSize: '17px',
+                        fontWeight: 500,
+                        color: '#444444',
+                        lineHeight: 1.85,
+                      }}
+                    >
+                      From detailed digital brochures and reporting to tools that help you understand pricing, demand, and local
+                      demographics, CommercialUK is designed to simplify complex decisions. Our mission is to make commercial real
+                      estate more accessible, transparent, and efficient – so you can focus on what matters most: growing your
+                      business and maximising the value of your property.
+                    </Typography>
                   </Box>
                 </Box>
               </Box>
             </ContentSection>
           );
-
+      
+      case 'Data Sources':
+            return (
+              <ContentSection
+                sx={{
+                  position: 'relative',
+                  zIndex: 10,
+                  backgroundColor: '#ffffff',
+                  '@media print': {
+                    pageBreakBefore: 'auto',
+                    position: 'relative',
+                    zIndex: 10,
+                    overflow: 'visible',
+                  },
+                }}
+              >
+                {/* Section title */}
+                <SectionTitle
+                  sx={{
+                    position: 'relative',
+                    paddingLeft: 3,
+                    fontFamily: FONT_TITLE,
+                    '&::before': {
+                      content: '""',
+                      position: 'absolute',
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      width: '6px',
+                      backgroundColor: '#f2c514',
+                      borderRadius: '10px',
+                    },
+                  }}
+                >
+                  Data sources
+                </SectionTitle>
+    
+                {/* Intro card */}
+                <Box
+                  sx={{
+                    mt: 3,
+                    mb: 4,
+                    border: '2px solid #f2c514',
+                    backgroundColor: '#fffde8',
+                    p: 3.5,
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
+                    <Box
+                      sx={{
+                        width: 40,
+                        height: 40,
+                        backgroundColor: '#f2c514',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                        mt: 0.5,
+                      }}
+                    >
+                      <Typography sx={{ fontSize: '20px' }}>📊</Typography>
+                    </Box>
+                    <Typography
+                      sx={{
+                        fontFamily: FONT_TEXT,
+                        fontSize: '17px',
+                        fontWeight: 500,
+                        color: '#5a4200',
+                        lineHeight: 1.85,
+                      }}
+                    >
+                      We believe in making property information more freely available to the buyers, sellers, landlords and tenants
+                      we work closely with. That is why we aggregate data from a variety of different public and licenced sources to
+                      include in guides such as this one. Please find a list of our data partners below.
+                    </Typography>
+                  </Box>
+                </Box>
+    
+                {/* Our Data Partners */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2.5 }}>
+                  <Box
+                    sx={{
+                      width: 10,
+                      height: 10,
+                      backgroundColor: '#f2c514',
+                      borderRadius: '50%',
+                    }}
+                  />
+                  <Typography
+                    sx={{
+                      fontFamily: FONT_TITLE,
+                      fontSize: '20px',
+                      fontWeight: 700,
+                      color: '#0a0a0a',
+                      letterSpacing: '-0.01em',
+                    }}
+                  >
+                    Our Data Partners
+                  </Typography>
+                </Box>
+    
+                {/* Partners grid (simple, flat) */}
+                <Box
+                  sx={{
+                    display: 'grid',
+                    gridTemplateColumns: { xs: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
+                    border: '2px solid #0a0a0a',
+                    backgroundColor: '#ffffff',
+                    mb: 4,
+                  }}
+                >
+                  {[
+                    'GOV.UK',
+                    'Google Maps',
+                    'Google Analytics',
+                    'OpenAI / ChatGPT',
+                  ].map((name, idx) => (
+                    <Box
+                      key={name}
+                      sx={{
+                        p: 3,
+                        borderRight: idx === 3 ? 'none' : '2px solid #0a0a0a',
+                        borderBottom: { xs: idx < 2 ? '2px solid #0a0a0a' : 'none', md: idx < 2 ? 'none' : 'none' },
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: 1,
+                        minHeight: 110,
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          fontFamily: FONT_TITLE,
+                          fontSize: '18px',
+                          fontWeight: 700,
+                          color: '#0a0a0a',
+                          textAlign: 'center',
+                        }}
+                      >
+                        {name}
+                      </Typography>
+                      <Typography
+                        sx={{
+                          fontFamily: FONT_TEXT,
+                          fontSize: '14px',
+                          letterSpacing: '0.1em',
+                          textTransform: 'uppercase',
+                          color: '#888888',
+                          fontWeight: 600,
+                        }}
+                      >
+                        Data Partner
+                      </Typography>
+                    </Box>
+                  ))}
+                </Box>
+    
+                {/* Legal Disclaimer */}
+                <Box sx={{ mt: 3 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2.5 }}>
+                    <Box
+                      sx={{
+                        width: 10,
+                        height: 10,
+                        backgroundColor: '#f2c514',
+                        borderRadius: '50%',
+                      }}
+                    />
+                    <Typography
+                      sx={{
+                        fontFamily: FONT_TITLE,
+                        fontSize: '20px',
+                        fontWeight: 700,
+                        color: '#0a0a0a',
+                        letterSpacing: '-0.01em',
+                      }}
+                    >
+                      Legal Disclaimer
+                    </Typography>
+                  </Box>
+    
+                  <Box
+                    sx={{
+                      border: '2px solid #0a0a0a',
+                      borderLeft: '6px solid #0a0a0a',
+                      backgroundColor: '#ffffff',
+                      p: 3,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 2,
+                      '@media print': {
+                        pageBreakInside: 'avoid',
+                        breakInside: 'avoid',
+                      },
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        fontFamily: FONT_TEXT,
+                        fontSize: '17px',
+                        fontWeight: 500,
+                        color: '#444444',
+                        lineHeight: 1.85,
+                      }}
+                    >
+                      <Box component="strong" sx={{ fontWeight: 700, color: '#0a0a0a' }}>
+                        Disclaimer:
+                      </Box>{' '}
+                      Whilst all reasonable effort is made to ensure the information in this publication is current, CommercialUK
+                      does not warrant the accuracy or completeness (including reliability, currency or suitability) of the data and
+                      information contained in this report and accepts no liability (including without limitation, liability in
+                      negligence) for any loss or damage or costs (including consequential damage) arising in connection with the
+                      data and information contained in this report.
+                    </Typography>
+    
+                    <Typography
+                      sx={{
+                        fontFamily: FONT_TEXT,
+                        fontSize: '16px',
+                        fontWeight: 300,
+                        color: '#444444',
+                        lineHeight: 1.85,
+                      }}
+                    >
+                      The estimate of current value potentially contained in the report may have been manually provided by the Agent;
+                      or may be based on a proprietary automated valuation estimate provided by CommercialUK (the CommercialUK
+                      Estimate™). Any estimated values are current at the date of the publication only. It is computer generated and
+                      is not a professional appraisal of the subject property and should not be relied upon in lieu of appropriate
+                      professional advice.
+                    </Typography>
+    
+                    <Typography
+                      sx={{
+                        fontFamily: FONT_TEXT,
+                        fontSize: '16px',
+                        fontWeight: 300,
+                        color: '#444444',
+                        lineHeight: 1.85,
+                      }}
+                    >
+                      The accuracy of the methodology used to develop the CommercialUK Estimate™, the existence of the subject
+                      property, and the accuracy of the CommercialUK Estimate™ and all rule sets provided are estimates based on
+                      available data and are not guaranteed or warranted. CommercialUK excludes all liability for any loss or damage
+                      arising in connection with the CommercialUK Estimate™.
+                    </Typography>
+                  </Box>
+                </Box>
+              </ContentSection>
+            );
+      
       default:
         return (
           <ContentSection>
             <SectionTitle>{sectionName}</SectionTitle>
-            <Typography sx={{ fontFamily: '"Inter", "Roboto", sans-serif' }}>Content for {sectionName} section</Typography>
+            <Typography sx={{ fontFamily: FONT_TEXT }}>Content for {sectionName} section</Typography>
           </ContentSection>
         );
     }
@@ -6340,15 +4878,25 @@ const ReportDetailedPage: React.FC = () => {
   return (
     <PageContainer>
       {/* Header */}
-      <Header>
-        <LogoSection>
+      <Header
+        sx={{
+          flexDirection: { xs: 'column', sm: 'row' },
+          alignItems: { xs: 'flex-start', sm: 'center' },
+          gap: { xs: 1.5, sm: 2 },
+        }}
+      >
+        <LogoSection
+          sx={{
+            mb: { xs: 0.5, sm: 0 },
+          }}
+        >
           <Box
             component="img"
             src="/images/CUKLogo.png"
             onClick={() => router.push('/')}
             alt="Commercial UK Logo"
             sx={{
-              height: { xs: '42px', md: '50px' },
+              height: { xs: '34px', sm: '40px', md: '50px' },
               width: 'auto',
               objectFit: 'contain',
               cursor: 'pointer',
@@ -6360,33 +4908,44 @@ const ReportDetailedPage: React.FC = () => {
           <Typography 
             variant="h6" 
             sx={{ 
-              fontWeight: 100, 
-              color: '#111827', 
-              fontFamily: '"Inter", "Helvetica Neue", sans-serif',
-              fontSize: { xs: '20px', sm: '23px', md: '25px' },
+              fontWeight: 600, 
+              color: '#111827',
+              fontFamily: FONT_TITLE,
+              fontSize: { xs: '17px', sm: '19px', md: '22px' },
               wordBreak: 'break-word',
               display: 'block',
               letterSpacing: '-0.02em',
-              lineHeight: 1.5,
+              lineHeight: 1.45,
               textTransform: 'capitalize',
+              textAlign: { xs: 'left', sm: 'left' },
             }}
           >
             {report.location.address}
           </Typography>
         </AddressSection>
-        <ActionButtonsGroup>
-          <ActionButton
-          variant="outlined"
-            className="share-button"
-            startIcon={<ShareIcon sx={{ fontSize: 18 }} />}
-          onClick={handleShare}
+        <ActionButtonsGroup
+          sx={{
+            flexDirection: { xs: 'row', sm: 'row', md: 'row' },
+            gap: { xs: 1, sm: 1.5, md: 2 },
+            '& .MuiButton-root': {
+              fontSize: { xs: '11px', sm: '12px', md: '13px' },
+              padding: { xs: '4px 10px', sm: '5px 12px', md: '6px 14px' },
+              minWidth: { xs: 'auto', sm: 0 },
+            },
+          }}
         >
-          Share
+          <ActionButton
+            variant="outlined"
+            className="share-button"
+            startIcon={<ShareIcon sx={{ fontSize: { xs: 16, sm: 17, md: 18 } }} />}
+            onClick={handleShare}
+          >
+            Share
           </ActionButton>
           <ActionButton
             variant="contained"
             className="download-button"
-            startIcon={<DownloadIcon sx={{ fontSize: 18 }} />}
+            startIcon={<DownloadIcon sx={{ fontSize: { xs: 16, sm: 17, md: 18 } }} />}
             onClick={handleDownload}
           >
             Download
@@ -6398,23 +4957,264 @@ const ReportDetailedPage: React.FC = () => {
       <ContentWrapper>
         {/* Sidebar */}
         <Sidebar>
-          {/* <SidebarHeader>
-            <SidebarTitle>Property Report</SidebarTitle>
-          </SidebarHeader> */}
-          <SidebarList>
-            {navigationItems.map((item) => (
-              <SidebarItem
-                key={item}
-                className={activeSection === item ? 'active' : ''}
-              >
-                <SidebarButton onClick={() => scrollToSection(item)}>
-                  <SidebarIcon className="sidebar-icon">
-                    {navigationIcons[item]}
-                  </SidebarIcon>
-                  <SidebarText primary={item} />
-                </SidebarButton>
-              </SidebarItem>
-            ))}
+          {/* Progress bar */}
+          <Box
+            sx={{
+              px: 2.5,
+              pt: 1.5,
+              pb: 1.75,
+              mt: 3,
+              borderBottom: '1px solid #e8e6df',
+              // Hide progress bar on mobile and tablet; show on larger screens only
+              display: { xs: 'none', sm: 'none', md: 'none', lg: 'block' },
+            }}
+          >
+            <Box
+              sx={{
+                fontFamily: FONT_TEXT,
+                fontSize: '11px',
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                color: '#888888',
+                fontWeight: 600,
+                display: 'flex',
+                justifyContent: 'space-between',
+                mb: 1,
+              }}
+            >
+              <span>Report Progress</span>
+              <span>
+                {navigationItems.length} sections
+              </span>
+            </Box>
+            <Box sx={{ height: 2, backgroundColor: '#e8e6df' }}>
+              <Box
+                sx={{
+                  height: '100%',
+                  backgroundColor: '#f2c514',
+                  width: '100%',
+                  transition: 'width 0.3s ease',
+                }}
+              />
+            </Box>
+          </Box>
+
+          {/* Nav list */}
+          <SidebarList sx={{ flex: 1, py: 1 }}>
+
+            {/* helper renderer */}
+            {(() => {
+              const renderNavItem = (label: string, opts?: { badge?: string }) => {
+                const isActive = activeSection === label;
+                const itemIndex = navigationItems.indexOf(label as any);
+                const activeIndex = navigationItems.indexOf(activeSection as any);
+                const isCompleted =
+                  activeIndex > -1 && itemIndex > -1 && itemIndex < activeIndex;
+
+                return (
+                  <SidebarItem
+                    key={label}
+                    onClick={() => scrollToSection(label)}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1.75,
+                      px: 2.5,
+                      py: 1.25,
+                      cursor: 'pointer',
+                      borderLeft: '3px solid',
+                      borderLeftColor: isActive ? '#f2c514' : 'transparent',
+                      backgroundColor: isActive ? '#fffde8' : 'transparent',
+                      '&:hover': {
+                        backgroundColor: '#f7f6f2',
+                      },
+                    }}
+                  >
+                    <SidebarIcon
+                      sx={{
+                        width: 32,
+                        height: 32,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                        color: isCompleted ? '#2d9a6e' : isActive ? '#f2c514' : '#888888',
+                      }}
+                    >
+                      {navigationIcons[label]}
+                    </SidebarIcon>
+                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                      <Typography
+                        sx={{
+                          fontFamily: FONT_TEXT,
+                          fontSize: '16px',
+                          fontWeight: isActive ? 700 : 500,
+                          color: isCompleted ? '#888888' : '#333333',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                        }}
+                      >
+                        {label}
+                      </Typography>
+                    </Box>
+                    {opts?.badge && (
+                      <Box
+                        sx={{
+                          fontFamily: FONT_TEXT,
+                          fontSize: '12px',
+                          fontWeight: 500,
+                          letterSpacing: '0.06em',
+                          px: 1,
+                          py: 0.4,
+                          backgroundColor: '#f2c514',
+                          color: '#0a0a0a',
+                          flexShrink: 0,
+                        }}
+                      >
+                        {opts.badge}
+                      </Box>
+                    )}
+                    {isCompleted && !opts?.badge && (
+                      <Box
+                        sx={{
+                          width: 16,
+                          height: 16,
+                          borderRadius: '50%',
+                          backgroundColor: '#2d9a6e',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          flexShrink: 0,
+                        }}
+                      >
+                        <CheckIcon sx={{ fontSize: 12, color: '#ffffff' }} />
+                      </Box>
+                    )}
+                  </SidebarItem>
+                );
+              };
+
+              return (
+                <>
+                  {/* Property group */}
+                  <Box
+                    sx={{
+                      fontFamily: FONT_TITLE,
+                      fontSize: '11px',
+                      letterSpacing: '0.12em',
+                      fontWeight: 700,
+                      textTransform: 'uppercase',
+                      color: '#888888',
+                      px: 2.5,
+                      pt: 1,
+                      pb: 0.5,
+                      display: { xs: 'none', sm: 'none', md: 'none', lg: 'block' },
+                    }}
+                  >
+                    Property
+                  </Box>
+                  {['Cover', 'Property Details', 'EPC', 'Legal Section']
+                    .filter((label) => navigationItems.includes(label as any))
+                    .map((label) => renderNavItem(label))}
+
+                  <Box
+                    sx={{
+                      height: 1,
+                      backgroundColor: '#e8e6df',
+                      my: 0.5,
+                      mx: 2.5,
+                      // Hide divider on mobile/tablet
+                      display: { xs: 'none', sm: 'none', md: 'none', lg: 'block' },
+                    }}
+                  />
+
+                  {/* Analysis */}
+                  <Box
+                    sx={{
+                      fontFamily: FONT_TITLE,
+                      fontSize: '11px',
+                      letterSpacing: '0.12em',
+                      fontWeight: 700,
+                      textTransform: 'uppercase',
+                      color: '#888888',
+                      px: 2.5,
+                      pt: 1,
+                      pb: 0.5,
+                      display: { xs: 'none', sm: 'none', md: 'none', lg: 'block' },
+                    }}
+                  >
+                    Analysis
+                  </Box>
+                  {['Mortgage Calculator', 'Demographics Findings', 'Psychographics Analysis', 'Price Prediction']
+                    .filter((label) => navigationItems.includes(label as any))
+                    .map((label) => renderNavItem(label))}
+
+                  <Box
+                    sx={{
+                      height: 1,
+                      backgroundColor: '#e8e6df',
+                      my: 0.5,
+                      mx: 2.5,
+                      display: { xs: 'none', sm: 'none', md: 'none', lg: 'block' },
+                    }}
+                  />
+
+                  {/* Local Intelligence */}
+                  <Box
+                    sx={{
+                      fontFamily: FONT_TITLE,
+                      fontSize: '11px',
+                      letterSpacing: '0.12em',
+                      fontWeight: 700,
+                      textTransform: 'uppercase',
+                      color: '#888888',
+                      px: 2.5,
+                      pt: 1,
+                      pb: 0.5,
+                      display: { xs: 'none', sm: 'none', md: 'none', lg: 'block' },
+                    }}
+                  >
+                    Local Intelligence
+                  </Box>
+                  {navigationItems.includes('Area Details' as any) &&
+                    renderNavItem('Area Details', {
+                      badge: activeSection === 'Area Details' ? 'Now' : undefined,
+                    })}
+
+                  <Box
+                    sx={{
+                      height: 1,
+                      backgroundColor: '#e8e6df',
+                      my: 0.5,
+                      mx: 2.5,
+                      display: { xs: 'none', sm: 'none', md: 'none', lg: 'block' },
+                    }}
+                  />
+
+                  {/* Appendix */}
+                  <Box
+                    sx={{
+                      fontFamily: FONT_TITLE,
+                      fontSize: '11px',
+                      letterSpacing: '0.12em',
+                      fontWeight: 700,
+                      textTransform: 'uppercase',
+                      color: '#888888',
+                      px: 2.5,
+                      pt: 1,
+                      pb: 0.5,
+                      display: { xs: 'none', sm: 'none', md: 'none', lg: 'block' },
+                    }}
+                  >
+                    Appendix
+                  </Box>
+                  {['About us', 'Data Sources']
+                    .filter((label) => navigationItems.includes(label as any))
+                    .map((label) => renderNavItem(label))}
+                </>
+              );
+            })()}
           </SidebarList>
         </Sidebar>
 

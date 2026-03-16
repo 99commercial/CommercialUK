@@ -197,6 +197,35 @@ class AICalController {
   };
 
   /**
+   * Delete multiple commercial properties from an array of objects
+   * Expects req.body to be an array like: [{ _id: '...' }, { _id: '...' }, ...]
+   * @param {Object} req - Express request object
+   * @param {Object} res - Express response object
+   * @param {Function} next - Express next middleware function
+   */
+  deleteMultipleCommercialProperties = async (req, res, next) => {
+    try {
+      const items = Array.isArray(req.body) ? req.body : [];
+
+      const ids = items
+        .map((item) => item?._id || item?.id)
+        .filter((id) => typeof id === 'string' && id.trim() !== '');
+
+      if (ids.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'Request body must be an array of objects containing _id (or id) fields',
+        });
+      }
+
+      const result = await this.aicalService.deleteMultipleCommercialProperties(ids);
+      return res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
    * Get commercial places by postcode
    * @param {Object} req - Express request object
    * @param {Object} res - Express response object
@@ -258,6 +287,23 @@ class AICalController {
     try {
       const { id } = req.params;
       const result = await this.aicalService.getReportById(id);
+      return res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
+   * Lightweight chat assistant endpoint for the Live page chatbot.
+   * Proxies chat messages to the AICal service, which calls OpenRouter.
+   * @param {Object} req - Express request object
+   * @param {Object} res - Express response object
+   * @param {Function} next - Express next middleware function
+   */
+  chatAssistant = async (req, res, next) => {
+    try {
+      const { messages } = req.body || {};
+      const result = await this.aicalService.chatAssistant(messages);
       return res.status(200).json(result);
     } catch (error) {
       next(error);

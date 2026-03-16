@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   Box,
-  Grid,
   TextField,
   FormControl,
   InputLabel,
@@ -13,8 +12,31 @@ import {
   Button,
   Alert,
   CircularProgress,
+  InputAdornment,
+  IconButton,
 } from '@mui/material';
+import { keyframes } from '@emotion/react';
 import { Save } from '@mui/icons-material';
+
+const MIN_CHARS_FOR_AI = 10;
+
+const barBounceKeyframes = keyframes`
+  0%, 100% { transform: scaleY(1); opacity: 0.25; }
+  50% { transform: scaleY(1.9); opacity: 1; }
+`;
+
+const labelPulseKeyframes = keyframes`
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+`;
+
+// Wand / sparkle icon for AI generate button (matches HTML design)
+const WandIcon = () => (
+  <svg viewBox="0 0 24 24" width={17} height={17} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+    <path d="M15 4l5 5L8 21l-5-1 1-5L15 4z" />
+    <path d="M20 7l-3-3" />
+  </svg>
+);
 import axiosInstance from '../../../utils/axios';
 import { enqueueSnackbar } from 'notistack';
 import { extractFieldErrorsFromApiError, getApiErrorMessage } from '@/utils/apiError';
@@ -43,6 +65,24 @@ const saleStatuses = [
   'Let',
   'Withdrawn',
 ];
+
+const INVOICE_DETAILS_PROMPT_TEMPLATE = `You are helping a commercial property agent clean up text for a property listing form.
+
+Rewrite the following user-provided text into clear, concise, professional invoice and billing information suitable for a commercial property listing form submission.
+
+User text:
+"{{INPUT}}"
+
+Return ONLY the rewritten invoice details text, with no quotes, no labels, no bullet points, and no extra commentary.`;
+
+const PROPERTY_NOTES_PROMPT_TEMPLATE = `You are helping a commercial property agent improve text for a property listing.
+
+Rewrite the following user-provided text into clear, well-structured, professional property notes suitable for an internal CRM or listing record.
+
+User text:
+"{{INPUT}}"
+
+Return ONLY the rewritten property notes text, with no quotes, no labels, no bullet points, and no extra commentary.`;
 
 interface GeneralDetailsFormData {
   building_name: string;
@@ -73,6 +113,8 @@ interface GeneralDetailsFormProps {
 
 const GeneralDetailsForm: React.FC<GeneralDetailsFormProps> = ({ onStepSubmitted, initialData, onDataChange, propertyData, hasExistingData = false, fetchPropertyData }) => {
 
+  type AiEnhancedField = 'invoice_details' | 'property_notes';
+
   const [formData, setFormData] = useState<GeneralDetailsFormData>(initialData || {
     building_name: '',
     property_type: '',
@@ -95,6 +137,7 @@ const GeneralDetailsForm: React.FC<GeneralDetailsFormProps> = ({ onStepSubmitted
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [aiGeneratingField, setAiGeneratingField] = useState<AiEnhancedField | null>(null);
   
   // Store original data for comparison
   const [originalData, setOriginalData] = useState<GeneralDetailsFormData | null>(null);
@@ -248,6 +291,42 @@ const GeneralDetailsForm: React.FC<GeneralDetailsFormProps> = ({ onStepSubmitted
       enqueueSnackbar(errorMessage, { variant: 'error' });
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleAiGenerateForField = async (field: AiEnhancedField) => {
+    const currentText = (formData[field] || '').trim();
+    if (!currentText || currentText.length < 10 || aiGeneratingField) {
+      return;
+    }
+
+    setAiGeneratingField(field);
+
+    try {
+      const template =
+        field === 'invoice_details'
+          ? INVOICE_DETAILS_PROMPT_TEMPLATE
+          : PROPERTY_NOTES_PROMPT_TEMPLATE;
+
+      const prompt = template.replace('{{INPUT}}', currentText);
+
+      const { data } = await axiosInstance.post<{ success?: boolean; reply: string }>(
+        '/api/aical/chat',
+        {
+          messages: [{ role: 'user', content: prompt }],
+        }
+      );
+
+      const reply = (data?.reply || '').trim();
+
+      if (reply) {
+        handleInputChange(field, reply);
+      }
+    } catch (error) {
+      console.error('AI enhancement error for field', field, error);
+      enqueueSnackbar('Could not enhance this text. Please try again.', { variant: 'error' });
+    } finally {
+      setAiGeneratingField(null);
     }
   };
 
@@ -532,30 +611,321 @@ const GeneralDetailsForm: React.FC<GeneralDetailsFormProps> = ({ onStepSubmitted
           </Typography>
         </Box>
 
-        {/* Invoice Details */}
-        <Box>
-          <TextField
-            value={formData.invoice_details || ''}
-            onChange={(e) => handleInputChange('invoice_details', e.target.value)}
-            label="Invoice Details"
-            fullWidth
-            multiline
-            rows={3}
-            placeholder="Enter invoice and billing information"
-          />
+        {/* Invoice Details — AI-enhanced shell design */}
+        <Box sx={{ position: 'relative', width: '100%' }}>
+          <Typography variant="subtitle2" sx={{ mb: 1, color: 'text.secondary', fontWeight: 500 }}>
+            Invoice Details
+          </Typography>
+          <Box
+            className="input-shell"
+            sx={{
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'stretch',
+              backgroundColor: '#fff',
+              borderRadius: 1,
+              border: '1.5px solid #d6d0c8',
+              overflow: 'hidden',
+              transition: 'border-color 0.3s, box-shadow 0.3s',
+              '&:focus-within': {
+                borderColor: '#b0a898',
+                boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
+              },
+              ...((formData.invoice_details || '').trim().length >= MIN_CHARS_FOR_AI && {
+                borderColor: '#1a1a1a',
+                boxShadow: '0 4px 32px rgba(0,0,0,0.12)',
+              }),
+            }}
+          >
+            <TextField
+              value={formData.invoice_details || ''}
+              onChange={(e) => handleInputChange('invoice_details', e.target.value)}
+              fullWidth
+              multiline
+              minRows={3}
+              maxRows={6}
+              placeholder="Enter invoice and billing information"
+              variant="outlined"
+              InputProps={{
+                sx: {
+                  border: 'none',
+                  '& fieldset': { display: 'none' },
+                  backgroundColor: '#fff',
+                  alignItems: 'flex-start',
+                  py: 1.5,
+                  px: 2,
+                  color: 'text.primary',
+                  '& .MuiInputBase-input': {
+                    py: 0,
+                    px: 0,
+                    '&::placeholder': { opacity: 1 },
+                  },
+                },
+                endAdornment: (
+                  <InputAdornment
+                    position="end"
+                    sx={{
+                      alignSelf: 'flex-end',
+                      mb: 1,
+                      mr: 1,
+                    }}
+                  >
+                    <IconButton
+                      size="small"
+                      onClick={() => handleAiGenerateForField('invoice_details')}
+                      disabled={aiGeneratingField === 'invoice_details'}
+                      title="Generate"
+                      sx={{
+                        width: 38,
+                        height: 38,
+                        borderRadius: '10px',
+                        bgcolor: '#1a1a1a',
+                        color: '#fff',
+                        opacity: (formData.invoice_details || '').trim().length >= MIN_CHARS_FOR_AI && aiGeneratingField !== 'invoice_details' ? 1 : 0,
+                        transform: (formData.invoice_details || '').trim().length >= MIN_CHARS_FOR_AI && aiGeneratingField !== 'invoice_details' ? 'scale(1)' : 'scale(0.5)',
+                        pointerEvents: (formData.invoice_details || '').trim().length >= MIN_CHARS_FOR_AI && aiGeneratingField !== 'invoice_details' ? 'auto' : 'none',
+                        transition: 'opacity 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s',
+                        '&:hover': { bgcolor: '#333' },
+                        '&:active': { transform: 'scale(0.93)' },
+                      }}
+                    >
+                      <WandIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              sx={{ flex: 1 }}
+            />
+            {/* Progress bar */}
+            <Box
+              sx={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                height: 2,
+                width: `${Math.min(((formData.invoice_details || '').length / MIN_CHARS_FOR_AI) * 100, 100)}%`,
+                bgcolor: '#1a1a1a',
+                borderRadius: '0 0 0 4px',
+                transition: 'width 0.2s ease, opacity 0.3s',
+                opacity: (formData.invoice_details || '').length > 0 ? 1 : 0,
+                zIndex: 3,
+              }}
+            />
+            {/* Loader overlay */}
+            <Box
+              sx={{
+                position: 'absolute',
+                inset: 0,
+                backgroundColor: '#fff',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 1.75,
+                opacity: aiGeneratingField === 'invoice_details' ? 1 : 0,
+                pointerEvents: aiGeneratingField === 'invoice_details' ? 'auto' : 'none',
+                transition: 'opacity 0.3s',
+                zIndex: 10,
+                borderRadius: 1,
+              }}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 0.5, height: 22 }}>
+                {[8, 14, 20, 14, 8].map((h, i) => (
+                  <Box
+                    key={i}
+                    sx={{
+                      width: 3,
+                      height: h,
+                      borderRadius: '3px',
+                      bgcolor: '#1a1a1a',
+                      animation: `${barBounceKeyframes} 0.9s ease-in-out infinite`,
+                      animationDelay: `${i * 0.12}s`,
+                    }}
+                  />
+                ))}
+              </Box>
+              <Typography
+                component="span"
+                sx={{
+                  fontSize: 12,
+                  color: '#888',
+                  letterSpacing: '0.08em',
+                  animation: `${labelPulseKeyframes} 1.4s ease-in-out infinite`,
+                }}
+              >
+                generating
+              </Typography>
+            </Box>
+          </Box>
+          <Typography
+            component="p"
+            sx={{
+              mt: 1.25,
+              pl: 0.5,
+              fontSize: 12,
+              color: (formData.invoice_details || '').trim().length >= MIN_CHARS_FOR_AI ? 'text.primary' : 'text.secondary',
+              letterSpacing: '0.04em',
+              transition: 'color 0.3s',
+            }}
+          >
+            {(formData.invoice_details || '').trim().length >= MIN_CHARS_FOR_AI
+              ? '✦ click the wand to generate'
+              : `${MIN_CHARS_FOR_AI - (formData.invoice_details || '').trim().length} more character${MIN_CHARS_FOR_AI - (formData.invoice_details || '').trim().length === 1 ? '' : 's'} to unlock`}
+          </Typography>
         </Box>
 
-        {/* Property Notes */}
-        <Box>
-          <TextField
-            value={formData.property_notes || ''}
-            onChange={(e) => handleInputChange('property_notes', e.target.value)}
-            label="Property Notes"
-            fullWidth
-            multiline
-            rows={4}
-            placeholder="Enter detailed property notes and additional information"
-          />
+        {/* Property Notes — AI-enhanced shell design */}
+        <Box sx={{ position: 'relative', width: '100%' }}>
+          <Typography variant="subtitle2" sx={{ mb: 1, color: 'text.secondary', fontWeight: 500 }}>
+            Property Notes
+          </Typography>
+          <Box
+            sx={{
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'stretch',
+              backgroundColor: '#fff',
+              borderRadius: 1,
+              border: '1.5px solid #d6d0c8',
+              overflow: 'hidden',
+              transition: 'border-color 0.3s, box-shadow 0.3s',
+              '&:focus-within': {
+                borderColor: '#b0a898',
+                boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
+              },
+              ...((formData.property_notes || '').trim().length >= MIN_CHARS_FOR_AI && {
+                borderColor: '#1a1a1a',
+                boxShadow: '0 4px 32px rgba(0,0,0,0.12)',
+              }),
+            }}
+          >
+            <TextField
+              value={formData.property_notes || ''}
+              onChange={(e) => handleInputChange('property_notes', e.target.value)}
+              fullWidth
+              multiline
+              minRows={4}
+              maxRows={8}
+              placeholder="Enter detailed property notes and additional information"
+              variant="outlined"
+              InputProps={{
+                sx: {
+                  border: 'none',
+                  '& fieldset': { display: 'none' },
+                  backgroundColor: '#fff',
+                  alignItems: 'flex-start',
+                  py: 1.5,
+                  px: 2,
+                  color: 'text.primary',
+                  '& .MuiInputBase-input': {
+                    py: 0,
+                    px: 0,
+                    '&::placeholder': { opacity: 1 },
+                  },
+                },
+                endAdornment: (
+                  <InputAdornment
+                    position="end"
+                    sx={{ alignSelf: 'flex-end', mb: 1, mr: 1 }}
+                  >
+                    <IconButton
+                      size="small"
+                      onClick={() => handleAiGenerateForField('property_notes')}
+                      disabled={aiGeneratingField === 'property_notes'}
+                      title="Generate"
+                      sx={{
+                        width: 38,
+                        height: 38,
+                        borderRadius: '10px',
+                        bgcolor: '#1a1a1a',
+                        color: '#fff',
+                        opacity: (formData.property_notes || '').trim().length >= MIN_CHARS_FOR_AI && aiGeneratingField !== 'property_notes' ? 1 : 0,
+                        transform: (formData.property_notes || '').trim().length >= MIN_CHARS_FOR_AI && aiGeneratingField !== 'property_notes' ? 'scale(1)' : 'scale(0.5)',
+                        pointerEvents: (formData.property_notes || '').trim().length >= MIN_CHARS_FOR_AI && aiGeneratingField !== 'property_notes' ? 'auto' : 'none',
+                        transition: 'opacity 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s',
+                        '&:hover': { bgcolor: '#333' },
+                        '&:active': { transform: 'scale(0.93)' },
+                      }}
+                    >
+                      <WandIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              sx={{ flex: 1 }}
+            />
+            <Box
+              sx={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                height: 2,
+                width: `${Math.min(((formData.property_notes || '').length / MIN_CHARS_FOR_AI) * 100, 100)}%`,
+                bgcolor: '#1a1a1a',
+                borderRadius: '0 0 0 4px',
+                transition: 'width 0.2s ease, opacity 0.3s',
+                opacity: (formData.property_notes || '').length > 0 ? 1 : 0,
+                zIndex: 3,
+              }}
+            />
+            <Box
+              sx={{
+                position: 'absolute',
+                inset: 0,
+                backgroundColor: '#fff',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 1.75,
+                opacity: aiGeneratingField === 'property_notes' ? 1 : 0,
+                pointerEvents: aiGeneratingField === 'property_notes' ? 'auto' : 'none',
+                transition: 'opacity 0.3s',
+                zIndex: 10,
+                borderRadius: 1,
+              }}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 0.5, height: 22 }}>
+                {[8, 14, 20, 14, 8].map((h, i) => (
+                  <Box
+                    key={i}
+                    sx={{
+                      width: 3,
+                      height: h,
+                      borderRadius: '3px',
+                      bgcolor: '#1a1a1a',
+                      animation: `${barBounceKeyframes} 0.9s ease-in-out infinite`,
+                      animationDelay: `${i * 0.12}s`,
+                    }}
+                  />
+                ))}
+              </Box>
+              <Typography
+                component="span"
+                sx={{
+                  fontSize: 12,
+                  color: '#888',
+                  letterSpacing: '0.08em',
+                  animation: `${labelPulseKeyframes} 1.4s ease-in-out infinite`,
+                }}
+              >
+                generating
+              </Typography>
+            </Box>
+          </Box>
+          <Typography
+            component="p"
+            sx={{
+              mt: 1.25,
+              pl: 0.5,
+              fontSize: 12,
+              color: (formData.property_notes || '').trim().length >= MIN_CHARS_FOR_AI ? 'text.primary' : 'text.secondary',
+              letterSpacing: '0.04em',
+              transition: 'color 0.3s',
+            }}
+          >
+            {(formData.property_notes || '').trim().length >= MIN_CHARS_FOR_AI
+              ? '✦ click the wand to generate'
+              : `${MIN_CHARS_FOR_AI - (formData.property_notes || '').trim().length} more character${MIN_CHARS_FOR_AI - (formData.property_notes || '').trim().length === 1 ? '' : 's'} to unlock`}
+          </Typography>
         </Box>
 
         {/* Submit Button */}

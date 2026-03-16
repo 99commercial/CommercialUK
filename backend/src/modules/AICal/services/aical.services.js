@@ -252,6 +252,50 @@ class AICalService {
   }
 
   /**
+   * Delete multiple commercial properties by an array of IDs
+   * @param {Array<string>} propertyIds - Array of commercial property IDs
+   * @returns {Promise<Object>} Bulk deletion result
+   */
+  async deleteMultipleCommercialProperties(propertyIds) {
+    try {
+      if (!Array.isArray(propertyIds)) {
+        const error = new Error('Request body must be an array of IDs');
+        error.statusCode = 400;
+        throw error;
+      }
+
+      if (propertyIds.length === 0) {
+        const error = new Error('IDs array cannot be empty');
+        error.statusCode = 400;
+        throw error;
+      }
+
+      const result = await this.CommercialProperty.deleteMany({
+        _id: { $in: propertyIds },
+      });
+
+      return {
+        success: true,
+        data: {
+          deletedCount: result.deletedCount || 0,
+        },
+        message: `${result.deletedCount || 0} commercial property/properties deleted successfully`,
+      };
+    } catch (error) {
+      if (error.statusCode) {
+        throw error;
+      }
+      // Handle invalid ObjectId formats inside the array
+      if (error.name === 'CastError') {
+        const castError = new Error('One or more provided commercial property IDs are invalid');
+        castError.statusCode = 400;
+        throw castError;
+      }
+      throw error;
+    }
+  }
+
+  /**
    * Get commercial places by postcode
    * @param {string} postcode - Postcode
    * @returns {Promise<Object>} Commercial places object
@@ -1260,6 +1304,79 @@ class AICalService {
         throw castError;
       }
       throw error;
+    }
+  }
+
+  /**
+   * Lightweight general-purpose chat assistant for the Live page.
+   * Proxies chat messages to OpenRouter so the API key never leaves the backend.
+   * @param {Array<{ role: string, content: string }>} messages - Chat history from the client
+   * @returns {Promise<{ success: boolean, reply: string }>}
+   */
+  async chatAssistant(messages = []) {
+    try {
+      const openRouterUrl = `${OPENROUTER_URL}`;
+
+      // Ensure we always have at least one user message
+      const sanitizedMessages = Array.isArray(messages) ? messages : [];
+      if (
+        sanitizedMessages.length === 0 ||
+        typeof sanitizedMessages[sanitizedMessages.length - 1]?.content !== 'string'
+      ) {
+        const error = new Error('A non-empty user message is required');
+        error.statusCode = 400;
+        throw error;
+      }
+
+      // Basic safety: trim overly long content on the backend side
+      const trimmedMessages = sanitizedMessages.map((m) => ({
+        role: m.role === 'assistant' ? 'assistant' : 'user',
+        content: String(m.content).slice(0, 4000),
+      }));
+
+      const response = await axios.post(
+        openRouterUrl,
+        {
+          model: 'openai/gpt-4o-mini',
+          messages: [
+            {
+              role: 'system',
+              content:
+                'You are the CommercialUK AI assistant on the live page. ' +
+                'Answer concisely and helpfully about commercial property in the UK, the CommercialUK platform, listings, agents, and general user questions. ' +
+                'If a question is unrelated to property or the platform, answer briefly and steer the user back to property-related help.',
+            },
+            ...trimmedMessages,
+          ],
+          temperature: 0.5,
+          max_tokens: 600,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${OPENROUTERAPIKEY}`,
+            'HTTP-Referer': 'https://commercialuk.co.uk',
+            'X-Title': 'Commercial UK Live Chat',
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      const reply =
+        response.data?.choices?.[0]?.message?.content ||
+        'Sorry, I was unable to generate a response. Please try again.';
+
+      return {
+        success: true,
+        reply,
+      };
+    } catch (error) {
+      console.error('Error in chatAssistant:', error.response?.data || error.message || error);
+      if (error.statusCode) {
+        throw error;
+      }
+      const wrapped = new Error('Failed to get a response from the AI assistant');
+      wrapped.statusCode = 502;
+      throw wrapped;
     }
   }
 

@@ -33,6 +33,30 @@ type PagesPageConfig = {
   handler satisfies PagesPageConfig
 }
 
+// Validate ../../src/pages/CommercialUK-vs-NovaLoca-Commercial.tsx
+{
+  const handler = {} as typeof import("../../src/pages/CommercialUK-vs-NovaLoca-Commercial.js")
+  handler satisfies PagesPageConfig
+}
+
+// Validate ../../src/pages/CommercialUK-vs-Rightmove-commercial.tsx
+{
+  const handler = {} as typeof import("../../src/pages/CommercialUK-vs-Rightmove-commercial.js")
+  handler satisfies PagesPageConfig
+}
+
+// Validate ../../src/pages/CommercialUK-vs-Zoopla-Commercial.tsx
+{
+  const handler = {} as typeof import("../../src/pages/CommercialUK-vs-Zoopla-Commercial.js")
+  handler satisfies PagesPageConfig
+}
+
+// Validate ../../src/pages/CommercialUK-vs-loopnet.tsx
+{
+  const handler = {} as typeof import("../../src/pages/CommercialUK-vs-loopnet.js")
+  handler satisfies PagesPageConfig
+}
+
 // Validate ../../src/pages/_app.tsx
 {
   const handler = {} as typeof import("../../src/pages/_app.js")
@@ -246,6 +270,12 @@ type PagesPageConfig = {
 // Validate ../../src/pages/faqs.tsx
 {
   const handler = {} as typeof import("../../src/pages/faqs.js")
+  handler satisfies PagesPageConfig
+}
+
+// Validate ../../src/pages/for-commercial-agents.tsx
+{
+  const handler = {} as typeof import("../../src/pages/for-commercial-agents.js")
   handler satisfies PagesPageConfig
 }
 

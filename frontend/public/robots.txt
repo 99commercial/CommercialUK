@@ -1,0 +1,6 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Sitemap (update base URL if your domain differs)
+Sitemap: https://www.commercialuk.co.uk/sitemap.xml

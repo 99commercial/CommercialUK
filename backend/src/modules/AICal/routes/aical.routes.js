@@ -80,6 +80,18 @@ router.delete(
 );
 
 /**
+ * @route   POST /api/aical/commercial-properties/delete-bulk
+ * @desc    Delete multiple commercial properties from an array of objects containing _id
+ * @access  Public
+ */
+router.post(
+  '/commercial-properties/delete-bulk',
+  authenticate,
+  authorize(['admin']),
+  aicalController.deleteMultipleCommercialProperties.bind(aicalController)
+);
+
+/**
  * @route   GET /api/aical/commercial-places
  * @desc    Get commercial places by postcode
  * @access  Public
@@ -149,6 +161,16 @@ router.get(
 router.get(
   '/business-rates',
   aicalController.getBusinessRates.bind(aicalController)
+);
+
+/**
+ * @route   POST /api/aical/chat
+ * @desc    Lightweight AI chat endpoint for the Live page chatbot
+ * @access  Public
+ */
+router.post(
+  '/chat',
+  aicalController.chatAssistant.bind(aicalController)
 );
 
 export default router;
