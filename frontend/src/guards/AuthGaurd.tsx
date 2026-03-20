@@ -27,15 +27,34 @@ export default function AuthGuard({ children }: AuthGuardProps) {
           return;
         }
 
-        // Wait for router to be ready
+        // Use asPath/pathname for early route check (available before isReady)
+        const currentPath = router.asPath || router.pathname || '';
+        const pathnameOnly = currentPath.split('?')[0];
+        const isProtectedRoute =
+          pathnameOnly.includes('/agent') ||
+          pathnameOnly.includes('/user') ||
+          pathnameOnly.includes('/admin');
+        const isAuthRoute =
+          pathnameOnly.includes('/auth/login') ||
+          pathnameOnly.includes('/auth/register') ||
+          pathnameOnly.includes('/auth/forget-password') ||
+          pathnameOnly.includes('/auth/reset-password') ||
+          pathnameOnly.includes('/auth/verify-email');
+
+        // When router isn't ready yet: allow public routes immediately so they don't stay on loader
+        // (fixes stuck loader on /property/[id] etc. in production where isReady can be delayed)
         if (!router.isReady) {
+          if (!isProtectedRoute && !isAuthRoute) {
+            setHasAccess(true);
+            setIsLoading(false);
+            clearTimeout(timeout);
+          }
           return;
         }
 
         // Get user and accessToken from localStorage
         const userString = localStorage.getItem('user');
         const accessToken = localStorage.getItem('accessToken');
-        const currentPath = router.asPath;
 
         // Parse user data if exists
         let userData = null;

@@ -11,7 +11,8 @@
     "dev": "nodemon server.js",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "seed": "node src/seeders/index.js"
+    "seed": "node src/seeders/index.js",
+    "loadtest": "k6 run src/Load-tests/loadtests.js"
   },
   "dependencies": {
     "axios": "^1.11.0",

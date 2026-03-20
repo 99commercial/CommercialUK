@@ -337,22 +337,20 @@ const PropertiesTable: React.FC = () => {
   const handleDeleteConfirm = async () => {
     if (selectedProperty) {
       try {
-        let res = await axiosInstance.delete(`/api/user/properties/${selectedProperty._id}`);
-        await fetchProperties(); // Refresh the list
-
-        enqueueSnackbar(res.data.message, {
+        const res = await axiosInstance.delete(`/api/user/properties/${selectedProperty._id}`);
+        await fetchProperties();
+        enqueueSnackbar(res.data?.message ?? 'Property deleted successfully', {
           variant: 'success'
         });
-
         setDeleteDialogOpen(false);
         setSelectedProperty(null);
       } catch (err: any) {
         setError(err.message || 'Failed to delete property');
-        enqueueSnackbar(err.message || 'Failed to delete property', {
+        enqueueSnackbar(err.response?.data?.message || err.message || 'Failed to delete property', {
           variant: 'error'
         });
       }
-    } 
+    }
   };
 
   const handleDeleteCancel = () => {

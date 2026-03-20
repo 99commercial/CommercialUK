@@ -17,9 +17,37 @@ import {
   Alert,
   CircularProgress,
 } from '@mui/material';
+import { keyframes } from '@emotion/react';
 import { Add, Delete, Save } from '@mui/icons-material';
 import axiosInstance from '../../../utils/axios';
 import { enqueueSnackbar } from 'notistack';
+
+const MIN_CHARS_FOR_AI = 10;
+
+const barBounceKeyframes = keyframes`
+  0%, 100% { transform: scaleY(1); opacity: 0.25; }
+  50% { transform: scaleY(1.9); opacity: 1; }
+`;
+
+const labelPulseKeyframes = keyframes`
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+`;
+
+const WandIcon = () => (
+  <svg viewBox="0 0 24 24" width={17} height={17} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+    <path d="M15 4l5 5L8 21l-5-1 1-5L15 4z" />
+    <path d="M20 7l-3-3" />
+  </svg>
+);
+
+const DESCRIPTION_PROMPT_TEMPLATES: Record<string, string> = {
+  general: `You are helping a commercial property agent improve text for a property listing. Rewrite the following into a clear, professional general description suitable for a commercial property listing. User text: "{{INPUT}}" Return ONLY the rewritten text, no quotes, labels, or commentary.`,
+  location: `You are helping a commercial property agent improve text for a property listing. Rewrite the following into a clear, professional location description. User text: "{{INPUT}}" Return ONLY the rewritten text, no quotes, labels, or commentary.`,
+  accommodation: `You are helping a commercial property agent improve text for a property listing. Rewrite the following into a clear, professional accommodation description. User text: "{{INPUT}}" Return ONLY the rewritten text, no quotes, labels, or commentary.`,
+  terms: `You are helping a commercial property agent improve text for a property listing. Rewrite the following into clear, professional terms and conditions description. User text: "{{INPUT}}" Return ONLY the rewritten text, no quotes, labels, or commentary.`,
+  specifications: `You are helping a commercial property agent improve text for a property listing. Rewrite the following into clear, professional technical specifications. User text: "{{INPUT}}" Return ONLY the rewritten text, no quotes, labels, or commentary.`,
+};
 
 const saleTypes = [
   'Freehold',
@@ -91,6 +119,8 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  type DescriptionFieldKey = 'general' | 'location' | 'accommodation' | 'terms' | 'specifications';
+  const [aiGeneratingField, setAiGeneratingField] = useState<DescriptionFieldKey | null>(null);
   
   // Store original data for comparison
   const [originalData, setOriginalData] = useState<BusinessDetailsFormData | null>(null);
@@ -236,6 +266,29 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
     const finalValue = parts.length > 2 ? parts[0] + '.' + parts.slice(1).join('') : numericValue;
     
     handleSaleTypeChange(index, field, finalValue === '' ? '' : finalValue);
+  };
+
+  const handleAiGenerateForField = async (field: DescriptionFieldKey) => {
+    const key = `descriptions.${field}` as const;
+    const currentText = (formData.descriptions?.[field] || '').trim();
+    if (!currentText || currentText.length < MIN_CHARS_FOR_AI || aiGeneratingField) return;
+
+    setAiGeneratingField(field);
+    try {
+      const template = DESCRIPTION_PROMPT_TEMPLATES[field] || DESCRIPTION_PROMPT_TEMPLATES.general;
+      const prompt = template.replace('{{INPUT}}', currentText);
+      const { data } = await axiosInstance.post<{ success?: boolean; reply: string }>(
+        '/api/aical/chat',
+        { messages: [{ role: 'user', content: prompt }] }
+      );
+      const reply = (data?.reply || '').trim();
+      if (reply) handleInputChange(key, reply);
+    } catch (error) {
+      console.error('AI enhancement error for field', field, error);
+      enqueueSnackbar('Could not enhance this text. Please try again.', { variant: 'error' });
+    } finally {
+      setAiGeneratingField(null);
+    }
   };
 
   // Get field error (backend validation errors)
@@ -858,91 +911,192 @@ const BusinessDetailsForm: React.FC<BusinessDetailsFormProps> = ({ onStepSubmitt
           <Divider sx={{ my: 2 }} />
         </Box>
 
-        {/* Descriptions Section */}
+        {/* Descriptions Section — AI-enhanced shell design */}
         <Box>
           <Typography variant="h6" gutterBottom>
             Property Descriptions
           </Typography>
         </Box>
 
-        <Box>
-          <TextField
-            value={formData.descriptions?.general || ''}
-            onChange={(e) => handleInputChange('descriptions.general', e.target.value)}
-            label="General Description *"
-            fullWidth
-            multiline
-            rows={4}
-            required
-            placeholder="Provide a comprehensive general description of the property..."
-            error={!!getFieldError('descriptions.general')}
-            helperText={getFieldError('descriptions.general') || `${formData.descriptions?.general?.length || 0}/2000 characters (min: 50)`}
-          />
-        </Box>
-
-        <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap' }}>
-          <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
-            <TextField
-              value={formData.descriptions?.location || ''}
-              onChange={(e) => handleInputChange('descriptions.location', e.target.value)}
-              label="Location Description *"
-              fullWidth
-              multiline
-              rows={3}
-              required
-              placeholder="Describe the location and surrounding area..."
-              error={!!getFieldError('descriptions.location')}
-              helperText={getFieldError('descriptions.location') || `${formData.descriptions?.location?.length || 0}/1000 characters (min: 20)`}
-            />
+        {/* Descriptions: General full width; then two rows of two */}
+        {([['general'], ['location', 'accommodation'], ['terms', 'specifications']] as const).map((row) => (
+          <Box key={row[0]} sx={{ display: 'flex', gap: 3, flexWrap: 'wrap', mb: 3 }}>
+            {row.map((field) => {
+              const value = formData.descriptions?.[field] || '';
+              const fieldConfig = {
+                general: { label: 'General Description *', placeholder: 'Provide a comprehensive general description of the property...', minRows: 4, maxRows: 6 },
+                location: { label: 'Location Description *', placeholder: 'Describe the location and surrounding area...', minRows: 3, maxRows: 6 },
+                accommodation: { label: 'Accommodation Description *', placeholder: 'Describe the accommodation and layout...', minRows: 3, maxRows: 6 },
+                terms: { label: 'Terms Description *', placeholder: 'Describe the terms and conditions...', minRows: 3, maxRows: 6 },
+                specifications: { label: 'Specifications Description *', placeholder: 'Describe the technical specifications...', minRows: 3, maxRows: 6 },
+              }[field];
+              const errorMsg = getFieldError(`descriptions.${field}`);
+              return (
+                <Box
+                  key={field}
+                  sx={{
+                    position: 'relative',
+                    width: '100%',
+                    ...(field === 'general' ? { flexBasis: '100%' } : { flex: '1 1 300px', minWidth: '300px' }),
+                  }}
+                >
+                  <Typography variant="subtitle2" sx={{ mb: 1, color: 'text.secondary', fontWeight: 500 }}>
+                    {fieldConfig.label}
+                  </Typography>
+                  <Box
+                    className="input-shell"
+                    sx={{
+                      position: 'relative',
+                      display: 'flex',
+                      alignItems: 'stretch',
+                      backgroundColor: '#fff',
+                      borderRadius: 1,
+                      border: '1.5px solid #d6d0c8',
+                      overflow: 'hidden',
+                      transition: 'border-color 0.3s, box-shadow 0.3s',
+                      ...(errorMsg && { borderColor: 'error.main', boxShadow: '0 0 0 1px' }),
+                      '&:focus-within': {
+                        borderColor: errorMsg ? 'error.main' : '#b0a898',
+                        boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
+                      },
+                      ...(value.trim().length >= MIN_CHARS_FOR_AI && !errorMsg && {
+                        borderColor: '#1a1a1a',
+                        boxShadow: '0 4px 32px rgba(0,0,0,0.12)',
+                      }),
+                    }}
+                  >
+                    <TextField
+                      value={value}
+                      onChange={(e) => handleInputChange(`descriptions.${field}`, e.target.value)}
+                      fullWidth
+                      multiline
+                      minRows={fieldConfig.minRows}
+                      maxRows={fieldConfig.maxRows}
+                      placeholder={fieldConfig.placeholder}
+                      variant="outlined"
+                      required
+                      InputProps={{
+                        sx: {
+                          border: 'none',
+                          '& fieldset': { display: 'none' },
+                          backgroundColor: '#fff',
+                          alignItems: 'flex-start',
+                          py: 1.5,
+                          px: 2,
+                          color: 'text.primary',
+                          '& .MuiInputBase-input': { py: 0, px: 0, '&::placeholder': { opacity: 1 } },
+                        },
+                        endAdornment: (
+                          <InputAdornment position="end" sx={{ alignSelf: 'flex-end', mb: 1, mr: 1 }}>
+                            <IconButton
+                              size="small"
+                              onClick={() => handleAiGenerateForField(field)}
+                              disabled={aiGeneratingField === field}
+                              title="Generate"
+                              sx={{
+                                width: 38,
+                                height: 38,
+                                borderRadius: '10px',
+                                bgcolor: '#1a1a1a',
+                                color: '#fff',
+                                opacity: value.trim().length >= MIN_CHARS_FOR_AI && aiGeneratingField !== field ? 1 : 0,
+                                transform: value.trim().length >= MIN_CHARS_FOR_AI && aiGeneratingField !== field ? 'scale(1)' : 'scale(0.5)',
+                                pointerEvents: value.trim().length >= MIN_CHARS_FOR_AI && aiGeneratingField !== field ? 'auto' : 'none',
+                                transition: 'opacity 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s',
+                                '&:hover': { bgcolor: '#333' },
+                                '&:active': { transform: 'scale(0.93)' },
+                              }}
+                            >
+                              <WandIcon />
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                      sx={{ flex: 1 }}
+                    />
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 0,
+                        height: 2,
+                        width: `${Math.min((value.length / MIN_CHARS_FOR_AI) * 100, 100)}%`,
+                        bgcolor: '#1a1a1a',
+                        borderRadius: '0 0 0 4px',
+                        transition: 'width 0.2s ease, opacity 0.3s',
+                        opacity: value.length > 0 ? 1 : 0,
+                        zIndex: 3,
+                      }}
+                    />
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        inset: 0,
+                        backgroundColor: '#fff',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: 1.75,
+                        opacity: aiGeneratingField === field ? 1 : 0,
+                        pointerEvents: aiGeneratingField === field ? 'auto' : 'none',
+                        transition: 'opacity 0.3s',
+                        zIndex: 10,
+                        borderRadius: 1,
+                      }}
+                    >
+                      <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 0.5, height: 22 }}>
+                        {[8, 14, 20, 14, 8].map((h, i) => (
+                          <Box
+                            key={i}
+                            sx={{
+                              width: 3,
+                              height: h,
+                              borderRadius: '3px',
+                              bgcolor: '#1a1a1a',
+                              animation: `${barBounceKeyframes} 0.9s ease-in-out infinite`,
+                              animationDelay: `${i * 0.12}s`,
+                            }}
+                          />
+                        ))}
+                      </Box>
+                      <Typography
+                        component="span"
+                        sx={{
+                          fontSize: 12,
+                          color: '#888',
+                          letterSpacing: '0.08em',
+                          animation: `${labelPulseKeyframes} 1.4s ease-in-out infinite`,
+                        }}
+                      >
+                        generating
+                      </Typography>
+                    </Box>
+                  </Box>
+                  <Typography
+                    component="p"
+                    sx={{
+                      mt: 1.25,
+                      pl: 0.5,
+                      fontSize: 12,
+                      color: value.trim().length >= MIN_CHARS_FOR_AI ? 'text.primary' : 'text.secondary',
+                      letterSpacing: '0.04em',
+                      transition: 'color 0.3s',
+                    }}
+                  >
+                    {value.trim().length >= MIN_CHARS_FOR_AI
+                      ? '✦ click the wand to generate'
+                      : `${MIN_CHARS_FOR_AI - value.trim().length} more character${MIN_CHARS_FOR_AI - value.trim().length === 1 ? '' : 's'} to unlock`}
+                  </Typography>
+                  {errorMsg && (
+                    <Typography variant="caption" color="error" sx={{ display: 'block', mt: 0.5, pl: 0.5 }}>
+                      {errorMsg}
+                    </Typography>
+                  )}
+                </Box>
+              );
+            })}
           </Box>
-
-          <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
-            <TextField
-              value={formData.descriptions?.accommodation || ''}
-              onChange={(e) => handleInputChange('descriptions.accommodation', e.target.value)}
-              label="Accommodation Description *"
-              fullWidth
-              multiline
-              rows={3}
-              required
-              placeholder="Describe the accommodation and layout..."
-              error={!!getFieldError('descriptions.accommodation')}
-              helperText={getFieldError('descriptions.accommodation') || `${formData.descriptions?.accommodation?.length || 0}/1000 characters (min: 20)`}
-            />
-          </Box>
-        </Box>
-
-        <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap' }}>
-          <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
-            <TextField
-              value={formData.descriptions?.terms || ''}
-              onChange={(e) => handleInputChange('descriptions.terms', e.target.value)}
-              label="Terms Description *"
-              fullWidth
-              multiline
-              required
-              rows={3}
-              placeholder="Describe the terms and conditions..."
-              error={!!getFieldError('descriptions.terms')}
-              helperText={getFieldError('descriptions.terms') || `${formData.descriptions?.terms?.length || 0}/1000 characters (min: 20)`}
-            />
-          </Box>
-
-          <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
-            <TextField
-              value={formData.descriptions?.specifications || ''}
-              onChange={(e) => handleInputChange('descriptions.specifications', e.target.value)}
-              label="Specifications Description *"
-              fullWidth
-              multiline
-              rows={3}
-              required
-              placeholder="Describe the technical specifications..."
-              error={!!getFieldError('descriptions.specifications')}
-              helperText={getFieldError('descriptions.specifications') || `${formData.descriptions?.specifications?.length || 0}/1000 characters (min: 20)`}
-            />
-          </Box>
-        </Box>
+        ))}
 
         <Box>
           <Divider sx={{ my: 2 }} />

@@ -395,4 +395,46 @@ export class emailService {
       throw error;
     }
   }
+
+  /**
+   * Send pre-registration email to CommercialUK admin mailbox.
+   * @param {string} name - Applicant name
+   * @param {string} email - Applicant email address
+   * @param {string} phone - Applicant phone number
+   * @param {string} address - Applicant address
+   * @param {'user'|'agent'} role - Applicant role (user or agent)
+   */
+  async sendPreRegisterEmail(name, email, phone, address, role = 'user') {
+    try {
+      const recipientEmail = 'info@commercialuk.co.uk';
+
+      const mailOptions = {
+        from: `"CommercialUK" <noreply@commercialuk.co.uk>`,
+        to: recipientEmail,
+        subject: 'New Pre-Registration Request - CommercialUK',
+        template: 'preregister',
+        context: {
+          recipientEmail,
+          name,
+          applicantEmail: email,
+          phone,
+          address,
+          role,
+          frontendUrl: FRONTEND_URL,
+        },
+      };
+
+      const sendPromise = this.transporter.sendMail(mailOptions);
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Email send timeout')), 30000);
+      });
+
+      const result = await Promise.race([sendPromise, timeoutPromise]);
+      console.log('✅ Pre-registration email sent successfully:', result.messageId);
+      return result;
+    } catch (error) {
+      console.error('❌ Error sending pre-registration email:', error);
+      throw error;
+    }
+  }
 }

@@ -15,6 +15,7 @@ import userRoutes from './src/modules/User/Property/routes/user.routes.js';
 import userAccountRoutes from './src/modules/User/Account/routes/account.routes.js';
 import adminRoutes from './src/modules/admin/Features/routes/features.routes.js';
 import userActivityRoutes from './src/modules/admin/User Activity/routes/user_activity.routes.js';
+import preregisterRoutes from './src/modules/admin/PreRegister/routes/preregister.routes.js';
 import feedRoutes from './src/modules/Feed/routes/feed.routes.js';
 import aicalRoutes from './src/modules/AICal/routes/aical.routes.js';
 import paymentRoutes from './src/modules/payment/routes/payment.routes.js';
@@ -111,6 +112,9 @@ app.use('/api/user', userRoutes);
 
 // User account routes
 app.use('/api/user', userAccountRoutes);
+
+// Public pre-register route (no admin authentication)
+app.use('/api/admin/preregister', preregisterRoutes);
 
 // Admin routes
 app.use('/api/admin', adminRoutes);

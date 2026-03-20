@@ -16,12 +16,40 @@ import {
   FormControlLabel,
   Alert,
   InputAdornment,
+  IconButton,
   CircularProgress,
 } from '@mui/material';
+import { keyframes } from '@emotion/react';
 import { LocationOn, MyLocation, Map, Save } from '@mui/icons-material';
 import { useFormContext } from 'react-hook-form';
 import axiosInstance from '../../../utils/axios';
 import { enqueueSnackbar } from 'notistack';
+
+const MIN_CHARS_FOR_AI = 10;
+
+const barBounceKeyframes = keyframes`
+  0%, 100% { transform: scaleY(1); opacity: 0.25; }
+  50% { transform: scaleY(1.9); opacity: 1; }
+`;
+
+const labelPulseKeyframes = keyframes`
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+`;
+
+const WandIcon = () => (
+  <svg viewBox="0 0 24 24" width={17} height={17} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+    <path d="M15 4l5 5L8 21l-5-1 1-5L15 4z" />
+    <path d="M20 7l-3-3" />
+  </svg>
+);
+
+const VERIFICATION_NOTES_PROMPT_TEMPLATE = `You are helping a commercial property agent improve text for location verification notes. Rewrite the following into clear, professional verification notes suitable for a property listing.
+
+User text:
+"{{INPUT}}"
+
+Return ONLY the rewritten verification notes text, with no quotes, no labels, no bullet points, and no extra commentary.`;
 
 const mapTypes = [
   'roadmap',
@@ -94,6 +122,7 @@ const LocationDetailsForm: React.FC<LocationDetailsFormProps> = ({ onStepSubmitt
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [originalData, setOriginalData] = useState<LocationDetailsFormData | null>(null);
+  const [aiGeneratingField, setAiGeneratingField] = useState<'verification_notes' | null>(null);
   const lastPropertyIdRef = React.useRef<string | null>(null);
   const hasInitializedRef = React.useRef<boolean>(false);
   const [formData, setFormData] = useState<LocationDetailsFormData>({
@@ -517,6 +546,29 @@ const LocationDetailsForm: React.FC<LocationDetailsFormProps> = ({ onStepSubmitt
     }
     
     return cleanedData;
+  };
+
+  const handleAiGenerateForVerificationNotes = async () => {
+    const currentText = (formData.verification_notes || '').trim();
+    if (!currentText || currentText.length < MIN_CHARS_FOR_AI || aiGeneratingField) return;
+
+    setAiGeneratingField('verification_notes');
+    try {
+      const prompt = VERIFICATION_NOTES_PROMPT_TEMPLATE.replace('{{INPUT}}', currentText);
+      const { data } = await axiosInstance.post<{ success?: boolean; reply: string }>(
+        '/api/aical/chat',
+        { messages: [{ role: 'user', content: prompt }] }
+      );
+      const reply = (data?.reply || '').trim();
+      if (reply) {
+        setFormData(prev => ({ ...prev, verification_notes: reply }));
+      }
+    } catch (error) {
+      console.error('AI enhancement error for verification_notes', error);
+      enqueueSnackbar('Could not enhance this text. Please try again.', { variant: 'error' });
+    } finally {
+      setAiGeneratingField(null);
+    }
   };
 
   const handleSave = async () => {
@@ -1157,21 +1209,152 @@ const LocationDetailsForm: React.FC<LocationDetailsFormProps> = ({ onStepSubmitt
                 </Box>
 
                 {formData.location_verified && (
-                  <Box>
-                    <TextField
-                      label="Verification Notes"
-                      fullWidth
-                      multiline
-                      rows={2}
-                      value={formData.verification_notes || ''}
-                      placeholder="Enter any notes about location verification"
-                      onChange={(e) => {
-                        setFormData(prev => ({
-                          ...prev,
-                          verification_notes: e.target.value
-                        }));
+                  <Box sx={{ position: 'relative', width: '100%' }}>
+                    <Typography variant="subtitle2" sx={{ mb: 1, color: 'text.secondary', fontWeight: 500 }}>
+                      Verification Notes
+                    </Typography>
+                    <Box
+                      className="input-shell"
+                      sx={{
+                        position: 'relative',
+                        display: 'flex',
+                        alignItems: 'stretch',
+                        backgroundColor: '#fff',
+                        borderRadius: 1,
+                        border: '1.5px solid #d6d0c8',
+                        overflow: 'hidden',
+                        transition: 'border-color 0.3s, box-shadow 0.3s',
+                        '&:focus-within': {
+                          borderColor: '#b0a898',
+                          boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
+                        },
+                        ...((formData.verification_notes || '').trim().length >= MIN_CHARS_FOR_AI && {
+                          borderColor: '#1a1a1a',
+                          boxShadow: '0 4px 32px rgba(0,0,0,0.12)',
+                        }),
                       }}
-                    />
+                    >
+                      <TextField
+                        value={formData.verification_notes || ''}
+                        onChange={(e) => setFormData(prev => ({ ...prev, verification_notes: e.target.value }))}
+                        fullWidth
+                        multiline
+                        minRows={2}
+                        maxRows={6}
+                        placeholder="Enter any notes about location verification"
+                        variant="outlined"
+                        InputProps={{
+                          sx: {
+                            border: 'none',
+                            '& fieldset': { display: 'none' },
+                            backgroundColor: '#fff',
+                            alignItems: 'flex-start',
+                            py: 1.5,
+                            px: 2,
+                            color: 'text.primary',
+                            '& .MuiInputBase-input': { py: 0, px: 0, '&::placeholder': { opacity: 1 } },
+                          },
+                          endAdornment: (
+                            <InputAdornment position="end" sx={{ alignSelf: 'flex-end', mb: 1, mr: 1 }}>
+                              <IconButton
+                                size="small"
+                                onClick={handleAiGenerateForVerificationNotes}
+                                disabled={aiGeneratingField === 'verification_notes'}
+                                title="Generate"
+                                sx={{
+                                  width: 38,
+                                  height: 38,
+                                  borderRadius: '10px',
+                                  bgcolor: '#1a1a1a',
+                                  color: '#fff',
+                                  opacity: (formData.verification_notes || '').trim().length >= MIN_CHARS_FOR_AI && aiGeneratingField !== 'verification_notes' ? 1 : 0,
+                                  transform: (formData.verification_notes || '').trim().length >= MIN_CHARS_FOR_AI && aiGeneratingField !== 'verification_notes' ? 'scale(1)' : 'scale(0.5)',
+                                  pointerEvents: (formData.verification_notes || '').trim().length >= MIN_CHARS_FOR_AI && aiGeneratingField !== 'verification_notes' ? 'auto' : 'none',
+                                  transition: 'opacity 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s',
+                                  '&:hover': { bgcolor: '#333' },
+                                  '&:active': { transform: 'scale(0.93)' },
+                                }}
+                              >
+                                <WandIcon />
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                        sx={{ flex: 1 }}
+                      />
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          bottom: 0,
+                          left: 0,
+                          height: 2,
+                          width: `${Math.min(((formData.verification_notes || '').length / MIN_CHARS_FOR_AI) * 100, 100)}%`,
+                          bgcolor: '#1a1a1a',
+                          borderRadius: '0 0 0 4px',
+                          transition: 'width 0.2s ease, opacity 0.3s',
+                          opacity: (formData.verification_notes || '').length > 0 ? 1 : 0,
+                          zIndex: 3,
+                        }}
+                      />
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          inset: 0,
+                          backgroundColor: '#fff',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: 1.75,
+                          opacity: aiGeneratingField === 'verification_notes' ? 1 : 0,
+                          pointerEvents: aiGeneratingField === 'verification_notes' ? 'auto' : 'none',
+                          transition: 'opacity 0.3s',
+                          zIndex: 10,
+                          borderRadius: 1,
+                        }}
+                      >
+                        <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 0.5, height: 22 }}>
+                          {[8, 14, 20, 14, 8].map((h, i) => (
+                            <Box
+                              key={i}
+                              sx={{
+                                width: 3,
+                                height: h,
+                                borderRadius: '3px',
+                                bgcolor: '#1a1a1a',
+                                animation: `${barBounceKeyframes} 0.9s ease-in-out infinite`,
+                                animationDelay: `${i * 0.12}s`,
+                              }}
+                            />
+                          ))}
+                        </Box>
+                        <Typography
+                          component="span"
+                          sx={{
+                            fontSize: 12,
+                            color: '#888',
+                            letterSpacing: '0.08em',
+                            animation: `${labelPulseKeyframes} 1.4s ease-in-out infinite`,
+                          }}
+                        >
+                          generating
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <Typography
+                      component="p"
+                      sx={{
+                        mt: 1.25,
+                        pl: 0.5,
+                        fontSize: 12,
+                        color: (formData.verification_notes || '').trim().length >= MIN_CHARS_FOR_AI ? 'text.primary' : 'text.secondary',
+                        letterSpacing: '0.04em',
+                        transition: 'color 0.3s',
+                      }}
+                    >
+                      {(formData.verification_notes || '').trim().length >= MIN_CHARS_FOR_AI
+                        ? '✦ click the wand to generate'
+                        : `${MIN_CHARS_FOR_AI - (formData.verification_notes || '').trim().length} more character${MIN_CHARS_FOR_AI - (formData.verification_notes || '').trim().length === 1 ? '' : 's'} to unlock`}
+                    </Typography>
                   </Box>
                 )}
               </Box>

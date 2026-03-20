@@ -1024,30 +1024,80 @@ class AICalService {
         return 0;
       }   
 
+      // Haversine Distance (in KM)
+      function getDistanceKm(lat1, lon1, lat2, lon2) {
+        const R = 6371; // Earth radius in km
+        const toRad = (deg) => deg * (Math.PI / 180);
+
+        const dLat = toRad(lat2 - lat1);
+        const dLon = toRad(lon2 - lon1);
+
+        const a =
+          Math.sin(dLat / 2) ** 2 +
+          Math.cos(toRad(lat1)) *
+            Math.cos(toRad(lat2)) *
+            Math.sin(dLon / 2) ** 2;
+
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+      }
+
+      // Weight function:
+      // - distance has the strongest influence
+      function getDistanceWeight(distanceKm) {
+        // Exponential decay: close properties get much higher influence, far ones approach ~0.
+        // Example with K=0.35: 0km => 1, 5km => ~0.17, 10km => ~0.03, 20km => ~0.0009
+        const K = 0.35;
+        const d = Math.max(0, distanceKm ?? 0);
+        return Math.exp(-K * d);
+      }
+
       function predictCommercialPrice(input, comparatives) {
+        // Tuned so: distance > property size > property type
+        const TYPE_MISMATCH_WEIGHT = 0.98; // minimal influence (closest to 1 = least impact)
+        const SIZE_POWER = 0.35; // smaller => weaker size influence than distance
+
         // Handle both input.areaSqft and input with direct minimum/maximum properties
         const areaSqft = input.areaSqft !== undefined ? input.areaSqft : input;
         const inputArea = getEffectiveArea(areaSqft);
-      
+
+        // Extract target coordinates (try multiple key names for robustness)
+        const inputLat = input.latitude ?? input.lat;
+        const inputLon = input.longitude ?? input.lon ?? input.lng;
+        const hasTargetCoords = typeof inputLat === "number" && typeof inputLon === "number";
+
+        const inputPropertyType = input.property_type || input.propertyType;
+
         let weightedPA = 0;
         let weightedPCM = 0;
         let totalWeight = 0;
-      
-        comparatives.forEach(p => {
+
+        // Apply distance influence for *every* comparable.
+        // Far properties naturally get very small finalWeight via the distance decay.
+        comparatives.forEach((p) => {
           const compArea = getEffectiveArea(p.sizeSQFT);
-      
           const sizeDiff = Math.abs(compArea - inputArea);
-      
-          // Size weight (never zero, smooth decay)
-          const sizeWeight = 1 / Math.log(sizeDiff + 10);
-      
-          // Property type influence - check if input has propertyType or use from formData
-          const inputPropertyType = input.property_type || input.propertyType;
-          const typeWeight =
-            p.property_type === inputPropertyType ? 1 : 0.6;
-      
-          const finalWeight = sizeWeight * typeWeight;
-      
+
+          // Size weight (compressed influence: always secondary to distance)
+          const normalizedSizeDiff = sizeDiff / ((inputArea || 1) + 1e-9);
+          const sizeWeight = 1 / Math.pow(normalizedSizeDiff + 1, SIZE_POWER);
+
+          // Property type influence (minimal)
+          const typeWeight = p.property_type === inputPropertyType ? 1 : TYPE_MISMATCH_WEIGHT;
+
+          // Distance influence (dominant)
+          let distanceWeight = 1;
+          const compLat = p.latitude ?? p.lat;
+          const compLon = p.longitude ?? p.lon ?? p.lng;
+          if (hasTargetCoords && typeof compLat === "number" && typeof compLon === "number") {
+            const distanceKm = getDistanceKm(inputLat, inputLon, compLat, compLon);
+            // Ex: 10km away => ~0.03 influence, 20km => ~0.001
+            distanceWeight = getDistanceWeight(distanceKm);
+          }
+
+          // Combine weights (distance > size > type)
+          const finalWeight = distanceWeight * sizeWeight * typeWeight;
+
           weightedPA += p.pricePerSqftPA * finalWeight;
           weightedPCM += p.pricePerSqftPCM * finalWeight;
           totalWeight += finalWeight;
@@ -1076,7 +1126,10 @@ class AICalService {
           // Merge input with propertyType for type matching
           const inputWithType = {
             ...input,
-            propertyType: propertyType || input.propertyType || input.property_type
+            propertyType: propertyType || input.propertyType || input.property_type,
+            // Fallback to coordinates from addressDetails when available
+            latitude: input.latitude ?? input.lat ?? addressDetails?.latitude ?? addressDetails?.lat,
+            longitude: input.longitude ?? input.lon ?? input.lng ?? addressDetails?.longitude ?? addressDetails?.lon,
           };
           predictedPrice = predictCommercialPrice(inputWithType, properties);
         }

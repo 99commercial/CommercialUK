@@ -19,10 +19,6 @@ import {
   TextField,
   InputBase,
   Slider,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
   Tooltip,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
@@ -30,19 +26,11 @@ import { useRouter } from 'next/router';
 import { enqueueSnackbar } from 'notistack';
 import ShareIcon from '@mui/icons-material/Share';
 import DownloadIcon from '@mui/icons-material/Download';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import HomeIcon from '@mui/icons-material/Home';
 import SquareFootIcon from '@mui/icons-material/SquareFoot';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import DescriptionIcon from '@mui/icons-material/Description';
-import PinDropIcon from '@mui/icons-material/PinDrop';
-import PublicIcon from '@mui/icons-material/Public';
-import MapIcon from '@mui/icons-material/Map';
 import LocationCityIcon from '@mui/icons-material/LocationCity';
-import FlagIcon from '@mui/icons-material/Flag';
-import DomainIcon from '@mui/icons-material/Domain';
 import ArticleIcon from '@mui/icons-material/Article';
 import CalculateIcon from '@mui/icons-material/Calculate';
 import PeopleIcon from '@mui/icons-material/People';
@@ -765,13 +753,13 @@ const SliderContainer = styled(Box)(({ theme }) => ({
 // Navigation items
 const navigationItems = [
   'Cover',
+  'Price Analysis',
   'Property Details',
   'EPC',
-  'Legal Section',
+  'Accommodation (historic data)',
   'Mortgage Calculator',
   'Demographics Findings',
   'Psychographics Analysis',
-  'Price Prediction',
   'Area Details',
   'About us',
   'Data Sources',
@@ -782,11 +770,11 @@ const navigationIcons: Record<string, React.ReactNode> = {
   'Cover': <ArticleIcon sx={{ fontSize: 22 }} />,
   'Property Details': <HomeIcon sx={{ fontSize: 22 }} />,
   'EPC': <BoltIcon sx={{ fontSize: 22 }} />,
-  'Legal Section': <DescriptionIcon sx={{ fontSize: 22 }} />,
+  'Accommodation (historic data)': <DescriptionIcon sx={{ fontSize: 22 }} />,
   'Mortgage Calculator': <CalculateIcon sx={{ fontSize: 22 }} />,
   'Demographics Findings': <PeopleIcon sx={{ fontSize: 22 }} />,
   'Psychographics Analysis': <PsychologyIcon sx={{ fontSize: 22 }} />,
-  'Price Prediction': <ShowChartIcon sx={{ fontSize: 22 }} />,
+  'Price Analysis': <ShowChartIcon sx={{ fontSize: 22 }} />,
   'Area Details': <LocationCityIcon sx={{ fontSize: 22 }} />,
   'About us': <InfoIcon sx={{ fontSize: 22 }} />,
   'Data Sources': <DataUsageIcon sx={{ fontSize: 22 }} />,
@@ -1228,9 +1216,9 @@ const ReportDetailedPage: React.FC = () => {
                   sx={{
                     fontFamily: FONT_TEXT,
                     fontSize: 14,
-                    color: '#888',
                     letterSpacing: '0.1em',
                     textTransform: 'uppercase',
+                    color: '#ffffff',
                   }}
                 >
                   {reportDate}
@@ -1248,66 +1236,58 @@ const ReportDetailedPage: React.FC = () => {
                   {refDisplay}
                 </Box> */}
               </Box>
-            </Box>
-            {/* Address bar — gold */}
-            <Box
-              sx={{
-                background: '#f2c514',
-                padding: { xs: '12px 24px', md: '16px 64px' },
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1.5,
-                flexWrap: 'wrap',
-              }}
-            >
-              <LocationOnIcon sx={{ width: 18, height: 18, color: '#0a0a0a', flexShrink: 0 }} />
-              <Typography
-                component="span"
+
+              {/* Postcode + location inside the same black header card */}
+              <Box
                 sx={{
-                  fontFamily: FONT_TEXT,
-                  fontSize: 14,
-                  fontWeight: 500,
-                  color: '#0a0a0a',
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase',
+                  width: '100%',
+                  mt: 2,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: "start",
+                  gap: 2,
+                  flexWrap: 'wrap',
                 }}
               >
-                {report.location?.postcode || '—'}
-              </Typography>
-              <Typography
-                component="span"
-                sx={{
-                  fontFamily: FONT_TEXT,
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: '#0a0a0a',
-                  ml: 'auto',
-                  opacity: 0.6,
-                }}
-              >
-                {report.location?.address || ''}
-              </Typography>
+                <Typography
+                  component="span"
+                  sx={{
+                    fontFamily: FONT_TEXT,
+                    fontSize: 14,
+                    fontWeight: 600,
+                    color: '#ffffff',
+                    opacity: 0.9,
+                    textAlign: { xs: 'left', md: 'right' },
+                  }}
+                >
+                  {report.location?.address || ''}
+                </Typography>
+              </Box>
             </Box>
             {/* Main content */}
             <ContentSection sx={{ padding: { xs: 3, md: '56px 64px' }, maxWidth: 1200, margin: '0 auto' }}>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
                 {/* Location Overview label */}
-                <Box
+                <SectionTitle
                   sx={{
-                    fontFamily: FONT_TEXT,
-                    fontSize: 13,
-                    letterSpacing: '0.2em',
-                    textTransform: 'uppercase',
-                    color: '#888',
-                    mb: 2,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 1.25,
+                    position: 'relative',
+                    paddingLeft: 3,
+                    marginTop: 1,
+                    marginBottom: 2,
+                    '&::before': {
+                      content: '""',
+                      position: 'absolute',
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      width: '6px',
+                      backgroundColor: '#f2c514',
+                      borderRadius: '10px',
+                    },
                   }}
                 >
                   Location Overview
-                  <Box sx={{ flex: 1, height: 1, background: '#e8e6df' }} />
-                </Box>
+                </SectionTitle>
                 {/* Map frame */}
                 <Box
                   sx={{
@@ -1512,6 +1492,273 @@ const ReportDetailedPage: React.FC = () => {
           </Box>
         );
 
+      case 'Price Analysis': {
+          const valuationType = report.location.valuationType?.toLowerCase() || '';
+          const showLetting = valuationType.includes('letting');
+          const showSales = valuationType.includes('sales');
+          const showBoth = showLetting && showSales;
+          const conversionFactor = unitSelection === 'sqm' ? 10.764 : 1;
+          const unitDisplay = unitSelection === 'sqm' ? 'm²' : 'sqft';
+          const pred = report.predictedPrice;
+          const effectiveArea = pred?.effectiveAreaSqft || 0;
+  
+          const randomYield = (min: number, max: number) => Math.round((Math.random() * (max - min) + min) * 100) / 100;
+          const annualPA = pred?.pricingPA || 0;
+          const highestYield = randomYield(3, 4.5);
+          const averageYield = randomYield(4.5, 5.5);
+          const lowestYield = randomYield(5.5, 7);
+          const priceCards = [
+            { label: 'Lowest Price', mult: 100 / lowestYield },
+            { label: 'Average Price', mult: 100 / averageYield, featured: true },
+            { label: 'Highest Price', mult: 100 / highestYield },
+          ];
+  
+          const calendarSvg = (w: number, h: number) => (
+            <svg width={w} height={h} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+          );
+          const chartDownSvg = (w: number, h: number) => (
+            <svg width={w} height={h} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+              <polyline points="17 6 23 6 23 12" />
+            </svg>
+          );
+          const chartAvgSvg = (w: number, h: number) => (
+            <svg width={w} height={h} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <text
+                x="12"
+                y="15"
+                textAnchor="middle"
+                dominantBaseline="middle"
+                fontSize="24"
+                fontFamily="Arial, sans-serif"
+                fill="currentColor"
+              >
+                £
+              </text>
+            </svg>
+          );
+          const chartUpSvg = (w: number, h: number) => (
+            <svg width={w} height={h} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <polyline points="23 18 13.5 8.5 8.5 13.5 1 6" />
+              <polyline points="17 18 23 18 23 12" />
+            </svg>
+          );
+          const alertSvg = () => (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+          );
+  
+          return (
+            <ContentSection sx={{ pt: 5, pb: 7 }}>
+              <SectionTitle
+                sx={{
+                  position: 'relative',
+                  paddingLeft: 3,
+                  fontFamily: FONT_TITLE,
+                  '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    left: 0,
+                    top: 0,
+                    bottom: 0,
+                    width: '6px',
+                    backgroundColor: '#f2c514',
+                    borderRadius: '10px',
+
+                  },
+                }}
+              >
+                Price Analysis
+              </SectionTitle>
+              <Box sx={{ display: 'flex', justifyContent:"flex-end", alignItems: 'center', flexWrap: 'wrap', gap: 2, mb: 4.5 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', border: '2px solid #0a0a0a', overflow: 'hidden' }}>
+                  <Box sx={{ py: 1.25, px: 2, fontFamily: FONT_TEXT, fontSize: 9, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#888', bgcolor: '#fff', borderRight: '2px solid #0a0a0a' }}>
+                    Unit
+                  </Box>
+                  <Button
+                    onClick={() => setUnitSelection('sqft')}
+                    disableRipple
+                    sx={{
+                      fontFamily: FONT_TEXT,
+                      fontSize: 14,
+                      letterSpacing: '0.08em',
+                      py: 1.25,
+                      px: 2.25,
+                      bgcolor: unitSelection === 'sqft' ? '#0a0a0a' : '#fff',
+                      color: unitSelection === 'sqft' ? '#f2c514' : '#888',
+                      fontWeight: unitSelection === 'sqft' ? 500 : 400,
+                      borderRadius: 0,
+                      borderRight: '1px solid #e8e6df',
+                      '&:hover': { bgcolor: unitSelection === 'sqft' ? '#0a0a0a' : '#f7f6f2' },
+                    }}
+                  >
+                    Square Feet
+                  </Button>
+                  <Button
+                    onClick={() => setUnitSelection('sqm')}
+                    disableRipple
+                    sx={{
+                      fontFamily: FONT_TEXT,
+                      fontSize: 14,
+                      letterSpacing: '0.08em',
+                      py: 1.25,
+                      px: 2.25,
+                      bgcolor: unitSelection === 'sqm' ? '#0a0a0a' : '#fff',
+                      color: unitSelection === 'sqm' ? '#f2c514' : '#888',
+                      fontWeight: unitSelection === 'sqm' ? 500 : 400,
+                      borderRadius: 0,
+                      '&:hover': { bgcolor: unitSelection === 'sqm' ? '#0a0a0a' : '#f7f6f2' },
+                    }}
+                  >
+                    Square Metres
+                  </Button>
+                </Box>
+              </Box>
+  
+              {showLetting && (
+                <Box sx={{ mb: 5.5 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, mb: 2.5, fontFamily: FONT_TITLE, fontSize: 18, fontWeight: 700, color: '#0a0a0a' }}>
+                    <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: '#f2c514', flexShrink: 0 }} />
+                    {showBoth ? "1. Letting's Valuation" : "Letting's Valuation"}
+                  </Box>
+                  {pred ? (
+                    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2.5, mb: 5.5 }}>
+                      <Box sx={{ border: '2px solid #0a0a0a', bgcolor: '#fff', overflow: 'hidden', transition: 'transform 0.2s', '&:hover': { transform: 'translateY(-2px)' } }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.75, p: '20px 24px', borderBottom: '2px solid #0a0a0a', bgcolor: '#0a0a0a' }}>
+                          <Box sx={{ width: 38, height: 38, bgcolor: '#f2c514', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }} style={{ color: '#0a0a0a' }}>{calendarSvg(20, 20)}</Box>
+                          <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 17, fontWeight: 700, color: '#fff' }}>Annual Pricing</Typography>
+                        </Box>
+                        <Box sx={{ px: 3 }}>
+                          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 2, borderBottom: '1px solid #e8e6df', gap: 1.5 }}>
+                            <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888' }}>Total Price (PA)</Typography>
+                            <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 22, fontWeight: 900, color: '#f2c514' }}>£{pred.pricingPA?.toLocaleString() || 'N/A'}</Typography>
+                          </Box>
+                          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 2, borderBottom: '1px solid #e8e6df', gap: 1.5 }}>
+                            <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888' }}>Price per {unitDisplay} (PA)</Typography>
+                            <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 16, fontWeight: 700, color: '#0a0a0a' }}>{pred.pricePerSqftPA ? '£' + (pred.pricePerSqftPA * conversionFactor).toFixed(2) : 'N/A'}</Typography>
+                          </Box>
+                          {effectiveArea > 0 && (
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 2, gap: 1.5 }}>
+                              <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888' }}>Effective Area ({unitDisplay})</Typography>
+                              <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 16, fontWeight: 700, color: '#0a0a0a' }}>
+                                {unitSelection === 'sqm' ? (effectiveArea / 10.764).toFixed(2) + ' m²' : effectiveArea + ' sqft'}
+                              </Typography>
+                            </Box>
+                          )}
+                        </Box>
+                      </Box>
+                      <Box sx={{ border: '2px solid #0a0a0a', bgcolor: '#fff', overflow: 'hidden', transition: 'transform 0.2s', '&:hover': { transform: 'translateY(-2px)' } }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.75, p: '20px 24px', borderBottom: '2px solid #0a0a0a', bgcolor: '#0a0a0a' }}>
+                          <Box sx={{ width: 38, height: 38, bgcolor: '#f2c514', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }} style={{ color: '#0a0a0a' }}>{calendarSvg(20, 20)}</Box>
+                          <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 17, fontWeight: 700, color: '#fff' }}>Monthly Pricing</Typography>
+                        </Box>
+                        <Box sx={{ px: 3 }}>
+                          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 2, borderBottom: '1px solid #e8e6df', gap: 1.5 }}>
+                            <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888' }}>Total Price (PCM)</Typography>
+                            <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 22, fontWeight: 900, color: '#f2c514' }}>£{pred.pricingPCM?.toLocaleString() || 'N/A'}</Typography>
+                          </Box>
+                          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 2, gap: 1.5 }}>
+                            <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888' }}>Price per {unitDisplay} (PCM)</Typography>
+                            <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 16, fontWeight: 700, color: '#0a0a0a' }}>{pred.pricePerSqftPCM ? '£' + (pred.pricePerSqftPCM * conversionFactor).toFixed(2) : 'N/A'}</Typography>
+                          </Box>
+                        </Box>
+                      </Box>
+                    </Box>
+                  ) : (
+                    <Alert severity="info" sx={{ borderRadius: 0, fontSize: '16px' }}>Letting's valuation not available for this property.</Alert>
+                  )}
+                </Box>
+              )}
+  
+              {showSales && (
+                <Box sx={{ mb: 3 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, mb: 2.5, fontFamily: FONT_TITLE, fontSize: 20, fontWeight: 700, color: '#0a0a0a' }}>
+                    <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: '#f2c514', flexShrink: 0 }} />
+                    {showBoth ? '2. Sales Valuation' : 'Sales Valuation'}
+                  </Box>
+                  {pred ? (
+                    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' }, border: '2px solid #0a0a0a', bgcolor: '#fff', overflow: 'hidden', mb: 3 }}>
+                      {priceCards.map((card) => {
+                        const salePrice = annualPA * card.mult;
+                        const pricePerUnit = effectiveArea > 0 ? (salePrice / effectiveArea) * conversionFactor : 0;
+                        const featured = !!card.featured;
+                        const Icon = card.label === 'Lowest Price' ? chartDownSvg : card.label === 'Average Price' ? chartAvgSvg : chartUpSvg;
+                        return (
+                          <Box
+                            key={card.label}
+                            sx={{
+                              position: 'relative',
+                              borderRight: { md: '2px solid #0a0a0a' },
+                              bgcolor: featured ? '#0a0a0a' : 'transparent',
+                              '&:last-child': { borderRight: 'none' },
+                            }}
+                          >
+                            {featured && (
+                              <Box sx={{ position: 'absolute', top: 0, right: 0, bgcolor: '#f2c514', color: '#0a0a0a', fontFamily: FONT_TEXT, fontSize: 12, letterSpacing: '0.1em', py: 0.6, px: 1.5, textTransform: 'uppercase', fontWeight: 600 }}>
+                                Average
+                              </Box>
+                            )}
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, p: '20px 24px', borderBottom: '2px solid #0a0a0a', bgcolor: featured ? '#f2c514' : 'transparent', borderBottomColor: featured ? 'rgba(0,0,0,0.2)' : '#0a0a0a' }}>
+                              <Box sx={{ width: 34, height: 34, bgcolor: featured ? '#0a0a0a' : '#f7f6f2', border: '1px solid #e8e6df', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }} style={{ color: featured ? '#f2c514' : '#888' }}>{Icon(16, 16)}</Box>
+                              <Typography sx={{ fontFamily: FONT_TITLE, fontSize: featured ? 19 : 18, fontWeight: 700, color: featured ? '#0a0a0a' : '#0a0a0a' }}>{card.label}</Typography>
+                            </Box>
+                            <Box sx={{ px: 3, '& .row': { borderBottom: featured ? '1px solid rgba(255,255,255,0.1)' : '1px solid #e8e6df' } }}>
+                              <Box className="row" sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 1.9, gap: 1.5 }}>
+                                <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, color: featured ? 'rgba(255,255,255,0.6)' : '#888' }}>Sale Price</Typography>
+                                <Typography sx={{ fontFamily: FONT_TITLE, fontSize: featured ? 22 : 20, fontWeight: 900, color: '#f2c514' }}>£{Math.round(salePrice).toLocaleString()}</Typography>
+                              </Box>
+                              {effectiveArea > 0 && (
+                                <Box className="row" sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 1.9, gap: 1.5 }}>
+                                  <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, color: featured ? 'rgba(255,255,255,0.6)' : '#888' }}>Price per {unitDisplay}</Typography>
+                                  <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 16, fontWeight: 700, color: featured ? '#fff' : '#0a0a0a' }}>£{pricePerUnit.toFixed(2)}</Typography>
+                                </Box>
+                              )}
+                              {effectiveArea > 0 && (
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 1.9, gap: 1.5 }}>
+                                  <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, color: featured ? 'rgba(255,255,255,0.6)' : '#888' }}>Effective Area ({unitDisplay})</Typography>
+                                  <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 16, fontWeight: 700, color: featured ? '#fff' : '#0a0a0a' }}>
+                                    {unitSelection === 'sqm' ? (effectiveArea / 10.764).toFixed(2) + ' m²' : effectiveArea + ' sqft'}
+                                  </Typography>
+                                </Box>
+                              )}
+                            </Box>
+                          </Box>
+                        );
+                      })}
+                    </Box>
+                  ) : (
+                    <Alert severity="info" sx={{ borderRadius: 0, fontSize: '16px' }}>Sales valuation not available for this property.</Alert>
+                  )}
+                </Box>
+              )}
+  
+              {(showLetting || showSales) && (
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, bgcolor: '#fff5f5', border: '2px solid #c0392b', borderLeft: '6px solid #c0392b', p: '20px 24px' }}>
+                  <Box sx={{ width: 36, height: 36, bgcolor: '#c0392b', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }} style={{ color: '#fff' }}>{alertSvg()}</Box>
+                  <Box sx={{ flex: 1 }}>
+                    <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 18, fontWeight: 700, color: '#c0392b', mb: 0.75 }}>Important Note</Typography>
+                    <Typography sx={{ fontSize: 16, lineHeight: 1.7, color: '#555', fontWeight: 500, fontFamily: FONT_TEXT }}>
+                      These price predictions are based on market analysis and comparable properties in the area. Actual prices may vary based on negotiation, market conditions, and property-specific factors.
+                    </Typography>
+                  </Box>
+                </Box>
+              )}
+  
+              {!showLetting && !showSales && (
+                <Alert severity="info" sx={{ borderRadius: 0, fontSize: '16px' }}>Price prediction not available for this property.</Alert>
+              )}
+            </ContentSection>
+          );
+      }
+
       case 'Property Details': {
         const pd = report.propertyDetails || {};
         const epcRating = report.epcData?.data?.current_energy_rating || report.epcData?.current_energy_rating;
@@ -1544,23 +1791,24 @@ const ReportDetailedPage: React.FC = () => {
                 padding: 3,
               }}
             >
-              <Typography
-                component="h3"
+              <SectionTitle
                 sx={{
-                  fontFamily: FONT_TITLE,
-                  fontSize: 24,
-                  fontWeight: 700,
-                  marginBottom: 3,
-                  paddingBottom: 1.75,
-                  borderBottom: '2px solid #e8e6df',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1.25,
+                  position: 'relative',
+                  paddingLeft: 3,
+                  '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    left: 0,
+                    top: 0,
+                    bottom: 0,
+                    width: '6px',
+                    backgroundColor: '#f2c514',
+                    borderRadius: '10px',
+                  },
                 }}
               >
-                <Box sx={{ width: 8, height: 8, background: '#f2c514', flexShrink: 0 }} />
                 Property Details
-              </Typography>
+              </SectionTitle>
               {detailRows.map((row, index) => (
                 <Box
                   key={row.key}
@@ -1641,25 +1889,25 @@ const ReportDetailedPage: React.FC = () => {
         const currentGrade = (typeof grade === 'string' ? grade.toUpperCase() : String(grade)).charAt(0);
         return (
           <ContentSection>
-            <Box sx={{ mt: 1 }}>
-              <Box
-                sx={{
-                  fontFamily: FONT_TEXT,
-                  fontSize: 13,
-                  letterSpacing: '0.12em',
-                  textTransform: 'uppercase',
-                  color: '#888',
-                  fontWeight: 600,
-                  mb: 2,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1.25,
-                }}
-              >
-                Energy Performance Certificate
-                <Box sx={{ flex: 1, height: 1, background: '#e8e6df' }} />
-              </Box>
-            </Box>
+            <SectionTitle
+              sx={{
+                position: 'relative',
+                paddingLeft: 3,
+                marginTop: 1,
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: '6px',
+                  backgroundColor: '#f2c514',
+                  borderRadius: '10px',
+                },
+              }}
+            >
+              Energy Performance Certificate
+            </SectionTitle>
             {report.epcData || grade ? (
               <Box>
                 {/* EPC banner — black with grade + bar stack */}
@@ -2110,7 +2358,7 @@ const ReportDetailedPage: React.FC = () => {
         );
       }
 
-      case 'Legal Section': {
+      case 'Accommodation (historic data)': {
         const legalItems = landRegistryData?.result?.items
           ? [...landRegistryData.result.items].sort((a: any, b: any) =>
               new Date(b.transactionDate).getTime() - new Date(a.transactionDate).getTime()
@@ -2127,25 +2375,26 @@ const ReportDetailedPage: React.FC = () => {
         };
         return (
           <ContentSection>
-            <Box sx={{ mt: 1 }}>
-              <Box
-                sx={{
-                  fontFamily: FONT_TEXT,
-                  fontSize: 13,
-                  letterSpacing: '0.2em',
-                  textTransform: 'uppercase',
-                  color: '#888',
-                  mb: 2,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1.25,
-                }}
-              >
-                Legal Section
-                <Box sx={{ flex: 1, height: 1, background: '#e8e6df' }} />
-              </Box>
-            </Box>
-            <Typography
+            <SectionTitle
+              sx={{
+                position: 'relative',
+                paddingLeft: 3,
+                marginTop: 1,
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: '6px',
+                  backgroundColor: '#f2c514',
+                  borderRadius: '10px',
+                },
+              }}
+            >
+              HM Land Registry – Transaction History
+            </SectionTitle>
+            {/* <Typography
               sx={{
                 fontFamily: FONT_TITLE,
                 fontSize: 17,
@@ -2168,8 +2417,7 @@ const ReportDetailedPage: React.FC = () => {
                 <rect x="3" y="3" width="18" height="18" rx="2" />
                 <path d="M3 9h18M9 21V9" />
               </Box>
-              HM Land Registry – Transaction History
-            </Typography>
+            </Typography> */}
 
             {landRegistryLoading ? (
               <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
@@ -2245,13 +2493,10 @@ const ReportDetailedPage: React.FC = () => {
 
                       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, padding: 0 }}>
                         {[
-                          { key: 'Transaction ID', val: transaction.transactionId, mono: true, wide: false },
                           { key: 'New Build', val: transaction.newBuild ? 'Yes' : 'No', mono: false, wide: false },
                           { key: 'Transaction Date', val: new Date(transaction.transactionDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }), mono: false, wide: false },
                           { key: 'Price Paid', val: `£${Number(transaction.pricePaid).toLocaleString('en-GB')}`, mono: false, highlight: true, wide: false },
-                          { key: 'Type', val: 'TransactionRecord', mono: false, wide: false },
                           { key: 'Estate Type', val: estateType, pill: true, wide: false },
-                          { key: 'Has Transaction', val: transaction.transactionId, mono: true, wide: true },
                         ].map((field) => (
                           <Box
                             key={field.key}
@@ -2346,23 +2591,6 @@ const ReportDetailedPage: React.FC = () => {
                           ))}
                         </Box>
                       </Box>
-
-                      <Box sx={{ display: 'flex', alignItems: 'stretch', borderTop: '2px solid #0a0a0a', background: '#0a0a0a' }}>
-                        <Box sx={{ flex: 1, padding: '16px 22px', display: 'flex', flexDirection: 'column', gap: 0.6 }}>
-                          <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', fontWeight: 500 }}>Property Type</Typography>
-                          <Typography sx={{ fontSize: 15, fontWeight: 600, color: '#ffffff' }}>{propType}</Typography>
-                        </Box>
-                        <Box sx={{ width: 1, background: 'rgba(255,255,255,0.1)', margin: '12px 0' }} />
-                        <Box sx={{ flex: 1, padding: '16px 22px', display: 'flex', flexDirection: 'column', gap: 0.6 }}>
-                          <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', fontWeight: 500 }}>Record Status</Typography>
-                          <Typography sx={{ fontSize: 15, fontWeight: 600, color: '#ffffff' }}>{recordStatus}</Typography>
-                        </Box>
-                        <Box sx={{ width: 1, background: 'rgba(255,255,255,0.1)', margin: '12px 0' }} />
-                        <Box sx={{ flex: 1, padding: '16px 22px', display: 'flex', flexDirection: 'column', gap: 0.6 }}>
-                          <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', fontWeight: 500 }}>Transaction Category</Typography>
-                          <Typography sx={{ fontSize: 15, fontWeight: 600, color: '#ffffff' }}>{transCat}</Typography>
-                        </Box>
-                      </Box>
                     </Box>
                   );
                 })}
@@ -2429,24 +2657,25 @@ const ReportDetailedPage: React.FC = () => {
         const fmt = (n: number) => '£' + Math.round(n).toLocaleString('en-GB');
         return (
           <ContentSection>
-            <Typography
-              component="div"
+            <SectionTitle
               sx={{
-                fontFamily: FONT_TEXT,
-                fontSize: '16px',
-                letterSpacing: '0.12em',
-                textTransform: 'uppercase',
-                color: '#888',
-                fontWeight: 600,
-                mb: 2,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1.25,
-                '&::after': { content: '""', flex: 1, height: 1, bgcolor: '#e8e6df' },
+                position: 'relative',
+                paddingLeft: 3,
+                marginTop: 0,
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: '6px',
+                  backgroundColor: '#f2c514',
+                  borderRadius: '10px',
+                },
               }}
             >
               Mortgage Calculator
-            </Typography>
+            </SectionTitle>
             <Box
               sx={{
                 display: 'grid',
@@ -2657,23 +2886,24 @@ const ReportDetailedPage: React.FC = () => {
         );
         return (
           <ContentSection sx={{ pt: 1, pb: 7 }}>
-            <Typography
-              component="div"
+            <SectionTitle
               sx={{
-                fontFamily: FONT_TEXT,
-                fontSize: '16px',
-                letterSpacing: '0.2em',
-                textTransform: 'uppercase',
-                color: '#888',
-                mb: 2,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1.25,
-                '&::after': { content: '""', flex: 1, height: 1, bgcolor: '#e8e6df' },
+                position: 'relative',
+                paddingLeft: 3,
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: '6px',
+                  backgroundColor: '#f2c514',
+                  borderRadius: '10px',
+                },
               }}
             >
               Demographics Findings
-            </Typography>
+            </SectionTitle>
             {report.aiAnalysis ? (
               <>
                 {report.aiAnalysis.summary && (
@@ -2686,10 +2916,6 @@ const ReportDetailedPage: React.FC = () => {
                 )}
                 {report.aiAnalysis.points && report.aiAnalysis.points.length > 0 && (
                   <>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, mb: 3, fontFamily: FONT_TITLE, fontSize: 19, fontWeight: 700, color: '#0a0a0a' }}>
-                      <Box sx={{ color: '#f2c514' }}>{demoPeopleSvg}</Box>
-                      Key Benefits &amp; Insights
-                    </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'column', border: '2px solid #0a0a0a', bgcolor: '#fff', overflow: 'hidden' }}>
                       {report.aiAnalysis.points.map((point: any, index: number) => {
                         const isLast = index === report.aiAnalysis!.points!.length - 1;
@@ -2709,17 +2935,8 @@ const ReportDetailedPage: React.FC = () => {
                               <Box sx={{ flex: 1, width: 2, bgcolor: 'rgba(242,197,20,0.2)' }} />
                             </Box>
                             <Box sx={{ flex: 1, py: 3.5, px: 4 }}>
-                              <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75, fontFamily: FONT_TEXT, fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#888', fontWeight: 600, mb: 1.25, bgcolor: '#f7f6f2', py: 0.5, px: 1.25, border: '1px solid #e8e6df' }}>
-                                {demoClockSvg}
-                                Insight
-                              </Box>
                               <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 22, fontWeight: 700, color: '#0a0a0a', mb: 1.5, lineHeight: 1.2 }}>{point.title}</Typography>
                               <Typography sx={{ fontSize: 16, lineHeight: 1.75, color: '#444', fontWeight: 500, mb: 2.25 }}>{contentText}</Typography>
-                              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                                <Box component="span" sx={{ display: 'inline-block', bgcolor: '#f2c514', color: '#0a0a0a', fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.08em', py: 0.6, px: 1.5, fontWeight: 500, border: '1px solid rgba(0,0,0,0.1)' }}>
-                                  Key benefit
-                                </Box>
-                              </Box>
                             </Box>
                           </Box>
                         );
@@ -2754,23 +2971,24 @@ const ReportDetailedPage: React.FC = () => {
         );
         return (
           <ContentSection sx={{ pt: 1, pb: 7 }}>
-            <Typography
-              component="div"
+            <SectionTitle
               sx={{
-                fontFamily: FONT_TEXT,
-                fontSize: '16px',
-                letterSpacing: '0.2em',
-                textTransform: 'uppercase',
-                color: '#888',
-                mb: 2,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1.25,
-                '&::after': { content: '""', flex: 1, height: 1, bgcolor: '#e8e6df' },
+                position: 'relative',
+                paddingLeft: 3,
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: '6px',
+                  backgroundColor: '#f2c514',
+                  borderRadius: '10px',
+                },
               }}
             >
               Psychographics Analysis
-            </Typography>
+            </SectionTitle>
             {report.psychographicsAnalysis ? (
               <>
                 {report.psychographicsAnalysis.summary && (
@@ -2781,10 +2999,6 @@ const ReportDetailedPage: React.FC = () => {
                 )}
                 {report.psychographicsAnalysis.points && report.psychographicsAnalysis.points.length > 0 && (
                   <>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, mb: 3, fontFamily: FONT_TITLE, fontSize: 19, fontWeight: 700, color: '#0a0a0a' }}>
-                      <Box sx={{ color: '#f2c514' }}>{psychoPeopleSvg}</Box>
-                      Key Psychographic Insights
-                    </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'column', border: '2px solid #0a0a0a', bgcolor: '#fff', overflow: 'hidden' }}>
                       {report.psychographicsAnalysis.points.map((point: any, index: number) => {
                         const isLast = index === report.psychographicsAnalysis!.points!.length - 1;
@@ -2804,17 +3018,8 @@ const ReportDetailedPage: React.FC = () => {
                               <Box sx={{ flex: 1, width: 2, bgcolor: 'rgba(242,197,20,0.2)' }} />
                             </Box>
                             <Box sx={{ flex: 1, py: 3.5, px: 4 }}>
-                              <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75, fontFamily: FONT_TEXT, fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#888', fontWeight: 600, mb: 1.25, bgcolor: '#f7f6f2', py: 0.5, px: 1.25, border: '1px solid #e8e6df' }}>
-                                {psychoTagSvg}
-                                Insight
-                              </Box>
                               <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 22, fontWeight: 700, color: '#0a0a0a', mb: 1.5, lineHeight: 1.2 }}>{point.title || `Insight ${point.number}`}</Typography>
                               <Typography sx={{ fontSize: 16, lineHeight: 1.75, color: '#444', fontWeight: 500, mb: 2.25 }}>{contentText}</Typography>
-                              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                                <Box component="span" sx={{ display: 'inline-block', bgcolor: '#f2c514', color: '#0a0a0a', fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.08em', py: 0.6, px: 1.5, fontWeight: 500, border: '1px solid rgba(0,0,0,0.1)' }}>
-                                  Psychographic
-                                </Box>
-                              </Box>
                             </Box>
                           </Box>
                         );
@@ -2833,265 +3038,6 @@ const ReportDetailedPage: React.FC = () => {
               <Alert severity="info" sx={{ borderRadius: 0, fontSize: '16px' }}>
                 Psychographics analysis is not available for this property. This feature provides insights into target customer behaviors, values, and purchasing motivations.
               </Alert>
-            )}
-          </ContentSection>
-        );
-      }
-
-      case 'Price Prediction': {
-        const valuationType = report.location.valuationType?.toLowerCase() || '';
-        const showLetting = valuationType.includes('letting');
-        const showSales = valuationType.includes('sales');
-        const showBoth = showLetting && showSales;
-        const conversionFactor = unitSelection === 'sqm' ? 10.764 : 1;
-        const unitDisplay = unitSelection === 'sqm' ? 'm²' : 'sqft';
-        const pred = report.predictedPrice;
-        const effectiveArea = pred?.effectiveAreaSqft || 0;
-
-        const randomYield = (min: number, max: number) => Math.round((Math.random() * (max - min) + min) * 100) / 100;
-        const annualPA = pred?.pricingPA || 0;
-        const highestYield = randomYield(3, 4.5);
-        const averageYield = randomYield(4.5, 5.5);
-        const lowestYield = randomYield(5.5, 7);
-        const priceCards = [
-          { label: 'Lowest Price', mult: 100 / lowestYield },
-          { label: 'Average Price', mult: 100 / averageYield, featured: true },
-          { label: 'Highest Price', mult: 100 / highestYield },
-        ];
-
-        const calendarSvg = (w: number, h: number) => (
-          <svg width={w} height={h} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-            <rect x="3" y="4" width="18" height="18" rx="2" />
-            <line x1="16" y1="2" x2="16" y2="6" />
-            <line x1="8" y1="2" x2="8" y2="6" />
-            <line x1="3" y1="10" x2="21" y2="10" />
-          </svg>
-        );
-        const chartDownSvg = (w: number, h: number) => (
-          <svg width={w} height={h} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
-            <polyline points="17 6 23 6 23 12" />
-          </svg>
-        );
-        const chartAvgSvg = (w: number, h: number) => (
-          <svg width={w} height={h} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-            <line x1="12" y1="1" x2="12" y2="23" />
-            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-          </svg>
-        );
-        const chartUpSvg = (w: number, h: number) => (
-          <svg width={w} height={h} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-            <polyline points="23 18 13.5 8.5 8.5 13.5 1 6" />
-            <polyline points="17 18 23 18 23 12" />
-          </svg>
-        );
-        const alertSvg = () => (
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-            <line x1="12" y1="9" x2="12" y2="13" />
-            <line x1="12" y1="17" x2="12.01" y2="17" />
-          </svg>
-        );
-
-        return (
-          <ContentSection sx={{ pt: 1, pb: 7 }}>
-            <Typography
-              component="div"
-              sx={{
-                fontFamily: FONT_TEXT,
-                fontSize: '16px',
-                letterSpacing: '0.2em',
-                textTransform: 'uppercase',
-                color: '#888',
-                mb: 2,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1.25,
-                '&::after': { content: '""', flex: 1, height: 1, bgcolor: '#e8e6df' },
-              }}
-            >
-              Price Prediction
-            </Typography>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2, mb: 4.5 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, fontFamily: FONT_TITLE, fontSize: 24, fontWeight: 700, color: '#0a0a0a' }}>
-                <Box sx={{ width: 5, height: 28, bgcolor: '#f2c514', flexShrink: 0 }} />
-                Price Prediction
-              </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', border: '2px solid #0a0a0a', overflow: 'hidden' }}>
-                <Box sx={{ py: 1.25, px: 2, fontFamily: FONT_TEXT, fontSize: 9, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#888', bgcolor: '#fff', borderRight: '2px solid #0a0a0a' }}>
-                  Unit
-                </Box>
-                <Button
-                  onClick={() => setUnitSelection('sqft')}
-                  disableRipple
-                  sx={{
-                    fontFamily: FONT_TEXT,
-                    fontSize: 14,
-                    letterSpacing: '0.08em',
-                    py: 1.25,
-                    px: 2.25,
-                    bgcolor: unitSelection === 'sqft' ? '#0a0a0a' : '#fff',
-                    color: unitSelection === 'sqft' ? '#f2c514' : '#888',
-                    fontWeight: unitSelection === 'sqft' ? 500 : 400,
-                    borderRadius: 0,
-                    borderRight: '1px solid #e8e6df',
-                    '&:hover': { bgcolor: unitSelection === 'sqft' ? '#0a0a0a' : '#f7f6f2' },
-                  }}
-                >
-                  Square Feet
-                </Button>
-                <Button
-                  onClick={() => setUnitSelection('sqm')}
-                  disableRipple
-                  sx={{
-                    fontFamily: FONT_TEXT,
-                    fontSize: 14,
-                    letterSpacing: '0.08em',
-                    py: 1.25,
-                    px: 2.25,
-                    bgcolor: unitSelection === 'sqm' ? '#0a0a0a' : '#fff',
-                    color: unitSelection === 'sqm' ? '#f2c514' : '#888',
-                    fontWeight: unitSelection === 'sqm' ? 500 : 400,
-                    borderRadius: 0,
-                    '&:hover': { bgcolor: unitSelection === 'sqm' ? '#0a0a0a' : '#f7f6f2' },
-                  }}
-                >
-                  Square Metres
-                </Button>
-              </Box>
-            </Box>
-
-            {showLetting && (
-              <Box sx={{ mb: 5.5 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, mb: 2.5, fontFamily: FONT_TITLE, fontSize: 18, fontWeight: 700, color: '#0a0a0a' }}>
-                  <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: '#f2c514', flexShrink: 0 }} />
-                  {showBoth ? "1. Letting's Valuation" : "Letting's Valuation"}
-                </Box>
-                {pred ? (
-                  <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2.5, mb: 5.5 }}>
-                    <Box sx={{ border: '2px solid #0a0a0a', bgcolor: '#fff', overflow: 'hidden', transition: 'transform 0.2s', '&:hover': { transform: 'translateY(-2px)' } }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.75, p: '20px 24px', borderBottom: '2px solid #0a0a0a', bgcolor: '#0a0a0a' }}>
-                        <Box sx={{ width: 38, height: 38, bgcolor: '#f2c514', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }} style={{ color: '#0a0a0a' }}>{calendarSvg(20, 20)}</Box>
-                        <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 17, fontWeight: 700, color: '#fff' }}>Annual Pricing</Typography>
-                      </Box>
-                      <Box sx={{ px: 3 }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 2, borderBottom: '1px solid #e8e6df', gap: 1.5 }}>
-                          <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888' }}>Total Price (PA)</Typography>
-                          <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 22, fontWeight: 900, color: '#f2c514' }}>£{pred.pricingPA?.toLocaleString() || 'N/A'}</Typography>
-                        </Box>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 2, borderBottom: '1px solid #e8e6df', gap: 1.5 }}>
-                          <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888' }}>Price per {unitDisplay} (PA)</Typography>
-                          <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 16, fontWeight: 700, color: '#0a0a0a' }}>{pred.pricePerSqftPA ? '£' + (pred.pricePerSqftPA * conversionFactor).toFixed(2) : 'N/A'}</Typography>
-                        </Box>
-                        {effectiveArea > 0 && (
-                          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 2, gap: 1.5 }}>
-                            <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888' }}>Effective Area ({unitDisplay})</Typography>
-                            <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 16, fontWeight: 700, color: '#0a0a0a' }}>
-                              {unitSelection === 'sqm' ? (effectiveArea / 10.764).toFixed(2) + ' m²' : effectiveArea + ' sqft'}
-                            </Typography>
-                          </Box>
-                        )}
-                      </Box>
-                    </Box>
-                    <Box sx={{ border: '2px solid #0a0a0a', bgcolor: '#fff', overflow: 'hidden', transition: 'transform 0.2s', '&:hover': { transform: 'translateY(-2px)' } }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.75, p: '20px 24px', borderBottom: '2px solid #0a0a0a', bgcolor: '#0a0a0a' }}>
-                        <Box sx={{ width: 38, height: 38, bgcolor: '#f2c514', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }} style={{ color: '#0a0a0a' }}>{calendarSvg(20, 20)}</Box>
-                        <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 17, fontWeight: 700, color: '#fff' }}>Monthly Pricing</Typography>
-                      </Box>
-                      <Box sx={{ px: 3 }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 2, borderBottom: '1px solid #e8e6df', gap: 1.5 }}>
-                          <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888' }}>Total Price (PCM)</Typography>
-                          <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 22, fontWeight: 900, color: '#f2c514' }}>£{pred.pricingPCM?.toLocaleString() || 'N/A'}</Typography>
-                        </Box>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 2, gap: 1.5 }}>
-                          <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888' }}>Price per {unitDisplay} (PCM)</Typography>
-                          <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 16, fontWeight: 700, color: '#0a0a0a' }}>{pred.pricePerSqftPCM ? '£' + (pred.pricePerSqftPCM * conversionFactor).toFixed(2) : 'N/A'}</Typography>
-                        </Box>
-                      </Box>
-                    </Box>
-                  </Box>
-                ) : (
-                  <Alert severity="info" sx={{ borderRadius: 0, fontSize: '16px' }}>Letting's valuation not available for this property.</Alert>
-                )}
-              </Box>
-            )}
-
-            {showSales && (
-              <Box sx={{ mb: 3 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, mb: 2.5, fontFamily: FONT_TITLE, fontSize: 20, fontWeight: 700, color: '#0a0a0a' }}>
-                  <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: '#f2c514', flexShrink: 0 }} />
-                  {showBoth ? '2. Sales Valuation' : 'Sales Valuation'}
-                </Box>
-                {pred ? (
-                  <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' }, border: '2px solid #0a0a0a', bgcolor: '#fff', overflow: 'hidden', mb: 3 }}>
-                    {priceCards.map((card) => {
-                      const salePrice = annualPA * card.mult;
-                      const pricePerUnit = effectiveArea > 0 ? (salePrice / effectiveArea) * conversionFactor : 0;
-                      const featured = !!card.featured;
-                      const Icon = card.label === 'Lowest Price' ? chartDownSvg : card.label === 'Average Price' ? chartAvgSvg : chartUpSvg;
-                      return (
-                        <Box
-                          key={card.label}
-                          sx={{
-                            position: 'relative',
-                            borderRight: { md: '2px solid #0a0a0a' },
-                            bgcolor: featured ? '#0a0a0a' : 'transparent',
-                            '&:last-child': { borderRight: 'none' },
-                          }}
-                        >
-                          {featured && (
-                            <Box sx={{ position: 'absolute', top: 0, right: 0, bgcolor: '#f2c514', color: '#0a0a0a', fontFamily: FONT_TEXT, fontSize: 12, letterSpacing: '0.1em', py: 0.6, px: 1.5, textTransform: 'uppercase', fontWeight: 600 }}>
-                              Average
-                            </Box>
-                          )}
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, p: '20px 24px', borderBottom: '2px solid #0a0a0a', bgcolor: featured ? '#f2c514' : 'transparent', borderBottomColor: featured ? 'rgba(0,0,0,0.2)' : '#0a0a0a' }}>
-                            <Box sx={{ width: 34, height: 34, bgcolor: featured ? '#0a0a0a' : '#f7f6f2', border: '1px solid #e8e6df', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }} style={{ color: featured ? '#f2c514' : '#888' }}>{Icon(16, 16)}</Box>
-                            <Typography sx={{ fontFamily: FONT_TITLE, fontSize: featured ? 19 : 18, fontWeight: 700, color: featured ? '#0a0a0a' : '#0a0a0a' }}>{card.label}</Typography>
-                          </Box>
-                          <Box sx={{ px: 3, '& .row': { borderBottom: featured ? '1px solid rgba(255,255,255,0.1)' : '1px solid #e8e6df' } }}>
-                            <Box className="row" sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 1.9, gap: 1.5 }}>
-                              <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, color: featured ? 'rgba(255,255,255,0.6)' : '#888' }}>Sale Price</Typography>
-                              <Typography sx={{ fontFamily: FONT_TITLE, fontSize: featured ? 22 : 20, fontWeight: 900, color: '#f2c514' }}>£{Math.round(salePrice).toLocaleString()}</Typography>
-                            </Box>
-                            {effectiveArea > 0 && (
-                              <Box className="row" sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 1.9, gap: 1.5 }}>
-                                <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, color: featured ? 'rgba(255,255,255,0.6)' : '#888' }}>Price per {unitDisplay}</Typography>
-                                <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 16, fontWeight: 700, color: featured ? '#fff' : '#0a0a0a' }}>£{pricePerUnit.toFixed(2)}</Typography>
-                              </Box>
-                            )}
-                            {effectiveArea > 0 && (
-                              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 1.9, gap: 1.5 }}>
-                                <Typography sx={{ fontFamily: FONT_TEXT, fontSize: 13, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, color: featured ? 'rgba(255,255,255,0.6)' : '#888' }}>Effective Area ({unitDisplay})</Typography>
-                                <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 16, fontWeight: 700, color: featured ? '#fff' : '#0a0a0a' }}>
-                                  {unitSelection === 'sqm' ? (effectiveArea / 10.764).toFixed(2) + ' m²' : effectiveArea + ' sqft'}
-                                </Typography>
-                              </Box>
-                            )}
-                          </Box>
-                        </Box>
-                      );
-                    })}
-                  </Box>
-                ) : (
-                  <Alert severity="info" sx={{ borderRadius: 0, fontSize: '16px' }}>Sales valuation not available for this property.</Alert>
-                )}
-              </Box>
-            )}
-
-            {(showLetting || showSales) && (
-              <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, bgcolor: '#fff5f5', border: '2px solid #c0392b', borderLeft: '6px solid #c0392b', p: '20px 24px' }}>
-                <Box sx={{ width: 36, height: 36, bgcolor: '#c0392b', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }} style={{ color: '#fff' }}>{alertSvg()}</Box>
-                <Box sx={{ flex: 1 }}>
-                  <Typography sx={{ fontFamily: FONT_TITLE, fontSize: 18, fontWeight: 700, color: '#c0392b', mb: 0.75 }}>Important Note</Typography>
-                  <Typography sx={{ fontSize: 16, lineHeight: 1.7, color: '#555', fontWeight: 500, fontFamily: FONT_TEXT }}>
-                    These price predictions are based on market analysis and comparable properties in the area. Actual prices may vary based on negotiation, market conditions, and property-specific factors.
-                  </Typography>
-                </Box>
-              </Box>
-            )}
-
-            {!showLetting && !showSales && (
-              <Alert severity="info" sx={{ borderRadius: 0, fontSize: '16px' }}>Price prediction not available for this property.</Alert>
             )}
           </ContentSection>
         );
@@ -5114,7 +5060,7 @@ const ReportDetailedPage: React.FC = () => {
                   >
                     Property
                   </Box>
-                  {['Cover', 'Property Details', 'EPC', 'Legal Section']
+                  {['Cover', 'Price Analysis', 'Property Details', 'EPC', 'Accommodation (historic data)']
                     .filter((label) => navigationItems.includes(label as any))
                     .map((label) => renderNavItem(label))}
 
@@ -5146,7 +5092,7 @@ const ReportDetailedPage: React.FC = () => {
                   >
                     Analysis
                   </Box>
-                  {['Mortgage Calculator', 'Demographics Findings', 'Psychographics Analysis', 'Price Prediction']
+                  {['Mortgage Calculator', 'Demographics Findings', 'Psychographics Analysis']
                     .filter((label) => navigationItems.includes(label as any))
                     .map((label) => renderNavItem(label))}
 
